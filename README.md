@@ -21,7 +21,7 @@ This section is organized using folders that match the steps outlined below. Mak
 1. Preqs - Clone this repo, install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), install [Bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
 2. [Creation of Hub Network & its respective Components](./01-network-hub.md)
 3. [Creation of Spoke Network & its respective Components](./02-network-lz.md)
-4. [Creation of Supporting Components for AKS](./03-aks-supporting.md)
+4. [Creation of Supporting Components for ACA](./03-aks-supporting.md)
 5. [Creation of ACA Environment](./04-aca-env.md)
 6. [Creation of Azure container apps](./05-aca-apps.md)
 

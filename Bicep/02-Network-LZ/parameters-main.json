@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "rgName": {
+      "value": "ESLZ-SPOKE"
+    },
+    "vnetSpokeName": {
+      "value": "VNet-SPOKE"
+    },
+    "spokeVNETaddPrefixes": {
+      "value": [
+        "10.1.0.0/16"
+      ]
+    },
+    "spokeSubnets": {
+      "value": [
+        {
+          "name": "infraSubnetName",
+          "properties": {
+            "addressPrefix": "10.1.0.0/23",
+            "privateEndpointNetworkPolicies": "Disabled"
+          }
+        },
+        {
+          "name": "servicespe",
+          "properties": {
+            "addressPrefix": "10.1.10.0/24",
+            "privateEndpointNetworkPolicies": "Disabled"
+          }
+ 
+        }
+      ]
+    },
+    "vnetHubName": {
+      "value": "VNet-HUB"
+    },
+    "vnetHUBRGName": {
+      "value": "ESLZ-HUB-Test"
+    },
+    "nsgACAName": {
+      "value": "ACA-NSG"
+    }
+  }
+}

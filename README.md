@@ -4,7 +4,7 @@
 
 A deployment of ACA-hosted workloads typically experiences a separation of duties and lifecycle management in the area of prerequisites, the host network, the cluster infrastructure, and finally the workload itself. This reference implementation steps are created by keeping that in mind. Also, be aware our primary purpose is to illustrate the topology and decisions of a baseline cluster. We feel a "step-by-step" flow will help you learn the pieces of the solution and give you insight into the relationship between them. Ultimately, lifecycle/SDLC management of your cluster and its dependencies will depend on your situation (team roles, organizational standards, tooling, etc), and must be implemented as appropriate for your needs.
 
-![ACA Hub and Spoke architecture](./assets/ACA-Landingzone.jpg)
+![ACA Hub and Spoke architecture](./Assets/ACA-Landingzone.jpg)
 
 ## Accounting for Separation of Duties
 

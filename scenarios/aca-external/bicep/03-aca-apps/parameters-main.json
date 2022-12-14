@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "rgName": {
+        "value": "rg-lzaca-prod-001"
+      },
+      "acrName": {
+        "value": "crlzacaprod001"
+      },
+      "keyVaultName": {
+        "value": "kv-lzaca-prod-001"
+      },
+      "acaIdentityName": {
+        "value": "id-aca-lzaca-prod-001"
+      },
+      "acaEnvName": {
+        "value": "acaenc-lzaca-prod-001"
+      },
+      "appName": {
+        "value": "capp-nginx-lzaca-prod-001"
+      },
+      "containerName": {
+        "value": "nginx"
+      },
+      "containerImage": {
+        "value": "nginx:latest"
+      },
+      "resourceCpu": {
+        "value": ".25"
+      },
+      "resourceMemory": {
+        "value": ".5Gi"
+      },
+      "useExternalIngress": {
+        "value": true
+      },
+      "containerPort": {
+        "value": 80
+      }
+    }
+  }

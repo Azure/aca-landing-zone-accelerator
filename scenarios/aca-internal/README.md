@@ -10,4 +10,4 @@ For this scenario, we will have various IaC technology that you can choose from 
 *  TBD
 
 ## Next
-Pick one of the IaC options below and follow the instructions to deploy the AKS reference implementation.
+Pick one of the IaC options below and follow the instructions to deploy the ACA reference implementation.

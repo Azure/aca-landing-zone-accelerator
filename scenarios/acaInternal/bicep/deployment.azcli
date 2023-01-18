@@ -1,4 +1,4 @@
-cd Scenarios/ACA-Secure-Baseline-PrivateCluster/Bicep
+cd ACA-Landing-Zone-Accelerator/scenarios/acaInternal/bicep/
 
 # AZ CLI
 # 01 Network HUB

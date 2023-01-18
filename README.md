@@ -18,9 +18,9 @@ The code here is purposely written to avoid loops, complex variables and logic. 
 
 This section is organized using folders that match the steps outlined below. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment.
 
-1. Preqs - Clone this repo, install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), install [Bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
-2. [Creation of Hub Network & its respective Components](./scenarios/acaInternal/Bicep/01-network-hub.md)
-3. [Creation of Spoke Network & its respective Components](./scenarios/acaInternal/Bicep/02-network-lz.md)
-4. [Creation of Supporting Components for ACA](./scenarios/acaInternal/Bicep/03-aks-supporting.md)
-5. [Creation of ACA Environment](./scenarios/acaInternal/Bicep/04-aca-env.md)
-6. [Creation of Azure container apps](./scenarios/acaInternal/Bicep/05-aca-apps.md)
+1. Preqs - Clone this repo, install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), install [bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
+2. [Creation of Hub Network & its respective Components](scenarios/acaInternal/bicep/01-network-hub.md))
+3. [Creation of Spoke Network & its respective Components](./scenarios/acaInternal/bicep/02-network-lz.md)
+4. [Creation of Supporting Components for ACA](./scenarios/acaInternal/bicep/03-aks-supporting.md)
+5. [Creation of ACA Environment](./scenarios/acaInternal/bicep/04-aca-env.md)
+6. [Creation of Azure container apps](./scenarios/acaInternal/bicep/05-aca-apps.md)

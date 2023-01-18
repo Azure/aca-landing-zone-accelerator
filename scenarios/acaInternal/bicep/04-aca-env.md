@@ -7,7 +7,7 @@ The following will be created:
 * ACR Access to the User managed identity
 * Updates to KeyVault access policy with User managed identity
 
-Navigate to "/Bicep/04-ACA-Env" folder
+Navigate to "/bicep/04-ACA-Env" folder
 
 ```bash
 cd ../04-ACA-Env

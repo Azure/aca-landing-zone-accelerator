@@ -8,7 +8,7 @@ The following will be created:
 * Related DNS settings for private endpoints
 * A managed identity
 
-Navigate to "/Bicep/03-ACA-supporting" folder
+Navigate to "/bicep/03-ACA-supporting" folder
 
 ```bash
 cd ../03-ACA-supporting

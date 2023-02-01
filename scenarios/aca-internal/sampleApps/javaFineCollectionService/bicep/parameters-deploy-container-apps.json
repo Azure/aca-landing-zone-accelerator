@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerAppsEnvironmentName": {
+      "value": "srtestacabic"
+    },
+    "acaIdentityName": {
+      "value": "acaIdentity"
+    },
+    "acrName": {
+      "value": "<ADD_CONTAINER REGISTRY_NAME>"
+    },
+    "tag": {
+      "value": "1.0"
+    }
+  }
+}

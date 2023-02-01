@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerAppsEnvironmentName": {
+      "value": "srtestacabic"
+    },
+    "serviceBusConnectionString": {
+      "value": "<Add Azure Service Bus 'test' Topic Connection String>"
+    },
+    "cosmosDbAccountUrl": {
+      "value": "<Add Cosmos DB Account URL>"
+    },
+    "cosmosDbMasterKey": {
+      "value": "<Add Cosmos DB Account Master Key>"
+    },
+    "cosmosDbDatabaseName": {
+      "value": "cosmos-db-fines"
+    },
+    "cosmosDbCollectionName": {
+      "value": "traffic-control-vehicle-state"
+    }
+  }
+}

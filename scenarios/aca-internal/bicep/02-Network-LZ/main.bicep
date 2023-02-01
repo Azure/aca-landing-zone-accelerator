@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 // Parameters
-param rgName string
+param spokergName string
 param vnetSpokeName string
 param spokeVNETaddPrefixes array
 param spokeSubnets array
@@ -10,11 +10,13 @@ param vnetHUBRGName string
 param nsgACAName string
 //param dhcpOptions object
 param location string = deployment().location
+var privateEndpointSubnetName = 'servicespe'
+
 
 module rg 'modules/resource-group/rg.bicep' = {
-  name: rgName
+  name: spokergName
   params: {
-    rgName: rgName
+    rgName: spokergName
     location: location
   }
 }
@@ -36,12 +38,20 @@ module vnetspoke 'modules/vnet/vnet.bicep' = {
   ]
 }
 
-module nsgacasubnet 'modules/vnet/nsg.bicep' = {
+module nsgacasubnet 'modules/vnet/acansg.bicep' = {
   scope: resourceGroup(rg.name)
   name: nsgACAName
   params: {
     location: location
     nsgName: nsgACAName
+  }
+}
+
+module nsggwsubnet 'modules/vnet/appgwnsg.bicep' = {
+  scope: resourceGroup(rg.name)
+  name: 'nsggwsubnet'
+  params: {
+    location: location
   }
 }
 
@@ -91,7 +101,13 @@ module vnetpeeringspoke 'modules/vnet/vnetpeering.bicep' = {
   ]
 }
 
-module privatednsACRZone 'modules/vnet/privatednszone.bicep' = {
+resource privateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
+  // name: privateEndpointSubnetName
+   name: '${spokergName}/${privateEndpointSubnetName}'
+  scope: resourceGroup(subscription().subscriptionId, spokergName)
+ }
+
+ module privatednsACRZone 'modules/vnet/privatednszone.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'privatednsACRZone'
   params: {
@@ -105,7 +121,19 @@ module privateDNSLinkACR 'modules/vnet/privatednslink.bicep' = {
   params: {
     privateDnsZoneName: privatednsACRZone.outputs.privateDNSZoneName
     vnetId: vnethub.id
+    linkname: 'hub'
   }
+}
+
+module privateDNSLinkACRspoke 'modules/vnet/privatednslink.bicep' = {
+  scope: resourceGroup(rg.name)
+  name: 'privateDNSLinkACRspoke'
+  params: {
+    privateDnsZoneName: privatednsACRZone.outputs.privateDNSZoneName
+    vnetId: vnetspoke.outputs.vnetId
+    linkname: 'spoke'
+  }
+ 
 }
 
 module privatednsVaultZone 'modules/vnet/privatednszone.bicep' = {
@@ -122,9 +150,17 @@ module privateDNSLinkVault 'modules/vnet/privatednslink.bicep' = {
   params: {
     privateDnsZoneName: privatednsVaultZone.outputs.privateDNSZoneName
     vnetId: vnethub.id
+    linkname: 'hub'
   }
 }
 
+module privateDNSLinkVaultspoke 'modules/vnet/privatednslink.bicep' = {
+  scope: resourceGroup(rg.name)
+  name: 'privateDNSLinkVaultspoke'
+  params: {
+    privateDnsZoneName: privatednsVaultZone.outputs.privateDNSZoneName
+    vnetId: vnetspoke.outputs.vnetId
+    linkname: 'spoke'
+  }
 
-
-
+}

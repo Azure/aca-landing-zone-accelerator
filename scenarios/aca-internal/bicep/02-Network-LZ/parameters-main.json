@@ -2,8 +2,8 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "rgName": {
-      "value": "ESLZ-SPOKE"
+    "spokergName": {
+      "value": "ESLZ-SPOKE2"
     },
     "vnetSpokeName": {
       "value": "VNet-SPOKE"
@@ -28,15 +28,22 @@
             "addressPrefix": "10.1.10.0/24",
             "privateEndpointNetworkPolicies": "Disabled"
           }
- 
+        },
+        {
+          "name": "appGatewaySubnetName",
+          "properties": {
+            "addressPrefix": "10.1.12.0/24",
+            "privateEndpointNetworkPolicies": "Disabled"
+          }
         }
+        
       ]
     },
     "vnetHubName": {
       "value": "VNet-HUB"
     },
     "vnetHUBRGName": {
-      "value": "ESLZ-HUB-Test"
+      "value": "ESLZ-HUB-Test2"
     },
     "nsgACAName": {
       "value": "ACA-NSG"

@@ -2,22 +2,26 @@ targetScope = 'subscription'
 
 param spokeVnetName string
 param acaVNetSubnetName string
-param rgName string
+param spokergName string
 param nsgACAName string
 
+param location string = deployment().location
+var GWVNetSubnetName = 'appGatewaySubnetName'
+var appGatewaySNNSG = 'nsg-apgw-${location}'
+
 resource subnetACA 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
-  scope: resourceGroup(rgName)
+ scope: resourceGroup(spokergName)
   name: '${spokeVnetName}/${acaVNetSubnetName}'
 }
-
+//var location  = resourceGroup().location
 
 resource nsgaca 'Microsoft.Network/networkSecurityGroups@2021-02-01' existing = {
-  scope: resourceGroup(rgName)
+scope: resourceGroup(spokergName)
   name: nsgACAName
 }
 
 module updateNSG 'modules/vnet/subnet.bicep' = {
-  scope: resourceGroup(rgName)
+scope: resourceGroup(spokergName)
   name: 'updateNSG'
   params: {
     subnetName: acaVNetSubnetName
@@ -35,23 +39,30 @@ module updateNSG 'modules/vnet/subnet.bicep' = {
 
 
 
+resource subnetAppGW 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
+ scope: resourceGroup(spokergName)
+  name: '${spokeVnetName}/${GWVNetSubnetName}'
+}
 
+resource nsgappgw 'Microsoft.Network/networkSecurityGroups@2021-02-01' existing = {
+scope: resourceGroup(spokergName)
+  name: appGatewaySNNSG
+}
 
-
-// module updateNSGUDR 'modules/vnet/subnet.bicep' = {
-//   scope: resourceGroup(rg.name)
-//   name: 'updateNSGUDR'
-//   params: {
-//     subnetName: aksVNetSubnetName
-//     vnetName: vnetSpokeName
-//     properties: {
-//       addressPrefix: aksSubnet.properties.addressPrefix
-//       routeTable: {
-//         id: routetable.outputs.routetableID
-//       }
-//       networkSecurityGroup: {
-//         id: nsgakssubnet.outputs.nsgID
-//       }
-//     }
-//   }
-// }
+module updateGWNSG 'modules/vnet/subnet.bicep' = {
+  scope: resourceGroup(spokergName)
+  name: 'updateGWNSG'
+  params: {
+    subnetName: GWVNetSubnetName
+    vnetName: spokeVnetName
+    properties: {
+      addressPrefix: subnetAppGW.properties.addressPrefix
+      networkSecurityGroup: {
+        id: nsgappgw.id
+      }
+    }
+  }
+  dependsOn: [
+    updateNSG
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "spokeRgName": {
+      "value": "ESLZ-SPOKE2"
+    },
+    "acalaWorkspaceName": {
+      "value": "eslzlaworkspace"
+    },
+    "spokevnetName": {
+      "value": "VNet-SPOKE"
+    },
+    "subnetName": {
+      "value": "infraSubnetName"
+    },
+    "acaIdentityName": {
+      "value": "acaIdentity"
+    },
+    "containerEnvname": {
+      "value": "srtestacabic"
+    }
+  }
+}

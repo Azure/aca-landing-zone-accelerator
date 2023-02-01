@@ -33,12 +33,13 @@ module vnethub 'modules/vnet/vnet.bicep' = {
   ]
 }
 
-module publicipbastion 'modules/VM/publicip.bicep' = if (deploybastion) {
+module publicipbastion 'modules/VM/publicip.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'publicipbastion'
   params: {
     location: location
     publicipName: 'bastion-pip'
+    deploybastion: deploybastion
     publicipproperties: {
       publicIPAllocationMethod: 'Static'
     }
@@ -49,18 +50,19 @@ module publicipbastion 'modules/VM/publicip.bicep' = if (deploybastion) {
   }
 }
 
-resource subnetbastion 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = {
+resource subnetbastion 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = if (deploybastion) {
   scope: resourceGroup(rg.name)
   name: '${vnethub.name}/AzureBastionSubnet'
 }
 
-module bastion 'modules/VM/bastion.bicep' = if (deploybastion) {
+module bastion 'modules/VM/bastion.bicep' =  {
   scope: resourceGroup(rg.name)
   name: 'bastion'
   params: {
     location: location
     bastionpipId: publicipbastion.outputs.publicipId
     subnetId: subnetbastion.id
+    deploybastion: deploybastion
   }
 }
 

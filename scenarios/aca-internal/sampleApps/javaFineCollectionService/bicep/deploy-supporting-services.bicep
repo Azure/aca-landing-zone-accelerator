@@ -1,0 +1,184 @@
+param location string = resourceGroup().location
+
+param serviceBusName string = 'eslz-sb-${uniqueString(resourceGroup().id)}'
+param serviceBusPrivateEndpointName string = 'sb-pvt-ep'
+param serviceBusPrivateDNSZoneName string = 'sb-pvt-dns'
+param serviceBusPrivateDNSLinkSpokeName string = 'sb-pvt-dns-link-spoke'
+
+param cosmosDbName string ='eslz-cosmosdb-${uniqueString(resourceGroup().id)}'
+param cosmosDbDatabaseName string = 'cosmos-db-fines'
+param cosmosDbCollectionName string = 'traffic-control-vehicle-state'
+param cosmosDbPrivateEndpointName string = 'cdb-pvt-ep'
+param cosmosDbPrivateDNSZoneName string = 'cdb-pvt-dns'
+param cosmosDbPrivateDNSLinkSpokeName string = 'cdb-pvt-dns-link-spoke'
+
+param vnetName string = 'VNet-SPOKE'
+param subnetName string = 'servicespe'
+
+resource vnetSpoke 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
+  name: vnetName
+}
+
+resource servicesSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
+  name: '${vnetSpoke.name}/${subnetName}'
+}
+
+/*
+ * Azure Service Bus
+ */
+
+// TODO check version Public network only available in the preview
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-01-01-preview' = {
+  name: serviceBusName
+  location: location
+  sku: {
+    name: 'Premium'
+    tier: 'Premium'
+    capacity: 1
+  }
+
+  properties: {
+    disableLocalAuth: false // TODO should not allow local auth with SAS token
+    publicNetworkAccess: 'Disabled'
+  }
+}
+
+resource serviceBusTestTopic 'Microsoft.ServiceBus/namespaces/topics@2021-11-01' = {
+  name: 'test'
+  parent: serviceBusNamespace
+}
+
+// TODO remove this when managed identity is used
+resource serviceBusTestTopicAuthRule 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2021-11-01' = {
+  name: 'TestTopicSharedAccessKey'
+  parent: serviceBusTestTopic
+  properties: {
+    rights: [
+      'Manage'
+      'Listen'
+      'Send'
+    ]
+  }
+}
+
+module serviceBusPrivateEndpoint '../../../bicep/03-ACA-supporting/modules/vnet/privateendpoint.bicep' = {
+  name: serviceBusPrivateEndpointName
+  params: {
+    location: location
+    groupIds: [
+      'namespace'
+    ]
+    privateEndpointName: serviceBusPrivateEndpointName
+    privatelinkConnName: '${serviceBusPrivateEndpointName}-conn'
+    resourceId: serviceBusNamespace.id
+    subnetid: servicesSubnet.id
+  }
+}
+
+module serviceBusPrivateDNSZone '../../../bicep/02-Network-LZ/modules/vnet/privatednszone.bicep' = {
+  name: serviceBusPrivateDNSZoneName
+  params: {
+     privateDNSZoneName: 'privatelink.servicebus.windows.net'
+  }
+}
+
+module serviceBusPrivateDNSZoneLinkSpoke '../../../bicep/02-Network-LZ/modules/vnet/privatednslink.bicep' = {
+  name: serviceBusPrivateDNSLinkSpokeName
+  params: {
+    privateDnsZoneName: serviceBusPrivateDNSZone.outputs.privateDNSZoneName
+    vnetId: vnetSpoke.id
+    linkname: 'spoke'
+  }
+}
+
+module serviceBusPrivateEndpointDnsSetting '../../../bicep/03-ACA-supporting/modules/vnet/privatedns.bicep' = {
+  name: 'sb-pvtep-dns'
+  params: {
+    privateDNSZoneId: serviceBusPrivateDNSZone.outputs.privateDNSZoneId
+    privateEndpointName: serviceBusPrivateEndpoint.outputs.privateEndpointName
+  }
+}
+
+
+/*
+ * Azure Cosmos DB 
+ */
+
+resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' = {
+  name: cosmosDbName
+  location: location
+  kind: 'GlobalDocumentDB'
+  properties: {
+    locations: [
+      {
+        locationName: location
+        failoverPriority: 0
+        isZoneRedundant: false
+      }
+    ]
+    databaseAccountOfferType: 'Standard'
+  }
+}
+
+resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2021-04-15' = {
+  name: cosmosDbDatabaseName
+  parent: cosmosDbAccount
+  properties: {
+    resource: {
+      id: cosmosDbDatabaseName
+    }
+  }
+}
+
+resource cosmosDbDatabaseCollection 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2021-05-15' = {
+  name: cosmosDbCollectionName
+  parent: cosmosDbDatabase
+  properties: {
+    resource: {
+      id: cosmosDbCollectionName
+      partitionKey: {
+        paths: [
+          '/partitionKey'
+        ]
+      }
+    }
+  }
+}
+
+module cosmosDbPrivateEndpoint '../../../bicep/03-ACA-supporting/modules/vnet/privateendpoint.bicep' = {
+  name: cosmosDbPrivateEndpointName
+  params: {
+    location: location
+    groupIds: [
+      'Sql'
+    ]
+    privateEndpointName: cosmosDbPrivateEndpointName
+    privatelinkConnName: '${cosmosDbPrivateEndpointName}-conn'
+    resourceId: cosmosDbAccount.id
+    subnetid: servicesSubnet.id
+  }
+}
+
+module cosmosDbPrivateDNSZone '../../../bicep/02-Network-LZ/modules/vnet/privatednszone.bicep' = {
+  name: cosmosDbPrivateDNSZoneName
+  params: {
+     privateDNSZoneName: 'privatelink.documents.azure.com'
+  }
+}
+
+module cosmosDbPrivateDNSZoneLinkSpoke '../../../bicep/02-Network-LZ/modules/vnet/privatednslink.bicep' = {
+  name: cosmosDbPrivateDNSLinkSpokeName
+  params: {
+    privateDnsZoneName: cosmosDbPrivateDNSZone.outputs.privateDNSZoneName
+    vnetId: vnetSpoke.id
+    linkname: 'spoke'
+  }
+}
+
+module cosmosDbPrivateEndpointDnsSetting '../../../bicep/03-ACA-supporting/modules/vnet/privatedns.bicep' = {
+  name: 'cdb-pvtep-dns'
+  params: {
+    privateDNSZoneId: cosmosDbPrivateDNSZone.outputs.privateDNSZoneId
+    privateEndpointName: cosmosDbPrivateEndpoint.outputs.privateEndpointName
+  }
+}

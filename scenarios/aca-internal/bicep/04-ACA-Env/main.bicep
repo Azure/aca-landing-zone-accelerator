@@ -6,10 +6,13 @@ param acalaWorkspaceName string
 param vnetName string
 param subnetName string
 param acaIdentityName string
+param appInsightsName string = ''
 param location string = deployment().location
 
 param acrName string //User to provide each time
 param keyvaultName string //user to provide each time
+
+param deployApplicationInsightsDaprInstrumentation bool
 
 module rg 'modules/resource-group/rg.bicep' = {
   name: spokergName
@@ -24,8 +27,6 @@ resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-3
   name: acaIdentityName
 }
 
-
-
 module acalaworkspace 'modules/laworkspace/la.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'acalaworkspace'
@@ -35,11 +36,20 @@ module acalaworkspace 'modules/laworkspace/la.bicep' = {
   }
 }
 
+module acaApplicationInsights 'modules/appinsights/ai.bicep' = if (deployApplicationInsightsDaprInstrumentation) {
+  scope: resourceGroup(rg.name)
+  name: 'acaAppInsights'
+  params: {
+    name: appInsightsName
+    location: location
+    laworkspaceId: acalaworkspace.outputs.laworkspaceId
+  }
+}
+
 resource acaSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
   scope: resourceGroup(rg.name)
   name: '${vnetName}/${subnetName}'
 }
-
 
 module containerAppEnvironment 'modules/aca/container-app-env.bicep' = {
   scope: resourceGroup(rg.name)
@@ -52,6 +62,7 @@ module containerAppEnvironment 'modules/aca/container-app-env.bicep' = {
         infrasubnet: acaSubnet.id
         zonereduntant: true
         vnetinternalconfig: false
+        applicationInsightsName: (deployApplicationInsightsDaprInstrumentation ?  acaApplicationInsights.outputs.appInsightsName : '')
        // runtimesubnet: spokenetwork.outputs.infrasubnet
     }
     dependsOn: [

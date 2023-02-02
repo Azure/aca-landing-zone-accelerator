@@ -19,6 +19,9 @@
     },
     "containerEnvname": {
       "value": "srtestacabic"
+    },
+    "appInsightsName": {
+      "value": "eslz-appinsights"
     }
   }
 }

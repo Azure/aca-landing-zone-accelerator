@@ -26,10 +26,11 @@
     "vnetHUBRGName": {
       "value": "ESLZ-HUB-Test2"
     },
-    {
-      "containerAppName": {
-        "value": "acatestbicep"
-      }
+    "containerAppName": {
+      "value": "acatestbicep"
+    },
+    "appInsightsName": {
+      "value": "eslz-appinsights"
     }
   }
 }

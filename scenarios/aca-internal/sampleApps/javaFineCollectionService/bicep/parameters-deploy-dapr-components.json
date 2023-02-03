@@ -5,14 +5,11 @@
     "containerAppsEnvironmentName": {
       "value": "srtestacabic2"
     },
-    "serviceBusConnectionString": {
-      "value": "<Add Azure Service Bus 'test' Topic Connection String>"
+    "serviceBusName": {
+      "value": "<Add Azure Service Bus namespace name>"
     },
-    "cosmosDbAccountUrl": {
-      "value": "<Add Cosmos DB Account URL>"
-    },
-    "cosmosDbMasterKey": {
-      "value": "<Add Cosmos DB Account Master Key>"
+    "cosmosDbName": {
+      "value": "<Add Cosmos DB resource name>"
     },
     "cosmosDbDatabaseName": {
       "value": "cosmos-db-fines"

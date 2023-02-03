@@ -6,13 +6,11 @@ param pubSubComponentName string = 'pubsub'
 @description('The name of Dapr component for the state store building block.')
 param stateStoreComponentName string = 'statestore'
 
-@description('Service Bus\' connection string.')
-param serviceBusConnectionString string
+@description('The name of the service bus namespace.')
+param serviceBusName string
 
-@description('Cosmos DB\'s Account URL.')
-param cosmosDbAccountUrl string
-@description('Cosmos DB\'s Master Key.')
-param cosmosDbMasterKey string
+@description('The name of Cosmos DB resource.')
+param cosmosDbName string
 @description('The name of Cosmos DB\'s database.')
 param cosmosDbDatabaseName string
 @description('The name of Cosmos DB\'s collection.')
@@ -25,7 +23,15 @@ param trafficControlServiceName string = 'traffic-control-service'
 
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
   name: containerAppsEnvironmentName
-} 
+}
+
+resource serviceBusTopicAuthorizationRule 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2021-11-01' existing = {
+  name: '${serviceBusName}/test/TestTopicSharedAccessKey'
+}
+
+resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = {
+  name: cosmosDbName
+}
 
 resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-03-01' = {
   name: pubSubComponentName
@@ -33,10 +39,16 @@ resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-
   properties: {
     componentType: 'pubsub.azure.servicebus'
     version: 'v1'
+    secrets: [
+      {
+        name: 'service-bus-connection-string'
+        value: serviceBusTopicAuthorizationRule.listKeys().primaryConnectionString
+      }
+    ]
     metadata: [
       {
         name: 'connectionString'
-        value: serviceBusConnectionString
+        secretRef: 'service-bus-connection-string'
       }
     ]
     scopes: [
@@ -52,14 +64,24 @@ resource statestoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2
   properties: {
     componentType: 'state.azure.cosmosdb'
     version: 'v1'
+    secrets: [
+      {
+        name: 'cosmos-db-account-url'
+        value: cosmosDbAccount.properties.documentEndpoint
+      }
+      {
+        name: 'cosmos-db-master-key'
+        value: cosmosDbAccount.listKeys().primaryMasterKey
+      }
+    ]
     metadata: [
       {
         name: 'url'
-        value: cosmosDbAccountUrl
+        secretRef: 'cosmos-db-account-url'
       }
       {
         name: 'masterKey'
-        value: cosmosDbMasterKey
+        secretRef: 'cosmos-db-master-key'
       }
       {
         name: 'database'

@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "containerAppsEnvironmentName": {
-      "value": "srtestacabic"
+      "value": "srtestacabic2"
     },
     "acaIdentityName": {
       "value": "acaIdentity"

@@ -1,5 +1,8 @@
+@description('The region (location) in which the resource will be deployed. Default: resource group location.')
 param location string = resourceGroup().location
+@description('The name of the container apps environment.')
 param containerAppsEnvironmentName string
+@description('The name of the user managed identity.')
 param acaIdentityName string
 
 @description('The name of the Azure Container Registry.')

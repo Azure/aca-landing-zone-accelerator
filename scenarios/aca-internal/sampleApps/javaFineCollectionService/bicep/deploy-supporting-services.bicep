@@ -1,26 +1,39 @@
+@description('The region (location) in which the resource will be deployed. Default: resource group location.')
 param location string = resourceGroup().location
 
+@description('The name of the spoke VNET.')
+param spokeVNetName string
+@description('The name of the subnet for supporting services of the spoke')
+param servicesSubnetName string = 'servicespe'
+
+@description('The name of the service bus namespace.')
 param serviceBusName string = 'eslz-sb-${uniqueString(resourceGroup().id)}'
-param serviceBusPrivateEndpointName string = 'sb-pvt-ep'
-param serviceBusPrivateDNSZoneName string = 'sb-pvt-dns'
+@description('The name of service bus\' private endpoint.')
+param serviceBusPrivateEndpointName string
+@description('The name of service bus\' private dns zone.')
+param serviceBusPrivateDNSZoneName string
+@description('The name of service bus\' private dns zone link to spoke VNET.')
 param serviceBusPrivateDNSLinkSpokeName string = 'sb-pvt-dns-link-spoke'
 
+@description('The name of Cosmos DB resource.')
 param cosmosDbName string ='eslz-cosmosdb-${uniqueString(resourceGroup().id)}'
-param cosmosDbDatabaseName string = 'cosmos-db-fines'
-param cosmosDbCollectionName string = 'traffic-control-vehicle-state'
-param cosmosDbPrivateEndpointName string = 'cdb-pvt-ep'
-param cosmosDbPrivateDNSZoneName string = 'cdb-pvt-dns'
-param cosmosDbPrivateDNSLinkSpokeName string = 'cdb-pvt-dns-link-spoke'
+@description('The name of Cosmos DB\'s database.')
+param cosmosDbDatabaseName string
+@description('The name of Cosmos DB\'s collection.')
+param cosmosDbCollectionName string
+@description('The name of Cosmos DB\'s private endpoint.')
+param cosmosDbPrivateEndpointName string
+@description('The name of Cosmos DB\'s private dns zone.')
+param cosmosDbPrivateDNSZoneName string
+@description('The name of Cosmos DB\'s private dns zone link to spoke VNET.')
+param cosmosDbPrivateDNSLinkSpokeName string
 
-param vnetName string = 'VNet-SPOKE'
-param subnetName string = 'servicespe'
-
-resource vnetSpoke 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
-  name: vnetName
+resource spokeVNet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
+  name: spokeVNetName
 }
 
 resource servicesSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
-  name: '${vnetSpoke.name}/${subnetName}'
+  name: '${spokeVNet.name}/${servicesSubnetName}'
 }
 
 /*
@@ -86,7 +99,7 @@ module serviceBusPrivateDNSZoneLinkSpoke '../../../bicep/02-Network-LZ/modules/v
   name: serviceBusPrivateDNSLinkSpokeName
   params: {
     privateDnsZoneName: serviceBusPrivateDNSZone.outputs.privateDNSZoneName
-    vnetId: vnetSpoke.id
+    vnetId: spokeVNet.id
     linkname: 'spoke'
   }
 }
@@ -170,7 +183,7 @@ module cosmosDbPrivateDNSZoneLinkSpoke '../../../bicep/02-Network-LZ/modules/vne
   name: cosmosDbPrivateDNSLinkSpokeName
   params: {
     privateDnsZoneName: cosmosDbPrivateDNSZone.outputs.privateDNSZoneName
-    vnetId: vnetSpoke.id
+    vnetId: spokeVNet.id
     linkname: 'spoke'
   }
 }

@@ -1,13 +1,21 @@
-param pubSubComponentName string = 'pubsub'
-param stateStoreComponentName string = 'statestore'
-
+@description('The name of the container apps environment.')
 param containerAppsEnvironmentName string
 
+@description('The name of Dapr component for the pub/sub building block.')
+param pubSubComponentName string = 'pubsub'
+@description('The name of Dapr component for the state store building block.')
+param stateStoreComponentName string = 'statestore'
+
+@description('Service Bus\' connection string.')
 param serviceBusConnectionString string
 
+@description('Cosmos DB\'s Account URL.')
 param cosmosDbAccountUrl string
+@description('Cosmos DB\'s Master Key.')
 param cosmosDbMasterKey string
+@description('The name of Cosmos DB\'s database.')
 param cosmosDbDatabaseName string
+@description('The name of Cosmos DB\'s collection.')
 param cosmosDbCollectionName string
 
 @description('The name of the service for the fine collection service.')

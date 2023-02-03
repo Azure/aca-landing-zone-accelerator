@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "containerAppsEnvironmentName": {
-      "value": "srtestacabic"
+      "value": "srtestacabic2"
     },
     "serviceBusConnectionString": {
       "value": "<Add Azure Service Bus 'test' Topic Connection String>"

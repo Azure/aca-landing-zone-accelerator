@@ -22,6 +22,9 @@
     },
     "cosmosDbCollectionName": {
       "value": "traffic-control-vehicle-state"
+    },
+    "fineLicenseKeySecretValue": {
+      "value": "HX783-5PN1G-CRJ4A-K2L7V"
     }
   }
 }

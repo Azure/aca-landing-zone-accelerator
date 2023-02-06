@@ -23,6 +23,10 @@ param cosmosDbDatabaseName string
 @description('The name of Cosmos DB\'s collection.')
 param cosmosDbCollectionName string
 
+@secure()
+@description('The license key for Fine Collection Service.')
+param fineLicenseKeySecretValue string
+
 @description('The name of the service for the fine collection service.')
 param fineCollectionServiceName string = 'fine-collection-service'
 @description('The name of the service for the traffic control service.')
@@ -73,6 +77,15 @@ resource cosmosDbMasterKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' 
   }
 }
 // end of secrets to be removed
+
+// License key secret used by Fine Collection Service
+resource fineLicenseKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  parent: keyVault
+  name: 'license-key'
+  properties: {
+    value: fineLicenseKeySecretValue
+  }
+}
 
 resource secretstoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-03-01' = {
   name: secretStoreComponentName

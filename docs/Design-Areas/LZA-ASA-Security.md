@@ -1,6 +1,6 @@
 <!--Begining of Landing Zone Accelerator - Azure Container Apps -Security.MD v1 -->
 
-### Security considerations for Azure Container Apps Landing Zone Accelerator
+## Security considerations for Azure Container Apps Landing Zone Accelerator
 
 This ReadMe File provides design considerations and recommendations for Security when you use Azure Container Apps landing zone accelerator.  It walks through aspects of Azure Contianer Apps (ACA) security governance to think about before implementing any solution.
 

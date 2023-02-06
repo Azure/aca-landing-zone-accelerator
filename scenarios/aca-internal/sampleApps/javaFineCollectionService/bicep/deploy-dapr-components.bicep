@@ -1,10 +1,17 @@
 @description('The name of the container apps environment.')
 param containerAppsEnvironmentName string
 
+@description('The name of Dapr component for the secret store building block.')
+param secretStoreComponentName string = 'secretstore'
 @description('The name of Dapr component for the pub/sub building block.')
 param pubSubComponentName string = 'pubsub'
 @description('The name of Dapr component for the state store building block.')
 param stateStoreComponentName string = 'statestore'
+
+@description('The name of the key vault resource.')
+param keyVaultName string
+
+param userManagedIdentityName string
 
 @description('The name of the service bus namespace.')
 param serviceBusName string
@@ -25,6 +32,14 @@ resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01'
   name: containerAppsEnvironmentName
 }
 
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: keyVaultName
+}
+
+resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+  name: userManagedIdentityName
+}
+
 resource serviceBusTopicAuthorizationRule 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2021-11-01' existing = {
   name: '${serviceBusName}/test/TestTopicSharedAccessKey'
 }
@@ -33,17 +48,63 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' exis
   name: cosmosDbName
 }
 
-resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-03-01' = {
+// TODO remove this when managed identities are used
+resource serviceBusConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  parent: keyVault
+  name: 'service-bus-connection-string'
+  properties: {
+    value: serviceBusTopicAuthorizationRule.listKeys().primaryConnectionString
+  }
+}
+
+resource cosmosDbAccountUrlSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  parent: keyVault
+  name: 'cosmos-db-account-url'
+  properties: {
+    value: cosmosDbAccount.properties.documentEndpoint
+  }
+}
+
+resource cosmosDbMasterKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  parent: keyVault
+  name: 'cosmos-db-master-key'
+  properties: {
+    value: cosmosDbAccount.listKeys().primaryMasterKey
+  }
+}
+// end of secrets to be removed
+
+resource secretstoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-03-01' = {
+  name: secretStoreComponentName
+  parent: containerAppsEnvironment
+  properties: {
+    componentType: 'secretstores.azure.keyvault'
+    version: 'v1'
+    metadata: [
+      {
+        name: 'vaultName'
+        value: keyVault.name
+      }
+      {
+        name: 'azureClientId'
+        value: acaIdentity.properties.clientId
+      }
+    ]
+    scopes: [
+      'fine-collection-service'
+      'traffic-control-service'
+    ]
+  }
+}
+
+// Secret store is only supported in the preview version of the Dapr components API
+resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-06-01-preview' = {
   name: pubSubComponentName
   parent: containerAppsEnvironment
   properties: {
     componentType: 'pubsub.azure.servicebus'
     version: 'v1'
     secrets: [
-      {
-        name: 'service-bus-connection-string'
-        value: serviceBusTopicAuthorizationRule.listKeys().primaryConnectionString
-      }
     ]
     metadata: [
       {
@@ -51,6 +112,7 @@ resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-
         secretRef: 'service-bus-connection-string'
       }
     ]
+    secretStoreComponent: secretstoreComponent.name
     scopes: [
       fineCollectionServiceName
       trafficControlServiceName
@@ -65,14 +127,6 @@ resource statestoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2
     componentType: 'state.azure.cosmosdb'
     version: 'v1'
     secrets: [
-      {
-        name: 'cosmos-db-account-url'
-        value: cosmosDbAccount.properties.documentEndpoint
-      }
-      {
-        name: 'cosmos-db-master-key'
-        value: cosmosDbAccount.listKeys().primaryMasterKey
-      }
     ]
     metadata: [
       {
@@ -96,6 +150,7 @@ resource statestoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2
         value: 'true'
       }
     ]
+    secretStoreComponent: secretstoreComponent.name
     scopes: [
       trafficControlServiceName
     ]

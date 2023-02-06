@@ -5,6 +5,12 @@
     "containerAppsEnvironmentName": {
       "value": "srtestacabic2"
     },
+    "keyVaultName" : {
+      "value": "<Add Key Vault resource name>"
+    },
+    "userManagedIdentityName": {
+      "value": "acaIdentity"
+    },
     "serviceBusName": {
       "value": "<Add Azure Service Bus namespace name>"
     },

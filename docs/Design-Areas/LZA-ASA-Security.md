@@ -23,7 +23,7 @@ Pending
 
 ### Design Considerations
 
-#### 1. Azure Security Baseline for Azure Container Apps Service
+### 1. Azure Security Baseline for Azure Container Apps Service
 <!-- <content> --> 
 <p>This security baseline applies guidance from the <a href="/en-us/security/benchmark/azure/overview" data-linktype="absolute-path">Microsoft cloud security benchmark version 1.0</a> to Azure Container Apps. The Microsoft cloud security benchmark provides recommendations on how you can secure your cloud solutions on Azure. The content is grouped by the security controls defined by the Microsoft cloud security benchmark and the related guidance applicable to Azure Container Apps.</p>
 <p>You can monitor this security baseline and its recommendations using Microsoft Defender for Cloud. Azure Policy definitions will be listed in the Regulatory Compliance section of the Microsoft Defender for Cloud dashboard.</p>
@@ -32,7 +32,7 @@ Pending
 <p>Note</p>
 <p><strong>Features</strong> not applicable to Azure Container Apps have been excluded. To see how Azure Container Apps completely maps to the Microsoft cloud security benchmark, see the <strong><a href="https://github.com/MicrosoftDocs/SecurityBenchmarks/tree/master/Azure%20Offer%20Security%20Baselines/3.0/azure-container-apps-azure-security-benchmark-v3-latest-security-baseline.xlsx" data-linktype="external">full Azure Container Apps security baseline mapping file</a></strong>.</p></div>
 
-#### 2. Security Profile
+### 2. Security Profile
 <p>The security profile summarizes high-impact behaviors of Azure Container Apps, which may result in increased security considerations.</p>
 <table>
 <thead>
@@ -62,7 +62,7 @@ Pending
 </table>
 
 
-<h4 id="privileged-access">3. Privileged access</h4>
+<h3 id="privileged-access">3. Privileged access</h3>
 <p><em>For more information, see the <a href="../mcsb-privileged-access" data-linktype="relative-path">Microsoft cloud security benchmark: Privileged access</a>.</em></p>
 <h4 id="pa-1-separate-and-limit-highly-privilegedadministrative-users">3.1 - PA-1: Separate and limit highly privileged/administrative users</h4>
 <h4 id="features-6">Features</h4>
@@ -204,7 +204,7 @@ Pending
 
 
 ### Design Recommendations
-#### 1. Network Security
+### 1. Network Security
 <p><em>For more information, see the <a href="../mcsb-network-security" data-linktype="relative-path">Microsoft cloud security benchmark: Network security</a>.</em></p>
 <h4 id="ns-1-establish-network-segmentation-boundaries">1.1 - NS-1: Establish network segmentation boundaries</h4>
 <h4  id="features">Features</h4>
@@ -272,7 +272,7 @@ Pending
 <p><strong>Reference</strong>: <a href="/en-us/azure/container-apps/vnet-custom-internal" data-linktype="absolute-path">Provide a virtual network to an internal Azure Container Apps environment</a></p>
 
 
-#### 2. Identity management
+### 2. Identity management
 <p><em>For more information, see the <a href="../mcsb-identity-management" data-linktype="relative-path">Microsoft cloud security benchmark: Identity management</a>.</em></p>
 <h4 id="im-1-use-centralized-identity-and-authentication-system">2.1 - IM-1: Use centralized identity and authentication system</h4>
 <h4 id="features-2">Features</h4>

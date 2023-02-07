@@ -8,8 +8,17 @@
     "acaIdentityName": {
       "value": "acaIdentity"
     },
+    "serviceBusName": {
+      "value": "<ADD SERVICE BUS NAMESPACE NAME>"
+    },
+    "serviceBusTopicName": {
+      "value": "test"
+    },
+    "serviceBusTopicAuthorizationRuleName": {
+      "value": "TestTopicSharedAccessKey"
+    },
     "acrName": {
-      "value": "<ADD_CONTAINER REGISTRY_NAME>"
+      "value": "<ADD CONTAINER REGISTRY NAME>"
     },
     "tag": {
       "value": "1.0"

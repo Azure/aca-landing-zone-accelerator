@@ -14,6 +14,12 @@
     "serviceBusName": {
       "value": "<Add Azure Service Bus namespace name>"
     },
+    "serviceBusTopicName": {
+      "value": "test"
+    },
+    "serviceBusTopicAuthorizationRuleName": {
+      "value": "TestTopicSharedAccessKey"
+    },
     "cosmosDbName": {
       "value": "<Add Cosmos DB resource name>"
     },

@@ -8,6 +8,12 @@
     "servicesSubnetName": {
       "value": "servicespe"
     },
+    "serviceBusTopicName": {
+      "value": "test"
+    },
+    "serviceBusTopicAuthorizationRuleName": {
+      "value": "TestTopicSharedAccessKey"
+    },
     "serviceBusPrivateEndpointName": {
       "value": "sb-pvt-ep"
     },

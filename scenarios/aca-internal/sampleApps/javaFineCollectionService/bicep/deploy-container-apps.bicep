@@ -5,6 +5,13 @@ param containerAppsEnvironmentName string
 @description('The name of the user managed identity.')
 param acaIdentityName string
 
+@description('The name of the service bus namespace.')
+param serviceBusName string
+@description('The name of the service bus topic.')
+param serviceBusTopicName string
+@description('The name of the service bus topic\'s authorization rule.')
+param serviceBusTopicAuthorizationRuleName string
+
 @description('The name of the Azure Container Registry.')
 param acrName string
 @description('The tag of the images.')
@@ -27,13 +34,17 @@ param trafficControlServiceName string = 'traffic-control-service'
 @description('The name of the service for the simulation.')
 param simulationName string = 'simulation'
 
+resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
+  name: containerAppsEnvironmentName
+}
+
 resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
   name: acaIdentityName
 }
 
-resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
-  name: containerAppsEnvironmentName
-} 
+resource serviceBusTopicAuthorizationRule 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2021-11-01' existing = {
+  name: '${serviceBusName}/${serviceBusTopicName}/${serviceBusTopicAuthorizationRuleName}'
+}
 
 resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
   name: vehicleRegistrationServiceName
@@ -101,6 +112,10 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
         appPort: 6001
       }
       secrets: [
+        {
+          name: 'service-bus-connection-string'
+          value: serviceBusTopicAuthorizationRule.listKeys().primaryConnectionString
+        }
       ]
       registries: [
         {
@@ -127,8 +142,27 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
         }
       ]
       scale: {
-        minReplicas: 1
+        minReplicas: 0
         maxReplicas: 5
+        rules: [
+          {
+            name: 'service-bus-test-topic'
+            custom: {
+              type: 'azure-servicebus'
+              auth: [
+                {
+                  secretRef: 'service-bus-connection-string'
+                  triggerParameter: 'connection'
+                }
+              ]
+              metadata: {
+                subscriptionName: fineCollectionServiceName
+                topicName: serviceBusTopicName
+                messageCount: '10'
+              }
+            }
+          }
+        ]
       }
     }
   }

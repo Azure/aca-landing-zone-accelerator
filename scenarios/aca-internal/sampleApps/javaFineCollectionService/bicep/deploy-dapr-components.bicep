@@ -15,6 +15,10 @@ param userManagedIdentityName string
 
 @description('The name of the service bus namespace.')
 param serviceBusName string
+@description('The name of the service bus topic.')
+param serviceBusTopicName string
+@description('The name of the service bus topic\'s authorization rule.')
+param serviceBusTopicAuthorizationRuleName string
 
 @description('The name of Cosmos DB resource.')
 param cosmosDbName string
@@ -45,7 +49,7 @@ resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-3
 }
 
 resource serviceBusTopicAuthorizationRule 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2021-11-01' existing = {
-  name: '${serviceBusName}/test/TestTopicSharedAccessKey'
+  name: '${serviceBusName}/${serviceBusTopicName}/${serviceBusTopicAuthorizationRuleName}'
 }
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = {

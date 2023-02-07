@@ -8,6 +8,10 @@ param servicesSubnetName string = 'servicespe'
 
 @description('The name of the service bus namespace.')
 param serviceBusName string = 'eslz-sb-${uniqueString(resourceGroup().id)}'
+@description('The name of the service bus topic.')
+param serviceBusTopicName string
+@description('The name of the service bus topic\'s authorization rule.')
+param serviceBusTopicAuthorizationRuleName string
 @description('The name of service bus\' private endpoint.')
 param serviceBusPrivateEndpointName string
 @description('The name of service bus\' private dns zone.')
@@ -57,13 +61,13 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-01-01-preview
 }
 
 resource serviceBusTestTopic 'Microsoft.ServiceBus/namespaces/topics@2021-11-01' = {
-  name: 'test'
+  name: serviceBusTopicName
   parent: serviceBusNamespace
 }
 
 // TODO remove this when managed identity is used
 resource serviceBusTestTopicAuthRule 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2021-11-01' = {
-  name: 'TestTopicSharedAccessKey'
+  name: serviceBusTopicAuthorizationRuleName
   parent: serviceBusTestTopic
   properties: {
     rights: [

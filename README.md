@@ -1,10 +1,26 @@
-# Enterprise Scale for ACA - Private 
+# Azure Container Apps Landing Zone Accelerator
+
+Azure Landing Zone Accelerators are architectural guidance, reference architecture, reference implementations and automation packaged to deploy workload platforms on Azure at Scale and aligned with industry proven practices.
+
+Azure Container apps Landing Zone Accelerator represents the strategic design path and target technical state for an Azure Container Apps Service deployment. 
+
+This repository provides packaged guidance for customer scenarios, reference architecture, reference implementation, tooling, design area guidance, sample application deployed after provisioning the infrastructure using the accelerator. The architectural approach can be used as design guidance for greenfield implementation and as an assessment for brownfield customers already using containerized apps. 
+
+## Enterprise-Scale Architecture
+
+The enterprise architecture is broken down into six different design areas, where you can find the links to each at:
+| Design Area|Considerations and Recommendations|
+|:--------------:|:--------------:|
+| Identity and Access Management|[Design Considerations and Recommendations](/docs/design-areas/identity.md)
+| Network Topology and Connectivity|[Design Considerations and Recommendations](/docs/design-areas/networking.md)
+| Management and Monitoring|[Design Considerations and Recommendations](/docs/design-areas/operationsManagement.md)
+| Security, Governance, and Compliance|[Design Considerations and Recommendations](/docs/design-areas/security.md)
 
 ## Steps of Implementation for Applications on Azure Container Apps
 
 A deployment of ACA-hosted workloads typically experiences a separation of duties and lifecycle management in the area of prerequisites, the host network, the cluster infrastructure, and finally the workload itself. This reference implementation steps are created by keeping that in mind. Also, be aware our primary purpose is to illustrate the topology and decisions of a baseline cluster. We feel a "step-by-step" flow will help you learn the pieces of the solution and give you insight into the relationship between them. Ultimately, lifecycle/SDLC management of your cluster and its dependencies will depend on your situation (team roles, organizational standards, tooling, etc), and must be implemented as appropriate for your needs.
 
-![ACA Hub and Spoke architecture](./docs/media/ACA-Landingzone.jpg)
+![ACA Hub and Spoke architecture](./docs/media/acaInternal/aca-internal.png)
 
 ## Accounting for Separation of Duties
 
@@ -24,3 +40,24 @@ This section is organized using folders that match the steps outlined below. Mak
 4. [Creation of Supporting Components for ACA](./scenarios/acaInternal/bicep/03-aks-supporting.md)
 5. [Creation of ACA Environment](./scenarios/acaInternal/bicep/04-aca-env.md)
 6. [Creation of Azure container apps](./scenarios/acaInternal/bicep/05-aca-apps.md)
+
+## Got a feedback
+Please leverage issues if you have any feedback or request on how we can improve on this repository.
+
+## Data Collection
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the repository. There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at https://go.microsoft.com/fwlink/?LinkId=521839. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+
+## Telemetry Configuration
+Telemetry collection is on by default.
+
+To opt-out, set the variable enableTelemetry to false in Bicep/ARM file and disable_terraform_partner_id to false on Terraform files.
+
+## Contributing
+This project welcomes contributions and suggestions. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions provided by the bot. You will only need to do this once across all repos using our CLA.
+
+This project has adopted the Microsoft Open Source Code of Conduct. For more information see the Code of Conduct FAQ or contact opencode@microsoft.com with any additional questions or comments.
+
+## Trademarks
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow Microsoft's Trademark & Brand Guidelines. Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party's policies.

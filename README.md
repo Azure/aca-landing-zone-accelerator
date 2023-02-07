@@ -8,7 +8,7 @@ This repository provides packaged guidance for customer scenarios, reference arc
 
 ## Enterprise-Scale Architecture
 
-The enterprise architecture is broken down into six different design areas, where you can find the links to each at:
+The enterprise architecture is broken down into key design areas, where you can find the links to each at:
 | Design Area|Considerations and Recommendations|
 |:--------------:|:--------------:|
 | Identity and Access Management|[Design Considerations and Recommendations](/docs/design-areas/identity.md)

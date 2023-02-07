@@ -6,10 +6,10 @@
       "value": "VNet-SPOKE"
     },
     "servicesSubnetName": {
-      "value": "servicesSubnetName"
+      "value": "servicespe"
     },
-    "serviceBusPrivateEndpoint": {
-      "value": "sb-pvt-ep'"
+    "serviceBusPrivateEndpointName": {
+      "value": "sb-pvt-ep"
     },
     "serviceBusPrivateDNSZoneName": {
       "value": "sb-pvt-dns"

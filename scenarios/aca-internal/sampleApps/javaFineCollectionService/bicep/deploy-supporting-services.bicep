@@ -130,6 +130,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' = {
       }
     ]
     databaseAccountOfferType: 'Standard'
+    publicNetworkAccess: 'Disabled'
   }
 }
 

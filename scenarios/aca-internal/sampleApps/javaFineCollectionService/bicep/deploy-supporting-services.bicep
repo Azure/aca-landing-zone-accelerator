@@ -78,7 +78,7 @@ resource serviceBusTestTopicAuthRule 'Microsoft.ServiceBus/namespaces/topics/aut
   }
 }
 
-module serviceBusPrivateEndpoint '../../../bicep/03-ACA-supporting/modules/vnet/privateendpoint.bicep' = {
+module serviceBusPrivateEndpoint '../../../bicep/modules/vnet/privateendpoint.bicep' = {
   name: serviceBusPrivateEndpointName
   params: {
     location: location
@@ -92,14 +92,14 @@ module serviceBusPrivateEndpoint '../../../bicep/03-ACA-supporting/modules/vnet/
   }
 }
 
-module serviceBusPrivateDNSZone '../../../bicep/02-Network-LZ/modules/vnet/privatednszone.bicep' = {
+module serviceBusPrivateDNSZone '../../../bicep/modules/vnet/privatednszone.bicep' = {
   name: serviceBusPrivateDNSZoneName
   params: {
      privateDNSZoneName: 'privatelink.servicebus.windows.net'
   }
 }
 
-module serviceBusPrivateDNSZoneLinkSpoke '../../../bicep/02-Network-LZ/modules/vnet/privatednslink.bicep' = {
+module serviceBusPrivateDNSZoneLinkSpoke '../../../bicep/modules/vnet/privatednslink.bicep' = {
   name: serviceBusPrivateDNSLinkSpokeName
   params: {
     privateDnsZoneName: serviceBusPrivateDNSZone.outputs.privateDNSZoneName
@@ -108,7 +108,7 @@ module serviceBusPrivateDNSZoneLinkSpoke '../../../bicep/02-Network-LZ/modules/v
   }
 }
 
-module serviceBusPrivateEndpointDnsSetting '../../../bicep/03-ACA-supporting/modules/vnet/privatedns.bicep' = {
+module serviceBusPrivateEndpointDnsSetting '../../../bicep/modules/vnet/privatedns.bicep' = {
   name: 'sb-pvtep-dns'
   params: {
     privateDNSZoneId: serviceBusPrivateDNSZone.outputs.privateDNSZoneId
@@ -163,7 +163,7 @@ resource cosmosDbDatabaseCollection 'Microsoft.DocumentDB/databaseAccounts/sqlDa
   }
 }
 
-module cosmosDbPrivateEndpoint '../../../bicep/03-ACA-supporting/modules/vnet/privateendpoint.bicep' = {
+module cosmosDbPrivateEndpoint '../../../bicep/modules/vnet/privateendpoint.bicep' = {
   name: cosmosDbPrivateEndpointName
   params: {
     location: location
@@ -177,14 +177,14 @@ module cosmosDbPrivateEndpoint '../../../bicep/03-ACA-supporting/modules/vnet/pr
   }
 }
 
-module cosmosDbPrivateDNSZone '../../../bicep/02-Network-LZ/modules/vnet/privatednszone.bicep' = {
+module cosmosDbPrivateDNSZone '../../../bicep/modules/vnet/privatednszone.bicep' = {
   name: cosmosDbPrivateDNSZoneName
   params: {
      privateDNSZoneName: 'privatelink.documents.azure.com'
   }
 }
 
-module cosmosDbPrivateDNSZoneLinkSpoke '../../../bicep/02-Network-LZ/modules/vnet/privatednslink.bicep' = {
+module cosmosDbPrivateDNSZoneLinkSpoke '../../../bicep/modules/vnet/privatednslink.bicep' = {
   name: cosmosDbPrivateDNSLinkSpokeName
   params: {
     privateDnsZoneName: cosmosDbPrivateDNSZone.outputs.privateDNSZoneName
@@ -193,7 +193,7 @@ module cosmosDbPrivateDNSZoneLinkSpoke '../../../bicep/02-Network-LZ/modules/vne
   }
 }
 
-module cosmosDbPrivateEndpointDnsSetting '../../../bicep/03-ACA-supporting/modules/vnet/privatedns.bicep' = {
+module cosmosDbPrivateEndpointDnsSetting '../../../bicep/modules/vnet/privatedns.bicep' = {
   name: 'cdb-pvtep-dns'
   params: {
     privateDNSZoneId: cosmosDbPrivateDNSZone.outputs.privateDNSZoneId

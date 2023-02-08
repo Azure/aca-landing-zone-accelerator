@@ -125,6 +125,10 @@ module bastion 'modules/VM/bastion.bicep' =  {
     bastionAddressPrefix: BastionSubnetAddressPrefix
     vnetHubName: vnetHubName
   }
+  dependsOn: [
+    hubrg
+    vnethub
+  ]
 }
 
 
@@ -153,6 +157,10 @@ module jumpbox 'modules/VM/virtualmachine.bicep' = {
     vnetHubName: vnetHubName
     VMSubnetName: VMSubnetName
   }
+  dependsOn: [
+    hubrg
+    vnethub
+  ]
 }
 
 module vm_jumpboxwinvm 'modules/VM/createvmwindows.bicep' = {
@@ -170,6 +178,10 @@ module vm_jumpboxwinvm 'modules/VM/createvmwindows.bicep' = {
     vnetHubName: vnetHubName
     VMSubnetName: VMSubnetName
   }
+  dependsOn: [
+    hubrg
+    vnethub
+  ]
 }
 
 
@@ -594,8 +606,3 @@ module record 'modules/vnet/Arecord.bicep' = {
     containerAppEnvironment
   ]
 }
-
-
-
-
-

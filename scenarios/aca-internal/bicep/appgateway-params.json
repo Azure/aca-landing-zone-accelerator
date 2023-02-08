@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+      "keyvaultName":{
+        "value": "eslz-kv-gtf5q2jnnj7jw"
+    },
+    "appGatewayFqdn":{
+      "value": "api.contoso.com"
+    },
+    "appGatewayName":{
+"value": "eslz-appgw-aca"
+    },
+    "spokeRgName" : {
+      "value": "ESLZ-Spoke-RG"
+    },
+    "vnetSpokeName": {
+      "value": "ESLZ-SPOKE-VNet"
+    },
+    "containerAppName": {
+      "value": "ESLZ-ACA-App"
+    },
+    "appGatewayCertType":{
+      "value": "selfsigned"
+    }
+  }
+  }

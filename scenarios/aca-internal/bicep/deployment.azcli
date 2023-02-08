@@ -1,66 +1,49 @@
 cd ACA-Landing-Zone-Accelerator/scenarios/acaInternal/bicep/
 
 # AZ CLI
-# 01 Network HUB
-az deployment sub create -n "ESLZ-HUB-ACA" -l "EastUS" -f 01-Network-Hub/main.bicep -p 01-Network-Hub/parameters-main.json
-az deployment sub create -n "ESLZ-HUB-VM" -l "EastUS" -f 01-Network-Hub/deploy-vm.bicep -p 01-Network-Hub/parameters-deploy-vm.json
+# Deploy infrastructure for the App
+az deployment sub create -n "ESLZ-Infra-ACA" -l "EastUS" -f main.bicep -p parameters-main.json
 
-# 02 Network LZ
-az deployment sub create -n "ESLZ-Spoke-ACA" -l "EastUS" -f 02-Network-LZ/main.bicep -p 02-Network-LZ/parameters-main.json
-az deployment sub create -n "ESLZ-ACA-SPOKE-NSG" -l "EastUS" -f 02-Network-LZ/update-NSG.bicep -p 02-Network-LZ/parameters-update-NSG.json
 
-# 03 ACA Supporting Infrastructure
-az deployment sub create -n "ESLZ-ACA-Supporting" -l "EastUS" -f 03-ACA-supporting/main.bicep -p 03-ACA-supporting/parameters-main.json
+# Deploy Azure Container Apps
 
-# 04 ACA Environment Deployment
-acrName=$(az deployment sub show -n "ESLZ-ACA-Supporting" --query properties.outputs.acrName.value -o tsv)
-keyVaultName=$(az deployment sub show -n "ESLZ-ACA-Supporting" --query properties.outputs.keyvaultName.value -o tsv)
+acrName=$(az deployment sub show -n "ESLZ-Infra-ACA" --query properties.outputs.acrName.value -o tsv)
+keyVaultName=$(az deployment sub show -n "ESLZ-Infra-ACA" --query properties.outputs.keyvaultName.value -o tsv)
 
-az deployment sub create -n "ESLZ-ACA-Env" -l "EastUS" -f 04-ACA-Env/main.bicep -p 04-ACA-Env/parameters-main.json -p acrName=$acrName -p keyvaultName=$keyVaultName
+az deployment sub create -n "ESLZ-App-ACA" -l "EastUS" -f container-app.bicep -p containerapp-params.json -p acrName=$acrName -p keyvaultName=$keyVaultName
 
-# 05 ACA App Deployment
-az deployment group create -g "ESLZ-spoke" -f 05-ACA-Apps/container-app.bicep -p 05-ACA-Apps/parameters-app.json 
+
+# Deploy Application gateway
+az deployment sub create -n "ESLZ-ACA-frontend" -l "EastUS" -f appgateway.bicep -p appgateway-params-main.json
 
 
 # Clean Up
 # Delete Resource Groups
-az group delete -n ESLZ-HUB -y
-az group delete -n ESLZ-SPOKE -y
+az group delete -n ESLZ-HUB-RG -y
+az group delete -n ESLZ-SPOKE-RG -y
 # Delete Deployments
-az deployment sub delete -n ESLZ-HUB-ACA
-az deployment sub delete -n ESLZ-HUB-VM
-az deployment sub delete -n ESLZ-Spoke-ACA
-az deployment sub delete -n ESLZ-ACA-SPOKE-NSG
-az deployment sub delete -n ESLZ-ACA-Supporting
-az deployment sub delete -n ESLZ-ACA-Env
+az deployment sub delete -n ESLZ-Infra-ACA
+az deployment sub delete -n ESLZ-App-ACA
+az deployment sub delete -n ESLZ-ACA-frontend
+
 
 
 # AZ PowerShell
-# 01 Network HUB
-New-AzSubscriptionDeployment -TemplateFile .\01-Network-Hub\main.bicep -TemplateParameterFile .\01-Network-Hub\parameters-main.json -Location "EastUS" -Name ESLZ-HUB-ACA
-New-AzSubscriptionDeployment -TemplateFile .\01-Network-Hub\deploy-vm.bicep -TemplateParameterFile .\01-Network-Hub\parameters-deploy-vm.json -Location "EastUS" -Name ESLZ-HUB-VM
+# Deploy infrastructure for the App
+New-AzSubscriptionDeployment -TemplateFile .\main.bicep -TemplateParameterFile .\parameters-main.json -Location "EastUS" -Name ESLZ-Infra-ACA
 
-# 02 Network LZ
-New-AzSubscriptionDeployment -TemplateFile .\02-Network-LZ\main.bicep -TemplateParameterFile .\02-Network-LZ\parameters-main.json -Location "EastUS" -Name ESLZ-Spoke-ACA
-New-AzSubscriptionDeployment -TemplateFile .\02-Network-LZ\update-NSG.bicep -TemplateParameterFile .\02-Network-LZ\parameters-update-NSG.json -Location "EastUS" -Name ESLZ-ACA-SPOKE-NSG
+# Deploy Azure Container Apps
+New-AzSubscriptionDeployment -TemplateFile .\container-app.bicep -TemplateParameterFile .\containerapp-params.json -Location "EastUS" -Name ESLZ-App-ACA
 
-# 03 ACA Supporting Infrastructure
-New-AzSubscriptionDeployment -TemplateFile .\03-ACA-supporting\main.bicep -TemplateParameterFile .\03-ACA-supporting\parameters-main.json -Location "EastUS" -Name ESLZ-ACA-Supporting
+# Deploy Application gateway
+New-AzSubscriptionDeployment -TemplateFile .\appgateway.bicep -TemplateParameterFile .\appgateway-params-main.json -Location "EastUS" -Name ESLZ-ACA-frontend
 
-# 04 ACA Environment Deployment
-New-AzSubscriptionDeployment -TemplateFile .\04-ACA-Env\main.bicep -TemplateParameterFile .\04-ACA-cluster\parameters-main.json -Location "EastUS" -Name ESLZ-ACA-Env
-
-# 05 ACA App Deployment
-New-AzResourceGroupDeployment -ResourceGroupName "ESLZ-spoke" -TemplateFile .\05-ACA-Apps\container-app.bicep -TemplateParameterFile .\05-ACA-Apps\parameters-app.json
 
 # Clean Up
 # Delete Resource Groups
-Remove-AzResourceGroup -Name ESLZ-HUB
-Remove-AzResourceGroup -Name ESLZ-SPOKE
+Remove-AzResourceGroup -Name ESLZ-HUB-RG
+Remove-AzResourceGroup -Name ESLZ-SPOKE-RG
 # Delete Deployments
-Remove-AzSubscriptionDeployment -Name ESLZ-HUB-ACA
-Remove-AzSubscriptionDeployment -Name ESLZ-HUB-VM
-Remove-AzSubscriptionDeployment -Name ESLZ-Spoke-ACA
-Remove-AzSubscriptionDeployment -Name ESLZ-ACA-SPOKE-NSG
-Remove-AzSubscriptionDeployment -Name ESLZ-ACA-Supporting
-Remove-AzSubscriptionDeployment -Name ESLZ-ACA-CLUSTER
+Remove-AzSubscriptionDeployment -Name ESLZ-Infra-ACA
+Remove-AzSubscriptionDeployment -Name ESLZ-App-ACA
+Remove-AzSubscriptionDeployment -Name ESLZ-ACA-frontend

@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "containerAppsEnvironmentName": {
-      "value": "srtestacabic2"
+      "value": "ESLZ-ACA-Env"
     },
     "keyVaultName" : {
       "value": "<Add Key Vault resource name>"

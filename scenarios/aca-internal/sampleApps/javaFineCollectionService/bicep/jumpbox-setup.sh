@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#########################################################
-# Script to setup the jumpbox, build the images and push
-# them to the container registry
-#########################################################
+##########################################################
+# Example of script to setup the jumpbox, build the images
+# and push them to the container registry
+##########################################################
 
 sudo apt-get update
 sudo apt-get upgrade
@@ -54,7 +54,7 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 cd ~
 git clone https://github.com/Azure/java-aks-aca-dapr-workshop.git
 cd ~/java-aks-aca-dapr-workshop
-git checkout feature/test-lz
+git checkout feature/e2e-flow
 mvn clean package
 
 # Setup container registry

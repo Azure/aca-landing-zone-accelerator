@@ -13,9 +13,6 @@
           "10.0.0.0/16"
         ]
       },
-      "vmSubnetAddressPrefix": {
-        "value": "10.0.3.0/24"
-      },
       "BastionSubnetAddressPrefix": {
         "value": "10.0.2.0/27"
       },
@@ -25,6 +22,12 @@
             "name": "default",
             "properties": {
               "addressPrefix": "10.0.0.0/24"
+            }      
+          },
+          {
+            "name": "vmsubnet",
+            "properties": {
+              "addressPrefix": "10.0.3.0/24"
             }
           }
         ]},

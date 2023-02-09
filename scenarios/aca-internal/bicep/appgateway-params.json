@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
       "keyvaultName":{
-        "value": "eslz-kv-gtf5q2jnnj7jw"
+        "value": "eslz-kv-ghcq5qggbtc42"
     },
     "appGatewayFqdn":{
       "value": "api.contoso.com"
@@ -18,7 +18,7 @@
       "value": "ESLZ-SPOKE-VNet"
     },
     "containerAppName": {
-      "value": "ESLZ-ACA-App"
+      "value": "eslz-aca-app"
     },
     "appGatewayCertType":{
       "value": "selfsigned"

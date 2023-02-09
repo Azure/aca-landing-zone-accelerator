@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "containerAppName": {
-      "value": "ESLZ-ACA-App"
+      "value": "eslz-aca-app"
     },
     "containerEnvname": {
       "value": "ESLZ-ACA-Env"
@@ -18,7 +18,7 @@
       "value": 80
     },
     "acrName": {
-      "value": "eslzacrgtf5q2jnnj7jw"
+      "value": "eslzacrghcq5qggbtc42"
     }
   }
 }

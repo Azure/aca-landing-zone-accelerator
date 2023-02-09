@@ -1,4 +1,4 @@
-cd ACA-Landing-Zone-Accelerator/scenarios/acaInternal/bicep/
+cd ACA-Landing-Zone-Accelerator/scenarios/aca-internal/bicep/
 
 # AZ CLI
 # Deploy infrastructure for the App

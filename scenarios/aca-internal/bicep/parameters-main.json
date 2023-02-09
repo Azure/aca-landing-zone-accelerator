@@ -13,6 +13,9 @@
           "10.0.0.0/16"
         ]
       },
+      "deploybastion": {
+        "value": true
+      },
       "BastionSubnetAddressPrefix": {
         "value": "10.0.2.0/27"
       },
@@ -118,6 +121,9 @@
             },
     "appInsightsName": {
       "value": "eslz-appinsights"
+    },
+    "deployApplicationInsightsDaprInstrumentation": {
+      "value": true
     },
     "jumpboxOSType": {
       "value": "linux" 

@@ -1,4 +1,24 @@
-# Contributing
+<!-- markdownlint-disable -->
+## Contents
+<!-- markdownlint-restore -->
+
+- [Contents](#contents)
+- [Contributing](#contributing)
+- [GitHub Operations, Conventions and other Standards](#github-operations-conventions-and-other-standards)
+  - [GitHub Basics](#github-basics)
+  - [Folder Structure and Naming Conventions](#folder-structure-and-naming-conventions)
+  - [Forking the Repository](#forking-the-repository)
+  - [Branch Naming Standards](#branch-naming-standards)
+  - [Commit Standards (optional)](#commit-standards-optional)
+- [Style Guide and coding conventions](#style-guide-and-coding-conventions)
+  - [Bicep Best Practices and Conventions](#bicep-best-practices-and-conventions)
+  - [Terraform Best Practices and Conventions](#terraform-best-practices-and-conventions)
+- [Issue Tracker](#issue-tracker)
+- [Pull Request Process](#pull-request-process)
+
+---
+
+## Contributing
 This project welcomes contributions and suggestions. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
 
 When you submit a pull request, a CLA bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions provided by the bot. You will only need to do this once across all repos using our CLA.
@@ -230,12 +250,10 @@ A guide outlining the coding conventions and style guidelines that should be fol
   ``` bicep
   var maxStorageNameLength = 24
   var storageName = length(name) > maxStorageNameLength ? toLower(substring(replace(name, '-', ''), 0, maxStorageNameLength)) : toLower(replace(name, '-', ''))
-  ```
-- 
-
+  ``` 
  
 
-#### More details for the afforementioned guidelines you may find at:
+**More details for the afforementioned guidelines you may find at:**
 - [Bicep Best Practices](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/best-practices)
 - [Deployment Scripts in Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-bicep)
 - [Configuration Map Pattern and t-shirt sizing](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/patterns-configuration-set): Can be used to provide a smaller set of parameters 

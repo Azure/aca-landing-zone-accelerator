@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "vnetName": {
+        "value": "ESLZ-SPOKE-VNet"
+      },
+      "subnetName": {
+        "value": "servicespe"
+      },
+      "logAnalyticsWorkspaceName": {
+        "value": "eslzlaworkspace"
+      },
+      "containerAppsEnvironmentName": {
+        "value": "ESLZ-ACA-Env"
+      },
+      "acrName": {
+        "value": "eslzacrta5zuaoinryr2"
+      },
+      "acaIdentityName": {
+        "value": "aca-user-identity"
+      },
+      "keyVaultName": {
+        "value": "eslz-kv-ta5zuaoinryr2"
+      }
+    }
+  }

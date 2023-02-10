@@ -1,50 +1,32 @@
-@description('The region (location) in which the resource will be deployed. Default: resource group location.')
-param location string = resourceGroup().location
 @description('The name of the container apps environment.')
 param containerAppsEnvironmentName string
+
 @description('The name of the user managed identity.')
 param acaIdentityName string
 
-@description('The name of the service bus namespace.')
-param serviceBusName string
-@description('The name of the service bus topic.')
-param serviceBusTopicName string
-@description('The name of the service bus topic\'s authorization rule.')
-param serviceBusTopicAuthorizationRuleName string
-
 @description('The name of the Azure Container Registry.')
 param acrName string
-@description('The tag of the images.')
-param tag string = 'latest'
-@description('The name of the image for the vehicle registration service.')
-param vehicleRegistrationServiceImageName string = 'vehicle-registration-service'
-@description('The name of the image for the fine collection service.')
-param fineCollectionServiceImageName string = 'fine-collection-service'
-@description('The name of the image for the traffic control service.')
-param trafficControlServiceImageName string = 'traffic-control-service'
-@description('The name of the image for the simulation.')
-param simulationImageName string = 'simulation'
 
-@description('The name of the service for the vehicle registration service.')
-param vehicleRegistrationServiceName string = 'vehicle-registration-service'
-@description('The name of the service for the fine collection service.')
-param fineCollectionServiceName string = 'fine-collection-service'
-@description('The name of the service for the traffic control service.')
-param trafficControlServiceName string = 'traffic-control-service'
-@description('The name of the service for the simulation.')
-param simulationName string = 'simulation'
+//should be a var instead of a param. 
+param location string = resourceGroup().location
 
-resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
-  name: containerAppsEnvironmentName
-}
+var vehicleRegistrationServiceImageName = 'vehicle-registration-service'
+var fineCollectionServiceImageName = 'fine-collection-service'
+var trafficControlServiceImageName  = 'traffic-control-service'
+var simulationImageName  = 'simulation'
+var vehicleRegistrationServiceName  = 'vehicle-registration-service'
+var fineCollectionServiceName  = 'fine-collection-service'
+var trafficControlServiceName  = 'traffic-control-service'
+var simulationServiceName = 'simulation'
+var tag = '1.0'
 
 resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
   name: acaIdentityName
 }
 
-resource serviceBusTopicAuthorizationRule 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2021-11-01' existing = {
-  name: '${serviceBusName}/${serviceBusTopicName}/${serviceBusTopicAuthorizationRuleName}'
-}
+resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
+  name: containerAppsEnvironmentName
+} 
 
 resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
   name: vehicleRegistrationServiceName
@@ -92,7 +74,8 @@ resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
   }
 }
 
-resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
+
+resource fineCollectionService 'Microsoft.App/containerApps@2022-06-01-preview' = {
   name: fineCollectionServiceName
   location: location
   identity: {
@@ -110,12 +93,9 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
         appId: fineCollectionServiceName
         appProtocol: 'http'
         appPort: 6001
+        logLevel: 'debug'
       }
       secrets: [
-        {
-          name: 'service-bus-connection-string'
-          value: serviceBusTopicAuthorizationRule.listKeys().primaryConnectionString
-        }
       ]
       registries: [
         {
@@ -142,27 +122,8 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
         }
       ]
       scale: {
-        minReplicas: 0
+        minReplicas: 1
         maxReplicas: 5
-        rules: [
-          {
-            name: 'service-bus-test-topic'
-            custom: {
-              type: 'azure-servicebus'
-              auth: [
-                {
-                  secretRef: 'service-bus-connection-string'
-                  triggerParameter: 'connection'
-                }
-              ]
-              metadata: {
-                subscriptionName: fineCollectionServiceName
-                topicName: serviceBusTopicName
-                messageCount: '10'
-              }
-            }
-          }
-        ]
       }
     }
   }
@@ -170,6 +131,7 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
     vehicleRegistrationService
   ]
 }
+
 
 resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' = {
   name: trafficControlServiceName
@@ -193,7 +155,7 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
         appId: trafficControlServiceName
         appProtocol: 'http'
         appPort: 6000
-        logLevel: 'info'
+        logLevel: 'debug'
       }
       secrets: [
       ]
@@ -227,7 +189,7 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
 }
 
 resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
-  name: simulationName
+  name: simulationServiceName
   location: location
   identity: {
     type: 'UserAssigned'
@@ -251,7 +213,7 @@ resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
     template: {
       containers: [
         {
-          name: simulationName
+          name: simulationServiceName
           image: '${acrName}.azurecr.io/${simulationImageName}:${tag}'
           resources: {
             cpu: json('0.5')
@@ -272,3 +234,4 @@ resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
     }
   }
 }
+

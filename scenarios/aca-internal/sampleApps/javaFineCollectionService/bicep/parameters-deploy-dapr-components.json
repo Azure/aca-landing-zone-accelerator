@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerAppsEnvironmentName": {
+      "value": "ESLZ-ACA-Env"
+    },
+    "keyVaultName" : {
+      "value": "<Add Key Vault resource name>"
+    },
+    "userManagedIdentityName": {
+      "value": "acaIdentity"
+    },
+    "serviceBusName": {
+      "value": "<Add Azure Service Bus namespace name>"
+    },
+    "serviceBusTopicName": {
+      "value": "test"
+    },
+    "serviceBusTopicAuthorizationRuleName": {
+      "value": "TestTopicSharedAccessKey"
+    },
+    "cosmosDbName": {
+      "value": "<Add Cosmos DB resource name>"
+    },
+    "cosmosDbDatabaseName": {
+      "value": "cosmos-db-fines"
+    },
+    "cosmosDbCollectionName": {
+      "value": "traffic-control-vehicle-state"
+    },
+    "fineLicenseKeySecretValue": {
+      "value": "HX783-5PN1G-CRJ4A-K2L7V"
+    }
+  }
+}

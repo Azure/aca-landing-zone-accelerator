@@ -46,18 +46,18 @@ Below you can see the selected folder structure for the project. The main folder
 - **docs**
   The *docs* folder contains two subfolders; **design-areas** and **media**.
   - The **design-areas** subfolder contains the relevant documentation. 
-  - The **media** subfolder  will contain images or other media file types used in the README.md files. Folder structure inside that subfolder is optional and free to the grouping desires of every author. For instance if you create the README.md file describing the architecture of the aca-internal scenario, and *aca-internal* sub-folder may be created to group all supporting media files together. In the same context, if the *Design Area* documents (as described above) need some supporting media material, we can add them in this subfolder or create a new subfolder, named *design-areas* and add them all there, for grouping puproses
+  - The **media** subfolder  will contain images or other media file types used in the README.md files. Folder structure inside that subfolder is optional and free to the grouping desires of every author. For instance if you create the README.md file describing the architecture of the *scenario1* scenario, and *scenario1* sub-folder may be created to group all supporting media files together. In the same context, if the *Design Area* documents (as described above) need some supporting media material, we can add them in this subfolder or create a new subfolder, named *design-areas* and add them all there, for grouping puproses
   
 - **sample-apps**
   This folder may contain one or more subfolders, depending on the selected sample applications that will be created to serve as smoke tests or best-practices examples using the specific Landing Zone Accelerator artifacts. Folder structure inside each sample application sub-folder is free. 
 - **scenarios**
-  This folder currently holds one scenario (aca-internal), but in the future more scenarios might be added. Each scenario has the following (minimum) folder structure
+  This folder can contain one or more scenarios (currently contains secure-baseline-ase and secure-baseline-multitenant), but in the future more scenarios might be added. Each scenario has the following (minimum) folder structure
   - (scenario1)\bicep
-    Stores Azure Bicep related deployment scripts and artifacts for the given scenario (i.e. aca-internal). Contains also a README.md file that gives detailed instructions on how to use the specific IaC artifacts and scripts, to help end users parameterize and deploy successfully the LZA scenario
+    Stores Azure Bicep related deployment scripts and artifacts for the given scenario. Contains also a README.md file that gives detailed instructions on how to use the specific IaC artifacts and scripts, to help end users parameterize and deploy successfully the LZA scenario
   - (scenario1)\terraform
-    Stores terraform related deployment scripts and artifacts (if any) for the given scenario (i.e. aca-internal). Contains also a README.md file that gives detailed instructions on how to use the specific IaC artifacts and scripts, to help end users parameterize and deploy successfully the LZA scenario
+    Stores terraform related deployment scripts and artifacts (if any) for the given scenario. Contains also a README.md file that gives detailed instructions on how to use the specific IaC artifacts and scripts, to help end users parameterize and deploy successfully the LZA scenario
   - (scenario1)\README.md
-    Outlines the details of the specific scenario (architecture, resources to be deployed, business case scenarios etc) for the given scenario (i.e. aca-internal)
+    Outlines the details of the specific scenario (architecture, resources to be deployed, business case scenarios etc) for the given scenario
   - *shared* 
     To avoid duplication of code modules/artifacts, we store all scripts, modules or coding artifacts in general, in this subfolder. This folder can have more depth, i.e. one folder for every deployment method (i.e. bicep, terraform etc) as shown below in the sample folder structure. Contains also a README.md file that gives details of the shared modules/scripts to help end-users understand their functionality. 
 
@@ -66,14 +66,22 @@ docs
 ├── design-areas
 │   ├── **/*.md
 ├── media
-|   ├── aca-internal
+|   ├── scenario1
 │   |   ├── **/*.png
 │   |   ├── **/*.vsdx
 sample-apps
 ├── sample-app1
 ├── sample-app2
 scenarios
-├── aca-internal
+├── scenario1
+│   ├── bicep
+│   |   ├── **/*.azcli
+│   |   ├── **/*.bicep
+│   |   ├── **/*.json
+│   |   ├── README.md
+│   ├── terraform
+│   ├── README.md
+├── scenario2
 │   ├── bicep
 │   |   ├── **/*.azcli
 │   |   ├── **/*.bicep
@@ -251,6 +259,43 @@ A guide outlining the coding conventions and style guidelines that should be fol
   var maxStorageNameLength = 24
   var storageName = length(name) > maxStorageNameLength ? toLower(substring(replace(name, '-', ''), 0, maxStorageNameLength)) : toLower(replace(name, '-', ''))
   ``` 
+
+- Use bicep **parameter** files for giving the end user the ability to paramterize the deployed resources. (i.e. to select CIDR network spaces, to select SKUs for given resources etc). As a rule of thumb, avoid using the parameter file for *naming recources*, unless there is a really good reason for that. Naming resources should be handled centrally (preferably with variables), following specific rules (as already described). Try not to overuse parameters in the template, because this creates a burden on your template users, since they need to understand the values to use for each resource, and the impact of setting each parameter. Consider using the [t-shirt sizing pattern](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/patterns-configuration-set#solution)
+
+- Avoid using `dependsOn` in the bicep template files. Bicep is building [implicit depedencies](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/resource-dependencies#implicit-dependency) for us, as long as we follow some good practices rules. For instance a resource A depends on a Resource B (i.e. a storage Account) chances are that in resource A you need somehow to pass data of the Resource B(i.e. name, ID etc.). In that case, avoid passing the resource name as string, but pass the property Name of the resource instead (i.e. `myStorage.Name`)
+
+``` bicep
+var storageName='ttst20230301'
+
+resource resourceModuleA 'module/someResource' = {
+  name: 'myResource'
+
+  //This is wrong, does NOT build implicit depedency
+  //storageAccountName: storageName
+
+   //This is OK, does build implicit depedency
+  storageAccountName: storage.name
+}
+
+resource storage 'Microsoft.Storage/storageAccounts@2019-06-01' = {
+  name: storageName
+  location: location
+  kind: kind
+  sku: {
+    name: skuName
+  }
+  tags: union(tags, {
+    displayName: storageName
+  })
+  properties: {
+    accessTier: 'Hot'
+    supportsHttpsTrafficOnly: true
+  }
+}
+
+
+
+```
  
 
 **More details for the afforementioned guidelines you may find at:**

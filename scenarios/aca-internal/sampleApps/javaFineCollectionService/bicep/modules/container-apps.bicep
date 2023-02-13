@@ -99,7 +99,7 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
   name: fineCollectionServiceName
   location: location
   identity: {
-    type: 'UserAssigned'
+    type: 'SystemAssigned,UserAssigned'
     userAssignedIdentities: {
         '${acaIdentity.id}': {}
     }
@@ -179,7 +179,7 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
   name: trafficControlServiceName
   location: location
   identity: {
-    type: 'UserAssigned'
+    type: 'SystemAssigned,UserAssigned'
     userAssignedIdentities: {
         '${acaIdentity.id}': {}
     }

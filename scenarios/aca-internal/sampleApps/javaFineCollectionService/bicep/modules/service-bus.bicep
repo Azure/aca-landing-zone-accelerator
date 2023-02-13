@@ -103,7 +103,7 @@ module serviceBusPrivateEndpointDnsSetting '../../../../bicep/modules/vnet/priva
   }
 }
 
-//enable send/receive to aca user assigned identity
+//enable send/receive to aca user assigned identity. To delete once managed identity will work.
 resource role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(resourceGroup().id, '${acaIdentity.name}', '090c5cfd-751d-490a-894a-3ce6f1109419')
   properties: {

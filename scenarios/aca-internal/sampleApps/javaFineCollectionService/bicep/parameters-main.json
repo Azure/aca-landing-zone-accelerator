@@ -21,7 +21,7 @@
       "value": "acaIdentity"
     },
     "spokeVNetName": {
-      "value": "VNet-SPOKE"
+      "value": "ESLZ-SPOKE-VNet"
     },
     "servicesSubnetName": {
       "value": "servicespe"

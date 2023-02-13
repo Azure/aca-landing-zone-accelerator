@@ -16,10 +16,6 @@ param userManagedIdentityName string
 
 @description('The name of the service bus namespace.')
 param serviceBusName string
-@description('The name of the service bus topic.')
-param serviceBusTopicName string
-@description('The name of the service bus topic\'s authorization rule.')
-param serviceBusTopicAuthorizationRuleName string
 
 @description('The name of Cosmos DB resource.')
 param cosmosDbName string
@@ -39,15 +35,12 @@ param fineLicenseKeySecretName string
 @description('The license key for Fine Collection Service.')
 param fineLicenseKeySecretValue string
 
-@description('The name of the secret containing service bus connection string.')
-var serviceBusConnectionStringSecretName = 'service-bus-connection-string'
-@description('The name of the secret containing Cosmos DB account URL.')
-var cosmosDbAccountUrlSecretName = 'cosmos-db-account-url'
-@description('Th name of the secret containing Azure Cosmos DB master key.')
-var cosmosDbMasterKeySecretName = 'cosmos-db-master-key'
-
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
   name: containerAppsEnvironmentName
+}
+
+resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = {
+  name: cosmosDbName
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
@@ -57,40 +50,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
   name: userManagedIdentityName
 }
-
-resource serviceBusTopicAuthorizationRule 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2021-11-01' existing = {
-  name: '${serviceBusName}/${serviceBusTopicName}/${serviceBusTopicAuthorizationRuleName}'
-}
-
-resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = {
-  name: cosmosDbName
-}
-
-// TODO remove this when managed identities are used
-resource serviceBusConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
-  parent: keyVault
-  name: serviceBusConnectionStringSecretName
-  properties: {
-    value: serviceBusTopicAuthorizationRule.listKeys().primaryConnectionString
-  }
-}
-
-resource cosmosDbAccountUrlSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
-  parent: keyVault
-  name: cosmosDbAccountUrlSecretName
-  properties: {
-    value: cosmosDbAccount.properties.documentEndpoint
-  }
-}
-
-resource cosmosDbMasterKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
-  parent: keyVault
-  name: cosmosDbMasterKeySecretName
-  properties: {
-    value: cosmosDbAccount.listKeys().primaryMasterKey
-  }
-}
-// end of secrets to be removed
 
 // License key secret used by Fine Collection Service
 resource fineLicenseKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
@@ -119,7 +78,6 @@ resource secretstoreComponent 'Microsoft.App/managedEnvironments/daprComponents@
     ]
     scopes: [
       fineCollectionServiceName
-      trafficControlServiceName
     ]
   }
 }
@@ -135,11 +93,14 @@ resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-
     ]
     metadata: [
       {
-        name: 'connectionString'
-        secretRef: serviceBusConnectionStringSecretName
+        name: 'namespaceName'
+        secretRef: '${serviceBusName}.servicebus.windows.net'
+      }
+      {
+        name: 'azureClientId'
+        value: acaIdentity.properties.clientId
       }
     ]
-    secretStoreComponent: secretstoreComponent.name
     scopes: [
       fineCollectionServiceName
       trafficControlServiceName
@@ -158,11 +119,7 @@ resource statestoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2
     metadata: [
       {
         name: 'url'
-        secretRef: cosmosDbAccountUrlSecretName
-      }
-      {
-        name: 'masterKey'
-        secretRef: cosmosDbMasterKeySecretName
+        value: cosmosDbAccount.properties.documentEndpoint
       }
       {
         name: 'database'
@@ -177,7 +134,6 @@ resource statestoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2
         value: 'true'
       }
     ]
-    secretStoreComponent: secretstoreComponent.name
     scopes: [
       trafficControlServiceName
     ]

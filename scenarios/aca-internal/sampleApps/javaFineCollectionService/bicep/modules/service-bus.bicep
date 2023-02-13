@@ -6,6 +6,9 @@ param spokeVNetName string
 @description('The name of the subnet for supporting services of the spoke')
 param servicesSubnetName string
 
+@description('The name of the user managed identity used to access the keyvault.')
+param userManagedIdentityName string
+
 @description('The name of the service bus namespace.')
 param serviceBusName string = 'eslz-sb-${uniqueString(resourceGroup().id)}'
 @description('The name of the service bus topic.')
@@ -25,6 +28,10 @@ resource spokeVNet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
 
 resource servicesSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
   name: '${spokeVNet.name}/${servicesSubnetName}'
+}
+
+resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+  name: userManagedIdentityName
 }
 
 // Public access is only available in the preview
@@ -48,15 +55,12 @@ resource serviceBusTopic 'Microsoft.ServiceBus/namespaces/topics@2021-11-01' = {
   parent: serviceBusNamespace
 }
 
-// TODO remove this when managed identity is used
 resource serviceBusTopicAuthRule 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2021-11-01' = {
   name: serviceBusTopicAuthorizationRuleName
   parent: serviceBusTopic
   properties: {
     rights: [
-      'Manage'
       'Listen'
-      'Send'
     ]
   }
 }
@@ -97,6 +101,17 @@ module serviceBusPrivateEndpointDnsSetting '../../../../bicep/modules/vnet/priva
     privateDNSZoneId: serviceBusPrivateDNSZone.outputs.privateDNSZoneId
     privateEndpointName: serviceBusPrivateEndpoint.outputs.privateEndpointName
   }
+}
+
+//enable send/receive to aca user assigned identity
+resource role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(resourceGroup().id, '${acaIdentity.name}', '090c5cfd-751d-490a-894a-3ce6f1109419')
+  properties: {
+    principalId: acaIdentity.properties.principalId
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')//Azure Service Bus Data Owner
+  }
+  
+  scope: serviceBusNamespace
 }
 
 @description('The name of the service bus namespace.')

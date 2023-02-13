@@ -79,6 +79,7 @@ module serviceBus 'modules/service-bus.bicep' = {
     location: location
     spokeVNetName: spokeVNetName
     servicesSubnetName: servicesSubnetName
+    userManagedIdentityName: userManagedIdentityName
     serviceBusTopicName: serviceBusTopicName
     serviceBusTopicAuthorizationRuleName: serviceBusTopicAuthorizationRuleName
   }
@@ -91,6 +92,7 @@ module cosmosDb 'modules/cosmos-db.bicep' = {
     location: location
     spokeVNetName: spokeVNetName
     servicesSubnetName: servicesSubnetName
+    userManagedIdentityName: userManagedIdentityName
     cosmosDbDatabaseName: cosmosDbDatabaseName
     cosmosDbCollectionName: cosmosDbCollectionName
   }
@@ -108,8 +110,6 @@ module daprComponents 'modules/dapr-components.bicep' = {
     userManagedIdentityName: userManagedIdentityName
     
     serviceBusName: serviceBus.outputs.serviceBusName
-    serviceBusTopicName: serviceBus.outputs.serviceBusTopicName
-    serviceBusTopicAuthorizationRuleName: serviceBus.outputs.serviceBusTopicAuthorizationRuleName
 
     cosmosDbName: cosmosDb.outputs.cosmosDbName
     cosmosDbDatabaseName: cosmosDb.outputs.cosmosDbDatabaseName

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerAppsEnvironmentName": {
+      "value": "ESLZ-ACA-Env"
+    },
+    "vehicleRegistrationServiceName": {
+      "value": "vehicle-registration-service"
+    },
+    "fineCollectionServiceName": {
+      "value": "fine-collection-service"
+    },
+    "trafficControlServiceName": {
+      "value": "traffic-control-service"
+    },
+    "simulationName": {
+      "value": "simulation"
+    },
+    "userManagedIdentityName": {
+      "value": "acaIdentity"
+    },
+    "spokeVNetName": {
+      "value": "VNet-SPOKE"
+    },
+    "servicesSubnetName": {
+      "value": "servicespe"
+    },
+    "serviceBusTopicName": {
+      "value": "test"
+    },
+    "serviceBusTopicAuthorizationRuleName": {
+      "value": "TestTopicSharedAccessKey"
+    },
+    "cosmosDbDatabaseName": {
+      "value": "cosmos-db-fines"
+    },
+    "cosmosDbCollectionName": {
+      "value": "traffic-control-vehicle-state"
+    },
+    "secretStoreComponentName": {
+      "value": "secretstore"
+    },
+    "pubSubComponentName": {
+      "value": "pubsub"
+    },
+    "stateStoreComponentName": {
+      "value": "statestore"
+    },
+    "keyVaultName" : {
+      "value": "<Add Key Vault resource name>"
+    },
+    "fineLicenseKeySecretName": {
+      "value": "license-key"
+    },
+    "fineLicenseKeySecretValue": {
+      "value": "HX783-5PN1G-CRJ4A-K2L7V"
+    },
+    "acrName": {
+      "value": "<ADD CONTAINER REGISTRY NAME>"
+    },
+    "imageTag": {
+      "value": "1.0"
+    }
+  }
+}

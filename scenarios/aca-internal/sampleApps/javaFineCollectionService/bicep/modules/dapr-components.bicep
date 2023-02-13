@@ -2,15 +2,16 @@
 param containerAppsEnvironmentName string
 
 @description('The name of Dapr component for the secret store building block.')
-param secretStoreComponentName string = 'secretstore'
+param secretStoreComponentName string
 @description('The name of Dapr component for the pub/sub building block.')
-param pubSubComponentName string = 'pubsub'
+param pubSubComponentName string
 @description('The name of Dapr component for the state store building block.')
-param stateStoreComponentName string = 'statestore'
+param stateStoreComponentName string
 
 @description('The name of the key vault resource.')
 param keyVaultName string
 
+@description('The name of the user managed identity used to access the keyvault.')
 param userManagedIdentityName string
 
 @description('The name of the service bus namespace.')
@@ -27,14 +28,23 @@ param cosmosDbDatabaseName string
 @description('The name of Cosmos DB\'s collection.')
 param cosmosDbCollectionName string
 
+@description('The name of the service for the fine collection service.')
+param fineCollectionServiceName string
+@description('The name of the service for the traffic control service.')
+param trafficControlServiceName string
+
+@description('The name of the secret containing the license key value for Fine Collection Service.')
+param fineLicenseKeySecretName string
 @secure()
 @description('The license key for Fine Collection Service.')
 param fineLicenseKeySecretValue string
 
-@description('The name of the service for the fine collection service.')
-param fineCollectionServiceName string = 'fine-collection-service'
-@description('The name of the service for the traffic control service.')
-param trafficControlServiceName string = 'traffic-control-service'
+@description('The name of the secret containing service bus connection string.')
+var serviceBusConnectionStringSecretName = 'service-bus-connection-string'
+@description('The name of the secret containing Cosmos DB account URL.')
+var cosmosDbAccountUrlSecretName = 'cosmos-db-account-url'
+@description('Th name of the secret containing Azure Cosmos DB master key.')
+var cosmosDbMasterKeySecretName = 'cosmos-db-master-key'
 
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
   name: containerAppsEnvironmentName
@@ -59,7 +69,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' exis
 // TODO remove this when managed identities are used
 resource serviceBusConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   parent: keyVault
-  name: 'service-bus-connection-string'
+  name: serviceBusConnectionStringSecretName
   properties: {
     value: serviceBusTopicAuthorizationRule.listKeys().primaryConnectionString
   }
@@ -67,7 +77,7 @@ resource serviceBusConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@202
 
 resource cosmosDbAccountUrlSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   parent: keyVault
-  name: 'cosmos-db-account-url'
+  name: cosmosDbAccountUrlSecretName
   properties: {
     value: cosmosDbAccount.properties.documentEndpoint
   }
@@ -75,7 +85,7 @@ resource cosmosDbAccountUrlSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'
 
 resource cosmosDbMasterKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   parent: keyVault
-  name: 'cosmos-db-master-key'
+  name: cosmosDbMasterKeySecretName
   properties: {
     value: cosmosDbAccount.listKeys().primaryMasterKey
   }
@@ -85,7 +95,7 @@ resource cosmosDbMasterKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' 
 // License key secret used by Fine Collection Service
 resource fineLicenseKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   parent: keyVault
-  name: 'license-key'
+  name: fineLicenseKeySecretName
   properties: {
     value: fineLicenseKeySecretValue
   }
@@ -108,8 +118,8 @@ resource secretstoreComponent 'Microsoft.App/managedEnvironments/daprComponents@
       }
     ]
     scopes: [
-      'fine-collection-service'
-      'traffic-control-service'
+      fineCollectionServiceName
+      trafficControlServiceName
     ]
   }
 }
@@ -126,7 +136,7 @@ resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-
     metadata: [
       {
         name: 'connectionString'
-        secretRef: 'service-bus-connection-string'
+        secretRef: serviceBusConnectionStringSecretName
       }
     ]
     secretStoreComponent: secretstoreComponent.name
@@ -148,11 +158,11 @@ resource statestoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2
     metadata: [
       {
         name: 'url'
-        secretRef: 'cosmos-db-account-url'
+        secretRef: cosmosDbAccountUrlSecretName
       }
       {
         name: 'masterKey'
-        secretRef: 'cosmos-db-master-key'
+        secretRef: cosmosDbMasterKeySecretName
       }
       {
         name: 'database'

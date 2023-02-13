@@ -126,7 +126,7 @@ Guidelines on managed identities can be found [here](../../../../../docs/design-
 
 Placeholder for Application Gateway. TODO Update this section
 
-## Application Insights
+## Dapr Telemetry
 
 By setting `daprAIInstrumentationKey` to `true`, Dapr will automatically send telemetry to Application Insights. The screenshot below shows the telemetry sent by Dapr to Application Insights.
 

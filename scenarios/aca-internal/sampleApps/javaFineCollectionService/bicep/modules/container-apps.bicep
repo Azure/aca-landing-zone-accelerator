@@ -44,6 +44,11 @@ resource serviceBusTopicAuthorizationRule 'Microsoft.ServiceBus/namespaces/topic
   name: '${serviceBusName}/${serviceBusTopicName}/${serviceBusTopicAuthorizationRuleName}'
 }
 
+resource serviceBusTopic 'Microsoft.ServiceBus/namespaces/topics@2021-11-01' existing = {
+  name: '${serviceBusName}/${serviceBusTopicName}'
+
+}
+
 resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
   name: vehicleRegistrationServiceName
   location: location
@@ -169,6 +174,7 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
   ]
 }
 
+
 resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' = {
   name: trafficControlServiceName
   location: location
@@ -223,6 +229,19 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
     fineCollectionService
   ]
 }
+
+//enable send to aca using app managed identity.
+resource trafficControlService_sb_role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(resourceGroup().id, '${acaIdentity.name}', '090c5cfd-751d-490a-894a-3ce6f1109419')
+  properties: {
+    principalId: trafficControlService.identity.principalId
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')//Azure Service Bus Data Owner
+  }
+  
+  scope: serviceBusTopic
+}
+
+
 
 resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
   name: simulationName

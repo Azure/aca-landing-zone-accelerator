@@ -96,10 +96,6 @@ resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-
         name: 'namespaceName'
         value: '${serviceBusName}.servicebus.windows.net'
       }
-      {
-        name: 'azureClientId'
-        value: acaIdentity.properties.clientId
-      }
     ]
     scopes: [
       fineCollectionServiceName
@@ -120,10 +116,6 @@ resource statestoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2
       {
         name: 'url'
         value: cosmosDbAccount.properties.documentEndpoint
-      }
-      {
-        name: 'azureClientId'
-        value: acaIdentity.properties.clientId
       }
       {
         name: 'database'

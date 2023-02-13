@@ -159,7 +159,7 @@ resource bastionNSG 'Microsoft.Network/networkSecurityGroups@2020-06-01' = if(de
   }
 }
 
-module updateBastionNSG '../vnet/subnet.bicep' = {
+module updateBastionNSG '../vnet/subnet.bicep' = if(deploybastion) {
     name: 'updateBastionNSG'
     params: {
       subnetName: 'AzureBastionSubnet'

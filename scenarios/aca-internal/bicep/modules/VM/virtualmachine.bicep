@@ -1,4 +1,4 @@
-param subnetId string
+
 param publicKey string
 param vmSize string
 param location string = resourceGroup().location
@@ -9,7 +9,7 @@ param osType string
 var jumpBoxSNNSG = 'nsg-jbox-${location}'
 param VMSubnetName string
 param vnetHubName string
-param vmSubnetAddressPrefix string
+
 
 
 
@@ -21,30 +21,34 @@ resource jumpBoxNSG 'Microsoft.Network/networkSecurityGroups@2020-06-01' = if (o
     ]
   }
 }
-var properties  = {
-    addressPrefix: vmSubnetAddressPrefix
-    networkSecurityGroup: {
-      id: jumpBoxNSG.id
-    }
-  
+
+
+resource subnetVM 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = {
+  name: '${vnetHubName}/${VMSubnetName}'
 }
-module subnet '../vnet/subnet.bicep' = {
-  name: VMSubnetName
+
+module updateVmNSG '../vnet/subnet.bicep' = if (osType == 'linux') {
+  name: 'updateVmNSG'
   params: {
-   properties: properties
-   vnetName: vnetHubName
-   subnetName:VMSubnetName
+    subnetName: VMSubnetName
+    vnetName: vnetHubName
+    properties: {
+     addressPrefix: subnetVM.properties.addressPrefix
+      networkSecurityGroup: {
+        id: jumpBoxNSG.id
+      }
+    }
   }
-  dependsOn:[
+  dependsOn: [  
   ]
 }
 
 
-module jbnic '../vnet/nic.bicep' = {
+module jbnic '../vnet/nic.bicep' = if (osType == 'linux') {
   name: 'jbnic'
   params: {
     location: location
-    subnetId: subnet.outputs.subnetId
+    subnetId: subnetVM.id
   }
   dependsOn:[
   ]

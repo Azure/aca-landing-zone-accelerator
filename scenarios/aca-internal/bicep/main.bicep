@@ -1,42 +1,57 @@
 targetScope = 'subscription'
+@description('Name of the Resource group in which the hub resources will be deployed.')
 param hubRgName string
+@description('Name of the Hub Virtual Network to be created.')
 param vnetHubName string
+@description('CIDR of the Hub Virtual Network.')
 param hubVNETaddPrefixes array
+@description('Hub subnets to created.')
 param hubSubnets array
+
+@description('Azure location to which the resources are to be deployed')
 param location string = deployment().location
 //param deployFW bool
+@description('Select this parameter to be true if you need bastion to be deployed.')
 param deploybastion bool
-// It can be linux or windows ostype for the jumpbox
+@description('Select OS of the jumpbox VM.It can be linux or windows ostype for the jumpbox')
 @allowed([
   'linux'
   'windows'
 ])
 param jumpboxOSType string = 'linux'
-
+@description('Name of the subnet in which your jumpbox VM will be deployed.')
 param VMSubnetName string
-param vmSubnetAddressPrefix string
+@description('Address Prefix of the bastion subnet in which your bastion will be deployed.')
 param BastionSubnetAddressPrefix string
 param pubkeydata string
+@description('Valid SKU indicator for the VM')
 param vmSize string
+@description('The user name to be used as the Administrator for all VMs created by this deployment')
 param adminUsername string
+@description('The password for the Administrator user for all VMs created by this deployment')
 param adminPassword string
 
-
+@description('Name of the Resource group in which the spoke resources will be deployed.')
 param spokeRgName string
+@description('Name of the Spoke Virtual Network to be created.')
 param vnetSpokeName string
+@description('CIDR of the Spoke Virtual Network.')
 param spokeVNETaddPrefixes array
+@description('Soke subnets to created.')
 param spokeSubnets array
+@description('Name of the Network Security group for the subnet in which container app environment will be injected.')
 param nsgACAName string
 
-
+@description('Select this parameter to be true if you need appinsights to be deployed.')
 param deployApplicationInsightsDaprInstrumentation bool
+@description('Name of the subnet in which your container apps will be injected.')
 param acaSubnetName string
-
+@description('Name of the subnet in which application gateway will be injected.')
 var GWSubnetName = 'appGatewaySubnetName'
 
-
-
+@description('Name of the Private Endpoint for your KeyVault.')
 param keyVaultPrivateEndpointName string
+@description('Name of the Private Endpoint for your container registry.')
 param acrPrivateEndpointName string
 
 param privateDNSZoneACRName string
@@ -90,7 +105,7 @@ module vnethub './modules/vnet/vnet.bicep' = {
 }
 
 // Create public IP for bastion. It will be created only if you want to deploy bastion.
-module publicipbastion './modules/VM/publicip.bicep' = {
+module publicipbastion './modules/VM/publicip.bicep' = if (deploybastion) {
   scope: resourceGroup(hubrg.name)
   name: 'publicipbastion'
   params: {
@@ -114,7 +129,7 @@ resource subnetbastion 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' ex
 }
 
 //Create Bastion Resource
-module bastion 'modules/VM/bastion.bicep' =  {
+module bastion 'modules/VM/bastion.bicep' = if (deploybastion) {
   scope: resourceGroup(hubrg.name)
   name: 'bastion'
   params: {
@@ -125,6 +140,11 @@ module bastion 'modules/VM/bastion.bicep' =  {
     bastionAddressPrefix: BastionSubnetAddressPrefix
     vnetHubName: vnetHubName
   }
+  dependsOn: [
+    hubrg
+    vnethub
+    jumpbox
+  ]
 }
 
 
@@ -133,43 +153,43 @@ module bastion 'modules/VM/bastion.bicep' =  {
 // Deploy Virtual Machine in Hub (linux or Windows)
 
 
-resource subnetVM 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = {
-  scope: resourceGroup(hubrg.name)
-  name: '${vnetHubName}/${VMSubnetName}'
-}
-
-module jumpbox 'modules/VM/virtualmachine.bicep' = {
+module jumpbox 'modules/VM/virtualmachine.bicep' = if (jumpboxOSType == 'linux') {
   scope: resourceGroup(hubrg.name)
   name: 'jumpbox'
   params: {
     location: location
-    subnetId: subnetVM.id
     publicKey: pubkeydata
     vmSize: vmSize
     adminUsername: adminUsername
     adminPassword: adminPassword
     osType: jumpboxOSType
-    vmSubnetAddressPrefix: vmSubnetAddressPrefix
     vnetHubName: vnetHubName
     VMSubnetName: VMSubnetName
   }
+  dependsOn: [
+    hubrg
+    vnethub
+  ]
 }
 
-module vm_jumpboxwinvm 'modules/VM/createvmwindows.bicep' = {
+module vm_jumpboxwinvm 'modules/VM/createvmwindows.bicep' = if (jumpboxOSType == 'windows') {
   name: 'vm-jumpbox'
   scope: resourceGroup(hubrg.name)
   params: {
     location: location
-    subnetId: subnetVM.id
     username: adminUsername
     password: adminPassword
     CICDAgentType: 'none'
     vmName: 'jumpbox'
     osType: jumpboxOSType
-    vmSubnetAddressPrefix: vmSubnetAddressPrefix
     vnetHubName: vnetHubName
     VMSubnetName: VMSubnetName
   }
+  dependsOn: [
+    hubrg
+    vnethub
+    bastion
+  ]
 }
 
 

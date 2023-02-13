@@ -13,8 +13,8 @@
           "10.0.0.0/16"
         ]
       },
-      "vmSubnetAddressPrefix": {
-        "value": "10.0.3.0/24"
+      "deploybastion": {
+        "value": true
       },
       "BastionSubnetAddressPrefix": {
         "value": "10.0.2.0/27"
@@ -25,6 +25,12 @@
             "name": "default",
             "properties": {
               "addressPrefix": "10.0.0.0/24"
+            }      
+          },
+          {
+            "name": "vmsubnet",
+            "properties": {
+              "addressPrefix": "10.0.3.0/24"
             }
           }
         ]},
@@ -115,6 +121,9 @@
             },
     "appInsightsName": {
       "value": "eslz-appinsights"
+    },
+    "deployApplicationInsightsDaprInstrumentation": {
+      "value": true
     },
     "jumpboxOSType": {
       "value": "linux" 

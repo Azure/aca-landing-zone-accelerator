@@ -1,4 +1,4 @@
-cd ACA-Landing-Zone-Accelerator/scenarios/acaInternal/bicep/
+cd ACA-Landing-Zone-Accelerator/scenarios/aca-internal/bicep/
 
 # AZ CLI
 # Deploy infrastructure for the App
@@ -8,13 +8,12 @@ az deployment sub create -n "ESLZ-Infra-ACA" -l "EastUS" -f main.bicep -p parame
 # Deploy Azure Container Apps
 
 acrName=$(az deployment sub show -n "ESLZ-Infra-ACA" --query properties.outputs.acrName.value -o tsv)
+
+az deployment sub create -n "ESLZ-App-ACA" -l "EastUS" -f container-app.bicep -p containerapp-params.json -p acrName=$acrName 
+
 keyVaultName=$(az deployment sub show -n "ESLZ-Infra-ACA" --query properties.outputs.keyvaultName.value -o tsv)
-
-az deployment sub create -n "ESLZ-App-ACA" -l "EastUS" -f container-app.bicep -p containerapp-params.json -p acrName=$acrName -p keyvaultName=$keyVaultName
-
-
 # Deploy Application gateway
-az deployment sub create -n "ESLZ-ACA-frontend" -l "EastUS" -f appgateway.bicep -p appgateway-params-main.json
+az deployment group create -g ESLZ-Spoke-RG -n "ESLZ-ACA-frontend" -f appgateway.bicep -p appgateway-params.json
 
 
 # Clean Up

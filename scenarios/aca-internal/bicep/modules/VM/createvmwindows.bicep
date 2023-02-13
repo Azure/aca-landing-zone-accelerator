@@ -2,12 +2,9 @@
 @description('Azure location to which the resources are to be deployed')
 param location string
 
-@description('The full id string identifying the target subnet for the VM')
-param subnetId string
-
 param VMSubnetName string
 param vnetHubName string
-param vmSubnetAddressPrefix string
+
 
 @description('Disk type of the IS disk')
 param osDiskType string = 'Standard_LRS'
@@ -56,12 +53,17 @@ param artifactsLocation string = 'https://raw.githubusercontent.com/Azure/apim-l
 var AgentName = 'agent-${vmName}'
 var jumpBoxSNNSG = 'nsg-jbox-${location}'
 
+resource subnetVM 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = {
+  name: '${vnetHubName}/${VMSubnetName}'
+}
+
+
 // Bring in the nic
 module nic '../vnet/nic.bicep' = {
   name: '${vmName}-nic'
   params: {
     location: location
-    subnetId: subnet.outputs.subnetId
+    subnetId: subnetVM.id
   }
 }
 
@@ -126,7 +128,8 @@ resource vm_CustomScript 'Microsoft.Compute/virtualMachines/extensions@2021-04-0
   }
 }
 
-resource jumpBoxNSG 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
+
+resource jumpBoxNSG 'Microsoft.Network/networkSecurityGroups@2020-06-01' = if (osType == 'windows') {
   name: jumpBoxSNNSG
   location: location
   properties: {
@@ -134,22 +137,26 @@ resource jumpBoxNSG 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
     ]
   }
 }
-var properties  = {
-    addressPrefix: vmSubnetAddressPrefix
-    networkSecurityGroup: {
-      id: jumpBoxNSG.id
+
+
+
+
+module updateVmNSG '../vnet/subnet.bicep' = {
+  name: 'updateVmNSG'
+  params: {
+    subnetName: VMSubnetName
+    vnetName: vnetHubName
+    properties: {
+     addressPrefix: subnetVM.properties.addressPrefix
+      networkSecurityGroup: {
+        id: jumpBoxNSG.id
+      }
     }
+  }
+  dependsOn: [  
+  ]
 }
 
-module subnet '../vnet/subnet.bicep' = {
- // name: '${vnetHubName}/${VMSubnetName}'
- name: VMSubnetName
-  params: {
-   properties: properties
-   vnetName: vnetHubName
-   subnetName:VMSubnetName
-  }
-}
 
 
 // outputs

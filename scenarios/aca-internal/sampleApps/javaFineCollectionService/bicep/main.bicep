@@ -146,4 +146,7 @@ module containerApps 'modules/container-apps.bicep' = {
     trafficControlServiceImageName: trafficControlServiceImageName
     simulationImageName: simulationImageName
   }
+  dependsOn: [
+    daprComponents
+  ]
 }

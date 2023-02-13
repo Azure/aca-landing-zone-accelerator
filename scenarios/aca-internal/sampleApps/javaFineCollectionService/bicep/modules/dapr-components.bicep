@@ -94,7 +94,7 @@ resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-
     metadata: [
       {
         name: 'namespaceName'
-        secretRef: '${serviceBusName}.servicebus.windows.net'
+        value: '${serviceBusName}.servicebus.windows.net'
       }
       {
         name: 'azureClientId'

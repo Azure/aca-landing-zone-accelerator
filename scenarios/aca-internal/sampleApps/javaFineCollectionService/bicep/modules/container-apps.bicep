@@ -23,16 +23,14 @@ param serviceBusTopicAuthorizationRuleName string
 
 @description('The name of the Azure Container Registry.')
 param acrName string
-@description('The tag of the images.')
-param imagesTag string = 'latest'
-@description('The name of the image for the vehicle registration service.')
-param vehicleRegistrationServiceImageName string
-@description('The name of the image for the fine collection service.')
-param fineCollectionServiceImageName string
-@description('The name of the image for the traffic control service.')
-param trafficControlServiceImageName string
-@description('The name of the image for the simulation.')
-param simulationImageName string
+@description('The image for the vehicle registration service.')
+param vehicleRegistrationServiceImage string
+@description('The image for the fine collection service.')
+param fineCollectionServiceImage string
+@description('The image for the traffic control service.')
+param trafficControlServiceImage string
+@description('The image for the simulation.')
+param simulationImage string
 
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
   name: containerAppsEnvironmentName
@@ -77,7 +75,7 @@ resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
       containers: [
         {
           name: vehicleRegistrationServiceName
-          image: '${acrName}.azurecr.io/${vehicleRegistrationServiceImageName}:${imagesTag}'
+          image: vehicleRegistrationServiceImage
           resources: {
             cpu: json('0.5')
             memory: '1.0Gi'
@@ -128,7 +126,7 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
       containers: [
         {
           name: fineCollectionServiceName
-          image: '${acrName}.azurecr.io/${fineCollectionServiceImageName}:${imagesTag}'
+          image: fineCollectionServiceImage
           resources: {
             cpu: json('0.5')
             memory: '1.0Gi'
@@ -208,7 +206,7 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
       containers: [
         {
           name: trafficControlServiceName
-          image: '${acrName}.azurecr.io/${trafficControlServiceImageName}:${imagesTag}'
+          image: trafficControlServiceImage
           resources: {
             cpu: json('0.5')
             memory: '1.0Gi'
@@ -252,7 +250,7 @@ resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
       containers: [
         {
           name: simulationName
-          image: '${acrName}.azurecr.io/${simulationImageName}:${imagesTag}'
+          image: simulationImage
           resources: {
             cpu: json('0.5')
             memory: '1.0Gi'

@@ -122,6 +122,10 @@ resource statestoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2
         value: cosmosDbAccount.properties.documentEndpoint
       }
       {
+        name: 'azureClientId'
+        value: acaIdentity.properties.clientId
+      }
+      {
         name: 'database'
         value: cosmosDbDatabaseName
       }

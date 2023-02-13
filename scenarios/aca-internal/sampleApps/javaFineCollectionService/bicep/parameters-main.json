@@ -59,8 +59,17 @@
     "acrName": {
       "value": "<ADD CONTAINER REGISTRY NAME>"
     },
-    "imagesTag": {
-      "value": "1.0"
+    "vehicleRegistrationServiceImage": {
+      "value": "<ADD CONTAINER REGISTRY NAME>.azurecr.io/vehicle-registration-service:1.0"
+    },
+    "fineCollectionServiceImage": {
+      "value": "<ADD CONTAINER REGISTRY NAME>.azurecr.io/fine-collection-service:1.0"
+    },
+    "trafficControlServiceImage": {
+      "value": "<ADD CONTAINER REGISTRY NAME>.azurecr.io/traffic-control-service:1.0"
+    },
+    "simulationImage": {
+      "value": "<ADD CONTAINER REGISTRY NAME>.azurecr.io/simulation:1.0"
     }
   }
 }

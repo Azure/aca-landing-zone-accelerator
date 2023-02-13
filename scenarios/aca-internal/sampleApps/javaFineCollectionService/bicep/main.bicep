@@ -56,16 +56,14 @@ param fineLicenseKeySecretValue string
 // Container apps
 @description('The name of the Azure Container Registry.')
 param acrName string
-@description('The tag of the images.')
-param imagesTag string = 'latest'
-@description('The name of the image for the vehicle registration service.')
-param vehicleRegistrationServiceImageName string = 'vehicle-registration-service'
-@description('The name of the image for the fine collection service.')
-param fineCollectionServiceImageName string = 'fine-collection-service'
-@description('The name of the image for the traffic control service.')
-param trafficControlServiceImageName string = 'traffic-control-service'
-@description('The name of the image for the simulation.')
-param simulationImageName string = 'simulation'
+@description('The image for the vehicle registration service.')
+param vehicleRegistrationServiceImage string
+@description('The image for the fine collection service.')
+param fineCollectionServiceImage string
+@description('The image for the traffic control service.')
+param trafficControlServiceImage string
+@description('The image for the simulation.')
+param simulationImage string
 
 @description('The name of the deployment of the Dapr components.')
 var daprComponentsDeploymentName = 'dapr-components-deployment'
@@ -140,11 +138,10 @@ module containerApps 'modules/container-apps.bicep' = {
     serviceBusTopicAuthorizationRuleName: serviceBus.outputs.serviceBusTopicAuthorizationRuleName
 
     acrName: acrName
-    imagesTag: imagesTag
-    vehicleRegistrationServiceImageName: vehicleRegistrationServiceImageName
-    fineCollectionServiceImageName: fineCollectionServiceImageName
-    trafficControlServiceImageName: trafficControlServiceImageName
-    simulationImageName: simulationImageName
+    vehicleRegistrationServiceImage: vehicleRegistrationServiceImage
+    fineCollectionServiceImage: fineCollectionServiceImage
+    trafficControlServiceImage: trafficControlServiceImage
+    simulationImage: simulationImage
   }
   dependsOn: [
     daprComponents

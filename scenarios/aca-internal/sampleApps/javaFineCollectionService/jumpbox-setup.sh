@@ -25,13 +25,13 @@ sudo ln -s /opt/apache-maven-3.8.7 /opt/maven
 
 # FIXME: the file is not created, move to .bashrc
 sudo su
-echo "export JAVA_HOME=/usr/lib/jvm/msopenjdk-17-amd64" > /etc/profile.d/maven.sh
-echo "export M2_HOME=/opt/maven" >> /etc/profile.d/maven.sh
-echo "export MAVEN_HOME=/opt/maven" >> /etc/profile.d/maven.sh
-echo "export PATH=${M2_HOME}/bin:${PATH}" >> /etc/profile.d/maven.sh
+echo "export JAVA_HOME=/usr/lib/jvm/msopenjdk-17-amd64" > ~/.bashrc
+echo "export M2_HOME=/opt/maven" >> ~/.bashrc
+echo "export MAVEN_HOME=/opt/maven" >> ~/.bashrc
+echo "export PATH=${M2_HOME}/bin:${PATH}" >> ~/.bashrc
 exit
 
-source /etc/profile.d/maven.sh
+source ~/.bashrc
 
 # Install Docker
 sudo apt-get remove docker docker-engine docker.io containerd runc

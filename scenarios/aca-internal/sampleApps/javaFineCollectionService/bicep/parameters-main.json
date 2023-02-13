@@ -59,7 +59,7 @@
     "acrName": {
       "value": "<ADD CONTAINER REGISTRY NAME>"
     },
-    "imageTag": {
+    "imagesTag": {
       "value": "1.0"
     }
   }

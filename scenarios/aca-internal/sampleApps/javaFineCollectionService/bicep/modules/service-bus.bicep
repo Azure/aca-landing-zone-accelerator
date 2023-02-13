@@ -45,7 +45,7 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-01-01-preview
   }
 
   properties: {
-    disableLocalAuth: false // TODO should not allow local auth with SAS token
+    disableLocalAuth: false
     publicNetworkAccess: 'Disabled'
   }
 }

@@ -25,7 +25,7 @@ sudo ln -s /opt/apache-maven-3.8.7 /opt/maven
 
 # FIXME: the file is not created, move to .bashrc
 sudo su
-echo "export JAVA_HOME=/usr/lib/jvm/msopenjdk-17-amd64" > ~/.bashrc
+echo "export JAVA_HOME=/usr/lib/jvm/msopenjdk-17-amd64" >> ~/.bashrc
 echo "export M2_HOME=/opt/maven" >> ~/.bashrc
 echo "export MAVEN_HOME=/opt/maven" >> ~/.bashrc
 echo "export PATH=${M2_HOME}/bin:${PATH}" >> ~/.bashrc

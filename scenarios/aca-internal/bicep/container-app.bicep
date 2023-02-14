@@ -5,7 +5,7 @@ param useExternalIngress bool
 param containerPort int
 param acaIdentityName string 
 param envVars array = []
-param containerEnvname string
+param containerEnvName string
 param acrName string //User to provide each time
 
 
@@ -20,7 +20,7 @@ resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-3
   }
 
   resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
-    name: containerEnvname
+    name: containerEnvName
   }
 
   resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {

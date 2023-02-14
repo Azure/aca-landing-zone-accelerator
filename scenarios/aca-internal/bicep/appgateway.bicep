@@ -12,12 +12,14 @@ param keyvaultName string
 @description('Set to selfsigned if self signed certificates should be used for the Application Gateway. Set to custom and copy the pfx file to deployment/bicep/gateway/certs/appgw.pfx if custom certificates are to be used')
 param appGatewayCertType string
 param spokeRgName string 
-var GWVNetSubnetName = 'appGatewaySubnetName'
 param vnetSpokeName string
+
+var gwVnetSubnetName = 'appGatewaySubnetName'
+
 
 resource subnetAppGW 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
   // scope: resourceGroup(rgName)
-   name: '${vnetSpokeName}/${GWVNetSubnetName}'
+   name: '${vnetSpokeName}/${gwVnetSubnetName}'
  }
 
  resource containerApp 'Microsoft.App/containerApps@2022-03-01' existing = {
@@ -26,7 +28,7 @@ resource subnetAppGW 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' exis
 
 
 
-module appgwModule './modules/appgw/appgw.bicep' = {
+module appgwModule './modules/app-gw/app-gw.bicep' = {
   name: 'appgwDeploy'
   //scope: rgName
   dependsOn: [

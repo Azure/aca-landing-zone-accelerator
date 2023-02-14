@@ -4,7 +4,7 @@ param hubRgName string
 @description('Name of the Hub Virtual Network to be created.')
 param vnetHubName string
 @description('CIDR of the Hub Virtual Network.')
-param hubVNETaddPrefixes array
+param hubVnetAddressPrefix array
 @description('Hub subnets to created.')
 param hubSubnets array
 
@@ -12,18 +12,18 @@ param hubSubnets array
 param location string = deployment().location
 //param deployFW bool
 @description('Select this parameter to be true if you need bastion to be deployed.')
-param deploybastion bool
+param deployBastion bool
 @description('Select OS of the jumpbox VM.It can be linux or windows ostype for the jumpbox')
 @allowed([
   'linux'
   'windows'
 ])
-param jumpboxOSType string = 'linux'
+param jumpboxOsType string = 'linux'
 @description('Name of the subnet in which your jumpbox VM will be deployed.')
-param VMSubnetName string
+param vmSubnetName string
 @description('Address Prefix of the bastion subnet in which your bastion will be deployed.')
-param BastionSubnetAddressPrefix string
-param pubkeydata string
+param bastionSubnetAddressPrefix string
+param publicKeyData string
 @description('Valid SKU indicator for the VM')
 param vmSize string
 @description('The user name to be used as the Administrator for all VMs created by this deployment')
@@ -36,26 +36,26 @@ param spokeRgName string
 @description('Name of the Spoke Virtual Network to be created.')
 param vnetSpokeName string
 @description('CIDR of the Spoke Virtual Network.')
-param spokeVNETaddPrefixes array
+param spokeVnetAddressPrefix array
 @description('Soke subnets to created.')
 param spokeSubnets array
 @description('Name of the Network Security group for the subnet in which container app environment will be injected.')
-param nsgACAName string
+param nsgAcaName string
 
 @description('Select this parameter to be true if you need appinsights to be deployed.')
 param deployApplicationInsightsDaprInstrumentation bool
 @description('Name of the subnet in which your container apps will be injected.')
 param acaSubnetName string
 @description('Name of the subnet in which application gateway will be injected.')
-var GWSubnetName = 'appGatewaySubnetName'
+var gwSubnetName = 'appGatewaySubnetName'
 
 @description('Name of the Private Endpoint for your KeyVault.')
 param keyVaultPrivateEndpointName string
 @description('Name of the Private Endpoint for your container registry.')
 param acrPrivateEndpointName string
 
-param privateDNSZoneACRName string
-param privateDNSZoneKVName string
+param privateDnsZoneAcrName string
+param privateDnsZoneKvName string
 param acrName string = 'eslzacr${uniqueString('acrvws',utcNow('u'))}'
 param keyvaultName string = 'eslz-kv-${uniqueString('acrvws',utcNow('u'))}'
 param appInsightsName string
@@ -66,9 +66,9 @@ param appInsightsName string
 
 
 
-param containerEnvname string
+param containerEnvName string
 
-param acalaWorkspaceName string
+param acaLaWorkspaceName string
 param peSubnetName string
 param acaIdentityName string
 
@@ -94,7 +94,7 @@ module vnethub './modules/vnet/vnet.bicep' = {
   params: {
     location: location
     vnetAddressSpace: {
-        addressPrefixes: hubVNETaddPrefixes
+        addressPrefixes: hubVnetAddressPrefix
     }
     vnetName: vnetHubName
     subnets: hubSubnets
@@ -105,13 +105,13 @@ module vnethub './modules/vnet/vnet.bicep' = {
 }
 
 // Create public IP for bastion. It will be created only if you want to deploy bastion.
-module publicipbastion './modules/VM/publicip.bicep' = if (deploybastion) {
+module publicipbastion './modules/vm/public-ip.bicep' = if (deployBastion) {
   scope: resourceGroup(hubrg.name)
   name: 'publicipbastion'
   params: {
     location: location
     publicipName: 'bastion-pip'
-    deploybastion: deploybastion
+    deploybastion: deployBastion
     publicipproperties: {
       publicIPAllocationMethod: 'Static'
     }
@@ -123,21 +123,21 @@ module publicipbastion './modules/VM/publicip.bicep' = if (deploybastion) {
 }
 
 
-resource subnetbastion 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = if (deploybastion) {
+resource subnetbastion 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = if (deployBastion) {
   scope: resourceGroup(hubrg.name)
   name: '${vnetHubName}/AzureBastionSubnet'
 }
 
 //Create Bastion Resource
-module bastion 'modules/VM/bastion.bicep' = if (deploybastion) {
+module bastion 'modules/vm/bastion.bicep' = if (deployBastion) {
   scope: resourceGroup(hubrg.name)
   name: 'bastion'
   params: {
     location: location
     bastionpipId: publicipbastion.outputs.publicipId
     subnetId: subnetbastion.id
-    deploybastion: deploybastion
-    bastionAddressPrefix: BastionSubnetAddressPrefix
+    deploybastion: deployBastion
+    bastionAddressPrefix: bastionSubnetAddressPrefix
     vnetHubName: vnetHubName
   }
   dependsOn: [
@@ -153,18 +153,18 @@ module bastion 'modules/VM/bastion.bicep' = if (deploybastion) {
 // Deploy Virtual Machine in Hub (linux or Windows)
 
 
-module jumpbox 'modules/VM/virtualmachine.bicep' = if (jumpboxOSType == 'linux') {
+module jumpbox 'modules/vm/virtual-machine.bicep' = if (jumpboxOsType == 'linux') {
   scope: resourceGroup(hubrg.name)
   name: 'jumpbox'
   params: {
     location: location
-    publicKey: pubkeydata
+    publicKey: publicKeyData
     vmSize: vmSize
     adminUsername: adminUsername
     adminPassword: adminPassword
-    osType: jumpboxOSType
+    osType: jumpboxOsType
     vnetHubName: vnetHubName
-    VMSubnetName: VMSubnetName
+    VMSubnetName: vmSubnetName
   }
   dependsOn: [
     hubrg
@@ -172,7 +172,7 @@ module jumpbox 'modules/VM/virtualmachine.bicep' = if (jumpboxOSType == 'linux')
   ]
 }
 
-module vm_jumpboxwinvm 'modules/VM/createvmwindows.bicep' = if (jumpboxOSType == 'windows') {
+module vm_jumpboxwinvm 'modules/vm/create-vm-windows.bicep' = if (jumpboxOsType == 'windows') {
   name: 'vm-jumpbox'
   scope: resourceGroup(hubrg.name)
   params: {
@@ -181,9 +181,9 @@ module vm_jumpboxwinvm 'modules/VM/createvmwindows.bicep' = if (jumpboxOSType ==
     password: adminPassword
     CICDAgentType: 'none'
     vmName: 'jumpbox'
-    osType: jumpboxOSType
+    osType: jumpboxOsType
     vnetHubName: vnetHubName
-    VMSubnetName: VMSubnetName
+    VMSubnetName: vmSubnetName
   }
   dependsOn: [
     hubrg
@@ -213,7 +213,7 @@ module vnetspoke 'modules/vnet/vnet.bicep' = {
   params: {
     location: location
     vnetAddressSpace: {
-      addressPrefixes: spokeVNETaddPrefixes
+      addressPrefixes: spokeVnetAddressPrefix
     }
     vnetName: vnetSpokeName
     subnets: spokeSubnets
@@ -224,16 +224,16 @@ module vnetspoke 'modules/vnet/vnet.bicep' = {
   ]
 }
 
-module nsgacasubnet 'modules/vnet/acansg.bicep' = {
+module nsgacasubnet 'modules/vnet/aca-nsg.bicep' = {
   scope: resourceGroup(spokerg.name)
-  name: nsgACAName
+  name: nsgAcaName
   params: {
     location: location
-    nsgName: nsgACAName
+    nsgName: nsgAcaName
   }
 }
 
-module nsggwsubnet 'modules/vnet/appgwnsg.bicep' = {
+module nsggwsubnet 'modules/vnet/app-gw-nsg.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'nsggwsubnet'
   params: {
@@ -242,7 +242,7 @@ module nsggwsubnet 'modules/vnet/appgwnsg.bicep' = {
 }
 
 
-module vnetpeeringhub 'modules/vnet/vnetpeering.bicep' = {
+module vnetpeeringhub 'modules/vnet/vnet-peering.bicep' = {
   scope: resourceGroup(hubrg.name)
   name: 'vnetpeeringhub'
   params: {
@@ -262,7 +262,7 @@ module vnetpeeringhub 'modules/vnet/vnetpeering.bicep' = {
   ]
 }
 
-module vnetpeeringspoke 'modules/vnet/vnetpeering.bicep' = {
+module vnetpeeringspoke 'modules/vnet/vnet-peering.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'vnetpeeringspoke'
   params: {
@@ -284,7 +284,7 @@ module vnetpeeringspoke 'modules/vnet/vnetpeering.bicep' = {
 
 
 
- module privatednsACRZone 'modules/vnet/privatednszone.bicep' = {
+ module privatednsACRZone 'modules/vnet/private-dns-zone.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privatednsACRZone'
   params: {
@@ -292,7 +292,7 @@ module vnetpeeringspoke 'modules/vnet/vnetpeering.bicep' = {
   }
 }
 
-module privateDNSLinkACR 'modules/vnet/privatednslink.bicep' = {
+module privateDNSLinkACR 'modules/vnet/private-dns-link.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privateDNSLinkACR'
   params: {
@@ -302,7 +302,7 @@ module privateDNSLinkACR 'modules/vnet/privatednslink.bicep' = {
   }
 }
 
-module privateDNSLinkACRspoke 'modules/vnet/privatednslink.bicep' = {
+module privateDNSLinkACRspoke 'modules/vnet/private-dns-link.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privateDNSLinkACRspoke'
   params: {
@@ -313,7 +313,7 @@ module privateDNSLinkACRspoke 'modules/vnet/privatednslink.bicep' = {
  
 }
 
-module privatednsVaultZone 'modules/vnet/privatednszone.bicep' = {
+module privatednsVaultZone 'modules/vnet/private-dns-zone.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privatednsVaultZone'
   params: {
@@ -321,7 +321,7 @@ module privatednsVaultZone 'modules/vnet/privatednszone.bicep' = {
   }
 }
 
-module privateDNSLinkVault 'modules/vnet/privatednslink.bicep' = {
+module privateDNSLinkVault 'modules/vnet/private-dns-link.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privateDNSLinkVault'
   params: {
@@ -331,7 +331,7 @@ module privateDNSLinkVault 'modules/vnet/privatednslink.bicep' = {
   }
 }
 
-module privateDNSLinkVaultspoke 'modules/vnet/privatednslink.bicep' = {
+module privateDNSLinkVaultspoke 'modules/vnet/private-dns-link.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privateDNSLinkVaultspoke'
   params: {
@@ -370,7 +370,7 @@ module updateGWNSG 'modules/vnet/subnet.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'updateGWNSG'
   params: {
-    subnetName: GWSubnetName
+    subnetName: gwSubnetName
     vnetName: vnetSpokeName
     properties: {
       addressPrefix: spokeSubnets[2].properties.addressPrefix
@@ -421,7 +421,7 @@ resource servicesSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' e
   name: '${vnetSpokeName}/${peSubnetName}'
 }
 
-module privateEndpointKeyVault 'modules/vnet/privateendpoint.bicep' = {
+module privateEndpointKeyVault 'modules/vnet/private-endpoint.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: keyVaultPrivateEndpointName
   params: {
@@ -436,7 +436,7 @@ module privateEndpointKeyVault 'modules/vnet/privateendpoint.bicep' = {
   }
 }
 
-module privateEndpointAcr 'modules/vnet/privateendpoint.bicep' = {
+module privateEndpointAcr 'modules/vnet/private-endpoint.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: acrPrivateEndpointName
   params: {
@@ -455,10 +455,10 @@ module privateEndpointAcr 'modules/vnet/privateendpoint.bicep' = {
 
 resource privateDNSZoneACR 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   scope: resourceGroup(spokerg.name)
-  name: privateDNSZoneACRName
+  name: privateDnsZoneAcrName
 }
 
-module privateEndpointACRDNSSetting 'modules/vnet/privatedns.bicep' = {
+module privateEndpointACRDNSSetting 'modules/vnet/private-dns.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'acr-pvtep-dns'
   params: {
@@ -469,10 +469,10 @@ module privateEndpointACRDNSSetting 'modules/vnet/privatedns.bicep' = {
 
 resource privateDNSZoneKV 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   scope: resourceGroup(spokerg.name)
-  name: privateDNSZoneKVName
+  name: privateDnsZoneKvName
 }
 
-module privateEndpointKVDNSSetting 'modules/vnet/privatedns.bicep' = {
+module privateEndpointKVDNSSetting 'modules/vnet/private-dns.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'kv-pvtep-dns'
   params: {
@@ -483,7 +483,7 @@ module privateEndpointKVDNSSetting 'modules/vnet/privatedns.bicep' = {
 
 
 
-module acaIdentity 'modules/Identity/userassigned.bicep' = {
+module acaIdentity 'modules/identity/user-assigned.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'acaIdentity'
   params: {
@@ -507,11 +507,11 @@ module acalaworkspace 'modules/laworkspace/la.bicep' = {
   name: 'acalaworkspace'
   params: {
     location: location
-    workspaceName: acalaWorkspaceName
+    workspaceName: acaLaWorkspaceName
   }
 }
 
-module acaApplicationInsights 'modules/appinsights/ai.bicep' = if (deployApplicationInsightsDaprInstrumentation) {
+module acaApplicationInsights 'modules/app-insights/ai.bicep' = if (deployApplicationInsightsDaprInstrumentation) {
   scope: resourceGroup(spokerg.name)
   name: 'acaAppInsights'
   params: {
@@ -526,10 +526,10 @@ module containerAppEnvironment 'modules/aca/container-app-env.bicep' = {
   scope: resourceGroup(spokerg.name)
    name: 'ACA-env-Deploy'
     params: {
-        name: containerEnvname
+        name: containerEnvName
         location: location
         infrasubnet: '${vnetspoke.outputs.vnetId}/subnets/${acaSubnetName}'
-        workspaceName: acalaWorkspaceName
+        workspaceName: acaLaWorkspaceName
         applicationInsightsName: (deployApplicationInsightsDaprInstrumentation ?  acaApplicationInsights.outputs.appInsightsName : '')
        // runtimesubnet: spokenetwork.outputs.infrasubnet
     }
@@ -539,7 +539,7 @@ module containerAppEnvironment 'modules/aca/container-app-env.bicep' = {
 }
 
 
-module acracaaccess 'modules/Identity/acrrole.bicep' = {
+module acracaaccess 'modules/identity/acr-role.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'acracaaccess'
   params: {
@@ -556,7 +556,7 @@ module acracaaccess 'modules/Identity/acrrole.bicep' = {
 
 
 
-module keyvaultAccessPolicy 'modules/keyvault/keyvaultaccess.bicep' = {
+module keyvaultAccessPolicy 'modules/keyvault/keyvault-access.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'acakeyvaultaddonaccesspolicy'
   params: {
@@ -566,7 +566,7 @@ module keyvaultAccessPolicy 'modules/keyvault/keyvaultaccess.bicep' = {
   }
 }
 
-module acadnszone 'modules/vnet/privatednszone.bicep' = {
+module acadnszone 'modules/vnet/private-dns-zone.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privatednsACAZone'
   params: {
@@ -575,7 +575,7 @@ module acadnszone 'modules/vnet/privatednszone.bicep' = {
   
 }
 
-module privateDNSLinkACAHub 'modules/vnet/privatednslink.bicep' = {
+module privateDNSLinkACAHub 'modules/vnet/private-dns-link.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privateDNSLinkACAHub'
   params: {
@@ -588,7 +588,7 @@ module privateDNSLinkACAHub 'modules/vnet/privatednslink.bicep' = {
   ]
 }
 
-module privateDNSLinkACAspoke 'modules/vnet/privatednslink.bicep' = {
+module privateDNSLinkACAspoke 'modules/vnet/private-dns-link.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privateDNSLinkACAspoke'
   params: {
@@ -601,7 +601,7 @@ module privateDNSLinkACAspoke 'modules/vnet/privatednslink.bicep' = {
   ]
 }
 
-module record 'modules/vnet/Arecord.bicep' = {
+module record 'modules/vnet/a-record.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'recordNameArecord'
   params: {

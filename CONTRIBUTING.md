@@ -62,41 +62,35 @@ Below you can see the selected folder structure for the project. The main folder
     To avoid duplication of code modules/artifacts, we store all scripts, modules or coding artifacts in general, in this subfolder. This folder can have more depth, i.e. one folder for every deployment method (i.e. bicep, terraform etc) as shown below in the sample folder structure. Contains also a README.md file that gives details of the shared modules/scripts to help end-users understand their functionality. 
 
 ``` bash
-docs
-├── design-areas
-│   ├── **/*.md
-├── media
-|   ├── scenario1
-│   |   ├── **/*.png
-│   |   ├── **/*.vsdx
-sample-apps
-├── sample-app1
-├── sample-app2
 scenarios
-├── scenario1
-│   ├── bicep
-│   |   ├── **/*.azcli
-│   |   ├── **/*.bicep
-│   |   ├── **/*.json
-│   |   ├── README.md
-│   ├── terraform
-│   ├── README.md
-├── scenario2
-│   ├── bicep
-│   |   ├── **/*.azcli
-│   |   ├── **/*.bicep
-│   |   ├── **/*.json
-│   |   ├── README.md
-│   ├── terraform
-│   ├── README.md
-├── shared
-│   ├── bicep
-│   │   ├── modules
-│   ├── terraform
-│   │   ├── modules
-│   ├── vm-script.ps1
-README.md
-CONTIBUTING.md
+├── 01-aca-secure-baseline-internal-environment
+    ├── arm
+    ├── apps
+      ├── javafinecollectionapp
+         ├── bicep (only specific to this app. think of this as yaml files in AKS)
+         ├── readme.md
+      ├── dotnetacasampleapp
+         ├── bicep (only specific to this app)
+         ├── readme.md
+    ├── bicep
+        ├── 01-networkhub
+          ├── modules
+          ├── main.bicep
+          ├── 01-networkhub.md
+        ├── 02-networklz
+           ├── 02-networklz.md
+        ├── 03-aca-env
+           ├── 03-aca-env.md
+        ├── 04-aca-supporting
+           ├── 04-aca-supporting.md
+        ├── 05-appgw
+           ├── 05-appgw.md
+        ├── 06-shared
+           ├── modules
+    ├── terraform
+    ├── media
+    ├── readme.md
+├── 02-aca-secure-baseline-scenario-bluegreen
 .gitignore
 ```
 

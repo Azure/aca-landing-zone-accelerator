@@ -1,4 +1,4 @@
-# Create resources for the ACA C
+# Create resources for the ACA
 
 The following will be created:
 

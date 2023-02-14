@@ -202,9 +202,6 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
   location: location
   identity: {
     type: 'SystemAssigned'
-    userAssignedIdentities: {
-        '${acaIdentity.id}': {}
-    }
   }
   properties: {
     managedEnvironmentId: containerAppsEnvironment.id
@@ -265,7 +262,7 @@ resource trafficControlService_sb_role_assignment 'Microsoft.Authorization/roleA
 
 //assign cosmosdb account read/write access to aca user assigned identity
 resource trafficControlService_cosmosdb_role_assignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2022-08-15' = {
-  name: guid(subscription().id, '${acaIdentity.name}', '00000000-0000-0000-0000-000000000002')
+  name: guid(subscription().id, trafficControlServiceName, '00000000-0000-0000-0000-000000000002')
   parent: cosmosDbAccount
   properties: {
     principalId: acaIdentity.properties.principalId

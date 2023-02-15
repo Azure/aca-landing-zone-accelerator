@@ -70,6 +70,12 @@ resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@20
 resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
   name: vehicleRegistrationServiceName
   location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+        '${acaIdentity.id}': {}
+    }
+  }
   properties: {
     managedEnvironmentId: containerAppsEnvironment.id
     configuration: {
@@ -111,7 +117,7 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
   name: fineCollectionServiceName
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'SystemAssigned,UserAssigned'
     userAssignedIdentities: {
         '${acaIdentity.id}': {}
     }
@@ -186,12 +192,12 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
   ]
 }
 
-//enable consume from servicebus using app managed identity.
+//enable consume from servicebus using app managed identity. Data owner is required to let dapr create the topic suscription.
 resource fineCollectionService_sb_role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(resourceGroup().id, fineCollectionServiceName, '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
+  name: guid(resourceGroup().id, fineCollectionServiceName, '090c5cfd-751d-490a-894a-3ce6f1109419')
   properties: {
     principalId: fineCollectionService.identity.principalId
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')//Azure Service Bus Data Receiver
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')//Azure Service Bus Data Owner.
   }
   
   scope: serviceBusTopic
@@ -201,7 +207,10 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
   name: trafficControlServiceName
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'SystemAssigned,UserAssigned'
+    userAssignedIdentities: {
+      '${acaIdentity.id}': {}
+  }
   }
   properties: {
     managedEnvironmentId: containerAppsEnvironment.id
@@ -265,15 +274,21 @@ resource trafficControlService_cosmosdb_role_assignment 'Microsoft.DocumentDB/da
   name: guid(subscription().id, trafficControlServiceName, '00000000-0000-0000-0000-000000000002')
   parent: cosmosDbAccount
   properties: {
-    principalId: acaIdentity.properties.principalId
+    principalId: trafficControlService.identity.principalId
     roleDefinitionId:  resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', cosmosDbAccount.name, '00000000-0000-0000-0000-000000000002')//DocumentDB Data Contributor
-    scope:cosmosDbDatabase.id
+    scope:cosmosDbAccount.id
   }
 }
 
 resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
   name: simulationName
   location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+        '${acaIdentity.id}': {}
+    }
+  }
   properties: {
     managedEnvironmentId: containerAppsEnvironment.id
     configuration: {

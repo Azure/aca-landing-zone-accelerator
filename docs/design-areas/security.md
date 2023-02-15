@@ -9,8 +9,8 @@ Most of this content is technology-agnostic, because implementation varies among
 The security profile summarizes high-impact behaviors of Azure Container Apps, which may result in increased security considerations.  When a workload or the landing zones that hosts it require access to any sensitive data or critical systems, it's important to protect the data and assets.
 
 ### Azure Container  Apps Landing Zone - Topology
-Public:
-<img width="1042" alt="ACA Hub and Spoke Architecure" src="./docs/media/acaInternal/aca-internal.png">
+
+![ACA Hub and Spoke architecture](./docs/media/acaInternal/aca-internal.png)
 
 ### Azure Container Apps Landing Zone - Azure Components
 Pending 

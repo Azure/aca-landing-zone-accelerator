@@ -96,6 +96,10 @@ resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-
         name: 'namespaceName'
         value: '${serviceBusName}.servicebus.windows.net'
       }
+      {
+        name: 'disableEntityManagement'
+        value: 'true'
+      }
     ]
     scopes: [
       fineCollectionServiceName

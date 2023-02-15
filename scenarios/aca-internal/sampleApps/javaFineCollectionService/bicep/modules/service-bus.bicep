@@ -22,6 +22,9 @@ param serviceBusPrivateDNSZoneName string = 'sb-pvt-dns'
 @description('The name of service bus\' private dns zone link to spoke VNET.')
 param serviceBusPrivateDNSLinkSpokeName string = 'sb-pvt-dns-link-spoke'
 
+@description('The name of the service for the fine collection service. This will be used to create the topic subscription')
+param fineCollectionServiceName string
+
 resource spokeVNet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   name: spokeVNetName
 }
@@ -63,6 +66,11 @@ resource serviceBusTopicAuthRule 'Microsoft.ServiceBus/namespaces/topics/authori
       'Listen'
     ]
   }
+}
+
+resource serviceBusTopicSubscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2022-10-01-preview' = {
+  name: fineCollectionServiceName
+  parent: serviceBusTopic
 }
 
 module serviceBusPrivateEndpoint '../../../../bicep/modules/vnet/privateendpoint.bicep' = {

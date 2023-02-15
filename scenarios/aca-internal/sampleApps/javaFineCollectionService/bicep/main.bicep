@@ -80,6 +80,7 @@ module serviceBus 'modules/service-bus.bicep' = {
     userManagedIdentityName: userManagedIdentityName
     serviceBusTopicName: serviceBusTopicName
     serviceBusTopicAuthorizationRuleName: serviceBusTopicAuthorizationRuleName
+    fineCollectionServiceName:fineCollectionServiceName
   }
 }
 

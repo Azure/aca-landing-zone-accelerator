@@ -54,6 +54,11 @@ resource serviceBusTopic 'Microsoft.ServiceBus/namespaces/topics@2021-11-01' exi
 
 }
 
+resource serviceBusTopicSubscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2022-10-01-preview' existing = {
+  name: fineCollectionServiceName
+  parent: serviceBusTopic
+}
+
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = {
   name: cosmosDbName
 
@@ -192,15 +197,15 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
   ]
 }
 
-//enable consume from servicebus using app managed identity. Data owner is required to let dapr create the topic suscription.
+//enable consume from servicebus using app managed identity.
 resource fineCollectionService_sb_role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(resourceGroup().id, fineCollectionServiceName, '090c5cfd-751d-490a-894a-3ce6f1109419')
+  name: guid(resourceGroup().id, fineCollectionServiceName, '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
   properties: {
     principalId: fineCollectionService.identity.principalId
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')//Azure Service Bus Data Owner.
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')//Azure Service Bus Data Receiver.
   }
   
-  scope: serviceBusTopic
+  scope: serviceBusTopicSubscription
 }
 
 resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' = {

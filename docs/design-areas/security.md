@@ -61,7 +61,9 @@ The security profile summarizes high-impact behaviors of Azure Container Apps, w
 </tbody>
 </table>
 
-<p>By creating a Security Profile, Organizations can ensure that security is an organizational concern and not siloed into a single group. <a href="../../secure/security-integration" data-linktype="relative-path">Security integration</a> provides you with guidance on how to integrate security into everyone's role while minimizing friction with business processes. Specific guidance includes:</p>
+<p>By creating a security profile, Organizations can ensure that security is an organizational concern and not siloed into a single group.  The Organizational security profile will encompass Security Intergration, Security Operations and Security Governance. </p>
+
+<p><a href="../../secure/security-integration" data-linktype="relative-path">Security integration</a> provides you with guidance on how to integrate security into everyone's role while minimizing friction with business processes. Specific guidance includes:</p>
 <ul>
 <li><a href="../../secure/security-integration#normalize-relations" data-linktype="relative-path">Normalizing relations</a>: Ensure all teams are integrated with security teams and have a shared understanding of security goals. Further, work to find the right level of security controls, ensuring the controls don't outweigh business value.</li>
 <li><a href="../../secure/security-integration#integrate-with-it-and-business-operations" data-linktype="relative-path">Integrate with IT and business operations</a>: Balance the implementation of security updates and mapping how all security processes affect current business impact, and potential security risk in the future.</li>

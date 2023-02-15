@@ -6,13 +6,12 @@ This ReadMe File provides design considerations and recommendations for Security
 
 Most of this content is technology-agnostic, because implementation varies among customers. The ReadMe File focuses on how to implement solutions using Azure and open-source software. The decisions made when you create an enterprise-scale landing zone can partially predefine your governance. It's important to understand governance principles because of the effect of the decisions made.
 
-The security profile summarizes high-impact behaviors of Azure Container Apps, which may result in increased security considerations.
+The security profile summarizes high-impact behaviors of Azure Container Apps, which may result in increased security considerations.  When a workload or the landing zones that hosts it require access to any sensitive data or critical systems, it's important to protect the data and assets.
 
 ### Azure Container  Apps Landing Zone - Topology
 Public:
 
-![Architectural diagram for the ACA Internal scenario.](./media/aca-internal.png)
-
+![ACA Hub and Spoke architecture](./docs/media/acaInternal/aca-internal.png)
 
 ### Azure Container Apps Landing Zone - Azure Components
 Pending 
@@ -20,6 +19,7 @@ Pending
 |-------------|---------------|---------------|
 
 -------
+Cloud security is also an incremental process instead of just a static destination. Focus on objectives and key results when envisioning a security end state. Map concepts, frameworks, and standards to the disciplines in the CAF secure methodology alongside mapping to roles and responsibilities for human discipline. The secure methodology provides guidance.
 
 ### Design Considerations
 
@@ -33,7 +33,30 @@ Pending
 <p><strong>Features</strong> not applicable to Azure Container Apps have been excluded. To see how Azure Container Apps completely maps to the Microsoft cloud security benchmark, see the <strong><a href="https://github.com/MicrosoftDocs/SecurityBenchmarks/tree/master/Azure%20Offer%20Security%20Baselines/3.0/azure-container-apps-azure-security-benchmark-v3-latest-security-baseline.xlsx" data-linktype="external">full Azure Container Apps security baseline mapping file</a></strong>.</p></div>
 
 ### 2. Security Profile
-<p>The security profile summarizes high-impact behaviors of Azure Container Apps, which may result in increased security considerations.</p>
+<p>Ensure that security is an organizational concern and not siloed into a single group. <a href="../../secure/security-integration" data-linktype="relative-path">Security integration</a> provides you with guidance on how to integrate security into everyone's role while minimizing friction with business processes. Specific guidance includes:</p>
+<ul>
+<li><a href="../../secure/security-integration#normalize-relations" data-linktype="relative-path">Normalizing relations</a>: Ensure all teams are integrated with security teams and have a shared understanding of security goals. Further, work to find the right level of security controls, ensuring the controls don't outweigh business value.</li>
+<li><a href="../../secure/security-integration#integrate-with-it-and-business-operations" data-linktype="relative-path">Integrate with IT and business operations</a>: Balance the implementation of security updates and mapping how all security processes affect current business impact, and potential security risk in the future.</li>
+<li><a href="../../secure/security-integration#integrate-security-teams" data-linktype="relative-path">Integrate security teams</a>: Avoid operating in silos by responding to active threats and continuously improving the security posture of the organization by practicing security as a dynamic discipline.</li>
+</ul></p>
+
+<p>Establish <a href="../../secure/security-operations" data-linktype="relative-path">security operations</a> by reducing risk, rapidly responding, and recovery to protect your organization and follow the security discipline of the DevOps process.</p>
+<ul>
+<li><a href="../../secure/security-operations#people-and-process" data-linktype="relative-path">People and process</a>: Create a culture to empower people with tools to enable them as your most valuable asset and diversify your thinking portfolio by including and training non-technical people with strong backgrounds in forensic investigation roles.</li>
+<li><a href="../../secure/security-operations#security-operations-model" data-linktype="relative-path">Security operations model</a>: Focus on the outcomes of incident management, incident preparation, and threat intelligence. Delegate the outcomes between subteams to triage, investigate, and hunt on high volume and complex incidents.</li>
+<li><a href="../../secure/security-operations#secops-business-touchpoints" data-linktype="relative-path">SecOps business touchpoints</a>: Interact with business leadership in order to inform major incidents and determine impact of critical systems. Continuously joint practice response to reduce organizational risk.</li>
+<li><a href="../../secure/security-operations#secops-modernization" data-linktype="relative-path">SecOps modernization</a>: Evolve security operations by following trends involving platform coverage, identity-centric security, IoT and OT devices, and relevant telemetry from the cloud.</li>
+</ul></p>
+<p>Perform oversight and monitoring with <a href="../../secure/security-governance" data-linktype="relative-path">security governance</a> for sustaining and improving security posture over time by using business goals and risk to determine the best direction for security.</p>
+<ul>
+<li><a href="../../secure/security-governance#compliance-and-reporting" data-linktype="relative-path">Compliance and reporting</a>: Have both external and internal security policies meet mandatory requirements in a given industry.</li>
+<li><a href="../../secure/security-governance#architecture-and-standards" data-linktype="relative-path">Architecture and standards</a>: Create a unified view across your enterprise estate as most enterprises are a hybrid environment that includes both on-premises and cloud resources.</li>
+<li><a href="../../secure/security-governance#security-posture-management" data-linktype="relative-path">Security posture management</a>: Plan for governance to monitor security standards, provide guidance, and improve processes. Maintain agility by driven governance through policy and continuous improvement.</li>
+<li><a href="../../secure/security-governance#governance-and-protection-disciplines" data-linktype="relative-path">Governance and protection disciplines</a>: Apply security controls and provide feedback to identify the best solutions.</li>
+<li><a href="../../secure/security-governance#governance-and-security-operations" data-linktype="relative-path">Governance and security operations</a>: Ensure that lessons learned from incidents are integrated into security operations and governance.</li>
+</ul></p>
+
+The security profile summarizes high-impact behaviors of Azure Container Apps, which may result in increased security considerations.</p>
 <table>
 <thead>
 <tr>
@@ -129,6 +152,13 @@ Pending
 <p><strong>Configuration Guidance</strong>: This feature is not supported to secure this service.</p>
 
 <h3 id="asset-management">4. Asset management</h3>
+<p>Secure business critical <a href="../../secure/asset-protection" data-linktype="relative-path">assets</a>, which include all physical and virtual items by implementing security controls that are unique to each asset type. Consistently execute preventive and detective protection to meet policies, standards and architecture.</p>
+<ul>
+<li><a href="../../secure/asset-protection#get-secure" data-linktype="relative-path">Get secure</a>: Bring resources up to your organization's latest security standards and policy by applying current controls to brownfield assets and ensuring greenfield assets are set to the most recent standards.</li>
+<li><a href="../../secure/asset-protection#stay-secure" data-linktype="relative-path">Stay secure</a>: Practice continuous cloud improvement and plan for upgrading or retiring end-of-life software as business, technology, and security requirements change rapidly.</li>
+<li><a href="../../secure/asset-protection#getting-started" data-linktype="relative-path">Get started</a>: Start protecting assets by focusing on well-known cloud resources first and use well-known and proven vendor/industry baselines for your security configuration.</li>
+<li><a href="../../secure/asset-protection#key-information" data-linktype="relative-path">Key information</a>: Use key elements of accountable and responsible teams to manage enterprise-wide assets such as cloud elasticity workload needs and design controls to identify best practices. Measure business value of asset protection and favor automated policy to avoid cost and manual repetition.</li>
+</ul></p>
 <p><em>For more information, see the <a href="../mcsb-asset-management" data-linktype="relative-path">Microsoft cloud security benchmark: Asset management</a>.</em></p>
 <h4 id="am-2-use-only-approved-services">4.1 - AM-2: Use only approved services</h4>
 <h4 id="features-16">Features</h4>
@@ -273,6 +303,16 @@ Pending
 
 
 ### 2. Identity management
+<p>Make an <a href="../../secure/access-control" data-linktype="relative-path">access control</a> strategy that aligns both user experience and security assurances.</p>
+<ul>
+<li><a href="../../secure/access-control#from-security-perimeter-to-zero-trust" data-linktype="relative-path">From security perimeter to zero trust</a>: Embrace a zero trust approach for access control for establishing and improving security assurances when working in the cloud and using new technology.</li>
+<li><a href="../../secure/access-control#modern-access-control" data-linktype="relative-path">Modern access control</a>: Make an access control strategy that is comprehensive, consistent, and flexible. Go beyond a single tactic or technology for multiple workloads, clouds, and various business sensitivity levels.</li>
+<li><a href="../../secure/access-control#known-trusted-allowed" data-linktype="relative-path">Known, trusted, allowed</a>: Follow the dynamic three-step process to ensure known authentication, trusting the user or device, and allowing the appropriate rights and privileges for the application, service, or data.</li>
+<li><a href="../../secure/access-control#data-driven-access-decisions" data-linktype="relative-path">Data-driven access decisions</a>: Make informed decisions from the diverse data on the users and devices for fulfilling explicit validation.</li>
+<li><a href="../../secure/access-control#segmentation-separate-to-protect" data-linktype="relative-path">Segmentation: Separate to protect</a>: Create boundaries as separate segments of an internal environment to contain damages of successful attacks.</li>
+<li><a href="../../secure/access-control#isolation-avoid-firewall-and-forget" data-linktype="relative-path">Isolation: Avoid firewall and forget</a>: Design an extreme form of segmentation for business-critical assets that consists of: people, process, and technology.</li>
+</ul></p>
+
 <p><em>For more information, see the <a href="../mcsb-identity-management" data-linktype="relative-path">Microsoft cloud security benchmark: Identity management</a>.</em></p>
 <h4 id="im-1-use-centralized-identity-and-authentication-system">2.1 - IM-1: Use centralized identity and authentication system</h4>
 <h4 id="features-2">Features</h4>

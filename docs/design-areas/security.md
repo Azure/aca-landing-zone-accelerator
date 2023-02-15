@@ -10,8 +10,7 @@ The security profile summarizes high-impact behaviors of Azure Container Apps, w
 
 ### Azure Container  Apps Landing Zone - Topology
 Public:
-
-![ACA Hub and Spoke architecture](./docs/media/acaInternal/aca-internal.png)
+<img width="1042" alt="ACA Hub and Spoke Architecure" src="./docs/media/acaInternal/aca-internal.png">
 
 ### Azure Container Apps Landing Zone - Azure Components
 Pending 

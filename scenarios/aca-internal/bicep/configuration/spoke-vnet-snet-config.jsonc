@@ -1,0 +1,23 @@
+{
+    //do NOT CHANGE the keys or the LENGTH of the subnet Array. Change only the values. Subnetnames must match!
+    "subnetInfra" : "snetInfra",
+    "subnetPrivateEndpoint": "snetPE",
+    "subnetAppGw": "snetAppGw",
+    "subnets": [
+        {
+            "name": "snetInfra",
+            "privateEndpointNetworkPolicies": "Disabled",
+            "addressPrefix": "10.1.0.0/23"
+        },
+        {
+            "name": "snetPE",
+            "privateEndpointNetworkPolicies": "Disabled",
+            "addressPrefix": "10.1.2.0/24"
+        },
+        {
+            "name": "snetAppGw",
+            "privateEndpointNetworkPolicies": "Disabled",
+            "addressPrefix": "10.1.3.0/24"  // https://learn.microsoft.com/en-us/azure/application-gateway/configuration-infrastructure#size-of-the-subnet
+        }
+    ]
+}

@@ -5,12 +5,12 @@
     "subnets": [
         {
             "name": "AzureBastionSubnet",
-            "privateEndpointNetworkPolicies": "Enabled",
+            "privateEndpointNetworkPolicies": "Disabled",
             "addressPrefix": "10.0.0.0/26"
         },
         {
             "name": "snetCompute",
-            "privateEndpointNetworkPolicies": "Enabled",
+            "privateEndpointNetworkPolicies": "Disabled",
             "addressPrefix": "10.0.1.0/24"
         }
     ]

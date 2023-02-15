@@ -52,7 +52,7 @@ var hubVnetSubnets = [for item in subnetInfo.subnets: {
   }
 }]
 
-module vnetHub '../../shared/bicep/network/vnet.bicep' = {
+module vnetHub '../modules/network/vnet.bicep' = {
   name: 'vnetHubDeployment'
   params: {
     location: location
@@ -67,7 +67,7 @@ resource snetCompute 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' exis
   name: '${vnetHub.outputs.vnetName}/${subnetInfo.subnetCompute}'
 }
 
-module bastionSvc '../../shared/bicep/network/bastion.bicep' = {
+module bastionSvc '../modules/network/bastion.bicep' = {
   name: 'bastionSvcDeployment'
   params: {
     location: location
@@ -77,7 +77,7 @@ module bastionSvc '../../shared/bicep/network/bastion.bicep' = {
   }
 }
 
-module winVM '../../shared/bicep/compute/jumphost-win10.bicep' = {
+module winVM '../modules/compute/jumphost-win10.bicep' = {
   name: 'windowsJumphostDeployment'
   params: {
     location: location

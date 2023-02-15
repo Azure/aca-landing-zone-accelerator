@@ -76,84 +76,85 @@ param containerAppName string
 
 
 
-// Deploy Hub Network
+// // Deploy Hub Network
 
-//Create Hub Resource Group
-module hubrg '../../shared/bicep/resource-group/rg.bicep' = {
-  name: hubRgName
-  params: {
-    rgName: hubRgName
-    location: location
-  }
-}
+// //Create Hub Resource Group
+// module hubrg '../../shared/bicep/resource-group/rg.bicep' = {
+//   name: hubRgName
+//   params: {
+//     rgName: hubRgName
+//     location: location
+//   }
+// }
 
-//Create Hub Vnet
-module vnethub '../../shared/bicep/vnet/vnet.bicep' = {
-  scope: resourceGroup(hubrg.name)
-  name: vnetHubName
-  params: {
-    location: location
-    vnetAddressSpace: {
-        addressPrefixes: hubVnetAddressPrefix
-    }
-    vnetName: vnetHubName
-    subnets: hubSubnets
-  }
-  dependsOn: [
-    hubrg
-  ]
-}
+// //Create Hub Vnet
+// module vnethub '../../shared/bicep/vnet/vnet.bicep' = {
+//   scope: resourceGroup(hubrg.name)
+//   name: vnetHubName
+//   params: {
+//     location: location
+//     vnetAddressSpace: {
+//         addressPrefixes: hubVnetAddressPrefix
+//     }
+//     vnetName: vnetHubName
+//     subnets: hubSubnets
+//   }
+//   dependsOn: [
+//     hubrg
+//   ]
+// }
 
-//module ddd '../../shared/bicep/vnet/vnet.bicep'
+// //module ddd '../../shared/bicep/vnet/vnet.bicep'
 
-// Create public IP for bastion. It will be created only if you want to deploy bastion.
-module publicipbastion '../../shared/bicep/vm/public-ip.bicep' = if (deployBastion) {
-  scope: resourceGroup(hubrg.name)
-  name: 'publicipbastion'
-  params: {
-    location: location
-    publicipName: 'bastion-pip'
-    deploybastion: deployBastion
-    publicipproperties: {
-      publicIPAllocationMethod: 'Static'
-    }
-    publicipsku: {
-      name: 'Standard'
-      tier: 'Regional'
-    }
-  }
-}
+// // Create public IP for bastion. It will be created only if you want to deploy bastion.
+// module publicipbastion '../../shared/bicep/vm/public-ip.bicep' = if (deployBastion) {
+//   scope: resourceGroup(hubrg.name)
+//   name: 'publicipbastion'
+//   params: {
+//     location: location
+//     publicipName: 'bastion-pip'
+//     deploybastion: deployBastion
+//     publicipproperties: {
+//       publicIPAllocationMethod: 'Static'
+//     }
+//     publicipsku: {
+//       name: 'Standard'
+//       tier: 'Regional'
+//     }
+//   }
+// }
 
 
-resource subnetbastion 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = if (deployBastion) {
-  scope: resourceGroup(hubrg.name)
-  name: '${vnetHubName}/AzureBastionSubnet'
-}
+// resource subnetbastion 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = if (deployBastion) {
+//   scope: resourceGroup(hubrg.name)
+//   name: '${vnetHubName}/AzureBastionSubnet'
+// }
 
-//Create Bastion Resource
-module bastion '../../shared/bicep/vm/bastion.bicep' = if (deployBastion) {
-  scope: resourceGroup(hubrg.name)
-  name: 'bastion'
-  params: {
-    location: location
-    bastionpipId: publicipbastion.outputs.publicipId
-    subnetId: subnetbastion.id
-    deploybastion: deployBastion
-    bastionAddressPrefix: bastionSubnetAddressPrefix
-    vnetHubName: vnetHubName
-  }
-  dependsOn: [
-    hubrg
-    vnethub
-    jumpbox
-  ]
-}
+// //Create Bastion Resource
+// module bastion '../../shared/bicep/vm/bastion.bicep' = if (deployBastion) {
+//   scope: resourceGroup(hubrg.name)
+//   name: 'bastion'
+//   params: {
+//     location: location
+//     bastionpipId: publicipbastion.outputs.publicipId
+//     subnetId: subnetbastion.id
+//     deploybastion: deployBastion
+//     bastionAddressPrefix: bastionSubnetAddressPrefix
+//     vnetHubName: vnetHubName
+//   }
+//   dependsOn: [
+//     hubrg
+//     vnethub
+//     jumpbox
+//   ]
+// }
 
 
 
 
 // Deploy Virtual Machine in Hub (linux or Windows)
 
+// TODO: Do we need choosing windows or linux? 
 
 module jumpbox '../../shared/bicep/vm/virtual-machine.bicep' = if (jumpboxOsType == 'linux') {
   scope: resourceGroup(hubrg.name)
@@ -174,33 +175,32 @@ module jumpbox '../../shared/bicep/vm/virtual-machine.bicep' = if (jumpboxOsType
   ]
 }
 
-module vm_jumpboxwinvm '../../shared/bicep/vm/create-vm-windows.bicep' = if (jumpboxOsType == 'windows') {
-  name: 'vm-jumpbox'
-  scope: resourceGroup(hubrg.name)
-  params: {
-    location: location
-    username: adminUsername
-    password: adminPassword
-    CICDAgentType: 'none'
-    vmName: 'jumpbox'
-    osType: jumpboxOsType
-    vnetHubName: vnetHubName
-    VMSubnetName: vmSubnetName
-  }
-  dependsOn: [
-    hubrg
-    vnethub
-    bastion
-  ]
-}
-
-
+// module vm_jumpboxwinvm '../../shared/bicep/vm/create-vm-windows.bicep' = if (jumpboxOsType == 'windows') {
+//   name: 'vm-jumpbox'
+//   scope: resourceGroup(hubrg.name)
+//   params: {
+//     location: location
+//     username: adminUsername
+//     password: adminPassword
+//     CICDAgentType: 'none'
+//     vmName: 'jumpbox'
+//     osType: jumpboxOsType
+//     vnetHubName: vnetHubName
+//     VMSubnetName: vmSubnetName
+//   }
+//   dependsOn: [
+//     hubrg
+//     vnethub
+//     bastion
+//   ]
+// }
 
 
 
 // Deploy Spoke Network
-// TODO: Hub OK. done up to here tt20230214
 
+
+//DONE
 module spokerg '../../shared/bicep/resource-group/rg.bicep' = {
   name: spokeRgName
   params: {
@@ -209,6 +209,7 @@ module spokerg '../../shared/bicep/resource-group/rg.bicep' = {
   }
 }
 
+//DONE
 module vnetspoke '../../shared/bicep/vnet/vnet.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: vnetSpokeName
@@ -225,6 +226,12 @@ module vnetspoke '../../shared/bicep/vnet/vnet.bicep' = {
     spokerg
   ]
 }
+
+
+
+// Hub OK. done up to here tt20230214
+// SPOKE RG-VNET-SUBNETS Initial config OK
+// TODO: Lines 230 to 400 need to be done in the future
 
 module nsgacasubnet '../../shared/bicep/vnet/aca-nsg.bicep' = {
   scope: resourceGroup(spokerg.name)
@@ -391,11 +398,10 @@ module updateGWNSG '../../shared/bicep/vnet/subnet.bicep' = {
 
 
 
+
+
 // Deploy supporting services
-
-
-
-
+//done 
 module acr '../../shared/bicep/acr/acr.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: acrName
@@ -406,6 +412,7 @@ module acr '../../shared/bicep/acr/acr.bicep' = {
   }
 }
 
+//done 
 module keyvault '../../shared/bicep/keyvault/keyvault.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: keyvaultName
@@ -484,7 +491,7 @@ module privateEndpointKVDNSSetting '../../shared/bicep/vnet/private-dns.bicep' =
 }
 
 
-
+//done
 module acaIdentity '../../shared/bicep/identity/user-assigned.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'acaIdentity'
@@ -503,7 +510,7 @@ output keyvaultName string = keyvault.name
 
 
 
-
+//done
 module acalaworkspace '../../shared/bicep/laworkspace/la.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'acalaworkspace'
@@ -513,6 +520,7 @@ module acalaworkspace '../../shared/bicep/laworkspace/la.bicep' = {
   }
 }
 
+//done
 module acaApplicationInsights '../../shared/bicep/app-insights/ai.bicep' = if (deployApplicationInsightsDaprInstrumentation) {
   scope: resourceGroup(spokerg.name)
   name: 'acaAppInsights'

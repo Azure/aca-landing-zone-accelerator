@@ -19,9 +19,6 @@ param location string
 ])
 param environment string
 
-@description('CIDR of the HUB vnet i.e. 192.168.0.0/24')
-param hubVnetAddressSpace string
-
 @description('CIDR of the SPOKE vnet i.e. 192.168.0.0/24')
 param spokeVnetAddressSpace string
 
@@ -34,11 +31,6 @@ param resourceTags object = {}
 @description('Telemetry is by default enabled. The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services.')
 param enableTelemetry bool = true
 
-@description('mandatory, the password of the admin user')
-@secure()
-param vmWinJumpboxHubAdminPassword string
-
-
 // ================ //
 // Variables        //
 // ================ //
@@ -49,7 +41,6 @@ var tags = union({
 }, resourceTags)
 
 var resourceSuffix = '${applicationName}-${environment}-${location}'
-var hubResourceGroupName = 'rg-hub-${resourceSuffix}'
 var spokeResourceGroupName = 'rg-spoke-${resourceSuffix}'
 
 var defaultSuffixes = [
@@ -67,7 +58,7 @@ var namingSuffixes = empty(numericSuffix) ? defaultSuffixes : concat(defaultSuff
 // ================ //
 
 // TODO: Must be shared among diferrent scenarios: Change in ASE (tt20230129)
-module naming '../../shared/bicep/naming.module.bicep' = {
+module naming '../../shared/bicep/modules/naming.module.bicep' = {
   scope: resourceGroup(spokeResourceGroup.name)
   name: 'namingModule-Deployment'
   params: {
@@ -77,43 +68,23 @@ module naming '../../shared/bicep/naming.module.bicep' = {
   }
 }
 
- 
-
-//TODO: hub must be optional to create - might already exist and we need to attach to - might be in different subscription (tt20230129)
-resource hubResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-  name: hubResourceGroupName
-  location: location
-  tags: tags
-}
-
 resource spokeResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: spokeResourceGroupName
   location: location
   tags: tags
 }
 
-//TODO: Needs to be optional (tt20230212)
-module hub 'hub.deployment.bicep' = {
-  scope: resourceGroup(hubResourceGroup.name)
-  name: 'hubDeployment'
+
+module spoke 'spoke.deployment.bicep' = {
+  scope: resourceGroup(spokeResourceGroup.name)
+  name: 'spokeDeployment'
   params: {
     naming: naming.outputs.names
     location: location
-    hubVnetAddressSpace: hubVnetAddressSpace
     tags: tags
-    vmWinJumpboxHubAdminPassword: vmWinJumpboxHubAdminPassword
+    spokeVnetAddressSpace: spokeVnetAddressSpace
   }
 }
-
-// module spoke 'spoke.deployment.bicep' = {
-//   scope: resourceGroup(spokeResourceGroup.name)
-//   name: 'spokeDeployment'
-//   params: {
-//     naming: naming.outputs.names
-//     location: location
-//     tags: tags
-//   }
-// }
 
 
 // //TODO: need to find Deployment GUID

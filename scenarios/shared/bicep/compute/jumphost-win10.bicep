@@ -5,6 +5,11 @@
 @maxLength(64)
 param name string
 
+@description('Name of the windows PC. Optional, by default gets automatically constructed by the resource name. Use it to give more meaningful names, or avoid conflicts')
+@minLength(2)
+@maxLength(15)
+param computerWindowsName string = ''
+
 @description('Azure Region where the resource will be deployed in')
 param location string
 
@@ -44,7 +49,7 @@ resource jumphost 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   tags: tags
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_F4s_v2'
+      vmSize: 'Standard_D2s_v3'
     }
     storageProfile: {
       imageReference: {
@@ -62,7 +67,7 @@ resource jumphost 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       }
     }
     osProfile: {
-      computerName: computerName
+      computerName: empty(computerWindowsName) ? computerName : computerWindowsName
       adminUsername: adminUsername
       adminPassword: adminPassword
       windowsConfiguration: {

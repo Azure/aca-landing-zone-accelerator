@@ -72,18 +72,21 @@ module bastionSvc '../../shared/bicep/network/bastion.bicep' = {
   }
 }
 
+resource snetCompute 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
+  name: '${vnetHub.outputs.vnetName}/${subnetInfo.subnetCompute}'
+}
+
 module winVM '../../shared/bicep/compute/jumphost-win10.bicep' = {
   name: 'windowsJumphostDeployment'
   params: {
     location: location
     name: resourceNames.vmWindowsJumpbox
-    //TODO: I don't like this magic number - need to re-consider it tt20230214
-    subnetId: vnetHub.outputs.vnetSubnets[1].id
+    subnetId: snetCompute.id
     tags: tags
     adminPassword: vmWinJumpboxHubAdminPassword
+    computerWindowsName: 'winHubJumpbox01'
   }
 }
-
 
 
 // module laws '../../shared/bicep/log-analytics-ws.bicep' = {

@@ -1,4 +1,7 @@
 {
+    //do NOT CHANGE the keys or the LENGTH of the subnet Array. Change only the values. Subnetnames must match!
+    "subnetCompute" : "snetCompute",
+    "subnetBastion": "AzureBastionSubnet",
     "subnets": [
         {
             "name": "AzureBastionSubnet",

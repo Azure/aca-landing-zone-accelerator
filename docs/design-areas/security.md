@@ -32,28 +32,6 @@ Cloud security is also an incremental process instead of just a static destinati
 <p><strong>Features</strong> not applicable to Azure Container Apps have been excluded. To see how Azure Container Apps completely maps to the Microsoft cloud security benchmark, see the <strong><a href="https://github.com/MicrosoftDocs/SecurityBenchmarks/tree/master/Azure%20Offer%20Security%20Baselines/3.0/azure-container-apps-azure-security-benchmark-v3-latest-security-baseline.xlsx" data-linktype="external">full Azure Container Apps security baseline mapping file</a></strong>.</p></div>
 
 ### 2. Security Profile
-<p>Ensure that security is an organizational concern and not siloed into a single group. <a href="../../secure/security-integration" data-linktype="relative-path">Security integration</a> provides you with guidance on how to integrate security into everyone's role while minimizing friction with business processes. Specific guidance includes:</p>
-<ul>
-<li><a href="../../secure/security-integration#normalize-relations" data-linktype="relative-path">Normalizing relations</a>: Ensure all teams are integrated with security teams and have a shared understanding of security goals. Further, work to find the right level of security controls, ensuring the controls don't outweigh business value.</li>
-<li><a href="../../secure/security-integration#integrate-with-it-and-business-operations" data-linktype="relative-path">Integrate with IT and business operations</a>: Balance the implementation of security updates and mapping how all security processes affect current business impact, and potential security risk in the future.</li>
-<li><a href="../../secure/security-integration#integrate-security-teams" data-linktype="relative-path">Integrate security teams</a>: Avoid operating in silos by responding to active threats and continuously improving the security posture of the organization by practicing security as a dynamic discipline.</li>
-</ul></p>
-
-<p>Establish <a href="../../secure/security-operations" data-linktype="relative-path">security operations</a> by reducing risk, rapidly responding, and recovery to protect your organization and follow the security discipline of the DevOps process.</p>
-<ul>
-<li><a href="../../secure/security-operations#people-and-process" data-linktype="relative-path">People and process</a>: Create a culture to empower people with tools to enable them as your most valuable asset and diversify your thinking portfolio by including and training non-technical people with strong backgrounds in forensic investigation roles.</li>
-<li><a href="../../secure/security-operations#security-operations-model" data-linktype="relative-path">Security operations model</a>: Focus on the outcomes of incident management, incident preparation, and threat intelligence. Delegate the outcomes between subteams to triage, investigate, and hunt on high volume and complex incidents.</li>
-<li><a href="../../secure/security-operations#secops-business-touchpoints" data-linktype="relative-path">SecOps business touchpoints</a>: Interact with business leadership in order to inform major incidents and determine impact of critical systems. Continuously joint practice response to reduce organizational risk.</li>
-<li><a href="../../secure/security-operations#secops-modernization" data-linktype="relative-path">SecOps modernization</a>: Evolve security operations by following trends involving platform coverage, identity-centric security, IoT and OT devices, and relevant telemetry from the cloud.</li>
-</ul></p>
-<p>Perform oversight and monitoring with <a href="../../secure/security-governance" data-linktype="relative-path">security governance</a> for sustaining and improving security posture over time by using business goals and risk to determine the best direction for security.</p>
-<ul>
-<li><a href="../../secure/security-governance#compliance-and-reporting" data-linktype="relative-path">Compliance and reporting</a>: Have both external and internal security policies meet mandatory requirements in a given industry.</li>
-<li><a href="../../secure/security-governance#architecture-and-standards" data-linktype="relative-path">Architecture and standards</a>: Create a unified view across your enterprise estate as most enterprises are a hybrid environment that includes both on-premises and cloud resources.</li>
-<li><a href="../../secure/security-governance#security-posture-management" data-linktype="relative-path">Security posture management</a>: Plan for governance to monitor security standards, provide guidance, and improve processes. Maintain agility by driven governance through policy and continuous improvement.</li>
-<li><a href="../../secure/security-governance#governance-and-protection-disciplines" data-linktype="relative-path">Governance and protection disciplines</a>: Apply security controls and provide feedback to identify the best solutions.</li>
-<li><a href="../../secure/security-governance#governance-and-security-operations" data-linktype="relative-path">Governance and security operations</a>: Ensure that lessons learned from incidents are integrated into security operations and governance.</li>
-</ul></p>
 
 The security profile summarizes high-impact behaviors of Azure Container Apps, which may result in increased security considerations.</p>
 <table>
@@ -82,6 +60,30 @@ The security profile summarizes high-impact behaviors of Azure Container Apps, w
 </tr>
 </tbody>
 </table>
+
+<p>By creating a Security Profile, Organizations can ensure that security is an organizational concern and not siloed into a single group. <a href="../../secure/security-integration" data-linktype="relative-path">Security integration</a> provides you with guidance on how to integrate security into everyone's role while minimizing friction with business processes. Specific guidance includes:</p>
+<ul>
+<li><a href="../../secure/security-integration#normalize-relations" data-linktype="relative-path">Normalizing relations</a>: Ensure all teams are integrated with security teams and have a shared understanding of security goals. Further, work to find the right level of security controls, ensuring the controls don't outweigh business value.</li>
+<li><a href="../../secure/security-integration#integrate-with-it-and-business-operations" data-linktype="relative-path">Integrate with IT and business operations</a>: Balance the implementation of security updates and mapping how all security processes affect current business impact, and potential security risk in the future.</li>
+<li><a href="../../secure/security-integration#integrate-security-teams" data-linktype="relative-path">Integrate security teams</a>: Avoid operating in silos by responding to active threats and continuously improving the security posture of the organization by practicing security as a dynamic discipline.</li>
+</ul></p>
+
+<p>Establish <a href="../../secure/security-operations" data-linktype="relative-path">security operations</a> by reducing risk, rapidly responding, and recovery to protect your organization and follow the security discipline of the DevOps process.</p>
+<ul>
+<li><a href="../../secure/security-operations#people-and-process" data-linktype="relative-path">People and process</a>: Create a culture to empower people with tools to enable them as your most valuable asset and diversify your thinking portfolio by including and training non-technical people with strong backgrounds in forensic investigation roles.</li>
+<li><a href="../../secure/security-operations#security-operations-model" data-linktype="relative-path">Security operations model</a>: Focus on the outcomes of incident management, incident preparation, and threat intelligence. Delegate the outcomes between subteams to triage, investigate, and hunt on high volume and complex incidents.</li>
+<li><a href="../../secure/security-operations#secops-business-touchpoints" data-linktype="relative-path">SecOps business touchpoints</a>: Interact with business leadership in order to inform major incidents and determine impact of critical systems. Continuously joint practice response to reduce organizational risk.</li>
+<li><a href="../../secure/security-operations#secops-modernization" data-linktype="relative-path">SecOps modernization</a>: Evolve security operations by following trends involving platform coverage, identity-centric security, IoT and OT devices, and relevant telemetry from the cloud.</li>
+</ul></p>
+<p>Perform oversight and monitoring with <a href="../../secure/security-governance" data-linktype="relative-path">security governance</a> for sustaining and improving security posture over time by using business goals and risk to determine the best direction for security.</p>
+<ul>
+<li><a href="../../secure/security-governance#compliance-and-reporting" data-linktype="relative-path">Compliance and reporting</a>: Have both external and internal security policies meet mandatory requirements in a given industry.</li>
+<li><a href="../../secure/security-governance#architecture-and-standards" data-linktype="relative-path">Architecture and standards</a>: Create a unified view across your enterprise estate as most enterprises are a hybrid environment that includes both on-premises and cloud resources.</li>
+<li><a href="../../secure/security-governance#security-posture-management" data-linktype="relative-path">Security posture management</a>: Plan for governance to monitor security standards, provide guidance, and improve processes. Maintain agility by driven governance through policy and continuous improvement.</li>
+<li><a href="../../secure/security-governance#governance-and-protection-disciplines" data-linktype="relative-path">Governance and protection disciplines</a>: Apply security controls and provide feedback to identify the best solutions.</li>
+<li><a href="../../secure/security-governance#governance-and-security-operations" data-linktype="relative-path">Governance and security operations</a>: Ensure that lessons learned from incidents are integrated into security operations and governance.</li>
+</ul></p>
+
 
 
 <h3 id="privileged-access">3. Privileged access</h3>

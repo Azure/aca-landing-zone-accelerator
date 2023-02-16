@@ -89,6 +89,12 @@ output appInsNname string = appInsights.name
 @description('The resource ID of the application insights component.')
 output appInsResourceId string = appInsights.id
 
+@description('The appInsights Instrumentation Key.')
+output appInsInstrumentationKey string = appInsights.properties.InstrumentationKey
+
+@description('The appInsights Connection String.')
+output appInsConnectionString string = appInsights.properties.ConnectionString
+
 @description('The name of the auto-create Log Analytics WS resource.')
 output logAnalyticsWsName string = empty(workspaceResourceId) ? laws.outputs.logAnalyticsWsName : ''
 

@@ -17,23 +17,6 @@ param hubVnetAddressSpace string
 param vmWinJumpboxHubAdminPassword string
 
 
-//TODO: add necessary private DNS Zones in rg-Hub (tt20230214)
-//look https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-functions-deployment#example-1
-// var privateDnsZoneNames = {
-//   appConfiguration: 'privatelink.azconfig.io'
-//   webApps: 'privaprivatelink.azurewebsites.net'
-//   sqlDb: 'privatelink${environment().suffixes.sqlServerHostname}'
-//   redis: 'privatelink.redis.cache.windows.net'
-//   keyvault: 'privatelink.vaultcore.azure.net'
-// }
-// var virtualNetworkLinks = [
-//   {
-//     vnetName: vnetHub.outputs.vnetName
-//     vnetId: vnetHub.outputs.vnetId
-//     registrationEnabled: false
-//   }
-// ]
-
 
 var resourceNames = {
   // TODO Clean Up comments(tt20230214) 

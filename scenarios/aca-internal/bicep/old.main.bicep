@@ -292,7 +292,7 @@ module vnetpeeringspoke '../../shared/bicep/vnet/vnet-peering.bicep' = {
 }
 
 
-
+//done
  module privatednsACRZone '../../shared/bicep/vnet/private-dns-zone.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privatednsACRZone'
@@ -301,6 +301,7 @@ module vnetpeeringspoke '../../shared/bicep/vnet/vnet-peering.bicep' = {
   }
 }
 
+//done
 module privateDNSLinkACR '../../shared/bicep/vnet/private-dns-link.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privateDNSLinkACR'
@@ -311,6 +312,7 @@ module privateDNSLinkACR '../../shared/bicep/vnet/private-dns-link.bicep' = {
   }
 }
 
+//done
 module privateDNSLinkACRspoke '../../shared/bicep/vnet/private-dns-link.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privateDNSLinkACRspoke'
@@ -322,6 +324,7 @@ module privateDNSLinkACRspoke '../../shared/bicep/vnet/private-dns-link.bicep' =
  
 }
 
+//done
 module privatednsVaultZone '../../shared/bicep/vnet/private-dns-zone.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privatednsVaultZone'
@@ -330,6 +333,7 @@ module privatednsVaultZone '../../shared/bicep/vnet/private-dns-zone.bicep' = {
   }
 }
 
+//done
 module privateDNSLinkVault '../../shared/bicep/vnet/private-dns-link.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privateDNSLinkVault'
@@ -340,6 +344,7 @@ module privateDNSLinkVault '../../shared/bicep/vnet/private-dns-link.bicep' = {
   }
 }
 
+//done
 module privateDNSLinkVaultspoke '../../shared/bicep/vnet/private-dns-link.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privateDNSLinkVaultspoke'
@@ -424,12 +429,13 @@ module keyvault '../../shared/bicep/keyvault/keyvault.bicep' = {
   }
 }
 
-
+//done 
 resource servicesSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
   scope: resourceGroup(spokerg.name)
   name: '${vnetSpokeName}/${peSubnetName}'
 }
 
+//done 
 module privateEndpointKeyVault '../../shared/bicep/vnet/private-endpoint.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: keyVaultPrivateEndpointName
@@ -445,6 +451,7 @@ module privateEndpointKeyVault '../../shared/bicep/vnet/private-endpoint.bicep' 
   }
 }
 
+//done 
 module privateEndpointAcr '../../shared/bicep/vnet/private-endpoint.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: acrPrivateEndpointName
@@ -461,12 +468,13 @@ module privateEndpointAcr '../../shared/bicep/vnet/private-endpoint.bicep' = {
 }
 
 
-
+//done 
 resource privateDNSZoneACR 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   scope: resourceGroup(spokerg.name)
   name: privateDnsZoneAcrName
 }
 
+//done 
 module privateEndpointACRDNSSetting '../../shared/bicep/vnet/private-dns.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'acr-pvtep-dns'
@@ -476,11 +484,13 @@ module privateEndpointACRDNSSetting '../../shared/bicep/vnet/private-dns.bicep' 
   }
 }
 
+//done 
 resource privateDNSZoneKV 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   scope: resourceGroup(spokerg.name)
   name: privateDnsZoneKvName
 }
 
+//done 
 module privateEndpointKVDNSSetting '../../shared/bicep/vnet/private-dns.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'kv-pvtep-dns'
@@ -531,7 +541,7 @@ module acaApplicationInsights '../../shared/bicep/app-insights/ai.bicep' = if (d
   }
 }
 
-
+//done
 module containerAppEnvironment '../../shared/bicep/aca/container-app-env.bicep' = {
   scope: resourceGroup(spokerg.name)
    name: 'ACA-env-Deploy'
@@ -576,6 +586,7 @@ module keyvaultAccessPolicy '../../shared/bicep/keyvault/keyvault-access.bicep' 
   }
 }
 
+//done
 module acadnszone '../../shared/bicep/vnet/private-dns-zone.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privatednsACAZone'
@@ -585,6 +596,7 @@ module acadnszone '../../shared/bicep/vnet/private-dns-zone.bicep' = {
   
 }
 
+//done
 module privateDNSLinkACAHub '../../shared/bicep/vnet/private-dns-link.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privateDNSLinkACAHub'
@@ -598,6 +610,7 @@ module privateDNSLinkACAHub '../../shared/bicep/vnet/private-dns-link.bicep' = {
   ]
 }
 
+//done
 module privateDNSLinkACAspoke '../../shared/bicep/vnet/private-dns-link.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'privateDNSLinkACAspoke'
@@ -611,6 +624,7 @@ module privateDNSLinkACAspoke '../../shared/bicep/vnet/private-dns-link.bicep' =
   ]
 }
 
+//done
 module record '../../shared/bicep/vnet/a-record.bicep' = {
   scope: resourceGroup(spokerg.name)
   name: 'recordNameArecord'

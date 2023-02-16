@@ -46,11 +46,11 @@ param quarantinePolicyStatus string = 'disabled'
 @description('Optional. The value that indicates whether the trust policy is enabled or not.')
 param trustPolicyStatus string = 'disabled'
 
+@description('Optional. The value that indicates whether the retention policy is enabled or not.')
 @allowed([
   'disabled'
   'enabled'
 ])
-@description('Optional. The value that indicates whether the retention policy is enabled or not.')
 param retentionPolicyStatus string = 'enabled'
 
 @description('Optional. The number of days to retain an untagged manifest after which it gets purged.')
@@ -65,7 +65,7 @@ param dataEndpointEnabled bool = false
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string = 'Disabled'
 
 @allowed([
   'AzureServices'

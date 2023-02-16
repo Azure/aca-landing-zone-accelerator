@@ -19,6 +19,7 @@ var resourceNames = {
   keyvault: naming.keyVault.nameUnique
   userAssignedManagedIdentity: '${naming.userAssignedManagedIdentity.name}-aca'
   appInsights: naming.applicationInsights.name
+  acaEnv: naming.containerAppsEnvironment.name
 }
 
 var subnetInfo = loadJsonContent('configuration/spoke-vnet-snet-config.jsonc')
@@ -31,6 +32,20 @@ var spokeVnetSubnets = [for item in subnetInfo.subnets: {
   }
 }]
 
+
+//look https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-functions-deployment#example-1
+var privateDnsZoneNames = {
+  acr: 'privatelink.azurecr.io'  
+  keyvault: 'privatelink.vaultcore.azure.net'
+}
+
+var virtualNetworkLinks = [
+  {
+    vnetName: vnetSpoke.outputs.vnetName
+    vnetId: vnetSpoke.outputs.vnetId
+    registrationEnabled: false
+  }
+]
 
 // Deploy Spoke network 
 module vnetSpoke '../../shared/bicep/modules/network/vnet.bicep' = {
@@ -56,8 +71,7 @@ resource subnetPrivateEndpoint 'Microsoft.Network/virtualNetworks/subnets@2022-0
   name: '${vnetSpoke.outputs.vnetName}/${subnetInfo.subnetPrivateEndpoint}'
 }
 
-// Deploy supporting services
-
+// Deploy services
 module acr '../../shared/bicep/modules/acr.bicep' = {
   name: 'acrDeployment'
   params: {
@@ -93,5 +107,89 @@ module appInsights '../../shared/bicep/modules/app-insights.bicep' = {
     name: resourceNames.appInsights
     location: location
     tags: tags
+  }
+}
+
+module acaEnv '../../shared/bicep/modules/aca-environment.bicep' = {
+  name: 'acaEnvironmentDeployment'
+  params: {
+    name: resourceNames.acaEnv
+    location: location
+    tags: tags
+    logAnalyticsWsResourceId:  appInsights.outputs.logAnalyticsWsId    
+    subnetId: subnetInfra.id
+    vnetEndpointInternal: true
+    appInsightsInstrumentationKey: appInsights.outputs.appInsInstrumentationKey    
+  }
+}
+
+// deploy Private DNSZones and Private Endpoints
+
+// check https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-functions-object#items
+// module privateDnsZoneKeyvault '../../shared/bicep/modules/private-dns-zone.bicep' = {
+//   name: 'privateDnsZoneAppConfigDeployment'
+//   params: {
+//     name: privateDnsZoneNames.keyvault
+//     virtualNetworkLinks: virtualNetworkLinks
+//     tags: tags
+//   }
+// }
+
+module acrPrivateDnsZone '../../shared/bicep/modules/private-dns-zone.bicep' = { 
+  name: 'acrPrivateDnsZoneDeployment'
+  params: {
+    name: privateDnsZoneNames.acr
+    virtualNetworkLinks: virtualNetworkLinks
+    tags: tags
+  }
+}
+
+module keyvaultPrivateDnsZone '../../shared/bicep/modules/private-dns-zone.bicep' = { 
+  name: 'keyvaultPrivateDnsZoneDeployment'
+  params: {
+    name: privateDnsZoneNames.keyvault
+    virtualNetworkLinks: virtualNetworkLinks
+    tags: tags
+  }
+}
+
+module acaEnvPrivateDnsZone  '../../shared/bicep/modules/private-dns-zone.bicep' = {
+  name: 'acaEnvPrivateDnsZoneDeployment'
+  params: {
+    name: acaEnv.outputs.acaEnvDefaultDomain
+    virtualNetworkLinks: virtualNetworkLinks
+    tags: tags
+    aRecords: [
+      {
+        name: '*'
+        ipv4Address: acaEnv.outputs.acaEnvLoadBalancerIP
+      }
+    ]
+  }
+}
+
+module peKeyvault '../../shared/bicep/modules/private-endpoint.bicep' = {
+  name: 'peKeyvaultDeployment'
+  params: {
+    name: 'pe-${keyvault.outputs.keyvaultName}'
+    location: location
+    tags: tags
+    privateDnsZonesId: keyvaultPrivateDnsZone.outputs.privateDnsZonesId
+    privateLinkServiceId: keyvault.outputs.keyvaultId
+    snetId: subnetPrivateEndpoint.id
+    subresource: 'vault'
+  }
+}
+
+module peAcr '../../shared/bicep/modules/private-endpoint.bicep' = {
+  name: 'peAcrDeployment'
+  params: {
+    name: 'pe-${acr.outputs.acrName}'
+    location: location
+    tags: tags
+    privateDnsZonesId: acrPrivateDnsZone.outputs.privateDnsZonesId
+    privateLinkServiceId: acr.outputs.acrResourceId
+    snetId: subnetPrivateEndpoint.id
+    subresource: 'registry'
   }
 }

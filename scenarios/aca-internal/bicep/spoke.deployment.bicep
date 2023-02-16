@@ -89,6 +89,27 @@ module keyvault '../../shared/bicep/modules/keyvault/keyvault.bicep' = {
     location: location
     name: resourceNames.keyvault
     tags: tags
+    // TODO: check what is required
+    accessPolicies: [
+      {
+        tenantId: acaUserAssignedManagedIdentity.outputs.tenantId
+        objectId: acaUserAssignedManagedIdentity.outputs.principalId
+        permissions: {
+          secrets: [
+            'get'
+            'list'
+          ]     
+          keys: [
+            'get'
+            'list'
+          ] 
+          certificates: [
+            'get'
+            'list'
+          ]      
+        }
+      }
+    ]
   }
 }
 
@@ -191,5 +212,15 @@ module peAcr '../../shared/bicep/modules/private-endpoint.bicep' = {
     privateLinkServiceId: acr.outputs.acrResourceId
     snetId: subnetPrivateEndpoint.id
     subresource: 'registry'
+  }
+}
+
+// give the managed Identity ACRPull on the ACR
+module acaIdenityAcrPull '../../shared/bicep/modules/role-assignments/role-assignment.bicep' = {
+  name: 'acaIdenityAcrPullDeployment'
+  params: {
+    resourceId: acr.outputs.acrResourceId
+    principalId: acaUserAssignedManagedIdentity.outputs.principalId
+    roleDefinitionId: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
   }
 }

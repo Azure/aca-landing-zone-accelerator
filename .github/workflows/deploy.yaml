@@ -1,0 +1,35 @@
+on:
+  workflow_dispatch:
+    secrets:
+      AZURE_CREDENTIALS:
+        description: 'Azure credentials'
+        required: true
+      SUBSCRIPTION_ID:
+        description: 'Azure subscription ID'
+        required: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Bicep Linter
+        uses: az bicep build --file ./scenarios/aca-internal/main.bicep
+
+  deploy-to-east-us:
+    uses: ./.github/actions/deploy-to-region.yaml
+    with:
+      location: 'eastus'
+      deploymentName: 'deployment-east-us'
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+
+  deploy-to-west-europe:
+    uses: ./.github/actions/deploy-to-region.yaml
+    with:
+      location: 'westeurope'
+      deploymentName: 'deployment-west-europe'
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}

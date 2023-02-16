@@ -1,0 +1,41 @@
+
+on: 
+  workflow_call:
+    inputs:
+      location:
+        description: 'Region to deploy to'
+        required: true
+        default: 'eastus'
+        type: string
+      deploymentName:
+        description: 'Name of the deployment'
+        required: true
+        default: 'deployment'
+        type: string
+    secrets:
+      AZURE_CREDENTIALS:
+        description: 'Azure credentials'
+        required: true
+      SUBSCRIPTION_ID:
+        description: 'Azure subscription ID'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: deploy
+        uses: azure/arm-deploy@v1
+        with:
+          scope: subscription
+          subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
+          region: ${{ inputs.location }}
+          template: ./scenarios/aca-internal/main.bicep
+          parameters: ./scenarios/aca-internal/parameters-main.bicep 
+          deploymentName: ${{ inputs.DEPLOYMENT_NAME }}
+          failOnStdErr: true
+      

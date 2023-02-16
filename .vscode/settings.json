@@ -1,5 +1,0 @@
-{
-  "yaml.schemas": {
-    "https://json.schemastore.org/github-workflow.json": "file:///home/pmalarme/workspace/ACA-Landing-Zone-Accelerator/.github/workflows/deploy.yaml"
-  }
-}

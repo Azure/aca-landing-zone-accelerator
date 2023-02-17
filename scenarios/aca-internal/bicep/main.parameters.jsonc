@@ -4,7 +4,7 @@
     "parameters": {
         // suffix that will be used to name the resources in a pattern like <resourceAbbreviation>-<applicationName>
         "applicationName" : {
-           "value": "aca-secure-LZA"         
+           "value": "myacapp"         
         },
         // Azure region where the resources will be deployed in
         "location": {
@@ -27,8 +27,12 @@
         "vnetHubResourceId": {
             "value": "/subscriptions/f446c3cb-cee2-43df-a12c-2c858a062fdd/resourceGroups/rg-hub-dev-northeurope/providers/Microsoft.Network/virtualNetworks/vnet-dev-neu-hub"
         }, 
+        // If empty string we provide only http. Otherwise we need to provision a valid certificate at configuration\appgwcert.pfx
+        // TODO: has not yet been tested with certificate
         "appGatewayFQDN": {
-            "value": "api.example.com"
+            "value": ""
+            // default FQDN of the provided self signed certificate
+            //"value": "acahello.demoapp.com"
         }
     }
 }

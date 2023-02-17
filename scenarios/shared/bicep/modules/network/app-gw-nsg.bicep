@@ -1,9 +1,16 @@
-param location string = resourceGroup().location
-var appGatewaySNNSG = 'nsg-apgw-${location}'
+@description('Required. Name of the NSG.')
+param name string
+
+@description('Azure region where the resources will be deployed in')
+param location string
+
+@description('Optional. Tags of the Azure Firewall resource.')
+param tags object = {}
 
 resource appGatewayNSG 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
-  name: appGatewaySNNSG
+  name: name
   location: location
+  tags: tags
   properties: {
     securityRules: [
       {

@@ -1,7 +1,13 @@
-param containerAppName string
-param location string 
-param acrName string
-param enableIngress bool 
+@description('Required. Name of your Azure Container sample. ')
+param name string
+
+@description('Location for all resources.')
+param location string
+
+@description('Optional. Tags of the resource.')
+param tags object = {}
+
+param enableIngress bool = true 
 param managedEnvironmentId string
 
 @description('The User Managed Identity ID of the resource')
@@ -9,8 +15,9 @@ param userAssignedIdentityId string
 
 
 resource containerApp 'Microsoft.App/containerApps@2022-10-01' = {
-  name: containerAppName
+  name: name
   location: location
+  tags: tags
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
@@ -26,30 +33,27 @@ resource containerApp 'Microsoft.App/containerApps@2022-10-01' = {
         targetPort: 80
         transport: 'auto'
       }
-      registries: [
-        {
-          server: '${acrName}.azurecr.io'
-          identity: userAssignedIdentityId
-        }
-      ]
+      registries: []
       secrets: []
+      // dapr: []
     }
     environmentId: managedEnvironmentId
     template: {
       containers: [
         {
           name: 'simple-hello'
-          image: '${acrName}.azurecr.io/acahello:latest'
+          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
           resources: {
-            cpu: json('0.5')
-            memory: '1.0Gi'
+            cpu: json('0.25')
+            memory: '0.5Gi'
           }
         }
       ]
       scale: {
         minReplicas: 1
-        maxReplicas: 1
+        maxReplicas: 10
       }
+      volumes: []
     }
   }
 }

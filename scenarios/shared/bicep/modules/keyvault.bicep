@@ -20,8 +20,8 @@ param enableSoftDelete bool = true
 @description('Optional. softDelete data retention days. It accepts >=7 and <=90.')
 param softDeleteRetentionInDays int = 90
 
-@description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature.')
-param enablePurgeProtection bool = true
+@description('Optional default is false. Provide \'true\' to enable Key Vault\'s purge protection feature.')
+param enablePurgeProtection bool = false
 
 @description('Optional. Service endpoint object information. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls object = {}
@@ -58,7 +58,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: accessPolicies
     enableSoftDelete: enableSoftDelete
     softDeleteRetentionInDays: softDeleteRetentionInDays
-    enablePurgeProtection: enablePurgeProtection
+    enablePurgeProtection: enablePurgeProtection ? true : null  //It seems that you cannot set it to False even the first time. workaround is not to set it at all: https://github.com/Azure/bicep/issues/5223
     networkAcls: !empty(networkAcls) ? {
       bypass: contains(networkAcls, 'bypass') ? networkAcls.bypass : null
       defaultAction: contains(networkAcls, 'defaultAction') ? networkAcls.defaultAction : null

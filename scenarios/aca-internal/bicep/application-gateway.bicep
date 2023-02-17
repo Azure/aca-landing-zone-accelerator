@@ -20,7 +20,7 @@ param appGatewaySubnetId string
 @description('The backend URL.')
 param primaryBackendEndFQDN string
 
-@description('the name of the self signed certificate in key vault (i.e. api-contoso-com)')
+@description('the name of the self signed certificate in key vault (i.e. acahello-demoapp-com)')
 param certificateKeyName string
 
 @description('The keyvault name, that holds the certificate for the application Gateway')
@@ -101,6 +101,10 @@ resource appGatewayResource 'Microsoft.Network/applicationGateways@2019-09-01' =
       '${appGatewayIdentity.id}': {}
     }
   }
+  dependsOn: [
+    kvRoleSecretsUser
+    accessPolicyGrant
+  ]
   properties: {
     sku: {
       name: 'WAF_v2'
@@ -179,9 +183,9 @@ resource appGatewayResource 'Microsoft.Network/applicationGateways@2019-09-01' =
           pickHostNameFromBackendAddress: false
           affinityCookieName: 'ApplicationGatewayAffinity'
           requestTimeout: 120
-          // probe:{
-          //   id: resourceId('Microsoft.Network/applicationGateways/probes', name, 'webProbe')
-          // }
+          probe:{
+            id: resourceId('Microsoft.Network/applicationGateways/probes', name, 'webProbe')
+          }
         }
       }
       {
@@ -199,9 +203,9 @@ resource appGatewayResource 'Microsoft.Network/applicationGateways@2019-09-01' =
         }
       }
     ]
-    httpListeners: [
+    httpListeners: (empty(certificateKeyName))?[
       {
-        name: 'default'
+        name: 'httpListener'
         properties: {
           frontendIPConfiguration: {
             #disable-next-line use-resource-id-functions
@@ -216,8 +220,9 @@ resource appGatewayResource 'Microsoft.Network/applicationGateways@2019-09-01' =
           requireServerNameIndication: false
         }
       }
+    ]:[
       {
-        name: 'https'
+        name: 'httpListener'
         properties: {
           frontendIPConfiguration: {
             #disable-next-line use-resource-id-functions
@@ -245,7 +250,7 @@ resource appGatewayResource 'Microsoft.Network/applicationGateways@2019-09-01' =
           ruleType: 'Basic'
           httpListener: {
             #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', name)}/httpListeners/https'
+            id: '${resourceId('Microsoft.Network/applicationGateways', name)}/httpListeners/httpListener'
           }
           backendAddressPool: {
             #disable-next-line use-resource-id-functions
@@ -253,7 +258,7 @@ resource appGatewayResource 'Microsoft.Network/applicationGateways@2019-09-01' =
           }
           backendHttpSettings: {
             #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', name)}/backendHttpSettingsCollection/https'
+            id: '${resourceId('Microsoft.Network/applicationGateways', name)}/backendHttpSettingsCollection/defaultHttpBackendHttpSetting'
           }
         }
       }

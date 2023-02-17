@@ -1,11 +1,18 @@
-param nsgName string
-param securityRules array = []
-param location string = resourceGroup().location
+@description('Required. Name of the NSG.')
+param name string
+
+@description('Azure region where the resources will be deployed in')
+param location string
+
+@description('Optional. Tags of the Azure Firewall resource.')
+param tags object = {}
+
 var azcloud =  'AzureCloud.${location}'
 
 resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
-  name: nsgName
+  name: name
   location: location
+  tags: tags
   properties: {
     //securityRules: securityRules
     securityRules: [   

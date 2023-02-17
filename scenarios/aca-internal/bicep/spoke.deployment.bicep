@@ -16,7 +16,7 @@ param spokeVnetAddressSpace string
 param appGatewayFQDN  string 
 
 @description('Whether to use a custom SSL certificate or not. If set to true, the certificate must be provided in the path configuration/appgwcert.pfx.')
-param useCertificate bool = true
+var  useCertificate = !empty(appGatewayFQDN) 
 
 var resourceNames = {
   storageAccount: naming.storageAccount.nameUnique
@@ -27,9 +27,11 @@ var resourceNames = {
   appInsights: naming.applicationInsights.name
   acaEnv: naming.containerAppsEnvironment.name
   appGw: naming.applicationGateway.name
+  nsgAppGw: 'nsg-${naming.applicationGateway.name}'
+  nsgAca: 'nsg-aca'
 }
 
-var certificateKeyName = 'certificateName'
+var certificateKeyName = useCertificate ? replace(appGatewayFQDN, '.', '-') : 'NO-CERTIFICATE'
 
 var subnetInfo = loadJsonContent('configuration/spoke-vnet-snet-config.jsonc')
 
@@ -248,31 +250,32 @@ module acaIdenityAcrPull '../../shared/bicep/modules/role-assignments/role-assig
   }
 }
 
-//TODO: work in progress
-// module sampleAca '../../shared/bicep/modules/aca-sample.bicep' = {
-//   name: 'sampleAcaDeployment'
-//   params: {
-//     acrName: acr.outputs.acrName
-//     containerAppName: 'casimplehello'
-//     enableIngress: true
-//     location: location
-//     managedEnvironmentId: acaEnv.outputs.acaEnvResourceId
-//     userAssignedIdentityId: acaUserAssignedManagedIdentity.outputs.id
-//   }
-// }
+//TODO: Consider flag for conditional deployment
+module acaSampleHello '../../shared/bicep/modules/aca-hello-sample.bicep' = {
+  name: 'acaSampleHelloDeployment'
+  params: {
+    location: location
+    managedEnvironmentId: acaEnv.outputs.acaEnvResourceId 
+    name: 'acaapphello' 
+    userAssignedIdentityId: acaUserAssignedManagedIdentity.outputs.id  
+  }
+}
 
-// module appGw 'application-gateway.bicep' = {
-//   name: 'appGwDeployment'
-//   params: {
-//     appGatewayFQDN: appGatewayFQDN
-//     appGatewaySubnetId: subnetAppGw.id 
-//     certificateKeyName: (useCertificate)? certificateKeyName : '' 
-//     keyvaultName: keyvaultModule.outputs.keyvaultName
-//     location: location
-//     name: resourceNames.appGw
-//     primaryBackendEndFQDN: sampleAca.outputs.fqdn
-//     keyVaultSecretId: (useCertificate) ? sslCertSecret.properties.secretUriWithVersion : ''
-//   }
-// }
+//TODO: work in progress 
+module appGw 'application-gateway.bicep' = {
+  name: 'appGwDeployment'
+  params: {
+    appGatewayFQDN: appGatewayFQDN
+    appGatewaySubnetId: subnetAppGw.id 
+    certificateKeyName: (useCertificate)? certificateKeyName : '' 
+    keyvaultName: keyvaultModule.outputs.keyvaultName
+    location: location
+    name: resourceNames.appGw
+    primaryBackendEndFQDN: acaSampleHello.outputs.fqdn
+    keyVaultSecretId: (useCertificate) ? sslCertSecret.properties.secretUriWithVersion : ''
+  }
+}
+
 
 output vnetSpokeName string = vnetSpoke.outputs.vnetName
+output sampleAppIngress string = acaSampleHello.outputs.fqdn

@@ -143,6 +143,12 @@ resource appGatewayResource 'Microsoft.Network/applicationGateways@2019-09-01' =
           port: 443
         }
       }
+      {
+        name: 'port_80'
+        properties: {
+          port: 80
+        }
+      }
     ] : [
       {
         name: 'port_80'
@@ -198,9 +204,11 @@ resource appGatewayResource 'Microsoft.Network/applicationGateways@2019-09-01' =
         name: 'default'
         properties: {
           frontendIPConfiguration: {
+            #disable-next-line use-resource-id-functions
             id: '${resourceId('Microsoft.Network/applicationGateways', name)}/frontendIPConfigurations/appGwPublicFrontendIp'
           }
           frontendPort: {
+            #disable-next-line use-resource-id-functions
             id: '${resourceId('Microsoft.Network/applicationGateways', name)}/frontendPorts/port_80'
           }
           protocol: 'Http'
@@ -212,13 +220,16 @@ resource appGatewayResource 'Microsoft.Network/applicationGateways@2019-09-01' =
         name: 'https'
         properties: {
           frontendIPConfiguration: {
+            #disable-next-line use-resource-id-functions
             id: '${resourceId('Microsoft.Network/applicationGateways', name)}/frontendIPConfigurations/appGwPublicFrontendIp'
           }
           frontendPort: {
+            #disable-next-line use-resource-id-functions
             id: '${resourceId('Microsoft.Network/applicationGateways', name)}/frontendPorts/port_443'
           }
           protocol: 'Https'
           sslCertificate: {
+            #disable-next-line use-resource-id-functions
             id: '${resourceId('Microsoft.Network/applicationGateways', name)}/sslCertificates/${appGatewayFQDN}'
           }
           hostnames: []
@@ -233,12 +244,15 @@ resource appGatewayResource 'Microsoft.Network/applicationGateways@2019-09-01' =
         properties: {
           ruleType: 'Basic'
           httpListener: {
+            #disable-next-line use-resource-id-functions
             id: '${resourceId('Microsoft.Network/applicationGateways', name)}/httpListeners/https'
           }
           backendAddressPool: {
+            #disable-next-line use-resource-id-functions
             id: '${resourceId('Microsoft.Network/applicationGateways', name)}/backendAddressPools/acaServiceBackend'
           }
           backendHttpSettings: {
+            #disable-next-line use-resource-id-functions
             id: '${resourceId('Microsoft.Network/applicationGateways', name)}/backendHttpSettingsCollection/https'
           }
         }

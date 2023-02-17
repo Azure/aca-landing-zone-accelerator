@@ -248,30 +248,31 @@ module acaIdenityAcrPull '../../shared/bicep/modules/role-assignments/role-assig
   }
 }
 
-module sampleAca '../../shared/bicep/modules/aca-sample.bicep' = {
-  name: 'sampleAcaDeployment'
-  params: {
-    acrName: acr.outputs.acrName
-    containerAppName: 'casimplehello'
-    enableIngress: true
-    location: location
-    managedEnvironmentId: acaEnv.outputs.acaEnvResourceId
-    userAssignedIdentityId: acaUserAssignedManagedIdentity.outputs.id
-  }
-}
+//TODO: work in progress
+// module sampleAca '../../shared/bicep/modules/aca-sample.bicep' = {
+//   name: 'sampleAcaDeployment'
+//   params: {
+//     acrName: acr.outputs.acrName
+//     containerAppName: 'casimplehello'
+//     enableIngress: true
+//     location: location
+//     managedEnvironmentId: acaEnv.outputs.acaEnvResourceId
+//     userAssignedIdentityId: acaUserAssignedManagedIdentity.outputs.id
+//   }
+// }
 
-module appGw 'application-gateway.bicep' = {
-  name: 'appGwDeployment'
-  params: {
-    appGatewayFQDN: appGatewayFQDN
-    appGatewaySubnetId: subnetAppGw.id 
-    certificateKeyName: (useCertificate)? certificateKeyName : '' 
-    keyvaultName: keyvaultModule.outputs.keyvaultName
-    location: location
-    name: resourceNames.appGw
-    primaryBackendEndFQDN: sampleAca.outputs.fqdn
-    keyVaultSecretId: (useCertificate) ? sslCertSecret.properties.secretUriWithVersion : ''
-  }
-}
+// module appGw 'application-gateway.bicep' = {
+//   name: 'appGwDeployment'
+//   params: {
+//     appGatewayFQDN: appGatewayFQDN
+//     appGatewaySubnetId: subnetAppGw.id 
+//     certificateKeyName: (useCertificate)? certificateKeyName : '' 
+//     keyvaultName: keyvaultModule.outputs.keyvaultName
+//     location: location
+//     name: resourceNames.appGw
+//     primaryBackendEndFQDN: sampleAca.outputs.fqdn
+//     keyVaultSecretId: (useCertificate) ? sslCertSecret.properties.secretUriWithVersion : ''
+//   }
+// }
 
 output vnetSpokeName string = vnetSpoke.outputs.vnetName

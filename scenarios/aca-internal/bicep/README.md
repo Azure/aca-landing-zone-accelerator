@@ -1,3 +1,58 @@
+> NOTE: TODO we need to fix documentation with new changes
+# Brief Deployment guide
+
+## Deploy Hub (optional step)
+Most organizations or end users of this LZA most possibly have already a Hub and Spoke topology, as describes in ESLZ (TODO: refine / add references)
+
+In the Hub, you will need a Bastion Service and a jaumphost.
+If you don't have such a hub, you can deploy one as described below
+
+If you haven't yet, clone the repo and cd to the folder ` scenarios/shared/bicep/hub-deployment `
+Before you run any deployment you need to personalize some configuration.
+Adjust as per your needs 
+- the values of the parameters in the file ` main.parameters.jsonc `. 
+- the values of the config network file ` configuration/hub-vnet-snet-config.jsonc `
+
+then run the deployment as shown below
+
+```bash
+# clone the repo
+git clone https://github.com/Azure/ACA-Landing-Zone-Accelerator
+
+# cd to the folder
+cd scenarios/shared/bicep/hub-deployment
+
+# change params and run
+az deployment sub create \
+    --template-file hub-deployment/main.bicep \
+    --location northeurope \
+    --name bicepAcaLzaHubDeployment \
+    --parameters main.parameters.jsonc
+
+```
+
+## Deploy Spoke
+First cd to the main bicep scenario folder ` scenarios/aca-internal/bicep/ `
+Before you run any deployment you need to personalize some configuration.
+Adjust as per your needs 
+- the values of the parameters in the file ` main.parameters.jsonc `. 
+- the values of the config network file ` configuration/spoke-vnet-snet-config.jsonc `
+
+then run the deployment as shown below
+
+```bash
+# cd to the folder
+cd scenarios/aca-internal/bicep/
+
+# change params and run
+az deployment sub create \
+    --template-file main.bicep \
+    --location northeurope \
+    --name bicepAcaLzaSpokeDeployment \
+    --parameters ./main.parameters.jsonc
+
+```
+
 # Enterprise Scale for ACA - Private 
 
 ## Steps of Implementation for Applications on Azure Container Apps
@@ -22,4 +77,3 @@ This section is organized using folders that match the steps outlined below. Mak
 4. [Creation of Supporting Components for AKS](./03-aks-supporting.md)
 5. [Creation of ACA Environment](./04-aca-env.md)
 6. [Creation of Azure container apps](./05-aca-apps.md)
-

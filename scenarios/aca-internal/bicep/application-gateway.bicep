@@ -26,6 +26,9 @@ param certificateKeyName string
 @description('The keyvault name, that holds the certificate for the application Gateway')
 param keyvaultName string
 
+@description('Provide a resource ID of the Web Analytics WS if you need diagnostic settngs, or nothing if you don t need any' )
+param logAnalyticsWsID string = ''
+
 @secure()
 param keyVaultSecretId string
 
@@ -300,5 +303,33 @@ resource appGatewayResource 'Microsoft.Network/applicationGateways@2019-09-01' =
       minCapacity: 2
       maxCapacity: 3
     }
+  }
+}
+
+resource agwDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if ( !empty(logAnalyticsWsID) ) {
+  name: 'agw-diagnostics'
+  scope: appGatewayResource
+  properties: {
+    workspaceId: logAnalyticsWsID
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: false
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
   }
 }

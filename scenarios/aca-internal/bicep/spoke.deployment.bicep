@@ -273,6 +273,7 @@ module appGw 'application-gateway.bicep' = {
     name: resourceNames.appGw
     primaryBackendEndFQDN: acaSampleHello.outputs.fqdn
     keyVaultSecretId: (useCertificate) ? sslCertSecret.properties.secretUriWithVersion : ''
+    logAnalyticsWsID: appInsights.outputs.logAnalyticsWsId
   }
 }
 

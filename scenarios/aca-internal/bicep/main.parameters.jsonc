@@ -22,6 +22,13 @@
             "value": {
                 "deployment": "bicep"   
             }
+        },
+        //If empty string, no peering between spoke and hub vnet. If you need peering between current spoke vnet and remote hub vnet, then you need to give the remote hub vnet resource ID
+        "vnetHubResourceId": {
+            "value": "/subscriptions/f446c3cb-cee2-43df-a12c-2c858a062fdd/resourceGroups/rg-hub-dev-northeurope/providers/Microsoft.Network/virtualNetworks/vnet-dev-neu-hub"
+        }, 
+        "appGatewayFQDN": {
+            "value": "api.example.com"
         }
     }
 }

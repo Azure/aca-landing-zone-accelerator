@@ -28,8 +28,16 @@ param numericSuffix string = ''
 @description('Resource tags that we might need to add to all resources (i.e. Environment, Cost center, application name etc)')
 param resourceTags object = {}
 
-@description('Telemetry is by default enabled. The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services.')
-param enableTelemetry bool = true
+//TODO: Ask arthi for Telemetry GUID
+// @description('Telemetry is by default enabled. The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services.')
+// param enableTelemetry bool = true
+
+@description('If you need peering between spoke and hub vnet, then you need to give the remote hub vnet resource ID')
+param vnetHubResourceId string
+
+@description('The FQDN of the Application Gateawy.Must match the TLS Certificate.')
+param appGatewayFQDN  string 
+
 
 // ================ //
 // Variables        //
@@ -52,6 +60,7 @@ var namingSuffixes = empty(numericSuffix) ? defaultSuffixes : concat(defaultSuff
   numericSuffix
 ])
 
+var vnetHubResourceIdSplitTokens = !empty(vnetHubResourceId) ? split(vnetHubResourceId, '/') : array('')
 
 // ================ //
 // Resources        //
@@ -75,7 +84,7 @@ resource spokeResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 }
 
 
-module spoke 'spoke.deployment.bicep' = {
+module spokeResources 'spoke.deployment.bicep' = {
   scope: resourceGroup(spokeResourceGroup.name)
   name: 'spokeDeployment'
   params: {
@@ -83,9 +92,31 @@ module spoke 'spoke.deployment.bicep' = {
     location: location
     tags: tags
     spokeVnetAddressSpace: spokeVnetAddressSpace
+    appGatewayFQDN: appGatewayFQDN
   }
 }
 
+module peerSpokeToHub '../../shared/bicep/modules/network/peering.bicep' = if (!empty(vnetHubResourceId) )  {
+  name: 'peerSpokeToHubDeployment'
+  scope: resourceGroup(last(split(subscription().id, '/'))!, spokeResourceGroup.name)
+  params: {
+    localVnetName: spokeResources.outputs.vnetSpokeName
+    remoteVnetName: vnetHubResourceIdSplitTokens[8]
+    remoteRgName: vnetHubResourceIdSplitTokens[4]
+    remoteSubscriptionId: vnetHubResourceIdSplitTokens[2]
+  }
+}
+
+module peerHubToSpoke '../../shared/bicep/modules/network/peering.bicep' = if (!empty(vnetHubResourceId) )  {
+  name: 'peerHubToSpokeDeployment'
+  scope: resourceGroup(vnetHubResourceIdSplitTokens[2], vnetHubResourceIdSplitTokens[4])
+    params: {
+      localVnetName: vnetHubResourceIdSplitTokens[8]
+      remoteVnetName: spokeResources.outputs.vnetSpokeName
+      remoteRgName: spokeResourceGroup.name
+      remoteSubscriptionId: last(split(subscription().id, '/'))!
+  }
+}
 
 // //TODO: need to find Deployment GUID
 // //  Telemetry Deployment

@@ -12,6 +12,12 @@ param tags object
 @description('CIDR of the Spoke vnet i.e. 192.168.0.0/24')
 param spokeVnetAddressSpace string
 
+@description('The FQDN of the Application Gateawy.Must match the TLS Certificate.')
+param appGatewayFQDN  string 
+
+@description('Whether to use a custom SSL certificate or not. If set to true, the certificate must be provided in the path configuration/appgwcert.pfx.')
+param useCertificate bool = true
+
 var resourceNames = {
   storageAccount: naming.storageAccount.nameUnique
   vnetSpoke: '${naming.virtualNetwork.name}-spoke'
@@ -20,7 +26,10 @@ var resourceNames = {
   userAssignedManagedIdentity: '${naming.userAssignedManagedIdentity.name}-aca'
   appInsights: naming.applicationInsights.name
   acaEnv: naming.containerAppsEnvironment.name
+  appGw: naming.applicationGateway.name
 }
+
+var certificateKeyName = 'certificateName'
 
 var subnetInfo = loadJsonContent('configuration/spoke-vnet-snet-config.jsonc')
 
@@ -32,8 +41,6 @@ var spokeVnetSubnets = [for item in subnetInfo.subnets: {
   }
 }]
 
-
-//look https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-functions-deployment#example-1
 var privateDnsZoneNames = {
   acr: 'privatelink.azurecr.io'  
   keyvault: 'privatelink.vaultcore.azure.net'
@@ -46,6 +53,8 @@ var virtualNetworkLinks = [
     registrationEnabled: false
   }
 ]
+
+var sslCertPath = 'configuration/appgwcert.pfx'
 
 // Deploy Spoke network 
 module vnetSpoke '../../shared/bicep/modules/network/vnet.bicep' = {
@@ -82,7 +91,7 @@ module acr '../../shared/bicep/modules/acr.bicep' = {
   }
 }
 
-module keyvault '../../shared/bicep/modules/keyvault/keyvault.bicep' = {
+module keyvaultModule '../../shared/bicep/modules/keyvault.bicep' = {
   name: 'keyvaultDeployment'
   params: {
     hasPrivateEndpoint: true
@@ -110,6 +119,20 @@ module keyvault '../../shared/bicep/modules/keyvault/keyvault.bicep' = {
         }
       }
     ]
+  }
+}
+
+resource sslCertSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = if (useCertificate) {
+  name: '${resourceNames.keyvault}/${certificateKeyName}'
+  dependsOn: [
+    keyvaultModule
+  ]
+  properties: {
+    value: loadFileAsBase64(sslCertPath)
+    contentType: 'application/x-pkcs12'
+    attributes: {
+      enabled: true
+    }
   }
 }
 
@@ -192,11 +215,11 @@ module acaEnvPrivateDnsZone  '../../shared/bicep/modules/private-dns-zone.bicep'
 module peKeyvault '../../shared/bicep/modules/private-endpoint.bicep' = {
   name: 'peKeyvaultDeployment'
   params: {
-    name: 'pe-${keyvault.outputs.keyvaultName}'
+    name: 'pe-${keyvaultModule.outputs.keyvaultName}'
     location: location
     tags: tags
     privateDnsZonesId: keyvaultPrivateDnsZone.outputs.privateDnsZonesId
-    privateLinkServiceId: keyvault.outputs.keyvaultId
+    privateLinkServiceId: keyvaultModule.outputs.keyvaultId
     snetId: subnetPrivateEndpoint.id
     subresource: 'vault'
   }
@@ -224,3 +247,31 @@ module acaIdenityAcrPull '../../shared/bicep/modules/role-assignments/role-assig
     roleDefinitionId: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
   }
 }
+
+module sampleAca '../../shared/bicep/modules/aca-sample.bicep' = {
+  name: 'sampleAcaDeployment'
+  params: {
+    acrName: acr.outputs.acrName
+    containerAppName: 'casimplehello'
+    enableIngress: true
+    location: location
+    managedEnvironmentId: acaEnv.outputs.acaEnvResourceId
+    userAssignedIdentityId: acaUserAssignedManagedIdentity.outputs.id
+  }
+}
+
+module appGw 'application-gateway.bicep' = {
+  name: 'appGwDeployment'
+  params: {
+    appGatewayFQDN: appGatewayFQDN
+    appGatewaySubnetId: subnetAppGw.id 
+    certificateKeyName: (useCertificate)? certificateKeyName : '' 
+    keyvaultName: keyvaultModule.outputs.keyvaultName
+    location: location
+    name: resourceNames.appGw
+    primaryBackendEndFQDN: sampleAca.outputs.fqdn
+    keyVaultSecretId: (useCertificate) ? sslCertSecret.properties.secretUriWithVersion : ''
+  }
+}
+
+output vnetSpokeName string = vnetSpoke.outputs.vnetName

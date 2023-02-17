@@ -38,19 +38,11 @@ param publicNetworkAccess string = ''
 @description('Array of access policy configurations, schema ref: https://docs.microsoft.com/en-us/azure/templates/microsoft.keyvault/vaults/accesspolicies?tabs=json#microsoftkeyvaultvaultsaccesspolicies-object')
 param accessPolicies array = []
 
-//@secure decorator cannot be assigned in Array. We define an object with a property secureList (array) and we add there all the secrets
-@description('Optional. All secrets to create.')
-@secure()
-param secrets object = {}
-
-@description('Optional. All keys to create.')
-param keys array = []
-
 @description('If the keyvault has private endpoints enabled.')
 param hasPrivateEndpoint bool
 
 var keyvaultNameLength = 24
-var keyvaultNameValid = replace( replace( replace(name, '-', ''), '_', ''), '.', '')
+var keyvaultNameValid = replace( replace( name, '_', '-'), '.', '-')
 var keyvaultName = length(keyvaultNameValid) > keyvaultNameLength ? substring(keyvaultNameValid, 0, keyvaultNameLength) : keyvaultNameValid
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
@@ -76,15 +68,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (hasPrivateEndpoint && empty(networkAcls) ? 'Disabled' : null)
   }
 }
-
-// module secretsDeployment 'keyvault.secrets.bicep' = if (!empty(secrets)) {
-//   name: 'keyvault-secrets-deployment'
-//   params: {
-//     keyVaultName: keyVault.name
-//     secrets: !empty(secrets) ? secrets.secureList : []
-    
-//   }
-// }
 
 output keyvaultId string = keyVault.id
 output keyvaultName string = keyVault.name

@@ -234,17 +234,6 @@ module acaEnv '../../shared/bicep/modules/aca-environment.bicep' = {
 }
 
 // deploy Private DNSZones and Private Endpoints
-
-// check https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-functions-object#items
-// module privateDnsZoneKeyvault '../../shared/bicep/modules/private-dns-zone.bicep' = {
-//   name: 'privateDnsZoneAppConfigDeployment'
-//   params: {
-//     name: privateDnsZoneNames.keyvault
-//     virtualNetworkLinks: virtualNetworkLinks
-//     tags: tags
-//   }
-// }
-
 module acrPrivateDnsZone '../../shared/bicep/modules/private-dns-zone.bicep' = { 
   name: 'acrPrivateDnsZoneDeployment'
   params: {

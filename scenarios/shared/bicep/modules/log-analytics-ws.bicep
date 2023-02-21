@@ -68,3 +68,5 @@ output logAnalyticsWsName string = laws.name
 
 @description('The resource ID of the resource.')
 output logAnalyticsWsId string = laws.id
+
+

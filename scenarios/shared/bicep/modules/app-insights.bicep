@@ -8,8 +8,8 @@ param name string
 ])
 param appInsightsType string = 'web'
 
-@description('Optional, default value, empty. Resource ID of the log analytics workspace which the data will be ingested to. If left empty, appInsights will create one for us. This property is required to create an application with this API version. Applications from older versions will not have this property.')
-param workspaceResourceId string = ''
+@description('Resource ID of the log analytics workspace which the data will be ingested to. If left empty, appInsights will create one for us. This property is required to create an application with this API version. Applications from older versions will not have this property.')
+param workspaceResourceId string
 
 @description('Optional. The network access type for accessing Application Insights ingestion. - Enabled or Disabled.')
 @allowed([
@@ -54,10 +54,6 @@ param location string
 @description('Optional. Tags of the resource.')
 param tags object = {}
 
-var lawsMaxLength = 63
-var lawsNameSantized = replace(name, 'appi-', 'log-')
-var lawsName = length(lawsNameSantized) > lawsMaxLength ? substring(lawsNameSantized, 0, lawsMaxLength) : lawsNameSantized
-
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: name
   location: location
@@ -66,20 +62,11 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   properties: {
     Application_Type: appInsightsType
     Request_Source: 'rest'
-    WorkspaceResourceId: empty(workspaceResourceId) ? laws.outputs.logAnalyticsWsId : workspaceResourceId
+    WorkspaceResourceId: workspaceResourceId
     publicNetworkAccessForIngestion: publicNetworkAccessForIngestion
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
     RetentionInDays: retentionInDays
     SamplingPercentage: samplingPercentage
-  }
-}
-
-module laws 'log-analytics-ws.bicep' = if ( empty(workspaceResourceId) ) {
-  name: 'lawsDeployment'
-  params: {
-    location: location
-    name: lawsName
-    tags: tags
   }
 }
 
@@ -94,12 +81,6 @@ output appInsInstrumentationKey string = appInsights.properties.InstrumentationK
 
 @description('The appInsights Connection String.')
 output appInsConnectionString string = appInsights.properties.ConnectionString
-
-@description('The name of the auto-create Log Analytics WS resource.')
-output logAnalyticsWsName string = empty(workspaceResourceId) ? laws.outputs.logAnalyticsWsName : ''
-
-@description('The Log Analytics WS resource ID of the application Inishgrs.')
-output logAnalyticsWsId string = empty(workspaceResourceId) ? laws.outputs.logAnalyticsWsId : workspaceResourceId
 
 @description('The application ID of the application insights component.')
 output applicationId string = appInsights.properties.AppId

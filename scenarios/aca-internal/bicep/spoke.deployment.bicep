@@ -12,8 +12,20 @@ param tags object
 @description('CIDR of the Spoke vnet i.e. 192.168.0.0/24')
 param spokeVnetAddressSpace string
 
+@description('CIDR of the subnet hosting Azure Container App Environment. For the current version (Feb 2023) you need at least /23 network')
+param subnetInfraAddressSpace string
+
+@description('CIDR of the subnet hosting the private endpoints of any desired servies (key vault, ACR, DBs etc')
+param subnetPrivateEndpointAddressSpace string
+
+@description('CIDR of the subnet hosting the application Gateway V2. needs to be big enough to accomdate scaling')
+param subnetAppGwAddressSpace string
+
 @description('The FQDN of the Application Gateawy.Must match the TLS Certificate.')
 param appGatewayFQDN  string 
+
+@description('If true, then application Insights will be deployed to provide tracing facility for DAPR in azure container apps')
+param acaDaprTracingWithAppInsights bool 
 
 @description('Whether to use a custom SSL certificate or not. If set to true, the certificate must be provided in the path configuration/appgwcert.pfx.')
 var  useCertificate = !empty(appGatewayFQDN) 
@@ -24,24 +36,48 @@ var resourceNames = {
   acr: naming.containerRegistry.nameUnique
   keyvault: naming.keyVault.nameUnique
   userAssignedManagedIdentity: '${naming.userAssignedManagedIdentity.name}-aca'
+  logAnalyticsWs: naming.logAnalyticsWorkspace.name
   appInsights: naming.applicationInsights.name
   acaEnv: naming.containerAppsEnvironment.name
   appGw: naming.applicationGateway.name
   nsgAppGw: 'nsg-${naming.applicationGateway.name}'
   nsgAca: 'nsg-aca'
+  subnetInfra: 'snetInfra'
+  subnetPrivateEndpoint: 'snetPE'
+  subnetAppGw: 'snetAppGw'
 }
 
 var certificateKeyName = useCertificate ? replace(appGatewayFQDN, '.', '-') : 'NO-CERTIFICATE'
 
-var subnetInfo = loadJsonContent('configuration/spoke-vnet-snet-config.jsonc')
-
-var spokeVnetSubnets = [for item in subnetInfo.subnets: {
-  name: item.name
-  properties: {
-    addressPrefix: item.addressPrefix
-    privateEndpointNetworkPolicies: !contains(item, 'privateEndpointNetworkPolicies') ? 'Disabled' : (item.privateEndpointNetworkPolicies =~ 'Disabled' ? 'Disabled' : 'Enabled')
+var subnets = [ 
+  {
+    name: resourceNames.subnetInfra
+    properties: {
+      addressPrefix: subnetInfraAddressSpace
+      privateEndpointNetworkPolicies: 'Disabled'  
+      networkSecurityGroup: {
+        id: nsgAca.outputs.nsgID
+      } 
+    } 
   }
-}]
+  {
+    name: resourceNames.subnetPrivateEndpoint
+    properties: {
+      addressPrefix: subnetPrivateEndpointAddressSpace
+      privateEndpointNetworkPolicies: 'Disabled'    
+    }
+  }
+   {
+    name: resourceNames.subnetAppGw
+    properties: {
+      addressPrefix: subnetAppGwAddressSpace
+      privateEndpointNetworkPolicies: 'Disabled'    
+      networkSecurityGroup: {
+        id: nsgAppGw.outputs.nsgID
+      } 
+    }
+  }
+]
 
 var privateDnsZoneNames = {
   acr: 'privatelink.azurecr.io'  
@@ -64,22 +100,40 @@ module vnetSpoke '../../shared/bicep/modules/network/vnet.bicep' = {
   params: {
     location: location
     name: resourceNames.vnetSpoke
-    subnetsInfo: spokeVnetSubnets
+    subnetsInfo: subnets
     tags: tags
     vnetAddressSpace:  spokeVnetAddressSpace
   }
 }
 
+module nsgAppGw '../../shared/bicep/modules/network/app-gw-nsg.bicep' = {
+  name: 'appGwNsgDeployment'
+  params: {
+    location: location
+    name: 'nsg-appGW'
+    tags: tags
+  }
+}
+
+module nsgAca '../../shared/bicep/modules/network/app-gw-nsg.bicep' = {
+  name: 'acaEnvNsgDeployment'
+  params: {
+    location: location
+    name: 'nsg-acaEnv'
+    tags: tags
+  }
+}
+
 resource subnetInfra 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
-  name: '${vnetSpoke.outputs.vnetName}/${subnetInfo.subnetInfra}'
+  name: '${vnetSpoke.outputs.vnetName}/${resourceNames.subnetInfra}'
 }
 
 resource subnetAppGw 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
-  name: '${vnetSpoke.outputs.vnetName}/${subnetInfo.subnetAppGw}'
+  name: '${vnetSpoke.outputs.vnetName}/${resourceNames.subnetAppGw}'
 }
 
 resource subnetPrivateEndpoint 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
-  name: '${vnetSpoke.outputs.vnetName}/${subnetInfo.subnetPrivateEndpoint}'
+  name: '${vnetSpoke.outputs.vnetName}/${resourceNames.subnetPrivateEndpoint}'
 }
 
 // Deploy services
@@ -147,12 +201,22 @@ module acaUserAssignedManagedIdentity '../../shared/bicep/modules/managed-identi
   }
 }
 
-module appInsights '../../shared/bicep/modules/app-insights.bicep' = {
+module logAnalyticsWs '../../shared/bicep/modules/log-analytics-ws.bicep' = {
+  name: 'logAnalyticsWsDeployment' 
+  params: {
+    location: location
+    name: resourceNames.logAnalyticsWs
+    tags: tags
+  }
+}
+
+module appInsights '../../shared/bicep/modules/app-insights.bicep' = if (acaDaprTracingWithAppInsights) {
   name: 'appInsightsDeployment'
   params: {
     name: resourceNames.appInsights
     location: location
     tags: tags
+    workspaceResourceId: logAnalyticsWs.outputs.logAnalyticsWsId
   }
 }
 
@@ -162,10 +226,10 @@ module acaEnv '../../shared/bicep/modules/aca-environment.bicep' = {
     name: resourceNames.acaEnv
     location: location
     tags: tags
-    logAnalyticsWsResourceId:  appInsights.outputs.logAnalyticsWsId    
+    logAnalyticsWsResourceId:  logAnalyticsWs.outputs.logAnalyticsWsId  
     subnetId: subnetInfra.id
     vnetEndpointInternal: true
-    appInsightsInstrumentationKey: appInsights.outputs.appInsInstrumentationKey    
+    appInsightsInstrumentationKey: acaDaprTracingWithAppInsights ? appInsights.outputs.appInsInstrumentationKey : ''   
   }
 }
 
@@ -273,7 +337,7 @@ module appGw 'application-gateway.bicep' = {
     name: resourceNames.appGw
     primaryBackendEndFQDN: acaSampleHello.outputs.fqdn
     keyVaultSecretId: (useCertificate) ? sslCertSecret.properties.secretUriWithVersion : ''
-    logAnalyticsWsID: appInsights.outputs.logAnalyticsWsId
+    logAnalyticsWsID: logAnalyticsWs.outputs.logAnalyticsWsId
   }
 }
 

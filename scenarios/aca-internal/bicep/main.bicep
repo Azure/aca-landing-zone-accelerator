@@ -22,6 +22,15 @@ param environment string
 @description('CIDR of the SPOKE vnet i.e. 192.168.0.0/24')
 param spokeVnetAddressSpace string
 
+@description('CIDR of the subnet hosting Azure Container App Environment. For the current version (Feb 2023) you need at least /23 network')
+param subnetInfraAddressSpace string
+
+@description('CIDR of the subnet hosting the private endpoints of any desired servies (key vault, ACR, DBs etc')
+param subnetPrivateEndpointAddressSpace string
+
+@description('CIDR of the subnet hosting the application Gateway V2. needs to be big enough to accomdate scaling')
+param subnetAppGwAddressSpace string
+
 @description('Optional. A numeric suffix (e.g. "001") to be appended on the naming generated for the resources. Defaults to empty.')
 param numericSuffix string = ''
 
@@ -37,6 +46,9 @@ param vnetHubResourceId string
 
 @description('The FQDN of the Application Gateawy.Must match the TLS Certificate.')
 param appGatewayFQDN  string 
+
+@description('If true, then application Insights will be deployed to provide tracing facility for DAPR in azure container apps')
+param acaDaprTracingWithAppInsights bool 
 
 
 // ================ //
@@ -93,6 +105,10 @@ module spokeResources 'spoke.deployment.bicep' = {
     tags: tags
     spokeVnetAddressSpace: spokeVnetAddressSpace
     appGatewayFQDN: appGatewayFQDN
+    acaDaprTracingWithAppInsights: acaDaprTracingWithAppInsights
+    subnetAppGwAddressSpace: subnetAppGwAddressSpace
+    subnetInfraAddressSpace: subnetInfraAddressSpace
+    subnetPrivateEndpointAddressSpace: subnetPrivateEndpointAddressSpace
   }
 }
 

@@ -1,1 +1,0 @@
-Operations management (Day 2 DR, Monitoring)

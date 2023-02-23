@@ -1,55 +1,76 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        // suffix that will be used to name the resources in a pattern like <resourceAbbreviation>-<applicationName>
-        "applicationName" : {
-           "value": "myacapp"         
-        },
-        // Azure region where the resources will be deployed in
-        "location": {
-            "value": "northeurope"
-        },
-        //Required. The environment for which the deployment is being executed ( 'dev', 'uat', 'prod','dr')
-        "environment": {
-            "value": "dev"
-        },
-        // CIDR of the SPOKE vnet, needs to be big enough to accomodate the three subnets below
-        "spokeVnetAddressSpace": {
-            "value": "10.1.0.0/22"
-        },
-        // CIDR of the subnet hosting Azure Container App Environment. For the current version (Feb 2023) you need at least /23 network
-        "subnetInfraAddressSpace": {
-            "value": "10.1.0.0/23"
-        },
-        // CIDR of the subnet hosting the private endpoints of any desired servies (key vault, ACR, DBs etc)
-        "subnetPrivateEndpointAddressSpace": {
-            "value": "10.1.2.0/24"
-        },
-        // CIDR of the subnet hosting the application Gateway V2. needs to be big enough to accomdate scaling
-        "subnetAppGwAddressSpace": {
-            "value": "10.1.3.0/24"
-        },
-        //Resource tags that we might need to add to all resources (i.e. Environment, Cost center, application name etc)
-        "resourceTags": {
-            "value": {
-                "deployment": "bicep"   
-            }
-        },
-        //Default is false. If true, then application Insights will be deployed to provide tracing facility for DAPR in azure container apps
-        "acaDaprTracingWithAppInsights": {
-            "value": false
-        },
-        //If empty string, no peering between spoke and hub vnet. If you need peering between current spoke vnet and remote hub vnet, then you need to give the remote hub vnet resource ID
-        "vnetHubResourceId": {
-            "value": "/subscriptions/f446c3cb-cee2-43df-a12c-2c858a062fdd/resourceGroups/rg-hub-dev-northeurope/providers/Microsoft.Network/virtualNetworks/vnet-dev-neu-hub"
-        }, 
-        // If empty string we provide only http. Otherwise we need to provision a valid certificate at configuration\appgwcert.pfx
-        // TODO: has not yet been tested with certificate
-        "appGatewayFQDN": {
-            "value": ""
-            // default FQDN of the provided self signed certificate
-            //"value": "acahello.demoapp.com"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+        "value": ""
+    },
+    "suffix": {
+        "value": ""
+    },
+    "tags": {
+        "value": {}
+    },
+    "vnetAddressPrefixes": {
+        "value":  ["10.0.0.0/16"]
+    },
+    "enableBastion": {
+        "value": true
+    },
+    "bastionSubnetAddressPrefix": {
+        "value":  "10.0.2.0/27"
+    },
+    "vmSize": {
+        "value": "Standard_B2ms"
+    },
+    "vmAdminUsername": {
+        "value": "azureuser"
+    },
+    "vmAdminPassword": {
+        "value": "Password123"
+    },
+    "vmLinuxSshAuthorizedKeys": {
+        "value":  "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDpNpoh248rsraL3uejAwKlla+pHaDLbp4DM7bKFoc3Rt1DeXPs0XTutJcNtq4iRq+ooRQ1T7WaK42MfQQxt3qkXwjyv8lPJ4v7aElWkAbxZIRYVYmQVxxwfw+zyB1rFdaCQD/kISg/zXxCWw+gdds4rEy7eq23/bXFM0l7pNvbAULIB6ZY7MRpC304lIAJusuZC59iwvjT3dWsDNWifA1SJtgr39yaxB9Fb01UdacwJNuvfGC35GNYH0VJ56c+iCFeAnMXIT00cYuHf0FCRTP0WvTKl+PQmeD1pwxefdFvKCVpidU2hOARb4ooapT0SDM1SODqjaZ/qwWP18y/qQ/v imported-openssh-key"
+    },
+    "vmJumpboxOSType": {
+        "value": "linux"
+    },
+    "vmJumpBoxSubnetAddressPrefix": {
+        "value":  "10.0.3.0/24"
+    },
+    "spokeVNetAddressPrefixes": {
+      "value":  ["10.1.0.0/22"]
+    },
+    "spokeInfraSubnetAddressPrefix": {
+      "value":  "10.1.0.0/23"
+    },
+    "spokePrivateEndpointsSubnetAddressPrefix": {
+      "value":  "10.1.2.0/24"
+    },
+    "spokeApplicationGatewaySubnetAddressPrefix": {
+      "value":  "10.1.3.0/24"
+    },
+    // If you want to deploy Application Insights, set this to true
+    "enableApplicationInsights": {
+      "value": false
+    },
+    // If you use Dapr, you can setup Dapr telemetry by setting this to true and enableApplicationInsights to true
+    "enableDaprInstrumentation": {
+      "value": false
+    },
+    // Set this to true if you want to deploy the sample application and the application gateway
+    "deployHelloWorldSample": {
+      "value": false
+    },
+    // The FQDN of the Application Gateawy. Must match the TLS Certificate.
+    "applicationGatewayFQDN": {
+      "value": "acahello.demoapp.com"
+    },
+    "enableApplicationGatewayCertificate": {
+      "value": true
+    },
+    "applicationGatewayCertificateKeyName": {
+      "value": "agwcert"
     }
+  }
 }

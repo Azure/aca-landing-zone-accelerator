@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "value": ""
+    },
+    "suffix": {
+      "value": ""
+    },
+    "tags": {
+      "value": {}
+    },
+    // If you want to deploy Application Insights, set this to true
+    "enableApplicationInsights": {
+      "value": false
+    },
+    // If you use Dapr, you can setup Dapr telemetry by setting this to true and enableApplicationInsights to true
+    "enableDaprInstrumentation": {
+      "value": false
+    },
+    // Replace with the name of the spoke VNet
+    "spokeVNetName": {
+      "value": "<SPOKE_VNET_NAME>"
+    },
+    // If the name was updated in the main.bicep file of 02-spoke, update it here as well
+    "spokeInfraSubnetName": {
+      "value": "snet-infra"
+    }
+  }
+}

@@ -14,7 +14,13 @@ If you already have a hub or supporting services, you can bypass the creation of
 
 ## Keeping It As Simple As Possible
 
-The code here is purposely written to avoid loops, complex variables and logic. In most cases, it is resource blocks, small modules and limited variables, with the goal of making it easier to determine what is being deployed and how they are connected. Resources are broken into 6 main building blocks for future modularization or adjustments as needed by your organization. Resource naming is always defined in `main.bicep` of each building block make it easier to find and adapt to your needs.
+The code here is purposely written to avoid loops, complex variables and logic. In most cases, it is resource blocks, small modules and limited variables, with the goal of making it easier to determine what is being deployed and how they are connected.
+
+Resources are broken into 6 main building blocks for future modularization or adjustments as needed by your organization: hub, spoke, supporting services, container apps environment, Hello World sample app (optional) and application gateway.
+
+![Landing Zone Building Blocks](./media/landing-zone-building-blocks.png)
+
+Resource naming is always defined in `main.bicep` of each building block make it easier to find and adapt to your needs.
 
 ## Fast Deployment
 
@@ -36,9 +42,19 @@ az deployment sub create \
 This section is organized using folders that match the steps outlined below. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment. Please read carrefully the documentation of each step before deploying it. All bicep templates parameters are documented in the bicep templates.
 
 0. Preqs - Clone this repo, install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), install [Bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
-1. [Creation of the Hub](./01-hub/README.md)
-2. [Creation of Spoke](./02-spoke/README.md)
-3. [Creation of Supporting Services](./03-supporting-services/README.md)
-4. [Creation of ACA Environment](./04-container-apps-environment/README.md)
-5. [Creation of Hello World Sample Container App (Optional)](./05-hello-world-sample-app/README.md)
-6. [Creation of Application Gateway](./06-application-gateway/README.md)
+1. [Hub](./01-hub)
+2. [Spoke](./02-spoke)
+3. [Supporting Services](./03-supporting-services)
+4. [ACA Environment](./04-container-apps-environment)
+5. [Hello World Sample Container App (Optional)](./05-hello-world-sample-app)
+6. [Application Gateway](./06-application-gateway)
+
+## Cleanup
+
+To remove the resources created by this landing zone, you can use the following command:
+
+```azcli
+az group delete -n <RESOURCE_GROUP_NAME> --yes
+```
+
+Where `<RESOURCE_GROUP_NAME>` is the name of the resource group where the resources were deployed. For each resource group created by the landing zone: at least the hub and the spoke. You can also delete the resource group where the supporting services were deployed, if you created one.

@@ -6,9 +6,6 @@ param spokeVNetName string
 @description('The name of the subnet for supporting services of the spoke')
 param servicesSubnetName string
 
-@description('The name of the user managed identity used to access the keyvault.')
-param userManagedIdentityName string
-
 @description('The name of the service bus namespace.')
 param serviceBusName string = 'eslz-sb-${uniqueString(resourceGroup().id)}'
 @description('The name of the service bus topic.')
@@ -31,10 +28,6 @@ resource spokeVNet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
 
 resource servicesSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
   name: '${spokeVNet.name}/${servicesSubnetName}'
-}
-
-resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
-  name: userManagedIdentityName
 }
 
 // Public access is only available in the preview
@@ -110,7 +103,6 @@ module serviceBusPrivateEndpointDnsSetting '../../../../bicep/modules/vnet/priva
     privateEndpointName: serviceBusPrivateEndpoint.outputs.privateEndpointName
   }
 }
-
 
 @description('The name of the service bus namespace.')
 output serviceBusName string = serviceBusNamespace.name

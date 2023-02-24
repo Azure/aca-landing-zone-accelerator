@@ -77,10 +77,9 @@ module serviceBus 'modules/service-bus.bicep' = {
     location: location
     spokeVNetName: spokeVNetName
     servicesSubnetName: servicesSubnetName
-    userManagedIdentityName: userManagedIdentityName
     serviceBusTopicName: serviceBusTopicName
     serviceBusTopicAuthorizationRuleName: serviceBusTopicAuthorizationRuleName
-    fineCollectionServiceName:fineCollectionServiceName
+    fineCollectionServiceName: fineCollectionServiceName
   }
 }
 
@@ -91,7 +90,6 @@ module cosmosDb 'modules/cosmos-db.bicep' = {
     location: location
     spokeVNetName: spokeVNetName
     servicesSubnetName: servicesSubnetName
-    userManagedIdentityName: userManagedIdentityName
     cosmosDbDatabaseName: cosmosDbDatabaseName
     cosmosDbCollectionName: cosmosDbCollectionName
   }

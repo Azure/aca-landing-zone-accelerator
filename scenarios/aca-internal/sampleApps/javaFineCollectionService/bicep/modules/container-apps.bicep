@@ -67,10 +67,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' exis
 resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2021-04-15' existing = {
   parent:cosmosDbAccount
   name: cosmosDbDatabaseName
-
 }
-
-
 
 resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
   name: vehicleRegistrationServiceName

@@ -6,9 +6,6 @@ param spokeVNetName string
 @description('The name of the subnet for supporting services of the spoke')
 param servicesSubnetName string
 
-@description('The name of the user managed identity used to access the keyvault.')
-param userManagedIdentityName string
-
 @description('The name of Cosmos DB resource.')
 param cosmosDbName string ='eslz-cosmosdb-${uniqueString(resourceGroup().id)}'
 @description('The name of Cosmos DB\'s database.')
@@ -28,10 +25,6 @@ resource spokeVNet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
 
 resource servicesSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
   name: '${spokeVNet.name}/${servicesSubnetName}'
-}
-
-resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
-  name: userManagedIdentityName
 }
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' = {

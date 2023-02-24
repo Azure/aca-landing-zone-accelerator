@@ -59,7 +59,7 @@ Below you can see the selected folder structure for the project. The main folder
   - (scenario1)\sample-apps
     This folder may contain one or more subfolders, depending on the selected sample applications that will be created to serve as smoke tests or best-practices examples using the specific Landing Zone Accelerator artifacts. Folder structure inside each sample application sub-folder is free. 
   - *shared* 
-    To avoid duplication of code modules/artifacts, we store all scripts, modules or coding artifacts in general, in this subfolder. This folder can have more depth, i.e. one folder for every deployment method (i.e. bicep, terraform etc) as shown below in the sample folder structure. Contains also a README.md file that gives details of the shared modules/scripts to help end-users understand their functionality. 
+    To avoid duplication of code modules/artifacts, we store all scripts, modules or coding artifacts in general, in this subfolder. This folder can have more depth, i.e. one folder for every deployment method (i.e. bicep, terraform etc) as shown below in the sample folder structure. Contains also a README.md file that gives details of the shared modules/scripts to help end-users understand their functionality. When moving a module to shared, always prioritize readability and ease-to-use over reusability.
 
 ``` bash
 docs

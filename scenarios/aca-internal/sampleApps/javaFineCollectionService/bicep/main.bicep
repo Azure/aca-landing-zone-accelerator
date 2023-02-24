@@ -80,6 +80,7 @@ module serviceBus 'modules/service-bus.bicep' = {
     userManagedIdentityName: userManagedIdentityName
     serviceBusTopicName: serviceBusTopicName
     serviceBusTopicAuthorizationRuleName: serviceBusTopicAuthorizationRuleName
+    fineCollectionServiceName:fineCollectionServiceName
   }
 }
 
@@ -136,7 +137,10 @@ module containerApps 'modules/container-apps.bicep' = {
     serviceBusName: serviceBus.outputs.serviceBusName
     serviceBusTopicName: serviceBus.outputs.serviceBusTopicName
     serviceBusTopicAuthorizationRuleName: serviceBus.outputs.serviceBusTopicAuthorizationRuleName
-
+    
+    cosmosDbName: cosmosDb.outputs.cosmosDbName
+    cosmosDbDatabaseName: cosmosDb.outputs.cosmosDbDatabaseName
+    
     acrName: acrName
     vehicleRegistrationServiceImage: vehicleRegistrationServiceImage
     fineCollectionServiceImage: fineCollectionServiceImage

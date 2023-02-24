@@ -114,16 +114,6 @@ module cosmosDbPrivateEndpointDnsSetting '../../../../bicep/modules/vnet/private
   }
 }
 
-//assign cosmosdb account read/write access to aca user assigned identity
-resource cosmosDBRole_assignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2022-08-15' = {
-  name: guid(subscription().id, '${acaIdentity.name}', '00000000-0000-0000-0000-000000000002')
-  parent: cosmosDbAccount
-  properties: {
-    principalId: acaIdentity.properties.principalId
-    roleDefinitionId:  resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', cosmosDbAccount.name, '00000000-0000-0000-0000-000000000002')//DocumentDB Data Contributor
-    scope:cosmosDbAccount.id
-  }
-}
 
 @description('The name of Cosmos DB resource.')
 output cosmosDbName string = cosmosDbAccount.name

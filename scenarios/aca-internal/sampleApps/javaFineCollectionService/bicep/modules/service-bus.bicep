@@ -22,6 +22,9 @@ param serviceBusPrivateDNSZoneName string = 'sb-pvt-dns'
 @description('The name of service bus\' private dns zone link to spoke VNET.')
 param serviceBusPrivateDNSLinkSpokeName string = 'sb-pvt-dns-link-spoke'
 
+@description('The name of the service for the fine collection service. This will be used to create the topic subscription')
+param fineCollectionServiceName string
+
 resource spokeVNet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   name: spokeVNetName
 }
@@ -65,6 +68,11 @@ resource serviceBusTopicAuthRule 'Microsoft.ServiceBus/namespaces/topics/authori
   }
 }
 
+resource serviceBusTopicSubscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2022-10-01-preview' = {
+  name: fineCollectionServiceName
+  parent: serviceBusTopic
+}
+
 module serviceBusPrivateEndpoint '../../../../bicep/modules/vnet/privateendpoint.bicep' = {
   name: serviceBusPrivateEndpointName
   params: {
@@ -103,16 +111,6 @@ module serviceBusPrivateEndpointDnsSetting '../../../../bicep/modules/vnet/priva
   }
 }
 
-//enable send/receive to aca user assigned identity
-resource role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(resourceGroup().id, '${acaIdentity.name}', '090c5cfd-751d-490a-894a-3ce6f1109419')
-  properties: {
-    principalId: acaIdentity.properties.principalId
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')//Azure Service Bus Data Owner
-  }
-  
-  scope: serviceBusNamespace
-}
 
 @description('The name of the service bus namespace.')
 output serviceBusName string = serviceBusNamespace.name

@@ -21,6 +21,11 @@ param serviceBusTopicName string
 @description('The name of the service bus topic\'s authorization rule.')
 param serviceBusTopicAuthorizationRuleName string
 
+@description('The name of the provisioned Cosmos DB resource.')
+param cosmosDbName string 
+@description('The name of the provisioned Cosmos DB\'s database.')
+param cosmosDbDatabaseName string
+
 @description('The name of the Azure Container Registry.')
 param acrName string
 @description('The image for the vehicle registration service.')
@@ -43,6 +48,29 @@ resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-3
 resource serviceBusTopicAuthorizationRule 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2021-11-01' existing = {
   name: '${serviceBusName}/${serviceBusTopicName}/${serviceBusTopicAuthorizationRuleName}'
 }
+
+resource serviceBusTopic 'Microsoft.ServiceBus/namespaces/topics@2021-11-01' existing = {
+  name: '${serviceBusName}/${serviceBusTopicName}'
+
+}
+
+resource serviceBusTopicSubscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2022-10-01-preview' existing = {
+  name: fineCollectionServiceName
+  parent: serviceBusTopic
+}
+
+resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = {
+  name: cosmosDbName
+
+}
+
+resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2021-04-15' existing = {
+  parent:cosmosDbAccount
+  name: cosmosDbDatabaseName
+
+}
+
+
 
 resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
   name: vehicleRegistrationServiceName
@@ -94,7 +122,7 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
   name: fineCollectionServiceName
   location: location
   identity: {
-    type: 'UserAssigned'
+    type: 'SystemAssigned,UserAssigned'
     userAssignedIdentities: {
         '${acaIdentity.id}': {}
     }
@@ -169,14 +197,26 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
   ]
 }
 
+//enable consume from servicebus using app managed identity.
+resource fineCollectionService_sb_role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(resourceGroup().id, fineCollectionServiceName, '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
+  properties: {
+    principalId: fineCollectionService.identity.principalId
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')//Azure Service Bus Data Receiver.
+    principalType: 'ServicePrincipal'
+  }
+  
+  scope: serviceBusTopicSubscription
+}
+
 resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' = {
   name: trafficControlServiceName
   location: location
   identity: {
-    type: 'UserAssigned'
+    type: 'SystemAssigned,UserAssigned'
     userAssignedIdentities: {
-        '${acaIdentity.id}': {}
-    }
+      '${acaIdentity.id}': {}
+  }
   }
   properties: {
     managedEnvironmentId: containerAppsEnvironment.id
@@ -222,6 +262,29 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
   dependsOn: [
     fineCollectionService
   ]
+}
+
+//enable send to servicebus using app managed identity.
+resource trafficControlService_sb_role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(resourceGroup().id, trafficControlServiceName, '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')
+  properties: {
+    principalId: trafficControlService.identity.principalId
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')//Azure Service Bus Data Sender
+    principalType: 'ServicePrincipal'
+  }
+  
+  scope: serviceBusTopic
+}
+
+//assign cosmosdb account read/write access to aca user assigned identity
+resource trafficControlService_cosmosdb_role_assignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2022-08-15' = {
+  name: guid(subscription().id, trafficControlServiceName, '00000000-0000-0000-0000-000000000002')
+  parent: cosmosDbAccount
+  properties: {
+    principalId: trafficControlService.identity.principalId
+    roleDefinitionId:  resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', cosmosDbAccount.name, '00000000-0000-0000-0000-000000000002')//DocumentDB Data Contributor
+    scope:cosmosDbAccount.id
+  }
 }
 
 resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {

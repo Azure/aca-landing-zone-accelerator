@@ -97,8 +97,8 @@ resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-
         value: '${serviceBusName}.servicebus.windows.net'
       }
       {
-        name: 'azureClientId'
-        value: acaIdentity.properties.clientId
+        name: 'disableEntityManagement'
+        value: 'true'
       }
     ]
     scopes: [
@@ -120,10 +120,6 @@ resource statestoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2
       {
         name: 'url'
         value: cosmosDbAccount.properties.documentEndpoint
-      }
-      {
-        name: 'azureClientId'
-        value: acaIdentity.properties.clientId
       }
       {
         name: 'database'

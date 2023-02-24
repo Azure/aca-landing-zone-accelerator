@@ -16,7 +16,7 @@ If you already have a hub or supporting services, you can bypass the creation of
 
 The code here is purposely written to avoid loops, complex variables and logic. In most cases, it is resource blocks, small modules and limited variables, with the goal of making it easier to determine what is being deployed and how they are connected.
 
-Resources are broken into 6 main building blocks for future modularization or adjustments as needed by your organization: hub, spoke, supporting services, container apps environment, Hello World sample app (optional) and application gateway.
+Resources are broken into 6 main building blocks for future modularization or adjustments as needed by your organization: hub, spoke, supporting services, container apps environment, Hello World sample app (optional) and application gateway. Front Door is also available as an alternative to Application Gateway.
 
 ![Landing Zone Building Blocks](./media/landing-zone-building-blocks.png)
 
@@ -47,7 +47,7 @@ This section is organized using folders that match the steps outlined below. Mak
 3. [Supporting Services](./03-supporting-services)
 4. [ACA Environment](./04-container-apps-environment)
 5. [Hello World Sample Container App (Optional)](./05-hello-world-sample-app)
-6. [Application Gateway](./06-application-gateway) or [Azure Front Door](./06-azure-front-door)  
+6. [Application Gateway](./06-application-gateway) or [Front Door](./06-azure-front-door)  
 
 ## Cleanup
 

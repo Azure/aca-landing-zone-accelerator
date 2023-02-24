@@ -7,8 +7,8 @@ The following will be created:
 
 An for each of the above:
 
-* Private Link Endpoints for ACR and Key Vault
-* Related DNS settings for private endpoints
+* Private Link Endpoint
+* Related DNS settings for the private endpoint
 * A managed identity
 
 ![Supporting Services](./media/supporting-services.png)

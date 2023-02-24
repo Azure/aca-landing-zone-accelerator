@@ -66,5 +66,9 @@ resource containerApp 'Microsoft.App/containerApps@2022-10-01' = {
   }
 }
 
+// ------------------
+// OUTPUTS
+// ------------------
+
 @description('The FQDN of the Hello World container app.')
 output helloWorldAppFQDN string = containerApp.properties.configuration.ingress.fqdn

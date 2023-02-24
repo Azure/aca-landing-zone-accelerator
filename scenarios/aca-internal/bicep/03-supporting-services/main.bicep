@@ -66,8 +66,17 @@ module keyVault 'modules/key-vault.bicep' = {
   }
 }
 
+// ------------------
+// OUTPUTS
+// ------------------
+
+@description('The resource ID of the container registry.')
 output containerRegistryId string = containerRegistry.outputs.containerRegistryId
+@description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = containerRegistry.outputs.containerRegistryUserAssignedIdentityId
 
+@description('The resource ID of the key vault.')
 output keyVaultId string = keyVault.outputs.keyVaultId
+
+@description('The resource ID of the user assigned managed identity to access the key vault.')
 output keyVaultUserAssignedIdentityId string = keyVault.outputs.keyVaultUserAssignedIdentityId

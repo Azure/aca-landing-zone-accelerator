@@ -94,6 +94,10 @@ resource existingPrivateLinkService 'Microsoft.Network/privateLinkServices@2022-
   name: privateLinkServiceName
 }
 
+// ------------------
+// OUTPUTS
+// ------------------
+
 // => Outputs including the private link endpoint connection ID to approve
 output result object = {
   fqdn: frontDoor.outputs.fqdn

@@ -122,5 +122,11 @@ module containerAppsEnvironmentPrivateDnsZone  '../modules/private-dns-zone.bice
   }
 }
 
-output containerAppsEnvironmentName string = containerAppsEnvironment.name
+// ------------------
+// OUTPUTS
+// ------------------
+
+@description('The resource ID of the container apps environment.')
 output containerAppsEnvironmentId string = containerAppsEnvironment.id
+@description('The name of the container apps environment.')
+output containerAppsEnvironmentName string = containerAppsEnvironment.name

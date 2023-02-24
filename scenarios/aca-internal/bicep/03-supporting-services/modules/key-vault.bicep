@@ -97,6 +97,13 @@ resource keyVaultReaderRoleAssignment 'Microsoft.Authorization/roleAssignments@2
   }
 }
 
+// ------------------
+// OUTPUTS
+// ------------------
+
+@description('The resource ID of the key vault.')
 output keyVaultId string = keyVault.id
+@description('The name of the key vault.')
 output keyVaultName string = keyVault.name
+@description('The resource ID of the user assigned managed identity to access the key vault.')
 output keyVaultUserAssignedIdentityId string = keyVaultUserAssignedIdentity.id

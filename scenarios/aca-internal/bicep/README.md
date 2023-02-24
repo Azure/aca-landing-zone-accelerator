@@ -47,7 +47,7 @@ This section is organized using folders that match the steps outlined below. Mak
 3. [Supporting Services](./03-supporting-services)
 4. [ACA Environment](./04-container-apps-environment)
 5. [Hello World Sample Container App (Optional)](./05-hello-world-sample-app)
-6. [Application Gateway](./06-application-gateway)
+6. [Application Gateway](./06-application-gateway) or [Azure Front Door](./06-azure-front-door)  
 
 ## Cleanup
 

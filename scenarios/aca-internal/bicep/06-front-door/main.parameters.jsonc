@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "value": ""
+    },
+    "suffix": {
+      "value": ""
+    },
+    "tags": {
+      "value": {}
+    },
+    // Replace with the resource ID of the container apps environment   
+    "containerAppsEnvironmentId": {
+      "value": "<CONTAINER_APPS_ENVIRONMENT_RESOURCE_ID>"
+    },
+    // Replace with the resource ID of the private endpoints subnet of the spoke virtual network
+    "privateLinkSubnetId": {
+      "value": "<FRONT_DOOR_SUBNET_RESOURCE_ID>"
+    },
+    // Replace with the name of the front door endpoint
+    "frontDoorEndpointName": {
+      "value": "fde-containerapps"
+    },
+    // Replace with the FQDN of the hello world sample app
+    "frontDoorOriginHostName": {
+      "value": "<HELLO_WORLD_SAMPLE_APP_FQDN>"
+    }
+  }
+}

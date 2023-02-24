@@ -155,9 +155,18 @@ A guide outlining the coding conventions and style guidelines that should be fol
   - For outputs be explicit about the type of the output. For example, `vmName` is better than `name`.
   - All parameters and outputs should be documented using the `description` property. The description should always be ended with a dot.
   - Use id instead of resource id in the name of the parameter or variable. For example, `subnetId` is better than `subnetResourceId`.
+  - If you split a resource id into tokens, use explicit names for the tokens. For example:
+  
+    ```bicep
+    var virtualNetworkHubResourceIdsSplitTokens = !empty(virtualNetworkHubRessourceId) ? split(virtualNetworkHubRessourceId, '/') : array('')
+    var hubSubscriptionId = virtualNetworkHubResourceIdsSplitTokens[2]
+    var hubResourceGroupName = virtualNetworkHubResourceIdsSplitTokens[4]
+    var hubVnetName = virtualNetworkHubResourceIdsSplitTokens[8]
+    ```
 
 - The naming of Azure resource should be done using the following conventions:
   - For resource, use the following template:
+
     ```bicep
     param resourceName string = '${prefix}<resourceAbbreviation>[-<parentResourceAbbreviation>]-<uniqueStringBasedOnSubscriptionOrResourceGroupId>${suffix}'
     ```

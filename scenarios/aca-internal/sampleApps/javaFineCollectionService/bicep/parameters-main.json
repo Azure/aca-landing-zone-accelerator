@@ -18,10 +18,10 @@
       "value": "simulation"
     },
     "containerRegistryUserAssignedIdentityId": {
-      "value": "<Add container registry user assigned identity id>"
+      "value": "<Add container registry user assigned identity resource id>"
     },
-    "keyVaultUserAssignedIdentityId": {
-      "value": "<Add key vault user assigned identity id>"
+    "keyVaultId": {
+      "value": "<Add key vault resource id>"
     },
     "spokeVNetName": {
       "value": "<Add spoke vnet name>"

@@ -14,7 +14,7 @@ param trafficControlServiceName string
 param simulationName string
 
 param containerRegistryUserAssignedIdentityId string
-param keyVaultUserAssignedIdentityId string
+param keyVaultId string
 
 // Supporting services
 @description('The name of the spoke VNET.')
@@ -38,6 +38,8 @@ param cosmosDbCollectionName string
 
 // Dapr components
 @description('The name of Dapr component for the secret store building block.')
+// We disable lint of this line as it is not a secret but the name of the Dapr component
+#disable-next-line secure-secrets-in-params
 param secretStoreComponentName string
 @description('The name of Dapr component for the pub/sub building block.')
 param pubSubComponentName string = 'pubsub'
@@ -103,8 +105,8 @@ module daprComponents 'modules/dapr-components.bicep' = {
     stateStoreComponentName: stateStoreComponentName
     
     containerAppsEnvironmentName: containerAppsEnvironmentName
+    
     keyVaultName: keyVaultName
-    keyVaultUserAssignedIdentityId: keyVaultUserAssignedIdentityId
     
     serviceBusName: serviceBus.outputs.serviceBusName
 
@@ -114,9 +116,6 @@ module daprComponents 'modules/dapr-components.bicep' = {
     
     fineCollectionServiceName: fineCollectionServiceName
     trafficControlServiceName: trafficControlServiceName
-
-    fineLicenseKeySecretName: fineLicenseKeySecretName
-    fineLicenseKeySecretValue: fineLicenseKeySecretValue
   }
 }
 
@@ -131,7 +130,10 @@ module containerApps 'modules/container-apps.bicep' = {
     location: location
     containerAppsEnvironmentName: containerAppsEnvironmentName
     containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
-    keyVaultUserAssignedIdentityId: keyVaultUserAssignedIdentityId
+    
+    keyVaultId: keyVaultId
+    fineLicenseKeySecretName: fineLicenseKeySecretName
+    fineLicenseKeySecretValue: fineLicenseKeySecretValue
 
     serviceBusName: serviceBus.outputs.serviceBusName
     serviceBusTopicName: serviceBus.outputs.serviceBusTopicName

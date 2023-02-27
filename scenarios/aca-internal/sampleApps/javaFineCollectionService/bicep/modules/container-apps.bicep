@@ -5,7 +5,13 @@ param containerAppsEnvironmentName string
 
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 param containerRegistryUserAssignedIdentityId string
-param keyVaultUserAssignedIdentityId string
+
+param keyVaultId string
+@description('The name of the secret containing the license key value for Fine Collection Service.')
+param fineLicenseKeySecretName string
+@secure()
+@description('The license key for Fine Collection Service.')
+param fineLicenseKeySecretValue string
 
 @description('The name of the service for the vehicle registration service.')
 param vehicleRegistrationServiceName string
@@ -60,13 +66,15 @@ module fineCollectionService 'container-apps/fine-collection-service.bicep' = {
     // TODO update to id?
     containerAppsEnvironmentName: containerAppsEnvironmentName
     vehicleRegistrationServiceDaprAppId: vehicleRegistrationService.outputs.vehicleRegistrationServiceDaprAppId
+    keyVaultId: keyVaultId
+    fineLicenseKeySecretName: fineLicenseKeySecretName
+    fineLicenseKeySecretValue: fineLicenseKeySecretValue
     serviceBusName: serviceBusName
     serviceBusTopicName: serviceBusTopicName
     serviceBusTopicAuthorizationRuleName: serviceBusTopicAuthorizationRuleName
     acrName: acrName
     containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
     fineCollectionServiceImage: fineCollectionServiceImage
-    keyVaultUserAssignedIdentityId: keyVaultUserAssignedIdentityId
   }
 }
 

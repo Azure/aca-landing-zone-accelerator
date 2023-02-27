@@ -20,7 +20,12 @@ param fineCollectionServiceName string
 param vehicleRegistrationServiceDaprAppId string
 
 // TODO replace with role assigment
-param keyVaultUserAssignedIdentityId string
+param keyVaultId string
+@description('The name of the secret containing the license key value for Fine Collection Service.')
+param fineLicenseKeySecretName string
+@secure()
+@description('The license key for Fine Collection Service.')
+param fineLicenseKeySecretValue string
 
 // Service Bus
 @description('The name of the service bus namespace.')
@@ -39,10 +44,17 @@ param containerRegistryUserAssignedIdentityId string
 param fineCollectionServiceImage string
 
 // ------------------
-// DEPLOYMENT TASKS
+//    VARIABLES
 // ------------------
 
-// TODO move the license key creation here and the assignment of the role to the key vault secret (least privilege  )
+var keyVaultIdTokens = split(keyVaultId, '/')
+var keyVaultSubscriptionId = keyVaultIdTokens[2]
+var keyVaultResourceGroupName = keyVaultIdTokens[4]
+var keyVaultName = keyVaultIdTokens[8]
+
+// ------------------
+// DEPLOYMENT TASKS
+// ------------------
 
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
   name: containerAppsEnvironmentName
@@ -75,7 +87,6 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
     type: 'SystemAssigned,UserAssigned'
     userAssignedIdentities: {
         '${containerRegistryUserAssignedIdentityId}': {}
-        '${keyVaultUserAssignedIdentityId}': {}
     }
   }
   properties: {
@@ -150,9 +161,21 @@ resource fineCollectionService_sb_role_assignment 'Microsoft.Authorization/roleA
   name: guid(resourceGroup().id, fineCollectionServiceName, '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
   properties: {
     principalId: fineCollectionService.identity.principalId
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')//Azure Service Bus Data Receiver.
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0') // Azure Service Bus Data Receiver.
     principalType: 'ServicePrincipal'
   }
   
   scope: serviceBusTopicSubscription
+}
+
+// Create fine license key secret and assigne Secrets User role to the fine collection service
+module fineLicenseKeySecret 'secrets/fine-license-key.bicep' = {
+  name: 'fineCollectionServiceLicenseKeySecret'
+  params: {
+    fineLicenseKeySecretName: fineLicenseKeySecretName
+    keyVaultName: keyVaultName
+    fineLicenseKeySecretValue: fineLicenseKeySecretValue
+    fineCollectionServicePrincipalId: fineCollectionService.identity.principalId
+  }
+  scope: resourceGroup(keyVaultSubscriptionId, keyVaultResourceGroupName)
 }

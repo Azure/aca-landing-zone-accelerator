@@ -2,16 +2,17 @@
 param containerAppsEnvironmentName string
 
 @description('The name of Dapr component for the secret store building block.')
+// We disable lint of this line as it is not a secret but the name of the Dapr component
+#disable-next-line secure-secrets-in-params
 param secretStoreComponentName string
 @description('The name of Dapr component for the pub/sub building block.')
 param pubSubComponentName string
 @description('The name of Dapr component for the state store building block.')
 param stateStoreComponentName string
 
+// todo replace with key vault resource id
 @description('The name of the key vault resource.')
 param keyVaultName string
-
-param keyVaultUserAssignedIdentityId string
 
 @description('The name of the service bus namespace.')
 param serviceBusName string
@@ -28,41 +29,12 @@ param fineCollectionServiceName string
 @description('The name of the service for the traffic control service.')
 param trafficControlServiceName string
 
-@description('The name of the secret containing the license key value for Fine Collection Service.')
-param fineLicenseKeySecretName string
-@secure()
-@description('The license key for Fine Collection Service.')
-param fineLicenseKeySecretValue string
-
-var keyVaultUserAssignedIdentityIdTokens = split(keyVaultUserAssignedIdentityId, '/')
-var keyVaultUserAssignedIdentitySubscriptionId = keyVaultUserAssignedIdentityIdTokens[2]
-var keyVaultUserAssignedIdentityResourceGroupName = keyVaultUserAssignedIdentityIdTokens[4]
-var keyVaultUserAssignedIdentityName = keyVaultUserAssignedIdentityIdTokens[8]
-
-resource keyVaultUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
-  scope: resourceGroup(keyVaultUserAssignedIdentitySubscriptionId, keyVaultUserAssignedIdentityResourceGroupName)
-  name: keyVaultUserAssignedIdentityName
-}
-
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
   name: containerAppsEnvironmentName
 }
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = {
   name: cosmosDbName
-}
-
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: keyVaultName
-}
-
-// License key secret used by Fine Collection Service
-resource fineLicenseKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
-  parent: keyVault
-  name: fineLicenseKeySecretName
-  properties: {
-    value: fineLicenseKeySecretValue
-  }
 }
 
 resource secretstoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-03-01' = {
@@ -74,11 +46,7 @@ resource secretstoreComponent 'Microsoft.App/managedEnvironments/daprComponents@
     metadata: [
       {
         name: 'vaultName'
-        value: keyVault.name
-      }
-      {
-        name: 'azureClientId'
-        value: keyVaultUserAssignedIdentity.properties.clientId
+        value: keyVaultName
       }
     ]
     scopes: [

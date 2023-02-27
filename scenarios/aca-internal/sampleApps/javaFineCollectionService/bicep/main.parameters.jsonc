@@ -88,21 +88,23 @@
     },
 
     /* CONTAINER REGISTRY & IMAGES */
+    // Replace with the name of the container registry
     "acrName": {
-      "value": "<ADD CONTAINER REGISTRY NAME>"
+      "value": "<CONTAINER_REGISTRY_NAME>"
     },
+    // For the images, replace the <CONTAINER_REGISTRY_NAME> placeholder with the name of the container registry or replace it with the full image name
     "vehicleRegistrationServiceImage": {
-      "value": "<ADD CONTAINER REGISTRY NAME>.azurecr.io/vehicle-registration-service:1.0"
+      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/vehicle-registration-service:1.0"
     },
     "fineCollectionServiceImage": {
-      "value": "<ADD CONTAINER REGISTRY NAME>.azurecr.io/fine-collection-service:1.0"
+      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/fine-collection-service:1.0"
     },
     "trafficControlServiceImage": {
-      "value": "<ADD CONTAINER REGISTRY NAME>.azurecr.io/traffic-control-service:1.0"
+      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/traffic-control-service:1.0"
     },
     // If simulation name is not empty, this parameter is required
     "simulationImage": {
-      "value": "<ADD CONTAINER REGISTRY NAME>.azurecr.io/simulation:1.0"
+      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/simulation:1.0"
     }
   }
 }

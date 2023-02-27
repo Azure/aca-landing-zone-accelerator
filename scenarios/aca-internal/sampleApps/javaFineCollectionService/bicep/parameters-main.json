@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "containerAppsEnvironmentName": {
-      "value": "ESLZ-ACA-Env"
+      "value": "<Add container apps environment name>"
     },
     "vehicleRegistrationServiceName": {
       "value": "vehicle-registration-service"
@@ -17,14 +17,17 @@
     "simulationName": {
       "value": "simulation"
     },
-    "userManagedIdentityName": {
-      "value": "acaIdentity"
+    "containerRegistryUserAssignedIdentityId": {
+      "value": "<Add container registry user assigned identity id>"
+    },
+    "keyVaultUserAssignedIdentityId": {
+      "value": "<Add key vault user assigned identity id>"
     },
     "spokeVNetName": {
-      "value": "ESLZ-SPOKE-VNet"
+      "value": "<Add spoke vnet name>"
     },
-    "servicesSubnetName": {
-      "value": "servicespe"
+    "spokePrivateEndpointsSubnetName": {
+      "value": "snet-pep"
     },
     "serviceBusTopicName": {
       "value": "test"

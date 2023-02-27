@@ -11,8 +11,7 @@ param stateStoreComponentName string
 @description('The name of the key vault resource.')
 param keyVaultName string
 
-@description('The name of the user managed identity used to access the keyvault.')
-param userManagedIdentityName string
+param keyVaultUserAssignedIdentityId string
 
 @description('The name of the service bus namespace.')
 param serviceBusName string
@@ -35,6 +34,16 @@ param fineLicenseKeySecretName string
 @description('The license key for Fine Collection Service.')
 param fineLicenseKeySecretValue string
 
+var keyVaultUserAssignedIdentityIdTokens = split(keyVaultUserAssignedIdentityId, '/')
+var keyVaultUserAssignedIdentitySubscriptionId = keyVaultUserAssignedIdentityIdTokens[2]
+var keyVaultUserAssignedIdentityResourceGroupName = keyVaultUserAssignedIdentityIdTokens[4]
+var keyVaultUserAssignedIdentityName = keyVaultUserAssignedIdentityIdTokens[8]
+
+resource keyVaultUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+  scope: resourceGroup(keyVaultUserAssignedIdentitySubscriptionId, keyVaultUserAssignedIdentityResourceGroupName)
+  name: keyVaultUserAssignedIdentityName
+}
+
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
   name: containerAppsEnvironmentName
 }
@@ -45,10 +54,6 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' exis
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
-}
-
-resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
-  name: userManagedIdentityName
 }
 
 // License key secret used by Fine Collection Service
@@ -73,7 +78,7 @@ resource secretstoreComponent 'Microsoft.App/managedEnvironments/daprComponents@
       }
       {
         name: 'azureClientId'
-        value: acaIdentity.properties.clientId
+        value: keyVaultUserAssignedIdentity.properties.clientId
       }
     ]
     scopes: [

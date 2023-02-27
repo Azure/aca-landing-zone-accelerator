@@ -37,7 +37,8 @@ var spokeSubscriptionId = spokeVNetIdTokens[2]
 var spokeResourceGroupName = spokeVNetIdTokens[4]
 var spokeVNetName = spokeVNetIdTokens[8]
 
-var keyvaultReaderRoleGuid='21090545-7ca7-4776-b22c-e363652d74d2'
+var keyvaultReaderRoleGuid = '21090545-7ca7-4776-b22c-e363652d74d2'
+var keyVaultSecretsUserRoleGuid = '4633458b-17de-408a-b874-0445c86b69e6'
 
 // ------------------
 // DEPLOYMENT TASKS
@@ -93,6 +94,16 @@ resource keyVaultReaderRoleAssignment 'Microsoft.Authorization/roleAssignments@2
   properties: {
     principalId: keyVaultUserAssignedIdentity.properties.principalId
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', keyvaultReaderRoleGuid)
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource keyVaultSecretsUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscription().id, keyVault.id, keyVaultUserAssignedIdentity.id) 
+  scope: keyVault
+  properties: {
+    principalId: keyVaultUserAssignedIdentity.properties.principalId
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', keyVaultSecretsUserRoleGuid)
     principalType: 'ServicePrincipal'
   }
 }

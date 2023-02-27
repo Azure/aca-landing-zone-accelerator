@@ -2,8 +2,9 @@
 param location string = resourceGroup().location
 @description('The name of the container apps environment.')
 param containerAppsEnvironmentName string
-@description('The name of the user managed identity used to access ACR.')
-param userManagedIdentityName string
+
+param containerRegistryUserAssignedIdentityId string
+param keyVaultUserAssignedIdentityId string
 
 @description('The name of the service for the vehicle registration service.')
 param vehicleRegistrationServiceName string
@@ -41,10 +42,6 @@ resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01'
   name: containerAppsEnvironmentName
 }
 
-resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
-  name: userManagedIdentityName
-}
-
 resource serviceBusTopicAuthorizationRule 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2021-11-01' existing = {
   name: '${serviceBusName}/${serviceBusTopicName}/${serviceBusTopicAuthorizationRuleName}'
 }
@@ -75,7 +72,7 @@ resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
-        '${acaIdentity.id}': {}
+        '${containerRegistryUserAssignedIdentityId}': {}
     }
   }
   properties: {
@@ -91,7 +88,7 @@ resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
       registries: [
         {
           server: '${acrName}.azurecr.io'
-          identity: acaIdentity.id
+          identity: containerRegistryUserAssignedIdentityId
         }
       ]
       secrets: []
@@ -121,7 +118,8 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
   identity: {
     type: 'SystemAssigned,UserAssigned'
     userAssignedIdentities: {
-        '${acaIdentity.id}': {}
+        '${containerRegistryUserAssignedIdentityId}': {}
+        '${keyVaultUserAssignedIdentityId}': {}
     }
   }
   properties: {
@@ -143,7 +141,7 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
       registries: [
         {
           server: '${acrName}.azurecr.io'
-          identity: acaIdentity.id
+          identity: containerRegistryUserAssignedIdentityId
         }
       ]
     }
@@ -212,7 +210,7 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
   identity: {
     type: 'SystemAssigned,UserAssigned'
     userAssignedIdentities: {
-      '${acaIdentity.id}': {}
+      '${containerRegistryUserAssignedIdentityId}': {}
   }
   }
   properties: {
@@ -235,7 +233,7 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
       registries: [
         {
           server: '${acrName}.azurecr.io'
-          identity: acaIdentity.id
+          identity: containerRegistryUserAssignedIdentityId
         }
       ]
     }
@@ -290,7 +288,7 @@ resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
-        '${acaIdentity.id}': {}
+        '${containerRegistryUserAssignedIdentityId}': {}
     }
   }
   properties: {
@@ -302,7 +300,7 @@ resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
       registries: [
         {
           server: '${acrName}.azurecr.io'
-          identity: acaIdentity.id
+          identity: containerRegistryUserAssignedIdentityId
         }
       ]
     }

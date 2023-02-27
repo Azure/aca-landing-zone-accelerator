@@ -1,10 +1,16 @@
+targetScope = 'resourceGroup'
+
+// ------------------
+//    PARAMETERS
+// ------------------
+
 @description('The region (location) in which the resource will be deployed. Default: resource group location.')
 param location string = resourceGroup().location
 
 @description('The name of the spoke VNET.')
 param spokeVNetName string
-@description('The name of the subnet for supporting services of the spoke')
-param servicesSubnetName string
+@description('The name of the subnet in the VNet to which the private endpoint will be connected.')
+param spokePrivateEndpointsSubnetName string
 
 @description('The name of the service bus namespace.')
 param serviceBusName string = 'eslz-sb-${uniqueString(resourceGroup().id)}'
@@ -13,21 +19,30 @@ param serviceBusTopicName string
 @description('The name of the service bus topic\'s authorization rule.')
 param serviceBusTopicAuthorizationRuleName string
 @description('The name of service bus\' private endpoint.')
-param serviceBusPrivateEndpointName string = 'sb-pvt-ep'
-@description('The name of service bus\' private dns zone.')
-param serviceBusPrivateDNSZoneName string = 'sb-pvt-dns'
-@description('The name of service bus\' private dns zone link to spoke VNET.')
-param serviceBusPrivateDNSLinkSpokeName string = 'sb-pvt-dns-link-spoke'
+param serviceBusPrivateEndpointName string = 'pep-sb-${uniqueString(resourceGroup().id)}'
 
 @description('The name of the service for the fine collection service. This will be used to create the topic subscription')
 param fineCollectionServiceName string
+
+// ------------------
+//    VARIABLES
+// ------------------
+
+var privateDnsZoneName = 'privatelink.servicebus.windows.net'
+
+var serviceBusNamespaceResourceName = 'namespace'
+
+// ------------------
+// DEPLOYMENT TASKS
+// ------------------
 
 resource spokeVNet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   name: spokeVNetName
 }
 
-resource servicesSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
-  name: '${spokeVNet.name}/${servicesSubnetName}'
+resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
+  name: spokePrivateEndpointsSubnetName
+  parent: spokeVNet
 }
 
 // Public access is only available in the preview
@@ -66,43 +81,24 @@ resource serviceBusTopicSubscription 'Microsoft.ServiceBus/namespaces/topics/sub
   parent: serviceBusTopic
 }
 
-module serviceBusPrivateEndpoint '../../../../bicep/modules/vnet/privateendpoint.bicep' = {
-  name: serviceBusPrivateEndpointName
+module serviceBusNetworking '../../../../bicep/modules/private-networking.bicep' = {
+  name: 'serviceBusNetworking'
   params: {
     location: location
-    groupIds: [
-      'namespace'
-    ]
+    azServicePrivateDnsZoneName: privateDnsZoneName
+    azServiceId: serviceBusNamespace.id
     privateEndpointName: serviceBusPrivateEndpointName
-    privatelinkConnName: '${serviceBusPrivateEndpointName}-conn'
-    resourceId: serviceBusNamespace.id
-    subnetid: servicesSubnet.id
+    privateEndpointSubResourceName: serviceBusNamespaceResourceName
+    spokeSubscriptionId: subscription().subscriptionId
+    spokeResourceGroupName: resourceGroup().name
+    spokeVirtualNetworkName: spokeVNet.name
+    spokeVirtualNetworkPrivateEndpointSubnetName: spokePrivateEndpointSubnet.name
   }
 }
 
-module serviceBusPrivateDNSZone '../../../../bicep/modules/vnet/privatednszone.bicep' = {
-  name: serviceBusPrivateDNSZoneName
-  params: {
-     privateDNSZoneName: 'privatelink.servicebus.windows.net'
-  }
-}
-
-module serviceBusPrivateDNSZoneLinkSpoke '../../../../bicep/modules/vnet/privatednslink.bicep' = {
-  name: serviceBusPrivateDNSLinkSpokeName
-  params: {
-    privateDnsZoneName: serviceBusPrivateDNSZone.outputs.privateDNSZoneName
-    vnetId: spokeVNet.id
-    linkname: 'spoke'
-  }
-}
-
-module serviceBusPrivateEndpointDnsSetting '../../../../bicep/modules/vnet/privatedns.bicep' = {
-  name: 'sb-pvtep-dns'
-  params: {
-    privateDNSZoneId: serviceBusPrivateDNSZone.outputs.privateDNSZoneId
-    privateEndpointName: serviceBusPrivateEndpoint.outputs.privateEndpointName
-  }
-}
+// ------------------
+// OUTPUTS
+// ------------------
 
 @description('The name of the service bus namespace.')
 output serviceBusName string = serviceBusNamespace.name

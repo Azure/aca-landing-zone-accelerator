@@ -13,14 +13,14 @@ param trafficControlServiceName string
 @description('The name of the simulation.')
 param simulationName string
 
-@description('The name of the user managed identity used to access ACR and the keyvault.')
-param userManagedIdentityName string
+param containerRegistryUserAssignedIdentityId string
+param keyVaultUserAssignedIdentityId string
 
 // Supporting services
 @description('The name of the spoke VNET.')
 param spokeVNetName string
-@description('The name of the subnet for supporting services of the spoke')
-param servicesSubnetName string = 'servicespe'
+@description('The name of the subnet in the VNet to which the private endpoint will be connected.')
+param spokePrivateEndpointsSubnetName string
 
 @description('The name of the service bus namespace.')
 param serviceBusName string = 'eslz-sb-${uniqueString(resourceGroup().id)}'
@@ -30,7 +30,7 @@ param serviceBusTopicName string
 param serviceBusTopicAuthorizationRuleName string
 
 @description('The name of Cosmos DB resource.')
-param cosmosDbName string ='eslz-cosmosdb-${uniqueString(resourceGroup().id)}'
+param cosmosDbName string ='eslz-cosno-${uniqueString(resourceGroup().id)}'
 @description('The name of Cosmos DB\'s database.')
 param cosmosDbDatabaseName string
 @description('The name of Cosmos DB\'s collection.')
@@ -76,7 +76,7 @@ module serviceBus 'modules/service-bus.bicep' = {
     serviceBusName: serviceBusName
     location: location
     spokeVNetName: spokeVNetName
-    servicesSubnetName: servicesSubnetName
+    spokePrivateEndpointsSubnetName: spokePrivateEndpointsSubnetName
     serviceBusTopicName: serviceBusTopicName
     serviceBusTopicAuthorizationRuleName: serviceBusTopicAuthorizationRuleName
     fineCollectionServiceName: fineCollectionServiceName
@@ -89,7 +89,7 @@ module cosmosDb 'modules/cosmos-db.bicep' = {
     cosmosDbName: cosmosDbName
     location: location
     spokeVNetName: spokeVNetName
-    servicesSubnetName: servicesSubnetName
+    spokePrivateEndpointsSubnetName: spokePrivateEndpointsSubnetName
     cosmosDbDatabaseName: cosmosDbDatabaseName
     cosmosDbCollectionName: cosmosDbCollectionName
   }
@@ -104,7 +104,7 @@ module daprComponents 'modules/dapr-components.bicep' = {
     
     containerAppsEnvironmentName: containerAppsEnvironmentName
     keyVaultName: keyVaultName
-    userManagedIdentityName: userManagedIdentityName
+    keyVaultUserAssignedIdentityId: keyVaultUserAssignedIdentityId
     
     serviceBusName: serviceBus.outputs.serviceBusName
 
@@ -130,7 +130,8 @@ module containerApps 'modules/container-apps.bicep' = {
     
     location: location
     containerAppsEnvironmentName: containerAppsEnvironmentName
-    userManagedIdentityName: userManagedIdentityName
+    containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
+    keyVaultUserAssignedIdentityId: keyVaultUserAssignedIdentityId
 
     serviceBusName: serviceBus.outputs.serviceBusName
     serviceBusTopicName: serviceBus.outputs.serviceBusTopicName

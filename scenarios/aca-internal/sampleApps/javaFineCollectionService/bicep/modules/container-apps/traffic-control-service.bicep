@@ -10,8 +10,8 @@ param location string = resourceGroup().location
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
-@description('The name of the container apps environment.')
-param containerAppsEnvironmentName string
+@description('The resource Id of the container apps environment.')
+param containerAppsEnvironmentId string
 
 @description('The name of the service for the traffic control service.')
 param trafficControlServiceName string
@@ -37,12 +37,14 @@ param containerRegistryUserAssignedIdentityId string
 param trafficControlServiceImage string
 
 // ------------------
-// DEPLOYMENT TASKS
+//    VARIABLES
 // ------------------
 
-resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
-  name: containerAppsEnvironmentName
-}
+var containerAppName = 'ca-${trafficControlServiceName}'
+
+// ------------------
+// DEPLOYMENT TASKS
+// ------------------
 
 resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = {
   name: serviceBusName
@@ -59,7 +61,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' exis
 }
 
 resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' = {
-  name: trafficControlServiceName
+  name: containerAppName
   location: location
   tags: tags
   identity: {
@@ -69,7 +71,7 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
   }
   }
   properties: {
-    managedEnvironmentId: containerAppsEnvironment.id
+    managedEnvironmentId: containerAppsEnvironmentId
     configuration: {
       activeRevisionsMode: 'single'
       ingress: {

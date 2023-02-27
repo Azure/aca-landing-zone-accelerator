@@ -10,8 +10,8 @@ param location string = resourceGroup().location
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
-@description('The name of the container apps environment.')
-param containerAppsEnvironmentName string
+@description('The resource Id of the container apps environment.')
+param containerAppsEnvironmentId string
 
 @description('The name of the service for the fine collection service.')
 param fineCollectionServiceName string
@@ -19,7 +19,8 @@ param fineCollectionServiceName string
 @description('Dapr App Id of the vehicle registration service.')
 param vehicleRegistrationServiceDaprAppId string
 
-// TODO replace with role assigment
+// Key Vault
+@description('The resource ID of the key vault to store the license key for the fine collection service.')
 param keyVaultId string
 @description('The name of the secret containing the license key value for Fine Collection Service.')
 param fineLicenseKeySecretName string
@@ -52,13 +53,11 @@ var keyVaultSubscriptionId = keyVaultIdTokens[2]
 var keyVaultResourceGroupName = keyVaultIdTokens[4]
 var keyVaultName = keyVaultIdTokens[8]
 
+var containerAppName = 'ca-${fineCollectionServiceName}'
+
 // ------------------
 // DEPLOYMENT TASKS
 // ------------------
-
-resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
-  name: containerAppsEnvironmentName
-}
 
 resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = {
   name: serviceBusName
@@ -80,7 +79,7 @@ resource serviceBusTopicSubscription 'Microsoft.ServiceBus/namespaces/topics/sub
 }
 
 resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
-  name: fineCollectionServiceName
+  name: containerAppName
   location: location
   tags: tags
   identity: {
@@ -90,7 +89,7 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
     }
   }
   properties: {
-    managedEnvironmentId: containerAppsEnvironment.id
+    managedEnvironmentId: containerAppsEnvironmentId
     configuration: {
       activeRevisionsMode: 'single'
       dapr: {
@@ -170,7 +169,7 @@ resource fineCollectionService_sb_role_assignment 'Microsoft.Authorization/roleA
 
 // Create fine license key secret and assigne Secrets User role to the fine collection service
 module fineLicenseKeySecret 'secrets/fine-license-key.bicep' = {
-  name: 'fineCollectionServiceLicenseKeySecret'
+  name: 'fineCollectionServiceLicenseKeySecret-${uniqueString(resourceGroup().id)}'
   params: {
     fineLicenseKeySecretName: fineLicenseKeySecretName
     keyVaultName: keyVaultName

@@ -1,11 +1,22 @@
-@description('The region (location) in which the resource will be deployed. Default: resource group location.')
+targetScope = 'resourceGroup'
+
+// ------------------
+//    PARAMETERS
+// ------------------
+
+@description('The location where the resources will be created.')
 param location string = resourceGroup().location
+
+@description('Optional. The tags to be assigned to the created resources.')
+param tags object = {}
+
 @description('The name of the container apps environment.')
 param containerAppsEnvironmentName string
 
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 param containerRegistryUserAssignedIdentityId string
 
+@description('The resource ID of the key vault to store the license key for the fine collection service.')
 param keyVaultId string
 @description('The name of the secret containing the license key value for Fine Collection Service.')
 param fineLicenseKeySecretName string
@@ -19,8 +30,8 @@ param vehicleRegistrationServiceName string
 param fineCollectionServiceName string
 @description('The name of the service for the traffic control service.')
 param trafficControlServiceName string
-@description('The name of the the simulation.')
-param simulationName string
+@description('Optional. The name of the the simulation. If it is not set, the simulation will not be deployed.')
+param simulationName string = ''
 
 @description('The name of the service bus namespace.')
 param serviceBusName string
@@ -42,16 +53,24 @@ param vehicleRegistrationServiceImage string
 param fineCollectionServiceImage string
 @description('The image for the traffic control service.')
 param trafficControlServiceImage string
-@description('The image for the simulation.')
-param simulationImage string
+@description('Optional. The image for the simulation. If the simulation name is set, this parameter is required.')
+param simulationImage string = ''
+
+// ------------------
+// DEPLOYMENT TASKS
+// ------------------
+
+resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
+  name: containerAppsEnvironmentName
+}
 
 module vehicleRegistrationService 'container-apps/vehicle-registration-service.bicep' = {
-  name: 'vehicleRegistrationService'
+  name: 'vehicleRegistrationService-${uniqueString(resourceGroup().id)}'
   params: {
     vehicleRegistrationServiceName: vehicleRegistrationServiceName
     location: location
-    // TODO update to id?
-    containerAppsEnvironmentName: containerAppsEnvironmentName
+    tags: tags
+    containerAppsEnvironmentId: containerAppsEnvironment.id
     acrName: acrName
     containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
     vehicleRegistrationServiceImage: vehicleRegistrationServiceImage
@@ -59,12 +78,12 @@ module vehicleRegistrationService 'container-apps/vehicle-registration-service.b
 }
 
 module fineCollectionService 'container-apps/fine-collection-service.bicep' = {
-  name: 'fineCollectionService'
+  name: 'fineCollectionService-${uniqueString(resourceGroup().id)}'
   params: {
     fineCollectionServiceName: fineCollectionServiceName
     location: location
-    // TODO update to id?
-    containerAppsEnvironmentName: containerAppsEnvironmentName
+    tags: tags
+    containerAppsEnvironmentId: containerAppsEnvironment.id
     vehicleRegistrationServiceDaprAppId: vehicleRegistrationService.outputs.vehicleRegistrationServiceDaprAppId
     keyVaultId: keyVaultId
     fineLicenseKeySecretName: fineLicenseKeySecretName
@@ -79,12 +98,12 @@ module fineCollectionService 'container-apps/fine-collection-service.bicep' = {
 }
 
 module trafficControlService 'container-apps/traffic-control-service.bicep' = {
-  name: 'trafficControlService'
+  name: 'trafficControlService-${uniqueString(resourceGroup().id)}'
   params: {
     trafficControlServiceName: trafficControlServiceName
     location: location
-    // TODO update to id?
-    containerAppsEnvironmentName: containerAppsEnvironmentName
+    tags: tags
+    containerAppsEnvironmentId: containerAppsEnvironment.id
     serviceBusName: serviceBusName
     serviceBusTopicName: serviceBusTopicName
     cosmosDbName: cosmosDbName
@@ -99,14 +118,13 @@ module trafficControlService 'container-apps/traffic-control-service.bicep' = {
   ]
 }
 
-// TODO add a flag to deploy the simulation
-module simulation 'container-apps/simulation.bicep' = {
-  name: 'simulation'
+module simulation 'container-apps/simulation.bicep' = if (simulationName != '') {
+  name: 'simulation-${uniqueString(resourceGroup().id)}'
   params: {
     simulationName: simulationName
     location: location
-    // TODO update to id?
-    containerAppsEnvironmentName: containerAppsEnvironmentName
+    tags: tags
+    containerAppsEnvironmentId: containerAppsEnvironment.id
     trafficControlServiceFQDN: trafficControlService.outputs.trafficControlServiceFQDN
     acrName: acrName
     containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId

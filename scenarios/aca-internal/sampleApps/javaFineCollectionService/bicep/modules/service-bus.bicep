@@ -4,8 +4,11 @@ targetScope = 'resourceGroup'
 //    PARAMETERS
 // ------------------
 
-@description('The region (location) in which the resource will be deployed. Default: resource group location.')
+@description('The location where the resources will be created.')
 param location string = resourceGroup().location
+
+@description('Optional. The tags to be assigned to the created resources.')
+param tags object = {}
 
 @description('The name of the spoke VNET.')
 param spokeVNetName string
@@ -13,13 +16,13 @@ param spokeVNetName string
 param spokePrivateEndpointsSubnetName string
 
 @description('The name of the service bus namespace.')
-param serviceBusName string = 'eslz-sb-${uniqueString(resourceGroup().id)}'
+param serviceBusName string
 @description('The name of the service bus topic.')
 param serviceBusTopicName string
 @description('The name of the service bus topic\'s authorization rule.')
 param serviceBusTopicAuthorizationRuleName string
 @description('The name of service bus\' private endpoint.')
-param serviceBusPrivateEndpointName string = 'pep-sb-${uniqueString(resourceGroup().id)}'
+param serviceBusPrivateEndpointName string
 
 @description('The name of the service for the fine collection service. This will be used to create the topic subscription')
 param fineCollectionServiceName string
@@ -49,6 +52,7 @@ resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2
 resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-01-01-preview' = {
   name: serviceBusName
   location: location
+  tags: tags
   sku: {
     name: 'Premium'
     tier: 'Premium'
@@ -82,7 +86,7 @@ resource serviceBusTopicSubscription 'Microsoft.ServiceBus/namespaces/topics/sub
 }
 
 module serviceBusNetworking '../../../../bicep/modules/private-networking.bicep' = {
-  name: 'serviceBusNetworking'
+  name: 'serviceBusNetworking-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
     azServicePrivateDnsZoneName: privateDnsZoneName

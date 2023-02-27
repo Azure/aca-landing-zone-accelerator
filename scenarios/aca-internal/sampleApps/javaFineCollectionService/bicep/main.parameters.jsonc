@@ -2,9 +2,23 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "containerAppsEnvironmentName": {
-      "value": "<Add container apps environment name>"
+    "prefix": {
+      "value": ""
     },
+    
+    "suffix": {
+        "value": ""
+    },
+
+    "tags": {
+        "value": {}
+    },
+
+    // Replace with the name of the container apps environment
+    "containerAppsEnvironmentName": {
+      "value": "<CONTAINER_APPS_ENVIRONMENT_NAME>"
+    },
+
     "vehicleRegistrationServiceName": {
       "value": "vehicle-registration-service"
     },
@@ -14,33 +28,43 @@
     "trafficControlServiceName": {
       "value": "traffic-control-service"
     },
+    // If simulation name is empty, the simulation will not be deployed
     "simulationName": {
       "value": "simulation"
     },
+
+    // Replace with the resource ID of the container registry user assigned identity
     "containerRegistryUserAssignedIdentityId": {
-      "value": "<Add container registry user assigned identity resource id>"
+      "value": "<CONTAINER_REGISTRY_USER_ASSIGNED_IDENTITY_ID>"
     },
-    "keyVaultId": {
-      "value": "<Add key vault resource id>"
-    },
+
+    /* SPOKE PRIVATE ENDPOINTS SUBNET */
+    // Replace with the name of spoke virtual network
     "spokeVNetName": {
-      "value": "<Add spoke vnet name>"
+      "value": "<SPOKE_VNET_NAME>"
     },
+    // If the name was updated in the main.bicep file of 02-spoke, update it here as well
     "spokePrivateEndpointsSubnetName": {
       "value": "snet-pep"
     },
+
+    /* SERVICE BUS */
     "serviceBusTopicName": {
       "value": "test"
     },
     "serviceBusTopicAuthorizationRuleName": {
       "value": "TestTopicSharedAccessKey"
     },
+
+    /* COSMOS DB */
     "cosmosDbDatabaseName": {
       "value": "cosmos-db-fines"
     },
     "cosmosDbCollectionName": {
       "value": "traffic-control-vehicle-state"
     },
+
+    /* DAPR COMPONENTS */
     "secretStoreComponentName": {
       "value": "secretstore"
     },
@@ -50,8 +74,11 @@
     "stateStoreComponentName": {
       "value": "statestore"
     },
-    "keyVaultName" : {
-      "value": "<Add Key Vault resource name>"
+
+    /* KEY VAULT */
+    // Replace with the resource ID of the key vault
+    "keyVaultId": {
+      "value": "<KEY_VAULT_ID>"
     },
     "fineLicenseKeySecretName": {
       "value": "license-key"
@@ -59,6 +86,8 @@
     "fineLicenseKeySecretValue": {
       "value": "HX783-5PN1G-CRJ4A-K2L7V"
     },
+
+    /* CONTAINER REGISTRY & IMAGES */
     "acrName": {
       "value": "<ADD CONTAINER REGISTRY NAME>"
     },
@@ -71,6 +100,7 @@
     "trafficControlServiceImage": {
       "value": "<ADD CONTAINER REGISTRY NAME>.azurecr.io/traffic-control-service:1.0"
     },
+    // If simulation name is not empty, this parameter is required
     "simulationImage": {
       "value": "<ADD CONTAINER REGISTRY NAME>.azurecr.io/simulation:1.0"
     }

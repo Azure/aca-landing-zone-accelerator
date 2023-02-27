@@ -10,8 +10,8 @@ param location string = resourceGroup().location
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
-@description('The name of the container apps environment.')
-param containerAppsEnvironmentName string
+@description('The resource Id of the container apps environment.')
+param containerAppsEnvironmentId string
 
 @description('The FQDN of the traffic control service.')
 param trafficControlServiceFQDN string
@@ -28,15 +28,17 @@ param containerRegistryUserAssignedIdentityId string
 param simulationImage string
 
 // ------------------
+//    VARIABLES
+// ------------------
+
+var containerAppName = 'ca-${simulationName}'
+
+// ------------------
 // DEPLOYMENT TASKS
 // ------------------
 
-resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
-  name: containerAppsEnvironmentName
-}
-
 resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
-  name: simulationName
+  name: containerAppName
   location: location
   tags: tags
   identity: {
@@ -46,7 +48,7 @@ resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
     }
   }
   properties: {
-    managedEnvironmentId: containerAppsEnvironment.id
+    managedEnvironmentId: containerAppsEnvironmentId
     configuration: {
       activeRevisionsMode: 'single'
       secrets: [

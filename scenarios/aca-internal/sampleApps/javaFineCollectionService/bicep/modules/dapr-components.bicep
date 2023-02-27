@@ -1,3 +1,9 @@
+targetScope = 'resourceGroup'
+
+// ------------------
+//    PARAMETERS
+// ------------------
+
 @description('The name of the container apps environment.')
 param containerAppsEnvironmentName string
 
@@ -28,6 +34,10 @@ param cosmosDbCollectionName string
 param fineCollectionServiceName string
 @description('The name of the service for the traffic control service.')
 param trafficControlServiceName string
+
+// ------------------
+// DEPLOYMENT TASKS
+// ------------------
 
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
   name: containerAppsEnvironmentName

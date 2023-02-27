@@ -4,8 +4,11 @@ targetScope = 'resourceGroup'
 //    PARAMETERS
 // ------------------
 
-@description('The region (location) in which the resource will be deployed. Default: resource group location.')
+@description('The location where the resources will be created.')
 param location string = resourceGroup().location
+
+@description('Optional. The tags to be assigned to the created resources.')
+param tags object = {}
 
 @description('The name of the spoke VNET.')
 param spokeVNetName string
@@ -13,13 +16,13 @@ param spokeVNetName string
 param spokePrivateEndpointsSubnetName string
 
 @description('The name of Cosmos DB resource.')
-param cosmosDbName string ='eslz-cosmosdb-${uniqueString(resourceGroup().id)}'
+param cosmosDbName string
 @description('The name of Cosmos DB\'s database.')
 param cosmosDbDatabaseName string
 @description('The name of Cosmos DB\'s collection.')
 param cosmosDbCollectionName string
 @description('The name of Cosmos DB\'s private endpoint.')
-param cosmosDbPrivateEndpointName string = 'pep-cosno-${uniqueString(resourceGroup().id)}'
+param cosmosDbPrivateEndpointName string
 
 // ------------------
 //    VARIABLES
@@ -45,6 +48,7 @@ resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' = {
   name: cosmosDbName
   location: location
+  tags: tags
   kind: 'GlobalDocumentDB'
   properties: {
     locations: [
@@ -62,6 +66,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' = {
 resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2021-04-15' = {
   name: cosmosDbDatabaseName
   parent: cosmosDbAccount
+  tags: tags
   properties: {
     resource: {
       id: cosmosDbDatabaseName
@@ -72,6 +77,7 @@ resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@20
 resource cosmosDbDatabaseCollection 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2021-05-15' = {
   name: cosmosDbCollectionName
   parent: cosmosDbDatabase
+  tags: tags
   properties: {
     resource: {
       id: cosmosDbCollectionName
@@ -85,7 +91,7 @@ resource cosmosDbDatabaseCollection 'Microsoft.DocumentDB/databaseAccounts/sqlDa
 }
 
 module cosmosDbNetworking '../../../../bicep/modules/private-networking.bicep' = {
-  name: 'cosmosDbNetworking'
+  name: 'cosmosDbNetowrking-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
     azServicePrivateDnsZoneName: privateDnsZoneName

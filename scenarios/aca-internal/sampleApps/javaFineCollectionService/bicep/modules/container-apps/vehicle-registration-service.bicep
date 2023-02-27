@@ -10,8 +10,8 @@ param location string = resourceGroup().location
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
-@description('The name of the container apps environment.')
-param containerAppsEnvironmentName string
+@description('The resource Id of the container apps environment.')
+param containerAppsEnvironmentId string
 
 @description('The name of the service for the vehicle registration service.')
 param vehicleRegistrationServiceName string
@@ -25,15 +25,17 @@ param containerRegistryUserAssignedIdentityId string
 param vehicleRegistrationServiceImage string
 
 // ------------------
+//    VARIABLES
+// ------------------
+
+var containerAppName = 'ca-${vehicleRegistrationServiceName}'
+
+// ------------------
 // DEPLOYMENT TASKS
 // ------------------
 
-resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
-  name: containerAppsEnvironmentName
-}
-
 resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
-  name: vehicleRegistrationServiceName
+  name: containerAppName
   location: location
   tags: tags
   identity: {
@@ -43,7 +45,7 @@ resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
     }
   }
   properties: {
-    managedEnvironmentId: containerAppsEnvironment.id
+    managedEnvironmentId: containerAppsEnvironmentId
     configuration: {
       activeRevisionsMode: 'single'
       dapr: {

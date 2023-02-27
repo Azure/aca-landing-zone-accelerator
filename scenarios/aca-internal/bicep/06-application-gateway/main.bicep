@@ -67,7 +67,7 @@ resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
 // => Certificates (supports only 1 for now)
 
 module appGatewayAddCertificates './modules/app-gateway-cert.bicep' = if (enableApplicationGatewayCertificate) {
-  name: 'appGatewayAddCertificates'
+  name: 'appGatewayAddCertificates-${uniqueString(resourceGroup().id)}'
   scope: resourceGroup(keyVaultSubscriptionId, keyVaultResourceGroupName)
   params: {
     keyVaultName: keyVaultName
@@ -78,7 +78,7 @@ module appGatewayAddCertificates './modules/app-gateway-cert.bicep' = if (enable
 }
 
 module appGatewayConfiguration './modules/app-gateway-config.bicep'= {
-  name: 'appGatewayConfiguration'
+  name: 'appGatewayConfiguration-${uniqueString(resourceGroup().id)}'
   params: {
     appGatewayName: applicationGatewayName
     location: location

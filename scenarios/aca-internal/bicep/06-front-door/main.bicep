@@ -64,7 +64,7 @@ resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-10-01'
 }
 
 module privateLinkService './modules/private-link-service.bicep' = {
-  name: 'privateLinkServiceFrontDoorDeployment'
+  name: 'privateLinkServiceFrontDoorDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
     tags: tags
@@ -76,7 +76,7 @@ module privateLinkService './modules/private-link-service.bicep' = {
 }
 
 module frontDoor './modules/front-door.bicep' = {
-  name: 'frontDoorDeployment'
+  name: 'frontDoorDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
     tags: tags

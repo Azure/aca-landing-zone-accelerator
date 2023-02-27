@@ -67,7 +67,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
 }
 
 module keyVaultNetwork '../../modules/private-networking.bicep' = {
-  name: 'keyVaultNetwork'
+  name: 'keyVaultNetwork-${uniqueString(keyVault.id)}'
   params: {
     location: location
     azServicePrivateDnsZoneName: privateDnsZoneNames

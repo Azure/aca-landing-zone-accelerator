@@ -3,6 +3,7 @@ param location string = resourceGroup().location
 @description('The name of the container apps environment.')
 param containerAppsEnvironmentName string
 
+@description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 param containerRegistryUserAssignedIdentityId string
 param keyVaultUserAssignedIdentityId string
 
@@ -38,293 +39,69 @@ param trafficControlServiceImage string
 @description('The image for the simulation.')
 param simulationImage string
 
-resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
-  name: containerAppsEnvironmentName
-}
-
-resource serviceBusTopicAuthorizationRule 'Microsoft.ServiceBus/namespaces/topics/authorizationRules@2021-11-01' existing = {
-  name: '${serviceBusName}/${serviceBusTopicName}/${serviceBusTopicAuthorizationRuleName}'
-}
-
-resource serviceBusTopic 'Microsoft.ServiceBus/namespaces/topics@2021-11-01' existing = {
-  name: '${serviceBusName}/${serviceBusTopicName}'
-
-}
-
-resource serviceBusTopicSubscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2022-10-01-preview' existing = {
-  name: fineCollectionServiceName
-  parent: serviceBusTopic
-}
-
-resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = {
-  name: cosmosDbName
-
-}
-
-resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2021-04-15' existing = {
-  parent:cosmosDbAccount
-  name: cosmosDbDatabaseName
-}
-
-resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
-  name: vehicleRegistrationServiceName
-  location: location
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-        '${containerRegistryUserAssignedIdentityId}': {}
-    }
-  }
-  properties: {
-    managedEnvironmentId: containerAppsEnvironment.id
-    configuration: {
-      activeRevisionsMode: 'single'
-      dapr: {
-        enabled: true
-        appId: vehicleRegistrationServiceName
-        appProtocol: 'http'
-        appPort: 6002
-      }
-      registries: [
-        {
-          server: '${acrName}.azurecr.io'
-          identity: containerRegistryUserAssignedIdentityId
-        }
-      ]
-      secrets: []
-    }
-    template: {
-      containers: [
-        {
-          name: vehicleRegistrationServiceName
-          image: vehicleRegistrationServiceImage
-          resources: {
-            cpu: json('0.5')
-            memory: '1.0Gi'
-          }
-        }
-      ]
-      scale: {
-        minReplicas: 1
-        maxReplicas: 1
-      }
-    }
+module vehicleRegistrationService 'container-apps/vehicle-registration-service.bicep' = {
+  name: 'vehicleRegistrationService'
+  params: {
+    vehicleRegistrationServiceName: vehicleRegistrationServiceName
+    location: location
+    // TODO update to id?
+    containerAppsEnvironmentName: containerAppsEnvironmentName
+    acrName: acrName
+    containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
+    vehicleRegistrationServiceImage: vehicleRegistrationServiceImage
   }
 }
 
-resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
-  name: fineCollectionServiceName
-  location: location
-  identity: {
-    type: 'SystemAssigned,UserAssigned'
-    userAssignedIdentities: {
-        '${containerRegistryUserAssignedIdentityId}': {}
-        '${keyVaultUserAssignedIdentityId}': {}
-    }
+module fineCollectionService 'container-apps/fine-collection-service.bicep' = {
+  name: 'fineCollectionService'
+  params: {
+    fineCollectionServiceName: fineCollectionServiceName
+    location: location
+    // TODO update to id?
+    containerAppsEnvironmentName: containerAppsEnvironmentName
+    vehicleRegistrationServiceDaprAppId: vehicleRegistrationService.outputs.vehicleRegistrationServiceDaprAppId
+    serviceBusName: serviceBusName
+    serviceBusTopicName: serviceBusTopicName
+    serviceBusTopicAuthorizationRuleName: serviceBusTopicAuthorizationRuleName
+    acrName: acrName
+    containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
+    fineCollectionServiceImage: fineCollectionServiceImage
+    keyVaultUserAssignedIdentityId: keyVaultUserAssignedIdentityId
   }
-  properties: {
-    managedEnvironmentId: containerAppsEnvironment.id
-    configuration: {
-      activeRevisionsMode: 'single'
-      dapr: {
-        enabled: true
-        appId: fineCollectionServiceName
-        appProtocol: 'http'
-        appPort: 6001
-      }
-      secrets: [
-        {
-          name: 'service-bus-connection-string'
-          value: serviceBusTopicAuthorizationRule.listKeys().primaryConnectionString
-        }
-      ]
-      registries: [
-        {
-          server: '${acrName}.azurecr.io'
-          identity: containerRegistryUserAssignedIdentityId
-        }
-      ]
-    }
-    template: {
-      containers: [
-        {
-          name: fineCollectionServiceName
-          image: fineCollectionServiceImage
-          resources: {
-            cpu: json('0.5')
-            memory: '1.0Gi'
-          }
-          env: [
-            {
-              name: 'VEHICLE_REGISTRATION_SERVICE'
-              value: vehicleRegistrationServiceName
-            }
-          ]
-        }
-      ]
-      scale: {
-        minReplicas: 0
-        maxReplicas: 5
-        rules: [
-          {
-            name: 'service-bus-test-topic'
-            custom: {
-              type: 'azure-servicebus'
-              auth: [
-                {
-                  secretRef: 'service-bus-connection-string'
-                  triggerParameter: 'connection'
-                }
-              ]
-              metadata: {
-                subscriptionName: fineCollectionServiceName
-                topicName: serviceBusTopicName
-                messageCount: '10'
-              }
-            }
-          }
-        ]
-      }
-    }
-  }
-  dependsOn: [
-    vehicleRegistrationService
-  ]
 }
 
-//enable consume from servicebus using app managed identity.
-resource fineCollectionService_sb_role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(resourceGroup().id, fineCollectionServiceName, '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
-  properties: {
-    principalId: fineCollectionService.identity.principalId
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')//Azure Service Bus Data Receiver.
-    principalType: 'ServicePrincipal'
+module trafficControlService 'container-apps/traffic-control-service.bicep' = {
+  name: 'trafficControlService'
+  params: {
+    trafficControlServiceName: trafficControlServiceName
+    location: location
+    // TODO update to id?
+    containerAppsEnvironmentName: containerAppsEnvironmentName
+    serviceBusName: serviceBusName
+    serviceBusTopicName: serviceBusTopicName
+    cosmosDbName: cosmosDbName
+    cosmosDbDatabaseName: cosmosDbDatabaseName
+    acrName: acrName
+    containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
+    trafficControlServiceImage: trafficControlServiceImage
   }
-  
-  scope: serviceBusTopicSubscription
-}
-
-resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' = {
-  name: trafficControlServiceName
-  location: location
-  identity: {
-    type: 'SystemAssigned,UserAssigned'
-    userAssignedIdentities: {
-      '${containerRegistryUserAssignedIdentityId}': {}
-  }
-  }
-  properties: {
-    managedEnvironmentId: containerAppsEnvironment.id
-    configuration: {
-      activeRevisionsMode: 'single'
-      ingress: {
-        external: false
-        targetPort: 6000
-      }
-      dapr: {
-        enabled: true
-        appId: trafficControlServiceName
-        appProtocol: 'http'
-        appPort: 6000
-        logLevel: 'info'
-      }
-      secrets: [
-      ]
-      registries: [
-        {
-          server: '${acrName}.azurecr.io'
-          identity: containerRegistryUserAssignedIdentityId
-        }
-      ]
-    }
-    template: {
-      containers: [
-        {
-          name: trafficControlServiceName
-          image: trafficControlServiceImage
-          resources: {
-            cpu: json('0.5')
-            memory: '1.0Gi'
-          }
-        }
-      ]
-      scale: {
-        minReplicas: 1
-        maxReplicas: 1
-      }
-    }
-  }
+  // The traffic control service is deployed after the fine collection service
   dependsOn: [
     fineCollectionService
   ]
 }
 
-//enable send to servicebus using app managed identity.
-resource trafficControlService_sb_role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(resourceGroup().id, trafficControlServiceName, '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')
-  properties: {
-    principalId: trafficControlService.identity.principalId
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')//Azure Service Bus Data Sender
-    principalType: 'ServicePrincipal'
-  }
-  
-  scope: serviceBusTopic
-}
-
-//assign cosmosdb account read/write access to aca user assigned identity
-resource trafficControlService_cosmosdb_role_assignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2022-08-15' = {
-  name: guid(subscription().id, trafficControlServiceName, '00000000-0000-0000-0000-000000000002')
-  parent: cosmosDbAccount
-  properties: {
-    principalId: trafficControlService.identity.principalId
-    roleDefinitionId:  resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', cosmosDbAccount.name, '00000000-0000-0000-0000-000000000002')//DocumentDB Data Contributor
-    scope:cosmosDbAccount.id
-  }
-}
-
-resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
-  name: simulationName
-  location: location
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-        '${containerRegistryUserAssignedIdentityId}': {}
-    }
-  }
-  properties: {
-    managedEnvironmentId: containerAppsEnvironment.id
-    configuration: {
-      activeRevisionsMode: 'single'
-      secrets: [
-      ]
-      registries: [
-        {
-          server: '${acrName}.azurecr.io'
-          identity: containerRegistryUserAssignedIdentityId
-        }
-      ]
-    }
-    template: {
-      containers: [
-        {
-          name: simulationName
-          image: simulationImage
-          resources: {
-            cpu: json('0.5')
-            memory: '1.0Gi'
-          }
-          env: [
-            {
-              name: 'TRAFFIC_CONTROL_SERVICE_BASE_URL'
-              value: 'https://${trafficControlService.properties.configuration.ingress.fqdn}'
-            }
-          ]
-        }
-      ]
-      scale: {
-        minReplicas: 1
-        maxReplicas: 1
-      }
-    }
+// TODO add a flag to deploy the simulation
+module simulation 'container-apps/simulation.bicep' = {
+  name: 'simulation'
+  params: {
+    simulationName: simulationName
+    location: location
+    // TODO update to id?
+    containerAppsEnvironmentName: containerAppsEnvironmentName
+    trafficControlServiceFQDN: trafficControlService.outputs.trafficControlServiceFQDN
+    acrName: acrName
+    containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
+    simulationImage: simulationImage
   }
 }

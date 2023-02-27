@@ -108,7 +108,7 @@ resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-10-01'
 }
 
 module containerAppsEnvironmentPrivateDnsZone  '../modules/private-dns-zone.bicep' = {
-  name: 'containerAppsEnvironmentPrivateDnsZoneDeployment'
+  name: 'containerAppsEnvironmentPrivateDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     name: containerAppsEnvironment.properties.defaultDomain
     virtualNetworkLinks: spokeVNetLinks

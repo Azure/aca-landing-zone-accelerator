@@ -259,7 +259,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2019-09-01' = {
 }
 
 resource agwDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(appGatewayLogAnalyticsId)) {
-  name: 'agw-diagnostics'
+  name: 'agw-diagnostics-${uniqueString(resourceGroup().id)}'
   scope: appGateway
   properties: {
     workspaceId: appGatewayLogAnalyticsId

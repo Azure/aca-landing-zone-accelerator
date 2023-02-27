@@ -37,7 +37,6 @@ resource sslCertSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   }
 }
 
-
 resource keyvaultSecretUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(subscription().id, keyVault.id, appGatewayUserAssignedIdentityPrincipalId, 'KeyVaultSecretUser')
   scope: sslCertSecret

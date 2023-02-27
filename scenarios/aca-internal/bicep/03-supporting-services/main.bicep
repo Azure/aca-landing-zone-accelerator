@@ -41,7 +41,7 @@ param keyVaultUserAssignedIdentityName string = '${prefix}id-kv-${uniqueString(r
 // ------------------
 
 module containerRegistry 'modules/azure-container-registry.bicep' = {
-  name: 'containerRegistry'
+  name: 'containerRegistry-${uniqueString(resourceGroup().id)}'
   params: {
     containerRegistryName: containerRegistryName
     location: location
@@ -54,7 +54,7 @@ module containerRegistry 'modules/azure-container-registry.bicep' = {
 }
 
 module keyVault 'modules/key-vault.bicep' = {
-  name: 'keyVault'
+  name: 'keyVault-${uniqueString(resourceGroup().id)}'
   params: {
     keyVaultName: keyVaultName
     location: location

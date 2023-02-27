@@ -56,7 +56,7 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2022-12-01' =
 }
 
 module containerRegistryNetwork '../../modules/private-networking.bicep' = {
-  name: 'containerRegistryNetwork'
+  name: 'containerRegistryNetwork-${uniqueString(containerRegistry.id)}'
   params: {
     location: location
     azServicePrivateDnsZoneName: privateDnsZoneNames

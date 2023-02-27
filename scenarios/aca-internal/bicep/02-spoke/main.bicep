@@ -40,7 +40,6 @@ param spokeApplicationGatewaySubnetName string = 'snet-agw'
 @description('CIDR of the Spoke Application Gateway Subnet. If the value is emnpty, the subnet will not be created.')
 param spokeApplicationGatewaySubnetAddressPrefix string
 
-
 // ------------------
 //    VARIABLES
 // ------------------
@@ -87,7 +86,7 @@ resource spokeResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 module spokeVNet '../modules/vnet.bicep' = {
-  name: 'spokeVNet'
+  name: '${deployment().name}-spokeVNet'
   scope: spokeResourceGroup
   params: {
     vnetName: spokeVNetName
@@ -99,7 +98,7 @@ module spokeVNet '../modules/vnet.bicep' = {
 }
 
 module peerSpokeToHub '../modules/peering.bicep' = if (!empty(hubVNetId))  {
-  name: 'peerSpokeToHubDeployment'
+  name: '${deployment().name}-peerSpokeToHubDeployment'
   scope: spokeResourceGroup
   params: {
     localVnetName: spokeVNet.outputs.vnetName
@@ -110,7 +109,7 @@ module peerSpokeToHub '../modules/peering.bicep' = if (!empty(hubVNetId))  {
 }
 
 module peerHubToSpoke '../modules/peering.bicep' = if (!empty(hubVNetId) )  {
-  name: 'peerHubToSpokeDeployment'
+  name: '${deployment().name}-peerHubToSpokeDeployment'
   scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
     params: {
       localVnetName: hubVNetName

@@ -75,7 +75,7 @@ param applicationGatewayCertificateKeyName string
 // ------------------
 
 module hub '01-hub/main.bicep' = {
-  name: 'hub'
+  name: '${deployment().name}-hub'
   params: {
     location: location
     prefix: prefix
@@ -100,7 +100,7 @@ resource spokeResourceGroup 'Microsoft.Resources/resourceGroups@2020-06-01' = {
 }
 
 module spoke '02-spoke/main.bicep' = {
-  name: 'spoke'
+  name: '${deployment().name}-spoke'
   params: {
     spokeResourceGroupName: spokeResourceGroup.name
     location: location
@@ -116,7 +116,7 @@ module spoke '02-spoke/main.bicep' = {
 }
 
 module supportingServices '03-supporting-services/main.bicep' = {
-  name: 'supportingServices'
+  name: '${deployment().name}-supportingServices'
   scope: spokeResourceGroup
   params: {
     location: location
@@ -129,7 +129,7 @@ module supportingServices '03-supporting-services/main.bicep' = {
 }
 
 module containerAppsEnvironment '04-container-apps-environment/main.bicep' = {
-  name: 'containerAppsEnvironment'
+  name: '${deployment().name}-containerAppsEnvironment'
   scope: spokeResourceGroup
   params: {
     location: location
@@ -144,7 +144,7 @@ module containerAppsEnvironment '04-container-apps-environment/main.bicep' = {
 }
 
 module helloWorlSampleApp '05-hello-world-sample-app/main.bicep' = if (deployHelloWorldSample) {
-  name: 'helloWorlSampleApp'
+  name: '${deployment().name}-helloWorlSampleApp'
   scope: spokeResourceGroup
   params: {
     location: location
@@ -155,7 +155,7 @@ module helloWorlSampleApp '05-hello-world-sample-app/main.bicep' = if (deployHel
 }
 
 module applicationGateway '06-application-gateway/main.bicep' = if (deployHelloWorldSample) {
-  name: 'applicationGateway'
+  name: '${deployment().name}-applicationGateway'
   scope: spokeResourceGroup
   params: {
     location: location
@@ -164,7 +164,7 @@ module applicationGateway '06-application-gateway/main.bicep' = if (deployHelloW
     tags: tags
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     applicationGatewayFQDN: applicationGatewayFQDN
-    applicationGatewayPrimaryBackendEndFQDN: helloWorlSampleApp.outputs.helloWorldAppFQDN
+    applicationGatewayPrimaryBackendEndFQDN: (deployHelloWorldSample) ? helloWorlSampleApp.outputs.helloWorldAppFQDN : '' // To fix issue when hello world is not deployed
     applicationGatewaySubnetId: spoke.outputs.spokeApplicationGatewaySubnetId
     enableApplicationGatewayCertificate: enableApplicationGatewayCertificate
     keyVaultId: supportingServices.outputs.keyVaultId

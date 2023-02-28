@@ -24,8 +24,6 @@ param vehicleRegistrationServiceName string
 param fineCollectionServiceName string
 @description('The name of the service for the traffic control service.')
 param trafficControlServiceName string
-@description('The name of the simulation.')
-param simulationName string
 
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 param containerRegistryUserAssignedIdentityId string
@@ -84,8 +82,14 @@ param vehicleRegistrationServiceImage string
 param fineCollectionServiceImage string
 @description('The image for the traffic control service.')
 param trafficControlServiceImage string
-@description('The image for the simulation.')
-param simulationImage string
+
+// Simulation
+@description('If true, the simulation will be deployed in the environment and use the traffic control service FQDN.')
+param deploySimalutionIntheEnvironment bool
+@description('Optional. The name of the the simulation. If deploySimalutionIntheEnvironment is set to true, this parameter is required.')
+param simulationName string = ''
+@description('Optional. The image for the simulation. If deploySimalutionIntheEnvironment is set to true, this parameter is required.')
+param simulationImage string = ''
 
 // Application Gateway
 @description('The FQDN of the Application Gateawy.Must match the TLS Certificate.')
@@ -168,7 +172,6 @@ module containerApps 'modules/container-apps.bicep' = {
     vehicleRegistrationServiceName: vehicleRegistrationServiceName
     fineCollectionServiceName: fineCollectionServiceName
     trafficControlServiceName: trafficControlServiceName
-    simulationName: simulationName
     
     location: location
     tags: tags
@@ -192,6 +195,9 @@ module containerApps 'modules/container-apps.bicep' = {
     vehicleRegistrationServiceImage: vehicleRegistrationServiceImage
     fineCollectionServiceImage: fineCollectionServiceImage
     trafficControlServiceImage: trafficControlServiceImage
+
+    deploySimalutionIntheEnvironment: deploySimalutionIntheEnvironment
+    simulationName: simulationName
     simulationImage: simulationImage
   }
   dependsOn: [

@@ -28,10 +28,6 @@
     "trafficControlServiceName": {
       "value": "traffic-control-service"
     },
-    // If simulation name is empty, the simulation will not be deployed
-    "simulationName": {
-      "value": "simulation"
-    },
 
     // Replace with the resource ID of the container registry user assigned identity
     "containerRegistryUserAssignedIdentityId": {
@@ -102,7 +98,17 @@
     "trafficControlServiceImage": {
       "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/traffic-control-service:1.0"
     },
-    // If simulation name is not empty, this parameter is required
+
+    /* SIMULATION */
+    // If true, the simulation will be deployed in the environment and use the traffic control service FQDN
+    "deploySimalutionIntheEnvironment": {
+      "value": false
+    },
+    // If deploySimalutionIntheEnvironment is set to true, this parameter is required
+    "simulationName": {
+      "value": "simulation"
+    },
+    // If deploySimalutionIntheEnvironment is set to true, this parameter is required
     "simulationImage": {
       "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/simulation:1.0"
     },

@@ -30,8 +30,6 @@ param vehicleRegistrationServiceName string
 param fineCollectionServiceName string
 @description('The name of the service for the traffic control service.')
 param trafficControlServiceName string
-@description('Optional. The name of the the simulation. If it is not set, the simulation will not be deployed.')
-param simulationName string = ''
 
 @description('The name of the service bus namespace.')
 param serviceBusName string
@@ -53,7 +51,13 @@ param vehicleRegistrationServiceImage string
 param fineCollectionServiceImage string
 @description('The image for the traffic control service.')
 param trafficControlServiceImage string
-@description('Optional. The image for the simulation. If the simulation name is set, this parameter is required.')
+
+// Simulation
+@description('If true, the simulation will be deployed in the environment and use the traffic control service FQDN.')
+param deploySimalutionIntheEnvironment bool
+@description('Optional. The name of the the simulation. If deploySimalutionIntheEnvironment is set to true, this parameter is required.')
+param simulationName string = ''
+@description('Optional. The image for the simulation. If deploySimalutionIntheEnvironment is set to true, this parameter is required.')
 param simulationImage string = ''
 
 // ------------------
@@ -118,7 +122,7 @@ module trafficControlService 'container-apps/traffic-control-service.bicep' = {
   ]
 }
 
-module simulation 'container-apps/simulation.bicep' = if (simulationName != '') {
+module simulation 'container-apps/simulation.bicep' = if (deploySimalutionIntheEnvironment) {
   name: 'simulation-${uniqueString(resourceGroup().id)}'
   params: {
     simulationName: simulationName

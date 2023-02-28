@@ -37,7 +37,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-10-01' = {
     configuration: {
       activeRevisionsMode: 'single'
       ingress: {
-        allowInsecure: true
+        allowInsecure: false
         external: true
         targetPort: 80
         transport: 'auto'

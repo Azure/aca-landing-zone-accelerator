@@ -75,8 +75,9 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
     configuration: {
       activeRevisionsMode: 'single'
       ingress: {
-        external: false
+        external: true
         targetPort: 6000
+        allowInsecure: false
       }
       dapr: {
         enabled: true

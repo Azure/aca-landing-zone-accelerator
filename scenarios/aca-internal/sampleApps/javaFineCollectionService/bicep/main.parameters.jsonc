@@ -105,6 +105,22 @@
     // If simulation name is not empty, this parameter is required
     "simulationImage": {
       "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/simulation:1.0"
+    },
+
+    /* APPLICATION GATEWAY */
+    // The FQDN of the Application Gateawy. Must match the TLS Certificate.
+    "applicationGatewayFQDN": {
+      "value": "acahello.demoapp.com"
+    },
+    // If the name was updated in the main.bicep file of 02-spoke, update it here as well
+    "spokeApplicationGatewaySubnetName": {
+      "value": "snet-agw"
+    },
+    "enableApplicationGatewayCertificate": {
+      "value": true
+    },
+    "applicationGatewayCertificateKeyName": {
+      "value": "agwcert"
     }
   }
 }

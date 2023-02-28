@@ -87,12 +87,25 @@ param trafficControlServiceImage string
 @description('The image for the simulation.')
 param simulationImage string
 
+// Application Gateway
+@description('The FQDN of the Application Gateawy.Must match the TLS Certificate.')
+param applicationGatewayFQDN string
+@description('The subnet name to use for Application Gateway.')
+param spokeApplicationGatewaySubnetName string
+@description('Enable or disable Application Gateway Certificate (PFX).')
+param enableApplicationGatewayCertificate bool
+@description('The name of the certificate key to use for Application Gateway certificate.')
+param applicationGatewayCertificateKeyName string
+
+
 // ------------------
 //    VARIABLES
 // ------------------
 
 var keyVaultIdTokens = split(keyVaultId, '/')
 var keyVaultName = keyVaultIdTokens[8]
+
+var appGatewayBackendHealthProbePath = '/heatlhz'
 
 // ------------------
 // DEPLOYMENT TASKS
@@ -184,4 +197,30 @@ module containerApps 'modules/container-apps.bicep' = {
   dependsOn: [
     daprComponents
   ]
+}
+
+resource spokeVNet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
+  name: spokeVNetName
+}
+
+resource spokeApplicationGatewaySubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
+  name: spokeApplicationGatewaySubnetName
+  parent: spokeVNet
+}
+
+module applicationGateway '../../../bicep/06-application-gateway/main.bicep' = {
+  name: 'applicationGateway-${uniqueString(resourceGroup().id)}'
+  params: {
+    location: location
+    prefix: prefix
+    suffix: suffix
+    tags: tags
+    applicationGatewayFQDN: applicationGatewayFQDN
+    applicationGatewaySubnetId: spokeApplicationGatewaySubnet.id
+    applicationGatewayPrimaryBackendEndFQDN: containerApps.outputs.trafficControlServiceFQDN
+    appGatewayBackendHealthProbePath: appGatewayBackendHealthProbePath
+    enableApplicationGatewayCertificate: enableApplicationGatewayCertificate
+    applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
+    keyVaultId: keyVaultId
+  }
 }

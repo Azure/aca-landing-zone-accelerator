@@ -131,3 +131,10 @@ module simulation 'container-apps/simulation.bicep' = if (simulationName != '') 
     simulationImage: simulationImage
   }
 }
+
+// ------------------
+// OUTPUTS
+// ------------------
+
+@description('The FQDN of the traffic control service.')
+output trafficControlServiceFQDN string = trafficControlService.outputs.trafficControlServiceFQDN

@@ -22,7 +22,7 @@ param fineCollectionServicePrincipalId string
 //    VARIABLES
 // ------------------
 
-var keyvaultReaderRoleGuid = '21090545-7ca7-4776-b22c-e363652d74d2'
+var keyVaultSecretUserRoleGuid = '4633458b-17de-408a-b874-0445c86b69e6'
 
 // ------------------
 // DEPLOYMENT TASKS
@@ -42,12 +42,12 @@ resource fineLicenseKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   }
 }
 
-resource keyVaultReaderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscription().id, keyVault.id, fineCollectionServicePrincipalId, keyvaultReaderRoleGuid) 
+resource keyVaultSecretUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscription().id, keyVault.id, fineCollectionServicePrincipalId, keyVaultSecretUserRoleGuid) 
   scope: fineLicenseKeySecret
   properties: {
     principalId: fineCollectionServicePrincipalId
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', keyvaultReaderRoleGuid)
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', keyVaultSecretUserRoleGuid)
     principalType: 'ServicePrincipal'
   }
 }

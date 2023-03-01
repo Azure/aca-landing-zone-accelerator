@@ -9,6 +9,7 @@ param location string = resourceGroup().location
 
 @description('Optional. The prefix to be used for all resources created by this template.')
 param prefix string = ''
+
 @description('Optional. The suffix to be used for all resources created by this template.')
 param suffix string = ''
 

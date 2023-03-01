@@ -9,6 +9,7 @@ param location string = deployment().location
 
 @description('Optional. The prefix to be used for all resources created by this template.')
 param prefix string = ''
+
 @description('Optional. The suffix to be used for all resources created by this template.')
 param suffix string = ''
 
@@ -22,22 +23,28 @@ param vnetAddressPrefixes array
 // Hub Bastion
 @description('Enable or disable the creation of the Azure Bastion.')
 param enableBastion bool
+
 @description('CIDR to use for the Azure Bastion subnet.')
 param bastionSubnetAddressPrefix string
 
 // Hub Virtual Machine
 @description('The size of the virtual machine to create. See https://docs.microsoft.com/en-us/azure/virtual-machines/sizes for more information.')
 param vmSize string
+
 @description('The username to use for the virtual machine.')
 param vmAdminUsername string
+
 @secure()
 @description('The password to use for the virtual machine.')
 param vmAdminPassword string
+
 @secure()
 @description('The SSH public key to use for the virtual machine.')
 param vmLinuxSshAuthorizedKeys string
+
 @allowed(['linux', 'windows', 'none'])
 param vmJumpboxOSType string = 'none'
+
 @description('CIDR to use for the virtual machine subnet.')
 param vmJumpBoxSubnetAddressPrefix string
 
@@ -47,15 +54,19 @@ param spokeResourceGroupName string = '${prefix}rg-spoke${suffix}'
 
 @description('CIDR of the Spoke Virtual Network.')
 param spokeVNetAddressPrefixes array
+
 @description('CIDR of the Spoke Infrastructure Subnet.')
 param spokeInfraSubnetAddressPrefix string
+
 @description('CIDR of the Spoke Private Endpoints Subnet.')
 param spokePrivateEndpointsSubnetAddressPrefix string
+
 @description('CIDR of the Spoke Application Gateway Subnet.')
 param spokeApplicationGatewaySubnetAddressPrefix string
 
 @description('Enable or disable the createion of Application Insights.')
 param enableApplicationInsights bool
+
 @description('Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. If Application Insights is not enabled, this parameter is ignored.')
 param enableDaprInstrumentation bool
 
@@ -67,6 +78,7 @@ param applicationGatewayFQDN string
 
 @description('Enable or disable Application Gateway Certificate (PFX).')
 param enableApplicationGatewayCertificate bool
+
 @description('The name of the certificate key to use for Application Gateway certificate.')
 param applicationGatewayCertificateKeyName string
 
@@ -170,3 +182,59 @@ module applicationGateway '06-application-gateway/main.bicep' = if (deployHelloW
     keyVaultId: supportingServices.outputs.keyVaultId
   }
 }
+
+// ------------------
+// OUTPUTS
+// ------------------
+
+// Hub
+@description('The resource ID of hub virtual network.')
+output hubVNetId string = hub.outputs.hubVNetId
+
+// Spoke
+@description('The name of the Hub resource group.')
+output spokeResourceGroupName string = spokeResourceGroup.name
+
+@description('The  resource ID of the Spoke Virtual Network.')
+output spokeVNetId string = spoke.outputs.spokeVNetId
+
+@description('The name of the Spoke Virtual Network.')
+output spokeVNetName string = spoke.outputs.spokeVNetName
+
+@description('The resource ID of the Spoke Infrastructure Subnet.')
+output spokeInfraSubnetId string = spoke.outputs.spokeInfraSubnetId
+
+@description('The name of the Spoke Infrastructure Subnet.')
+output spokeInfraSubnetName string = spoke.outputs.spokeInfraSubnetName
+
+@description('The resource ID of the Spoke Private Endpoints Subnet.')
+output spokePrivateEndpointsSubnetId string = spoke.outputs.spokePrivateEndpointsSubnetId
+
+@description('The name of the Spoke Private Endpoints Subnet.')
+output spokePrivateEndpointsSubnetName string = spoke.outputs.spokePrivateEndpointsSubnetName
+
+@description('The resource ID of the Spoke Application Gateway Subnet. If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty.')
+output spokeApplicationGatewaySubnetId string = spoke.outputs.spokeApplicationGatewaySubnetId
+
+@description('The name of the Spoke Application Gateway Subnet.  If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty.')
+output spokeApplicationGatewaySubnetName string = spoke.outputs.spokeApplicationGatewaySubnetName
+
+// Supporting Services
+@description('The resource ID of the container registry.')
+output containerRegistryId string = supportingServices.outputs.containerRegistryId
+
+@description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
+output containerRegistryUserAssignedIdentityId string = supportingServices.outputs.containerRegistryUserAssignedIdentityId
+
+@description('The resource ID of the key vault.')
+output keyVaultId string = supportingServices.outputs.keyVaultId
+
+@description('The resource ID of the user assigned managed identity to access the key vault.')
+output keyVaultUserAssignedIdentityId string = supportingServices.outputs.keyVaultUserAssignedIdentityId
+
+// Container Apps Environment
+@description('The resource ID of the container apps environment.')
+output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.containerAppsEnvironmentId
+
+@description('The name of the container apps environment.')
+output containerAppsEnvironmentName string = containerAppsEnvironment.name

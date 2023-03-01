@@ -92,7 +92,9 @@ resource containerRegistryPullRoleAssignment 'Microsoft.Authorization/roleAssign
 
 @description('The resource ID of the container registry.')
 output containerRegistryId string = containerRegistry.id
+
 @description('The name of the container registry.')
 output containerRegistryName string = containerRegistry.name
+
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = containerRegistryUserAssignedIdentity.id

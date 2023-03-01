@@ -10,6 +10,7 @@ param appGatewayFQDN string
 @description('The subnet resource id to use for Application Gateway.')
 param appGatewaySubnetId string
 param appGatewayPrimaryBackendEndFQDN string
+param appGatewayBackendHealthProbePath string
 
 param appGatewayUserAssignedIdentityId string
 param appGatewayPublicIpName string
@@ -139,9 +140,9 @@ resource appGateway 'Microsoft.Network/applicationGateways@2019-09-01' = {
           pickHostNameFromBackendAddress: true
           affinityCookieName: 'ApplicationGatewayAffinity'
           requestTimeout: 120
-          probe: {
-            id: resourceId('Microsoft.Network/applicationGateways/probes', appGatewayName, 'webProbe')
-          }
+          // probe: {
+          //   id: resourceId('Microsoft.Network/applicationGateways/probes', appGatewayName, 'webProbe')
+          // }
         }
       }
       {
@@ -152,9 +153,9 @@ resource appGateway 'Microsoft.Network/applicationGateways@2019-09-01' = {
           cookieBasedAffinity: 'Disabled'
           pickHostNameFromBackendAddress: true
           requestTimeout: 20
-          // probe: {
-          //   id: Id('Microsoft.Network/applicationGateways/probes', name, 'webProbe')
-          // }
+          probe: {
+            id: resourceId('Microsoft.Network/applicationGateways/probes', appGatewayName, 'webProbe')
+          }
         }
       }
     ]
@@ -213,7 +214,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2019-09-01' = {
           }
           backendHttpSettings: {
             #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', appGatewayName)}/backendHttpSettingsCollection/defaultHttpBackendHttpSetting'
+            id: '${resourceId('Microsoft.Network/applicationGateways', appGatewayName)}/backendHttpSettingsCollection/https'
           }
         }
       }
@@ -222,9 +223,9 @@ resource appGateway 'Microsoft.Network/applicationGateways@2019-09-01' = {
       {
         name: 'webProbe'
         properties: {
-          protocol: 'Http'
+          protocol: 'Https'
           host: appGatewayPrimaryBackendEndFQDN
-          path: '/'
+          path: appGatewayBackendHealthProbePath
           interval: 30
           timeout: 30
           unhealthyThreshold: 3

@@ -1,0 +1,132 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "value": ""
+    },
+    
+    "suffix": {
+        "value": ""
+    },
+
+    "tags": {
+        "value": {}
+    },
+
+    // Replace with the name of the container apps environment
+    "containerAppsEnvironmentName": {
+      "value": "<CONTAINER_APPS_ENVIRONMENT_NAME>"
+    },
+
+    /* SERVICES */
+    "vehicleRegistrationServiceName": {
+      "value": "vehicle-registration-service"
+    },
+    "fineCollectionServiceName": {
+      "value": "fine-collection-service"
+    },
+    "trafficControlServiceName": {
+      "value": "traffic-control-service"
+    },
+
+    /* SPOKE PRIVATE ENDPOINTS SUBNET */
+    // Replace with the name of spoke virtual network
+    "spokeVNetName": {
+      "value": "<SPOKE_VNET_NAME>"
+    },
+    // Replace with the name of the spoke private endpoints subnet
+    "spokePrivateEndpointsSubnetName": {
+      "value": "<SPOKE_PRIVATE_ENDPOINTS_SUBNET_NAME>"
+    },
+
+    /* SERVICE BUS */
+    "serviceBusTopicName": {
+      "value": "test"
+    },
+    "serviceBusTopicAuthorizationRuleName": {
+      "value": "TestTopicSharedAccessKey"
+    },
+
+    /* COSMOS DB */
+    "cosmosDbDatabaseName": {
+      "value": "cosmos-db-fines"
+    },
+    "cosmosDbCollectionName": {
+      "value": "traffic-control-vehicle-state"
+    },
+
+    /* DAPR COMPONENTS */
+    "secretStoreComponentName": {
+      "value": "secretstore"
+    },
+    "pubSubComponentName": {
+      "value": "pubsub"
+    },
+    "stateStoreComponentName": {
+      "value": "statestore"
+    },
+
+    /* KEY VAULT */
+    // Replace with the resource ID of the key vault
+    "keyVaultId": {
+      "value": "<KEY_VAULT_ID>"
+    },
+    "fineLicenseKeySecretName": {
+      "value": "license-key"
+    },
+    "fineLicenseKeySecretValue": {
+      "value": "HX783-5PN1G-CRJ4A-K2L7V"
+    },
+
+    /* CONTAINER REGISTRY & IMAGES */
+    // Replace with the name of the container registry
+    "containerRegistryName": {
+      "value": "<CONTAINER_REGISTRY_NAME>"
+    },
+    // For the images, replace the <CONTAINER_REGISTRY_NAME> placeholder with the name of the container registry or replace it with the full image name
+    "vehicleRegistrationServiceImage": {
+      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/vehicle-registration-service:1.0"
+    },
+    "fineCollectionServiceImage": {
+      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/fine-collection-service:1.0"
+    },
+    "trafficControlServiceImage": {
+      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/traffic-control-service:1.0"
+    },
+    // Replace with the resource ID of the container registry user assigned identity
+    "containerRegistryUserAssignedIdentityId": {
+      "value": "<CONTAINER_REGISTRY_USER_ASSIGNED_IDENTITY_ID>"
+    },
+
+    /* SIMULATION */
+    // If true, the simulation will be deployed in the environment and use the traffic control service FQDN
+    "deploySimalutionIntheEnvironment": {
+      "value": false
+    },
+    // If deploySimalutionIntheEnvironment is set to true, this parameter is required
+    "simulationName": {
+      "value": "simulation"
+    },
+    // If deploySimalutionIntheEnvironment is set to true, this parameter is required
+    "simulationImage": {
+      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/simulation:1.0"
+    },
+
+    /* APPLICATION GATEWAY */
+    // The FQDN of the Application Gateawy. Must match the TLS Certificate.
+    "applicationGatewayFQDN": {
+      "value": "acahello.demoapp.com"
+    },
+    // If the name was updated in the main.bicep file of 02-spoke, update it here as well
+    "spokeApplicationGatewaySubnetName": {
+      "value": "snet-agw"
+    },
+    "enableApplicationGatewayCertificate": {
+      "value": true
+    },
+    "applicationGatewayCertificateKeyName": {
+      "value": "agwcert"
+    }
+  }
+}

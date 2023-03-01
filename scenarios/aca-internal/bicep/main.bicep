@@ -199,7 +199,7 @@ output spokeResourceGroupName string = spokeResourceGroup.name
 output spokeVNetId string = spoke.outputs.spokeVNetId
 
 @description('The name of the Spoke Virtual Network.')
-output spokeVNetName string = spoke.outputs.spokeVNetName
+output spokeVnetName string = spoke.outputs.spokeVNetName
 
 @description('The resource ID of the Spoke Infrastructure Subnet.')
 output spokeInfraSubnetId string = spoke.outputs.spokeInfraSubnetId
@@ -223,11 +223,17 @@ output spokeApplicationGatewaySubnetName string = spoke.outputs.spokeApplication
 @description('The resource ID of the container registry.')
 output containerRegistryId string = supportingServices.outputs.containerRegistryId
 
+@description('The name of the container registry.')
+output containerRegistryName string = supportingServices.outputs.containerRegistryName
+
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = supportingServices.outputs.containerRegistryUserAssignedIdentityId
 
 @description('The resource ID of the key vault.')
 output keyVaultId string = supportingServices.outputs.keyVaultId
+
+@description('The name of the key vault.')
+output keyVaultName string = supportingServices.outputs.keyVaultName
 
 @description('The resource ID of the user assigned managed identity to access the key vault.')
 output keyVaultUserAssignedIdentityId string = supportingServices.outputs.keyVaultUserAssignedIdentityId

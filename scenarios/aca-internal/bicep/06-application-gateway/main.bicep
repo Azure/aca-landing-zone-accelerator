@@ -28,6 +28,9 @@ param applicationGatewaySubnetId string
 @description('The FQDN of the primary backend endpoint.')
 param applicationGatewayPrimaryBackendEndFQDN string
 
+@description('The path to use for Application Gateway backend health probe.')
+param appGatewayBackendHealthProbePath string = '/'
+
 @description('The name of the public IP address to use for Application Gateway.')
 param applicationGatewayPublicIpName string = '${prefix}pip-agw-${uniqueString(resourceGroup().id)}${suffix}'
 
@@ -92,6 +95,7 @@ module appGatewayConfiguration './modules/app-gateway-config.bicep'= {
     tags: tags
     appGatewayFQDN: applicationGatewayFQDN
     appGatewayPrimaryBackendEndFQDN: applicationGatewayPrimaryBackendEndFQDN
+    appGatewayBackendHealthProbePath: appGatewayBackendHealthProbePath
     appGatewayPublicIpName: applicationGatewayPublicIpName
     appGatewaySubnetId: applicationGatewaySubnetId
     appGatewayUserAssignedIdentityId: userAssignedIdentity.id

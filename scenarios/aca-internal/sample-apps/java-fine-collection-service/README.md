@@ -25,7 +25,7 @@ For the simulation, the following services are defined:
 7. The **Fine Collection Service** subscribes to Azure Service Bus topic *test*.
 8. The Fine Collection Service calculates the fine for the speeding-violation.
 9. The Fine Collection Serivice calls the `/vehicleinfo/{license-number}` endpoint of the Vehicle Registration Service with the license-number of the speeding vehicle to retrieve its vehicle- and owner-information. It uses Dapr service-to-service invocation to call the Vehicle Registration Service.
-10. The **Vehicle Registration Service** offers 1 HTTP endpoint: `/getvehicleinfo/{license-number}` for getting the vehicle- and owner-information of a vehicle.
+10. The **Vehicle Registration Service** offers 1 REST endpoint: `/getvehicleinfo/{license-number}` for getting the vehicle- and owner-information of a vehicle.
 
 ![Fine Collection Service - Sequence Diagram](docs/media/fine-collection-sequence-diagram.png)
 

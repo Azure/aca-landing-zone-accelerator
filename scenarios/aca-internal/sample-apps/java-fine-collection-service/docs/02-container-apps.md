@@ -7,13 +7,15 @@ There are multiple options provided with this guide to deploy the container imag
 ### Get Azure Key Vault name and Azure Container Registry name from the landing zone deployments
 
 ```bash
-LZA_DEPLOYMENT_NAME="<LZA_DEPLOYMENT_NAME>"
+LZA_DEPLOYMENT_NAME=<LZA_DEPLOYMENT_NAME>
+SPOKE_RESOURCE_GROUP_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokeResourceGroupName.value -o tsv)
 CONTAINER_APPS_ENVIRONMENT_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.containerAppsEnvironmentName.value -o tsv)
 SPOKE_VNET_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokeVnetName.value -o tsv)
 SPOKE_PRIVATE_ENDPOINTS_SUBNET_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokePrivateEndpointsSubnetName.value -o tsv)
 KEY_VAULT_ID=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.keyVaultId.value -o tsv)
 CONTAINER_REGISTRY_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.containerRegistryName.value -o tsv)
 CONTAINER_REGISTRY_USER_ASSIGNED_IDENTITY_ID=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.containerRegistryUserAssignedIdentityId.value -o tsv)
+SPOKE_APPLICATION_GATEWAY_SUBNET_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokeApplicationGatewaySubnetName.value -o tsv)
 ```
 
 ### Option 1 - Build and push the container images in your private Azure Container Registry
@@ -29,7 +31,7 @@ All the container image are available in a public image repository. If you do no
 ```bash
 az login
 
-az acr login -n < your acr container registry >
+az acr login -n $CONTAINER_REGISTRY_NAME
 
 az acr import \
   --name $CONTAINER_REGISTRY_NAME \
@@ -55,13 +57,19 @@ The latest images can be found [here](https://github.com/orgs/Azure/packages?rep
 To use the public images, run the following command:
 
 ```bash
-az deployment group create -g "ESLZ-Spoke-RG" -f main.bicep -p parameters-main.json \
-  --parameters keyVaultName=$KEY_VAULT_NAME \
-  --parameters acrName=$CONTAINER_REGISTRY_NAME \
+az deployment group create -g "$SPOKE_RESOURCE_GROUP_NAME" -f main.bicep -p main.parameters.jsonc \
+  --parameters containerAppsEnvironmentName=$CONTAINER_APPS_ENVIRONMENT_NAME \
+  --parameters spokeVNetName=$SPOKE_VNET_NAME \
+  --parameters spokePrivateEndpointsSubnetName=$SPOKE_PRIVATE_ENDPOINTS_SUBNET_NAME \
+  --parameters keyVaultId=$KEY_VAULT_ID \
+  --parameters containerRegistryName=$CONTAINER_REGISTRY_NAME \
   --parameters vehicleRegistrationServiceImage=ghcr.io/azure/vehicle-registration-service:a4fc4d9 \
   --parameters fineCollectionServiceImage=ghcr.io/azure/fine-collection-service:a4fc4d9 \
-  --parameters trafficControlServiceImage=ghcr.io/azure/traffic-control-service:a4fc4d9 \
-  --parameters simulationImage=ghcr.io/azure/simulation:a4fc4d9
+  --parameters trafficControlServiceImage=ghcr.io/azure/traffic-control-service:f39c844 \
+  --parameters containerRegistryUserAssignedIdentityId=$CONTAINER_REGISTRY_USER_ASSIGNED_IDENTITY_ID \
+  --parameters deploySimalutionIntheEnvironment=true \
+  --parameters simulationImage=ghcr.io/azure/simulation:a4fc4d9 \
+  --parameters spokeApplicationGatewaySubnetName=$SPOKE_APPLICATION_GATEWAY_SUBNET_NAME
 ```
 
 ## Test the application

@@ -243,4 +243,4 @@ output keyVaultUserAssignedIdentityId string = supportingServices.outputs.keyVau
 output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.containerAppsEnvironmentId
 
 @description('The name of the container apps environment.')
-output containerAppsEnvironmentName string = containerAppsEnvironment.name
+output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.containerAppsEnvironmentName

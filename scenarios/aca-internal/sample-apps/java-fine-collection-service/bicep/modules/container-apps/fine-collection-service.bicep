@@ -41,8 +41,8 @@ param serviceBusTopicName string
 param serviceBusTopicAuthorizationRuleName string
 
 // Container Registry & Image
-@description('The name of the Azure Container Registry.')
-param acrName string
+@description('The name of the container registry.')
+param containerRegistryName string
 
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 param containerRegistryUserAssignedIdentityId string
@@ -112,7 +112,7 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
       ]
       registries: [
         {
-          server: '${acrName}.azurecr.io'
+          server: '${containerRegistryName}.azurecr.io'
           identity: containerRegistryUserAssignedIdentityId
         }
       ]

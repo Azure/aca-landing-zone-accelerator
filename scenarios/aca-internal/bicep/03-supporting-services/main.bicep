@@ -45,7 +45,7 @@ param keyVaultUserAssignedIdentityName string = '${prefix}id-kv-${uniqueString(r
 // DEPLOYMENT TASKS
 // ------------------
 
-module containerRegistry 'modules/azure-container-registry.bicep' = {
+module containerRegistry 'modules/container-registry.bicep' = {
   name: 'containerRegistry-${uniqueString(resourceGroup().id)}'
   params: {
     containerRegistryName: containerRegistryName
@@ -78,11 +78,17 @@ module keyVault 'modules/key-vault.bicep' = {
 @description('The resource ID of the container registry.')
 output containerRegistryId string = containerRegistry.outputs.containerRegistryId
 
+@description('The name of the container registry.')
+output containerRegistryName string = containerRegistry.outputs.containerRegistryName
+
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = containerRegistry.outputs.containerRegistryUserAssignedIdentityId
 
 @description('The resource ID of the key vault.')
 output keyVaultId string = keyVault.outputs.keyVaultId
+
+@description('The name of the key vault.')
+output keyVaultName string = keyVault.outputs.keyVaultName
 
 @description('The resource ID of the user assigned managed identity to access the key vault.')
 output keyVaultUserAssignedIdentityId string = keyVault.outputs.keyVaultUserAssignedIdentityId

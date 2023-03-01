@@ -86,8 +86,8 @@ param fineLicenseKeySecretName string = 'license-key'
 param fineLicenseKeySecretValue string
 
 // Container Registry & Images
-@description('The name of the Azure Container Registry.')
-param acrName string
+@description('The name of the container registry.')
+param containerRegistryName string
 
 @description('The image for the vehicle registration service.')
 param vehicleRegistrationServiceImage string
@@ -215,7 +215,7 @@ module containerApps 'modules/container-apps.bicep' = {
     cosmosDbDatabaseName: cosmosDb.outputs.cosmosDbDatabaseName
     cosmosDbCollectionName: cosmosDb.outputs.cosmosDbCollectionName
     
-    acrName: acrName
+    containerRegistryName: containerRegistryName
     vehicleRegistrationServiceImage: vehicleRegistrationServiceImage
     fineCollectionServiceImage: fineCollectionServiceImage
     trafficControlServiceImage: trafficControlServiceImage

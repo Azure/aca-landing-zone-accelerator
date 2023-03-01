@@ -34,8 +34,8 @@ param cosmosDbDatabaseName string
 param cosmosDbCollectionName string
 
 // Container Registry & Image
-@description('The name of the Azure Container Registry.')
-param acrName string
+@description('The name of the container registry.')
+param containerRegistryName string
 
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 param containerRegistryUserAssignedIdentityId string
@@ -107,7 +107,7 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
       ]
       registries: [
         {
-          server: '${acrName}.azurecr.io'
+          server: '${containerRegistryName}.azurecr.io'
           identity: containerRegistryUserAssignedIdentityId
         }
       ]

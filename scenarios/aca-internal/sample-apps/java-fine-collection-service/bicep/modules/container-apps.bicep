@@ -57,8 +57,8 @@ param fineLicenseKeySecretName string = 'license-key'
 param fineLicenseKeySecretValue string
 
 // Container Registry & Images
-@description('The name of the Azure Container Registry.')
-param acrName string
+@description('The name of the container registry.')
+param containerRegistryName string
 
 @description('The image for the vehicle registration service.')
 param vehicleRegistrationServiceImage string
@@ -94,7 +94,7 @@ module vehicleRegistrationService 'container-apps/vehicle-registration-service.b
     location: location
     tags: tags
     containerAppsEnvironmentId: containerAppsEnvironment.id
-    acrName: acrName
+    containerRegistryName: containerRegistryName
     containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
     vehicleRegistrationServiceImage: vehicleRegistrationServiceImage
   }
@@ -114,7 +114,7 @@ module fineCollectionService 'container-apps/fine-collection-service.bicep' = {
     serviceBusName: serviceBusName
     serviceBusTopicName: serviceBusTopicName
     serviceBusTopicAuthorizationRuleName: serviceBusTopicAuthorizationRuleName
-    acrName: acrName
+    containerRegistryName: containerRegistryName
     containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
     fineCollectionServiceImage: fineCollectionServiceImage
   }
@@ -132,7 +132,7 @@ module trafficControlService 'container-apps/traffic-control-service.bicep' = {
     cosmosDbName: cosmosDbName
     cosmosDbDatabaseName: cosmosDbDatabaseName
     cosmosDbCollectionName: cosmosDbCollectionName
-    acrName: acrName
+    containerRegistryName: containerRegistryName
     containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
     trafficControlServiceImage: trafficControlServiceImage
   }
@@ -150,7 +150,7 @@ module simulation 'container-apps/simulation.bicep' = if (deploySimalutionIntheE
     tags: tags
     containerAppsEnvironmentId: containerAppsEnvironment.id
     trafficControlServiceFQDN: trafficControlService.outputs.trafficControlServiceFQDN
-    acrName: acrName
+    containerRegistryName: containerRegistryName
     containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
     simulationImage: simulationImage
   }

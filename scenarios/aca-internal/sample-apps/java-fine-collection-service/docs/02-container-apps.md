@@ -7,9 +7,13 @@ There are multiple options provided with this guide to deploy the container imag
 ### Get Azure Key Vault name and Azure Container Registry name from the landing zone deployments
 
 ```bash
-#### The current LZ script doesn't have outputs. Needs to be fixed with the new parameter changes.
-KEY_VAULT_NAME=$(az deployment sub show -n "ESLZ-Infra-ACA" --query properties.outputs.keyvaultName.value -o tsv)
-ACR_NAME=$(az deployment sub show -n "ESLZ-Infra-ACA" --query properties.outputs.acrName.value -o tsv)
+LZA_DEPLOYMENT_NAME="<LZA_DEPLOYMENT_NAME>"
+CONTAINER_APPS_ENVIRONMENT_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.containerAppsEnvironmentName.value -o tsv)
+SPOKE_VNET_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokeVnetName.value -o tsv)
+SPOKE_PRIVATE_ENDPOINTS_SUBNET_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokePrivateEndpointsSubnetName.value -o tsv)
+KEY_VAULT_ID=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.keyVaultId.value -o tsv)
+CONTAINER_REGISTRY_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.containerRegistryName.value -o tsv)
+CONTAINER_REGISTRY_USER_ASSIGNED_IDENTITY_ID=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.containerRegistryUserAssignedIdentityId.value -o tsv)
 ```
 
 ### Option 1 - Build and push the container images in your private Azure Container Registry
@@ -28,19 +32,19 @@ az login
 az acr login -n < your acr container registry >
 
 az acr import \
-  --name $ACR_NAME \
+  --name $CONTAINER_REGISTRY_NAME \
   --source ghcr.io/azure/traffic-control-service:f39c844
 
 az acr import \
-  --name $ACR_NAME \
+  --name $CONTAINER_REGISTRY_NAME \
   --source ghcr.io/azure/fine-collection-service:a4fc4d9
 
 az acr import \
-  --name $ACR_NAME \
+  --name $CONTAINER_REGISTRY_NAME \
   --source ghcr.io/azure/vehicle-registration-service:a4fc4d9
 
 az acr import \
-  --name $ACR_NAME \
+  --name $CONTAINER_REGISTRY_NAME \
   --source ghcr.io/azure/simulation:a4fc4d9
 ```
 
@@ -53,7 +57,7 @@ To use the public images, run the following command:
 ```bash
 az deployment group create -g "ESLZ-Spoke-RG" -f main.bicep -p parameters-main.json \
   --parameters keyVaultName=$KEY_VAULT_NAME \
-  --parameters acrName=$ACR_NAME \
+  --parameters acrName=$CONTAINER_REGISTRY_NAME \
   --parameters vehicleRegistrationServiceImage=ghcr.io/azure/vehicle-registration-service:a4fc4d9 \
   --parameters fineCollectionServiceImage=ghcr.io/azure/fine-collection-service:a4fc4d9 \
   --parameters trafficControlServiceImage=ghcr.io/azure/traffic-control-service:a4fc4d9 \

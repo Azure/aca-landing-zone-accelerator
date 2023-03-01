@@ -19,6 +19,7 @@
       "value": "<CONTAINER_APPS_ENVIRONMENT_NAME>"
     },
 
+    /* SERVICES */
     "vehicleRegistrationServiceName": {
       "value": "vehicle-registration-service"
     },
@@ -29,19 +30,14 @@
       "value": "traffic-control-service"
     },
 
-    // Replace with the resource ID of the container registry user assigned identity
-    "containerRegistryUserAssignedIdentityId": {
-      "value": "<CONTAINER_REGISTRY_USER_ASSIGNED_IDENTITY_ID>"
-    },
-
     /* SPOKE PRIVATE ENDPOINTS SUBNET */
     // Replace with the name of spoke virtual network
     "spokeVNetName": {
       "value": "<SPOKE_VNET_NAME>"
     },
-    // If the name was updated in the main.bicep file of 02-spoke, update it here as well
+    // Replace with the name of the spoke private endpoints subnet
     "spokePrivateEndpointsSubnetName": {
-      "value": "snet-pep"
+      "value": "<SPOKE_PRIVATE_ENDPOINTS_SUBNET_NAME>"
     },
 
     /* SERVICE BUS */
@@ -85,7 +81,7 @@
 
     /* CONTAINER REGISTRY & IMAGES */
     // Replace with the name of the container registry
-    "acrName": {
+    "containerRegistryName": {
       "value": "<CONTAINER_REGISTRY_NAME>"
     },
     // For the images, replace the <CONTAINER_REGISTRY_NAME> placeholder with the name of the container registry or replace it with the full image name
@@ -97,6 +93,10 @@
     },
     "trafficControlServiceImage": {
       "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/traffic-control-service:1.0"
+    },
+    // Replace with the resource ID of the container registry user assigned identity
+    "containerRegistryUserAssignedIdentityId": {
+      "value": "<CONTAINER_REGISTRY_USER_ASSIGNED_IDENTITY_ID>"
     },
 
     /* SIMULATION */

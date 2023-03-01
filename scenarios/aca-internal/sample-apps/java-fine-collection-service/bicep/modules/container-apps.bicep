@@ -16,13 +16,14 @@ param containerAppsEnvironmentName string
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 param containerRegistryUserAssignedIdentityId string
 
-@description('The name of the service for the vehicle registration service.')
+// Services
+@description('The name of the service for the vehicle registration service. The name is use as Dapr App ID and for service-to-service invocation by fine collection service.')
 param vehicleRegistrationServiceName string
 
-@description('The name of the service for the fine collection service.')
+@description('The name of the service for the fine collection service. The name is use as Dapr App ID and as the name of service bus topic subscription.')
 param fineCollectionServiceName string
 
-@description('The name of the service for the traffic control service.')
+@description('The name of the service for the traffic control service. The name is use as Dapr App ID.')
 param trafficControlServiceName string
 
 // Service Bus

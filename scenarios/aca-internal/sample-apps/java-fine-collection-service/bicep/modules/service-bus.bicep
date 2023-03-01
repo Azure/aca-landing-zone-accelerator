@@ -28,7 +28,7 @@ param serviceBusTopicAuthorizationRuleName string
 @description('The name of service bus\' private endpoint.')
 param serviceBusPrivateEndpointName string
 
-@description('The name of the service for the fine collection service. This will be used to create the topic subscription')
+@description('The name of the service for the fine collection service. The name is use as Dapr App ID and as the name of service bus topic subscription.')
 param fineCollectionServiceName string
 
 // ------------------

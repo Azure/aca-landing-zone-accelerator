@@ -13,7 +13,7 @@ param tags object = {}
 @description('The resource Id of the container apps environment.')
 param containerAppsEnvironmentId string
 
-@description('The name of the service for the traffic control service.')
+@description('The name of the service for the traffic control service. The name is use as Dapr App ID.')
 param trafficControlServiceName string
 
 // Service Bus

@@ -35,7 +35,7 @@
     "spokeVNetName": {
       "value": "<SPOKE_VNET_NAME>"
     },
-    // Replace with the name of the spoke private endpoints subnet
+    // Replace with the name of the spoke private endpoints subnet name
     "spokePrivateEndpointsSubnetName": {
       "value": "<SPOKE_PRIVATE_ENDPOINTS_SUBNET_NAME>"
     },
@@ -118,9 +118,9 @@
     "applicationGatewayFQDN": {
       "value": "acahello.demoapp.com"
     },
-    // If the name was updated in the main.bicep file of 02-spoke, update it here as well
+    // Replace with the name of the spoke application gateway subnet name
     "spokeApplicationGatewaySubnetName": {
-      "value": "snet-agw"
+      "value": "<SPOKE_APPLICATION_GATEWAY_SUBNET_NAME>"
     },
     "enableApplicationGatewayCertificate": {
       "value": true

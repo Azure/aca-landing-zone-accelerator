@@ -20,13 +20,13 @@ param tags object = {}
 param containerAppsEnvironmentName string
 
 // Servivces
-@description('The name of the service for the vehicle registration service.')
+@description('The name of the service for the vehicle registration service. The name is use as Dapr App ID and for service-to-service invocation by fine collection service.')
 param vehicleRegistrationServiceName string
 
-@description('The name of the service for the fine collection service.')
+@description('The name of the service for the fine collection service. The name is use as Dapr App ID and as the name of service bus topic subscription.')
 param fineCollectionServiceName string
 
-@description('The name of the service for the traffic control service.')
+@description('The name of the service for the traffic control service. The name is use as Dapr App ID.')
 param trafficControlServiceName string
 
 // Spoke Private Endpoints Subnet

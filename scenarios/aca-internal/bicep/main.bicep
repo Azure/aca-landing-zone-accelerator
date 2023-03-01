@@ -183,6 +183,23 @@ module applicationGateway '06-application-gateway/main.bicep' = if (deployHelloW
   }
 }
 
+//  Telemetry Deployment
+@description('Enable usage and telemetry feedback to Microsoft.')
+param enableTelemetry bool = true
+var telemetryId = '9b4433d6-924a-4c07-b47c-7478619759c7-${location}-acasb'
+resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
+  name: telemetryId
+  location: location
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'
+      contentVersion: '1.0.0.0'
+      resources: {}
+    }
+  }
+}
+
 // ------------------
 // OUTPUTS
 // ------------------

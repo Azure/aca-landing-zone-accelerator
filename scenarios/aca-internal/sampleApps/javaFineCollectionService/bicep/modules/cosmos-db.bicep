@@ -12,15 +12,19 @@ param tags object = {}
 
 @description('The name of the spoke VNET.')
 param spokeVNetName string
+
 @description('The name of the subnet in the VNet to which the private endpoint will be connected.')
 param spokePrivateEndpointsSubnetName string
 
 @description('The name of Cosmos DB resource.')
 param cosmosDbName string
+
 @description('The name of Cosmos DB\'s database.')
 param cosmosDbDatabaseName string
+
 @description('The name of Cosmos DB\'s collection.')
 param cosmosDbCollectionName string
+
 @description('The name of Cosmos DB\'s private endpoint.')
 param cosmosDbPrivateEndpointName string
 

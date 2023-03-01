@@ -22,8 +22,10 @@ param vehicleRegistrationServiceDaprAppId string
 // Key Vault
 @description('The resource ID of the key vault to store the license key for the fine collection service.')
 param keyVaultId string
+
 @description('The name of the secret containing the license key value for Fine Collection Service.')
 param fineLicenseKeySecretName string
+
 @secure()
 @description('The license key for Fine Collection Service.')
 param fineLicenseKeySecretValue string
@@ -31,16 +33,20 @@ param fineLicenseKeySecretValue string
 // Service Bus
 @description('The name of the service bus namespace.')
 param serviceBusName string
+
 @description('The name of the service bus topic.')
 param serviceBusTopicName string
+
 @description('The name of the service bus topic\'s authorization rule.')
 param serviceBusTopicAuthorizationRuleName string
 
 // Container Registry & Image
 @description('The name of the Azure Container Registry.')
 param acrName string
+
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 param containerRegistryUserAssignedIdentityId string
+
 @description('The image for the fine collection service.')
 param fineCollectionServiceImage string
 
@@ -155,7 +161,7 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
   }
 }
 
-//enable consume from servicebus using app managed identity.
+// Enable consume from servicebus using app managed identity.
 resource fineCollectionService_sb_role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(resourceGroup().id, fineCollectionServiceName, '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
   properties: {

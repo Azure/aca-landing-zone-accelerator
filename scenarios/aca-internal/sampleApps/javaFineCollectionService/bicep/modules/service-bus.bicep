@@ -12,15 +12,19 @@ param tags object = {}
 
 @description('The name of the spoke VNET.')
 param spokeVNetName string
+
 @description('The name of the subnet in the VNet to which the private endpoint will be connected.')
 param spokePrivateEndpointsSubnetName string
 
 @description('The name of the service bus namespace.')
 param serviceBusName string
+
 @description('The name of the service bus topic.')
 param serviceBusTopicName string
+
 @description('The name of the service bus topic\'s authorization rule.')
 param serviceBusTopicAuthorizationRuleName string
+
 @description('The name of service bus\' private endpoint.')
 param serviceBusPrivateEndpointName string
 

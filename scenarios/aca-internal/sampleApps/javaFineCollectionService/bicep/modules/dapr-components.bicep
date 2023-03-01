@@ -11,8 +11,10 @@ param containerAppsEnvironmentName string
 // We disable lint of this line as it is not a secret but the name of the Dapr component
 #disable-next-line secure-secrets-in-params
 param secretStoreComponentName string
+
 @description('The name of Dapr component for the pub/sub building block.')
 param pubSubComponentName string
+
 @description('The name of Dapr component for the state store building block.')
 param stateStoreComponentName string
 
@@ -25,13 +27,16 @@ param serviceBusName string
 
 @description('The name of Cosmos DB resource.')
 param cosmosDbName string
+
 @description('The name of Cosmos DB\'s database.')
 param cosmosDbDatabaseName string
+
 @description('The name of Cosmos DB\'s collection.')
 param cosmosDbCollectionName string
 
 @description('The name of the service for the fine collection service.')
 param fineCollectionServiceName string
+
 @description('The name of the service for the traffic control service.')
 param trafficControlServiceName string
 

@@ -16,47 +16,66 @@ param containerAppsEnvironmentName string
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 param containerRegistryUserAssignedIdentityId string
 
+@description('The name of the service for the vehicle registration service.')
+param vehicleRegistrationServiceName string
+
+@description('The name of the service for the fine collection service.')
+param fineCollectionServiceName string
+
+@description('The name of the service for the traffic control service.')
+param trafficControlServiceName string
+
+// Service Bus
+@description('The name of the service bus namespace.')
+param serviceBusName string
+
+@description('The name of the service bus topic.')
+param serviceBusTopicName string
+
+@description('The name of the service bus topic\'s authorization rule.')
+param serviceBusTopicAuthorizationRuleName string
+
+// Cosmos DB
+@description('The name of the provisioned Cosmos DB resource.')
+param cosmosDbName string 
+
+@description('The name of the provisioned Cosmos DB\'s database.')
+param cosmosDbDatabaseName string
+
+@description('The name of Cosmos DB\'s collection.')
+param cosmosDbCollectionName string
+
+// Key Vault
 @description('The resource ID of the key vault to store the license key for the fine collection service.')
 param keyVaultId string
+
 @description('The name of the secret containing the license key value for Fine Collection Service.')
-param fineLicenseKeySecretName string
+param fineLicenseKeySecretName string = 'license-key'
+
 @secure()
 @description('The license key for Fine Collection Service.')
 param fineLicenseKeySecretValue string
 
-@description('The name of the service for the vehicle registration service.')
-param vehicleRegistrationServiceName string
-@description('The name of the service for the fine collection service.')
-param fineCollectionServiceName string
-@description('The name of the service for the traffic control service.')
-param trafficControlServiceName string
-
-@description('The name of the service bus namespace.')
-param serviceBusName string
-@description('The name of the service bus topic.')
-param serviceBusTopicName string
-@description('The name of the service bus topic\'s authorization rule.')
-param serviceBusTopicAuthorizationRuleName string
-
-@description('The name of the provisioned Cosmos DB resource.')
-param cosmosDbName string 
-@description('The name of the provisioned Cosmos DB\'s database.')
-param cosmosDbDatabaseName string
-
+// Container Registry & Images
 @description('The name of the Azure Container Registry.')
 param acrName string
+
 @description('The image for the vehicle registration service.')
 param vehicleRegistrationServiceImage string
+
 @description('The image for the fine collection service.')
 param fineCollectionServiceImage string
+
 @description('The image for the traffic control service.')
 param trafficControlServiceImage string
 
 // Simulation
 @description('If true, the simulation will be deployed in the environment and use the traffic control service FQDN.')
 param deploySimalutionIntheEnvironment bool
+
 @description('Optional. The name of the the simulation. If deploySimalutionIntheEnvironment is set to true, this parameter is required.')
 param simulationName string = ''
+
 @description('Optional. The image for the simulation. If deploySimalutionIntheEnvironment is set to true, this parameter is required.')
 param simulationImage string = ''
 
@@ -112,6 +131,7 @@ module trafficControlService 'container-apps/traffic-control-service.bicep' = {
     serviceBusTopicName: serviceBusTopicName
     cosmosDbName: cosmosDbName
     cosmosDbDatabaseName: cosmosDbDatabaseName
+    cosmosDbCollectionName: cosmosDbCollectionName
     acrName: acrName
     containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
     trafficControlServiceImage: trafficControlServiceImage

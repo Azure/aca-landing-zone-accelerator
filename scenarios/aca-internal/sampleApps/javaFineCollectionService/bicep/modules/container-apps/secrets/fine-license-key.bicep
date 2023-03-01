@@ -9,8 +9,10 @@ param tags object = {}
 
 @description('The name of the Key Vault.')
 param keyVaultName string
+
 @description('The name of the secret containing the license key value for Fine Collection Service.')
 param fineLicenseKeySecretName string
+
 @secure()
 @description('The license key for Fine Collection Service.')
 param fineLicenseKeySecretValue string

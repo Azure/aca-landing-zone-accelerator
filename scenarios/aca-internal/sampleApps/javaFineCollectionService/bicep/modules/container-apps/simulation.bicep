@@ -22,8 +22,10 @@ param simulationName string
 // Container Registry & Image
 @description('The name of the Azure Container Registry.')
 param acrName string
+
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 param containerRegistryUserAssignedIdentityId string
+
 @description('The image for the simulation.')
 param simulationImage string
 

@@ -274,6 +274,7 @@ export TRAFFIC_CONTROL_SERVICE_BASE_URL=https://$(az deployment group show -g "$
 ```
 
 **Trusted Certificate**
+
 If you use a trusted certificate you, you can directly run the simulation by first building the application and then running it:
 
 ```bash
@@ -285,6 +286,7 @@ mvn spring-boot:run
 For more information on how to run the simulation service, see the [Deploy to ACA with Dapr](https://azure.github.io/java-aks-aca-dapr-workshop/modules/05-assignment-5-aks-aca/02-aca/1-aca-instructions.html).
 
 **Self-signed Certificate**
+
 If you use a self-signed certificate like the one provided in the landing zone, you have two options:
 
 1. Add the certificate to the Java keystore

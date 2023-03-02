@@ -13,8 +13,12 @@ param containerRegistryName string
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('The resource ID of the Hub Virtual Network.')
+param hubVNetId string
+
 @description('The resource ID of the VNet to which the private endpoint will be connected.')
 param spokeVNetId string
+
 @description('The name of the subnet in the VNet to which the private endpoint will be connected.')
 param spokePrivateEndpointSubnetName string
 
@@ -24,24 +28,55 @@ param containerRegistryPrivateEndpointName string
 @description('The name of the user assigned identity to be created to pull image from Azure Container Registry.')
 param containerRegistryUserAssignedIdentityName string
 
+
+
 // ------------------
 //    VARIABLES
 // ------------------
 
 var privateDnsZoneNames = 'privatelink.azurecr.io'
-
 var containerRegistryResourceName = 'registry'
 
+var hubVNetIdTokens = split(hubVNetId, '/')
+var hubSubscriptionId = hubVNetIdTokens[2]
+var hubResourceGroupName = hubVNetIdTokens[4]
+var hubVNetName = hubVNetIdTokens[8]
+
 var spokeVNetIdTokens = split(spokeVNetId, '/')
-var spokeSubscriptionId = spokeVNetIdTokens[2]
-var spokeResourceGroupName = spokeVNetIdTokens[4]
 var spokeVNetName = spokeVNetIdTokens[8]
 
 var containerRegistryPullRoleGuid='7f951dda-4ed3-4680-a7ca-43fe172d538d'
 
+var spokeVNetLinks = [
+  {
+    vnetName: spokeVNetName
+    vnetId: vnetSpoke.id
+    registrationEnabled: false
+  }
+  {
+    vnetName: vnetHub.name
+    vnetId: vnetHub.id
+    registrationEnabled: false
+  }
+]
+
 // ------------------
 // DEPLOYMENT TASKS
 // ------------------
+
+resource vnetHub  'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
+  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
+  name: hubVNetName
+}
+
+resource vnetSpoke 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
+  name: spokeVNetName
+}
+
+resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
+  parent: vnetSpoke
+  name: spokePrivateEndpointSubnetName
+}
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2022-12-01' = {
   name: containerRegistryName
@@ -63,10 +98,8 @@ module containerRegistryNetwork '../../modules/private-networking.bicep' = {
     azServiceId: containerRegistry.id
     privateEndpointName: containerRegistryPrivateEndpointName
     privateEndpointSubResourceName: containerRegistryResourceName
-    spokeSubscriptionId: spokeSubscriptionId
-    spokeResourceGroupName: spokeResourceGroupName
-    spokeVirtualNetworkName: spokeVNetName
-    spokeVirtualNetworkPrivateEndpointSubnetName: spokePrivateEndpointSubnetName
+    virtualNetworkLinks: spokeVNetLinks
+    subnetId: spokePrivateEndpointSubnet.id
   }
 }
 

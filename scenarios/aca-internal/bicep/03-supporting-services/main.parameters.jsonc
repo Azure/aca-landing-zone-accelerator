@@ -15,6 +15,10 @@
     "spokeVNetId": {
         "value": "<SPOKE_VNET_RESOURCE_ID>"
     },
+    // Replace with the resource ID of the hub virtual network - required to link the privateDNS zone to the Hub network as well 
+    "hubVNetId": {
+      "value": "<HUB_VNET_RESOURCE_ID>"
+    },
     // If the name was updated in the main.bicep file of 02-spoke, update it here as well
     "spokePrivateEndpointSubnetName": {
       "value": "snet-pep"

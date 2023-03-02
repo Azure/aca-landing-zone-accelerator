@@ -15,6 +15,10 @@ param tags object = {}
 
 @description('The resource ID of the VNet to which the private endpoint will be connected.')
 param spokeVNetId string
+
+@description('The resource ID of the Hub Virtual Network.')
+param hubVNetId string
+
 @description('The name of the subnet in the VNet to which the private endpoint will be connected.')
 param spokePrivateEndpointSubnetName string
 
@@ -24,17 +28,32 @@ param keyVaultPrivateEndpointName string
 @description('The name of the user assigned identity with Key Vault reader role.')
 param keyVaultUserAssignedIdentityName string
 
+var spokeVNetLinks = [
+  {
+    vnetName: spokeVNetName
+    vnetId: vnetSpoke.id
+    registrationEnabled: false
+  }
+  {
+    vnetName: vnetHub.name
+    vnetId: vnetHub.id
+    registrationEnabled: false
+  }
+]
+
 // ------------------
 //    VARIABLES
 // ------------------
 
 var privateDnsZoneNames = 'privatelink.vaultcore.azure.net'
-
 var keyVaultResourceName = 'vault'
 
+var hubVNetIdTokens = split(hubVNetId, '/')
+var hubSubscriptionId = hubVNetIdTokens[2]
+var hubResourceGroupName = hubVNetIdTokens[4]
+var hubVNetName = hubVNetIdTokens[8]
+
 var spokeVNetIdTokens = split(spokeVNetId, '/')
-var spokeSubscriptionId = spokeVNetIdTokens[2]
-var spokeResourceGroupName = spokeVNetIdTokens[4]
 var spokeVNetName = spokeVNetIdTokens[8]
 
 var keyvaultReaderRoleGuid = '21090545-7ca7-4776-b22c-e363652d74d2'
@@ -42,6 +61,20 @@ var keyvaultReaderRoleGuid = '21090545-7ca7-4776-b22c-e363652d74d2'
 // ------------------
 // DEPLOYMENT TASKS
 // ------------------
+
+resource vnetHub  'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
+  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
+  name: hubVNetName
+}
+
+resource vnetSpoke 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
+  name: spokeVNetName
+}
+
+resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
+  parent: vnetSpoke
+  name: spokePrivateEndpointSubnetName
+}
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: keyVaultName
@@ -74,10 +107,8 @@ module keyVaultNetwork '../../modules/private-networking.bicep' = {
     azServiceId: keyVault.id
     privateEndpointName: keyVaultPrivateEndpointName
     privateEndpointSubResourceName: keyVaultResourceName
-    spokeSubscriptionId: spokeSubscriptionId
-    spokeResourceGroupName: spokeResourceGroupName
-    spokeVirtualNetworkName: spokeVNetName
-    spokeVirtualNetworkPrivateEndpointSubnetName: spokePrivateEndpointSubnetName
+    virtualNetworkLinks: spokeVNetLinks
+    subnetId: spokePrivateEndpointSubnet.id
   }
 }
 

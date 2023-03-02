@@ -18,6 +18,9 @@ param tags object = {}
 @description('The resource ID of the VNet to which the private endpoint will be connected.')
 param spokeVNetId string
 
+@description('The resource ID of the Hub Virtual Network.')
+param hubVNetId string
+
 @description('The name of the subnet in the VNet to which the private endpoint will be connected.')
 param spokePrivateEndpointSubnetName string
 
@@ -52,6 +55,7 @@ module containerRegistry 'modules/container-registry.bicep' = {
     location: location
     tags: tags
     spokeVNetId: spokeVNetId
+    hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
     containerRegistryPrivateEndpointName: containerRegistryPrivateEndpointName
     containerRegistryUserAssignedIdentityName: containerRegistryUserAssignedIdentityName
@@ -65,6 +69,7 @@ module keyVault 'modules/key-vault.bicep' = {
     location: location
     tags: tags
     spokeVNetId: spokeVNetId
+    hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
     keyVaultPrivateEndpointName: keyVaultPrivateEndpointName
     keyVaultUserAssignedIdentityName: keyVaultUserAssignedIdentityName

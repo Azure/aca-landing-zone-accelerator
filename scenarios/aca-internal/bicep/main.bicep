@@ -148,6 +148,7 @@ module supportingServices '03-supporting-services/main.bicep' = {
     tags: tags
     spokePrivateEndpointSubnetName: spoke.outputs.spokePrivateEndpointsSubnetName
     spokeVNetId: spoke.outputs.spokeVNetId
+    hubVNetId: hub.outputs.hubVNetId
   }
 }
 
@@ -159,6 +160,7 @@ module containerAppsEnvironment '04-container-apps-environment/main.bicep' = {
     prefix: prefix
     suffix: suffix
     tags: tags
+    hubVNetId:  hub.outputs.hubVNetId
     spokeVNetName: spoke.outputs.spokeVNetName
     spokeInfraSubnetName: spoke.outputs.spokeInfraSubnetName
     enableApplicationInsights: enableApplicationInsights

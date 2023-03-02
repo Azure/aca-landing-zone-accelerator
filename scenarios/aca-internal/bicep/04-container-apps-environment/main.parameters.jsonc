@@ -11,6 +11,10 @@
     "tags": {
       "value": {}
     },
+    // Replace with the resource ID of the hub virtual network - required to link the privateDNS zone to the Hub network as well 
+    "hubVNetId": {
+      "value": "<HUB_VNET_RESOURCE_ID>"
+    },
     // If you want to deploy Application Insights, set this to true
     "enableApplicationInsights": {
       "value": false

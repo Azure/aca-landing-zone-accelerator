@@ -37,10 +37,18 @@ param spokeVNetName string
 @description('The name of the spoke infrastructure subnet.')
 param spokeInfraSubnetName string
 
+@description('The resource ID of the Hub Virtual Network.')
+param hubVNetId string
+
 
 // ------------------
 //    VARIABLES
 // ------------------
+
+var hubVNetResourIdTokens = !empty(hubVNetId) ? split(hubVNetId, '/') : array('')
+var hubSubscriptionId = hubVNetResourIdTokens[2]
+var hubResourceGroupName = hubVNetResourIdTokens[4]
+var hubVNetName = hubVNetResourIdTokens[8]
 
 var spokeVNetLinks = [
   {
@@ -48,11 +56,21 @@ var spokeVNetLinks = [
     vnetId: spokeVNet.id
     registrationEnabled: false
   }
+  {
+    vnetName: vnetHub.name
+    vnetId: vnetHub.id
+    registrationEnabled: false
+  }
 ]
 
 // ------------------
 // DEPLOYMENT TASKS
 // ------------------
+
+resource vnetHub  'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
+  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
+  name: hubVNetName
+}
 
 resource spokeVNet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
   name: spokeVNetName

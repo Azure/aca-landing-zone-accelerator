@@ -23,7 +23,7 @@ param privateLinkServiceId string
 param frontDoorOriginHostName string
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource frontDoorProfile 'Microsoft.Cdn/profiles@2022-05-01-preview' = {

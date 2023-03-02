@@ -30,13 +30,13 @@ param containerRegistryUserAssignedIdentityId string
 param simulationImage string
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var containerAppName = 'ca-${simulationName}'
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
@@ -86,4 +86,3 @@ resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
     }
   }
 }
-

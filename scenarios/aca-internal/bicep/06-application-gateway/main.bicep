@@ -50,7 +50,7 @@ param applicationGatewayLogAnalyticsId string = ''
 param keyVaultId string
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var keyVaultIdTokens = split(keyVaultId, '/')
@@ -61,7 +61,7 @@ var keyVaultName = keyVaultIdTokens[8]
 var applicationGatewayCertificatePath = 'configuration/acahello.demoapp.com.pfx'
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {

@@ -87,14 +87,14 @@ param enableTelemetry bool = true
 
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var telemetryId = '9b4433d6-924a-4c07-b47c-7478619759c7-${location}-acasb'
 
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 module hub '01-hub/main.bicep' = {

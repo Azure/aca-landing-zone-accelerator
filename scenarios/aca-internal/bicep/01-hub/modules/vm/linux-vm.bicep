@@ -34,7 +34,7 @@ param tags object = {}
 param location string = resourceGroup().location
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var linuxConfiguration = {
@@ -50,7 +50,7 @@ var linuxConfiguration = {
 }
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource vmNetworkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {

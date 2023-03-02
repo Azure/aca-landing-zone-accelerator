@@ -21,13 +21,13 @@ param fineLicenseKeySecretValue string
 param fineCollectionServicePrincipalId string
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var keyVaultSecretUserRoleGuid = '4633458b-17de-408a-b874-0445c86b69e6'
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource keyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {

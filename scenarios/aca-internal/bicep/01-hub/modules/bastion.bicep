@@ -23,7 +23,7 @@ param bastionPublicIpName string
 param tags object = {}
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource bastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {

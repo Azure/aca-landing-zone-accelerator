@@ -44,13 +44,13 @@ param containerRegistryUserAssignedIdentityId string
 param trafficControlServiceImage string
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var containerAppName = 'ca-${trafficControlServiceName}'
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = {

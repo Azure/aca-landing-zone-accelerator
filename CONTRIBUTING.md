@@ -224,7 +224,7 @@ A guide outlining the coding conventions and style guidelines that should be fol
   param tags object = {}
 
   // ------------------
-  //    VARIABLES
+  // VARIABLES
   // ------------------
 
   var tags = union({
@@ -233,7 +233,7 @@ A guide outlining the coding conventions and style guidelines that should be fol
   }, tags)
 
   // ------------------
-  // DEPLOYMENT TASKS
+  // RESOURCES
   // ------------------
 
   resource spokeResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {

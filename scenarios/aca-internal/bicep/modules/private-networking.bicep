@@ -32,7 +32,7 @@ param privateEndpointSubResourceName string
 param location string = resourceGroup().location
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 module privateDnsZone 'private-dns-zone.bicep' = {

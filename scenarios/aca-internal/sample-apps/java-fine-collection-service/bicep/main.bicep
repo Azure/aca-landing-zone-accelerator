@@ -126,7 +126,7 @@ param applicationGatewayCertificateKeyName string
 
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var keyVaultIdTokens = split(keyVaultId, '/')
@@ -135,7 +135,7 @@ var keyVaultName = keyVaultIdTokens[8]
 var appGatewayBackendHealthProbePath = '/heatlhz'
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 module serviceBus 'modules/service-bus.bicep' = {

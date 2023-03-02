@@ -32,7 +32,7 @@ param serviceBusPrivateEndpointName string
 param fineCollectionServiceName string
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var privateDnsZoneName = 'privatelink.servicebus.windows.net'
@@ -40,7 +40,7 @@ var privateDnsZoneName = 'privatelink.servicebus.windows.net'
 var serviceBusNamespaceResourceName = 'namespace'
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource spokeVNet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {

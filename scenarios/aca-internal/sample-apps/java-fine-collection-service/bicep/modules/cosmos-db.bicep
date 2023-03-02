@@ -29,7 +29,7 @@ param cosmosDbCollectionName string
 param cosmosDbPrivateEndpointName string
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var privateDnsZoneName = 'privatelink.documents.azure.com'
@@ -37,7 +37,7 @@ var privateDnsZoneName = 'privatelink.documents.azure.com'
 var cosmosDbAccountResourceName = 'Sql'
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource spokeVNet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {

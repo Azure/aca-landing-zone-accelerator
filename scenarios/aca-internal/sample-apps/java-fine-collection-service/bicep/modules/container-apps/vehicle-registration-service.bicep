@@ -27,13 +27,13 @@ param containerRegistryUserAssignedIdentityId string
 param vehicleRegistrationServiceImage string
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var containerAppName = 'ca-${vehicleRegistrationServiceName}'
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {

@@ -42,7 +42,7 @@ var spokeVNetLinks = [
 ]
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var privateDnsZoneNames = 'privatelink.vaultcore.azure.net'
@@ -59,7 +59,7 @@ var spokeVNetName = spokeVNetIdTokens[8]
 var keyvaultReaderRoleGuid = '21090545-7ca7-4776-b22c-e363652d74d2'
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource vnetHub  'Microsoft.Network/virtualNetworks@2022-07-01' existing = {

@@ -77,7 +77,7 @@ param vmJumpBoxSubnetAddressPrefix string
 param vmNICName string = '${prefix}nic-jumpbox-${uniqueString(subscription().id)}${suffix}'
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 // => Subnet definition taking in consideration feature flags
@@ -107,7 +107,7 @@ var vnetSubnets = vmJumpboxOSType != 'none' ? concat(subnets, [
 ]) : subnets
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource hubResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {

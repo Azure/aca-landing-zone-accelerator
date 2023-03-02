@@ -45,7 +45,7 @@ param keyVaultPrivateEndpointName string = '${prefix}pep-kv-${uniqueString(resou
 param keyVaultUserAssignedIdentityName string = '${prefix}id-kv-${uniqueString(resourceGroup().id)}${suffix}'
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 module containerRegistry 'modules/container-registry.bicep' = {

@@ -42,7 +42,7 @@ param hubVNetId string
 
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var hubVNetResourIdTokens = !empty(hubVNetId) ? split(hubVNetId, '/') : array('')
@@ -64,7 +64,7 @@ var spokeVNetLinks = [
 ]
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource vnetHub  'Microsoft.Network/virtualNetworks@2022-07-01' existing = {

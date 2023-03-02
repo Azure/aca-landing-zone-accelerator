@@ -20,7 +20,7 @@ param containerRegistryUserAssignedIdentityId string
 param containerAppsEnvironmentId string
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource containerApp 'Microsoft.App/containerApps@2022-10-01' = {

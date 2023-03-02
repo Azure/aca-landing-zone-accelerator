@@ -51,7 +51,7 @@ param containerRegistryUserAssignedIdentityId string
 param fineCollectionServiceImage string
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var keyVaultIdTokens = split(keyVaultId, '/')
@@ -62,7 +62,7 @@ var keyVaultName = keyVaultIdTokens[8]
 var containerAppName = 'ca-${fineCollectionServiceName}'
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = {

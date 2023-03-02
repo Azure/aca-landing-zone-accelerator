@@ -27,12 +27,12 @@ param tags object = {}
 param location string = resourceGroup().location
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 // => Public IP

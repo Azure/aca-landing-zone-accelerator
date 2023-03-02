@@ -23,7 +23,7 @@ param containerAppsDefaultDomainName string
 param containerAppsEnvironmentSubscriptionId string
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 // => Resolve container apps environment managed resource group name to get the frontend Ip configuration
@@ -32,7 +32,7 @@ var containerAppsNameIdentifier = containerAppsDefaultDomainArray[lastIndexOf(co
 var containerAppsManagedResourceGroup = 'MC_${containerAppsNameIdentifier}-rg_${containerAppsNameIdentifier}_${location}'
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource loadBalancer 'Microsoft.Network/loadBalancers@2021-05-01' existing = {

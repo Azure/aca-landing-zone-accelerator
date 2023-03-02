@@ -81,7 +81,7 @@ param simulationName string = ''
 param simulationImage string = ''
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {

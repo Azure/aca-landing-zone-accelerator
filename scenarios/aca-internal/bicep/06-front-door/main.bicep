@@ -47,7 +47,7 @@ param frontDoorOriginRouteName string = 'containerapps-route'
 param frontDoorOriginHostName string
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var containerAppsEnvironmentTokens = split(containerAppsEnvironmentId, '/')
@@ -56,7 +56,7 @@ var containerAppsEnvironmentResourceGroupName = containerAppsEnvironmentTokens[4
 var containerAppsEnvironmentName = containerAppsEnvironmentTokens[8]
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-10-01' existing = {

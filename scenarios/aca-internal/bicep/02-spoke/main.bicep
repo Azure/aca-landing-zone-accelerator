@@ -49,7 +49,7 @@ param spokeApplicationGatewaySubnetName string = 'snet-agw'
 param spokeApplicationGatewaySubnetAddressPrefix string
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var hubVNetResourIdTokens = !empty(hubVNetId) ? split(hubVNetId, '/') : array('')
@@ -84,7 +84,7 @@ var spokeSubnets = !empty(spokeApplicationGatewaySubnetAddressPrefix) ? concat(d
   ]) : defaultSubnets
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource spokeResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {

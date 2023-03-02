@@ -31,7 +31,7 @@ param containerRegistryUserAssignedIdentityName string
 
 
 // ------------------
-//    VARIABLES
+// VARIABLES
 // ------------------
 
 var privateDnsZoneNames = 'privatelink.azurecr.io'
@@ -61,7 +61,7 @@ var spokeVNetLinks = [
 ]
 
 // ------------------
-// DEPLOYMENT TASKS
+// RESOURCES
 // ------------------
 
 resource vnetHub  'Microsoft.Network/virtualNetworks@2022-07-01' existing = {

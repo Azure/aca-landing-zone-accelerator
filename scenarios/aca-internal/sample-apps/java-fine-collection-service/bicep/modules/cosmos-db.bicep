@@ -10,6 +10,9 @@ param location string = resourceGroup().location
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('The resource ID of the Hub Virtual Network.')
+param hubVNetId string
+
 @description('The name of the spoke VNET.')
 param spokeVNetName string
 
@@ -32,13 +35,35 @@ param cosmosDbPrivateEndpointName string
 // VARIABLES
 // ------------------
 
-var privateDnsZoneName = 'privatelink.documents.azure.com'
+var spokeVNetLinks = [
+  {
+    vnetName: spokeVNetName
+    vnetId: spokeVNet.id
+    registrationEnabled: false
+  }
+  {
+    vnetName: vnetHub.name
+    vnetId: vnetHub.id
+    registrationEnabled: false
+  }
+]
 
+var privateDnsZoneName = 'privatelink.documents.azure.com'
 var cosmosDbAccountResourceName = 'Sql'
+
+var hubVNetIdTokens = split(hubVNetId, '/')
+var hubSubscriptionId = hubVNetIdTokens[2]
+var hubResourceGroupName = hubVNetIdTokens[4]
+var hubVNetName = hubVNetIdTokens[8]
 
 // ------------------
 // RESOURCES
 // ------------------
+
+resource vnetHub  'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
+  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
+  name: hubVNetName
+}
 
 resource spokeVNet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   name: spokeVNetName
@@ -102,10 +127,8 @@ module cosmosDbNetworking '../../../../bicep/modules/private-networking.bicep' =
     azServiceId: cosmosDbAccount.id
     privateEndpointName: cosmosDbPrivateEndpointName
     privateEndpointSubResourceName: cosmosDbAccountResourceName
-    spokeSubscriptionId: subscription().subscriptionId
-    spokeResourceGroupName: resourceGroup().name
-    spokeVirtualNetworkName: spokeVNet.name
-    spokeVirtualNetworkPrivateEndpointSubnetName: spokePrivateEndpointSubnet.name
+    virtualNetworkLinks: spokeVNetLinks
+    subnetId: spokePrivateEndpointSubnet.id
   }
 }
 

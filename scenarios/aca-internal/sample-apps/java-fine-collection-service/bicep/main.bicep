@@ -29,6 +29,9 @@ param fineCollectionServiceName string
 @description('The name of the service for the traffic control service. The name is use as Dapr App ID.')
 param trafficControlServiceName string
 
+@description('The resource ID of the Hub Virtual Network.')
+param hubVNetId string
+
 // Spoke Private Endpoints Subnet
 @description('The name of the spoke VNET.')
 param spokeVNetName string
@@ -81,8 +84,8 @@ param keyVaultId string
 @description('The name of the secret containing the license key value for Fine Collection Service.')
 param fineLicenseKeySecretName string = 'license-key'
 
-@secure()
 @description('The license key for Fine Collection Service.')
+@secure()
 param fineLicenseKeySecretValue string
 
 // Container Registry & Images
@@ -150,6 +153,7 @@ module serviceBus 'modules/service-bus.bicep' = {
     serviceBusTopicAuthorizationRuleName: serviceBusTopicAuthorizationRuleName
     fineCollectionServiceName: fineCollectionServiceName
     serviceBusPrivateEndpointName: serviceBusPrivateEndpointName
+    hubVNetId: hubVNetId
   }
 }
 
@@ -164,6 +168,7 @@ module cosmosDb 'modules/cosmos-db.bicep' = {
     cosmosDbDatabaseName: cosmosDbDatabaseName
     cosmosDbCollectionName: cosmosDbCollectionName
     cosmosDbPrivateEndpointName: cosmosDbPrivateEndpointName
+    hubVNetId: hubVNetId
   }
 }
 
@@ -172,18 +177,13 @@ module daprComponents 'modules/dapr-components.bicep' = {
   params: {
     secretStoreComponentName: secretStoreComponentName
     pubSubComponentName: pubSubComponentName
-    stateStoreComponentName: stateStoreComponentName
-    
-    containerAppsEnvironmentName: containerAppsEnvironmentName
-    
-    keyVaultName: keyVaultName
-    
+    stateStoreComponentName: stateStoreComponentName    
+    containerAppsEnvironmentName: containerAppsEnvironmentName    
+    keyVaultName: keyVaultName    
     serviceBusName: serviceBus.outputs.serviceBusName
-
     cosmosDbName: cosmosDb.outputs.cosmosDbName
     cosmosDbDatabaseName: cosmosDb.outputs.cosmosDbDatabaseName
-    cosmosDbCollectionName: cosmosDb.outputs.cosmosDbCollectionName
-    
+    cosmosDbCollectionName: cosmosDb.outputs.cosmosDbCollectionName    
     fineCollectionServiceName: fineCollectionServiceName
     trafficControlServiceName: trafficControlServiceName
   }
@@ -194,32 +194,24 @@ module containerApps 'modules/container-apps.bicep' = {
   params: {
     vehicleRegistrationServiceName: vehicleRegistrationServiceName
     fineCollectionServiceName: fineCollectionServiceName
-    trafficControlServiceName: trafficControlServiceName
-    
+    trafficControlServiceName: trafficControlServiceName    
     location: location
     tags: tags
-
     containerAppsEnvironmentName: containerAppsEnvironmentName
-
-    containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
-    
+    containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId    
     keyVaultId: keyVaultId
     fineLicenseKeySecretName: fineLicenseKeySecretName
     fineLicenseKeySecretValue: fineLicenseKeySecretValue
-
     serviceBusName: serviceBus.outputs.serviceBusName
     serviceBusTopicName: serviceBus.outputs.serviceBusTopicName
-    serviceBusTopicAuthorizationRuleName: serviceBus.outputs.serviceBusTopicAuthorizationRuleName
-    
+    serviceBusTopicAuthorizationRuleName: serviceBus.outputs.serviceBusTopicAuthorizationRuleName    
     cosmosDbName: cosmosDb.outputs.cosmosDbName
     cosmosDbDatabaseName: cosmosDb.outputs.cosmosDbDatabaseName
-    cosmosDbCollectionName: cosmosDb.outputs.cosmosDbCollectionName
-    
+    cosmosDbCollectionName: cosmosDb.outputs.cosmosDbCollectionName    
     containerRegistryName: containerRegistryName
     vehicleRegistrationServiceImage: vehicleRegistrationServiceImage
     fineCollectionServiceImage: fineCollectionServiceImage
     trafficControlServiceImage: trafficControlServiceImage
-
     deploySimalutionIntheEnvironment: deploySimalutionIntheEnvironment
     simulationName: simulationName
     simulationImage: simulationImage

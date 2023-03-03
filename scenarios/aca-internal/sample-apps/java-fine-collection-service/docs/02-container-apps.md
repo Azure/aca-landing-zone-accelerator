@@ -24,7 +24,7 @@ There are multiple options provided with this guide to deploy the container imag
 This guide is divided in 4 sections:
 
 1. [Build the container images](#build-the-container-images)
-2. [Deployment of the sample app](#deployment-of-the-sample-app)
+2. [Deploy the sample app](#deploy-the-sample-app)
 3. [Camera simulation](#camera-simulation)
 4. [Test the sample app](#test-the-sample-app)
 

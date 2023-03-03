@@ -132,7 +132,9 @@ module serviceBusNetworking '../../../../bicep/modules/private-networking.bicep'
 
 @description('The name of the service bus namespace.')
 output serviceBusName string = serviceBusNamespace.name
+
 @description('The name of the service bus topic.')
 output serviceBusTopicName string = serviceBusTopic.name
+
 @description('The name of the service bus topic\'s authorization rule.')
 output serviceBusTopicAuthorizationRuleName string = serviceBusTopicAuthRule.name

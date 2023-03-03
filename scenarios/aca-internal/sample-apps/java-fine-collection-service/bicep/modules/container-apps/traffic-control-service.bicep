@@ -159,5 +159,8 @@ resource trafficControlService_cosmosdb_role_assignment 'Microsoft.DocumentDB/da
 // OUTPUTS
 // ------------------
 
+@description('The name of the container app for the traffic control service.')
+output trafficControlServiceContainerAppName string = trafficControlService.name
+
 @description('The FQDN of the traffic control service.')
 output trafficControlServiceFQDN string = trafficControlService.properties.configuration.ingress.fqdn

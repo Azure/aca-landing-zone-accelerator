@@ -286,3 +286,13 @@ resource agwDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-previe
     ]
   }
 }
+
+// ------------------
+// OUTPUTS
+// ------------------
+
+@description('The FQDN of the application gateway.')
+output applicationGatewayFqdn string = appGatewayFQDN
+
+@description('The public IP address of the application gateway.')
+output applicationGatewayPublicIp string = appGatewayPip.properties.ipAddress

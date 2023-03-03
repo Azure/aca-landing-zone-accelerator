@@ -183,3 +183,10 @@ module fineLicenseKeySecret 'secrets/fine-license-key.bicep' = {
   }
   scope: resourceGroup(keyVaultSubscriptionId, keyVaultResourceGroupName)
 }
+
+// ------------------
+// OUTPUTS
+// ------------------
+
+@description('The name of the container app for the fine collection service.')
+output fineCollectionServiceContainerAppName string = fineCollectionService.name

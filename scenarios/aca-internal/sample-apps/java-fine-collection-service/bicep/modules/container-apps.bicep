@@ -161,5 +161,17 @@ module simulation 'container-apps/simulation.bicep' = if (deploySimalutionIntheE
 // OUTPUTS
 // ------------------
 
+@description('The name of the container app for the vehicle registration service.')
+output vehicleRegistrationServiceContainerAppName string = vehicleRegistrationService.outputs.vehicleRegistrationServiceContainerAppName
+
+@description('The name of the container app for the fine collection service.')
+output fineCollectionServiceContainerAppName string = fineCollectionService.outputs.fineCollectionServiceContainerAppName
+
+@description('The name of the container app for the traffic control service.')
+output trafficControlServiceContainerAppName string = trafficControlService.outputs.trafficControlServiceContainerAppName
+
+@description('The name of the container app for the simulation. If deploySimalutionIntheEnvironment is set to false, this output will be empty.')
+output simulationContainerAppName string = (deploySimalutionIntheEnvironment) ? simulation.outputs.simulationContainerAppName : ''
+
 @description('The FQDN of the traffic control service.')
 output trafficControlServiceFQDN string = trafficControlService.outputs.trafficControlServiceFQDN

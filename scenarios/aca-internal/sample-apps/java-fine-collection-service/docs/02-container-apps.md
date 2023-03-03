@@ -17,7 +17,7 @@ The 5 building blocks for this sample app are:
   - camera simulation (optional)
 - Application Gateway: to expose the traffic control service endpoints to the internet
 
-// TODO add diagram
+![Fine Collection Service Building Blocks](media/fine-collection-building-blocks.png)
 
 There are multiple options provided with this guide to deploy the container images and the camera simulation.
 
@@ -66,6 +66,8 @@ SIMULATION_IMAGE=$CONTAINER_REGISTRY_NAME.azurecr.io/simulation:$TAG
 
 Where `TAG` is the tag of the container images. `SIMULATION_IMAGE` is optional and is only needed if you want to deploy the camera simulation as a container app.
 
+:arrow_down: [Deploy the sample app](#deploy-the-sample-app)
+
 ### Option 2 - Import pre-built public images to your private Azure Container Registry
 
 All the container image are available in a public image repository. If you do not wish to build the container images from code directly, you can import it directly into your private container instance as shown below. Note - you might need to execute this from a jumpbox or workstation which can reach your private container registry instance.
@@ -110,6 +112,8 @@ Like for option 1, you can set the Bicep parameters for the image in the `main.p
 >
 > To be able to import the images from the public repository, you need to be logged in to the private container registry. To do so you'll need to install docker in the jumpbox VM or workstation. The script [jumpbox-setup.sh](../jumpbox-setup.sh) can be used as an example on how to install docker.
 >
+
+:arrow_down: [Deploy the sample app](#deploy-the-sample-app)
 
 ### Option 3 - Use the public container images and deploy them directly in Azure Container Apps
 
@@ -166,7 +170,9 @@ az deployment group create \
   -p main.parameters.jsonc
 ```
 
-Where `<SPOKE_RESOURCE_GROUP_NAME>` is the name of the spoke resource group where the sample app will be deployed and `<DEPLOYMENT_NAME>` is the name of the deployment.
+Where `<SPOKE_RESOURCE_GROUP_NAME>` is the name of the spoke resource group where the sample app will be deployed and `<DEPLOYMENT_NAME>` is the name of the sample app deployment.
+
+:arrow_down: [Camera Simulation](#camera-simulation)
 
 ### Deploy the sample app using environment variables
 
@@ -199,6 +205,7 @@ To deploy the sample app using environment variables, run the following command 
 
 ```bash
 az deployment group create -g "$SPOKE_RESOURCE_GROUP_NAME" -f main.bicep -p main.parameters.jsonc \
+  --name <DEPLOYMENT_NAME> \
   --parameters containerAppsEnvironmentName=$CONTAINER_APPS_ENVIRONMENT_NAME \
   --parameters spokeVNetName=$SPOKE_VNET_NAME \
   --parameters spokePrivateEndpointsSubnetName=$SPOKE_PRIVATE_ENDPOINTS_SUBNET_NAME \
@@ -213,6 +220,8 @@ az deployment group create -g "$SPOKE_RESOURCE_GROUP_NAME" -f main.bicep -p main
   --parameters spokeApplicationGatewaySubnetName=$SPOKE_APPLICATION_GATEWAY_SUBNET_NAME
 ```
 
+Where `<DEPLOYMENT_NAME>` is the name of the sample app deployment.
+
 ## Camera Simulation
 
 There are 3 ways to run the camera simulation service:
@@ -226,6 +235,8 @@ There are 3 ways to run the camera simulation service:
 To run the camera simulation in a container app, you need to set the bicep parameter `deployCameraSimulation` to `true` when deploying the sample app. The camera simulation service will be deployed as a container app in the environment. If it was set to `false`, you can still run the camera simulation in the environment by updating its value to `true` and [redeploying the sample app](#deploy-the-sample-app). Only the modification will be applied.
 
 When deploying with the Bicep templates, the environment variable [`TRAFFIC_CONTROL_SERVICE_BASE_URL`](https://github.com/Azure/java-aks-aca-dapr-workshop/blob/e2e-flow/Simulation/src/main/resources/application.yml#L25) is set to the FQDN of the traffic control service. It is passed in the [container-apps.bicep](../bicep/modules/container-apps.bicep) file to the simulation container app template: [simulation.bicep](../bicep/modules/container-apps/simulation.bicep).
+
+:arrow_down: [Test the sample app](#test-the-sample-app)
 
 ### Option 2: Use a REST client template to send requests to the traffic control service
 
@@ -259,19 +270,23 @@ Content-Type: application/json
 
 Where `<APPLICATION_GATEWAY_PUBLIC_IP>` is the public IP of the application gateway and can be get from sample app deployment outputs using:
 
-// TODO add the output
-
 ```bash
-az deployment group show -g "$SPOKE_RESOURCE_GROUP_NAME" -n "$CONTAINER_APPS_ENVIRONMENT_NAME" --query properties.outputs.applicationGatewayPublicIp.value -o tsv
+az deployment group show -g "$SPOKE_RESOURCE_GROUP_NAME" -n "<DEPLOYMENT_NAME>" --query properties.outputs.applicationGatewayPublicIp.value -o tsv
 ```
+
+Where `<DEPLOYMENT_NAME>` is the name of the sample app deployment.
+
+:arrow_down: [Test the sample app](#test-the-sample-app)
 
 ### Option 3: Run the camera simulation service from your development machine or the jumpbox VM
 
 If you want to run the camera simulation service from your development machine or the jumpbox VM, you need to set the environment variable `TRAFFIC_CONTROL_SERVICE_BASE_URL` to the FQDN of the application gateway. You can get the FQDN of the application gateway from the sample app deployment outputs using:
 
 ```bash
-export TRAFFIC_CONTROL_SERVICE_BASE_URL=https://$(az deployment group show -g "$SPOKE_RESOURCE_GROUP_NAME" -n "$CONTAINER_APPS_ENVIRONMENT_NAME" --query properties.outputs.applicationGatewayFqdn.value -o tsv)
+export TRAFFIC_CONTROL_SERVICE_BASE_URL=https://$(az deployment group show -g "$SPOKE_RESOURCE_GROUP_NAME" -n "<DEPLOYMENT_NAME>" --query properties.outputs.applicationGatewayFqdn.value -o tsv)
 ```
+
+Where `<DEPLOYMENT_NAME>` is the name of the sample app deployment.
 
 **Trusted Certificate**
 
@@ -284,6 +299,8 @@ mvn spring-boot:run
 ```
 
 For more information on how to run the simulation service, see the [Deploy to ACA with Dapr](https://azure.github.io/java-aks-aca-dapr-workshop/modules/05-assignment-5-aks-aca/02-aca/1-aca-instructions.html).
+
+:arrow_down: [Test the sample app](#test-the-sample-app)
 
 **Self-signed Certificate**
 
@@ -298,7 +315,15 @@ You also need to add the FQDN of the application gateway to the `hosts` file of 
 <APPLICATION_GATEWAY_PUBLIC_IP> <APPLICATION_GATEWAY_FQDN>
 ```
 
-Where `<APPLICATION_GATEWAY_PUBLIC_IP>` is the public IP of the application gateway and `<APPLICATION_GATEWAY_FQDN>` is the FQDN of the application gateway.
+Where `<APPLICATION_GATEWAY_PUBLIC_IP>` is the public IP of the application gateway and `<APPLICATION_GATEWAY_FQDN>` is the FQDN of the application gateway:
+
+```bash
+az deployment group show -g "$SPOKE_RESOURCE_GROUP_NAME" -n "<DEPLOYMENT_NAME>" --query properties.outputs.applicationGatewayFqdn.value -o tsv
+
+az deployment group show -g "$SPOKE_RESOURCE_GROUP_NAME" -n "<DEPLOYMENT_NAME>" --query properties.outputs.applicationGatewayPublicIp.value -o tsv
+```
+
+Where `<DEPLOYMENT_NAME>` is the name of the sample app deployment.
 
 For the second option, you need first to add the following dependency in the `pom.xml` file of the `Simulation` application:
 
@@ -339,16 +364,24 @@ mvn spring-boot:run
 
 For more information on how to run the simulation service, see the [Deploy to ACA with Dapr](https://azure.github.io/java-aks-aca-dapr-workshop/modules/05-assignment-5-aks-aca/02-aca/1-aca-instructions.html).
 
-## Test the application
+## Test the sample app
 
 The logs can be viewed in the portal using `Log Stream` or in the console using the following commands:
 
-// TODO Use Ouput instead of hardcoded values
+First you need the name of the container apps:
+
+```bash
+VEHICLE_REGISTRATION_SERVICE_CA_NAME=$(az deployment group show -g "$SPOKE_RESOURCE_GROUP_NAME" -n "<DEPLOYMENT_NAME>" --query properties.outputs.vehicleRegistrationServiceContainerAppName.value -o tsv)
+FINE_COLLECTION_SERVICE_CA_NAME=$(az deployment group show -g "$SPOKE_RESOURCE_GROUP_NAME" -n "<DEPLOYMENT_NAME>" --query properties.outputs.fineCollectionServiceContainerAppName.value -o tsv)
+TRAFFIC_CONTROL_SERVICE_CA_NAME=$(az deployment group show -g "$SPOKE_RESOURCE_GROUP_NAME" -n "<DEPLOYMENT_NAME>" --query properties.outputs.trafficControlServiceContainerAppName.value -o tsv)
+```
+
+Where `<DEPLOYMENT_NAME>` is the name of the sample app deployment.
 
 For traffic control service:
 
 ```bash
-TRAFFIC_CONTROL_SERVICE_REVISION=$(az containerapp revision list -n ca-traffic-control-service  -g $RESOURCE_GROUP_NAME --query [0].name -o tsv)
+TRAFFIC_CONTROL_SERVICE_REVISION=$(az containerapp revision list -n "$TRAFFIC_CONTROL_SERVICE_CA_NAME" -g $RESOURCE_GROUP_NAME --query [0].name -o tsv)
 ```
 
 ```bash
@@ -361,7 +394,7 @@ az monitor log-analytics query \
 For fine collection service:
 
 ```bash
-FINE_COLLECTION_SERVICE_REVISION=$(az containerapp revision list -n ca-fine-collection-service  -g $RESOURCE_GROUP_NAME --query [0].name -o tsv)
+FINE_COLLECTION_SERVICE_REVISION=$(az containerapp revision list -n "$FINE_COLLECTION_SERVICE_CA_NAME" -g $RESOURCE_GROUP_NAME --query [0].name -o tsv)
 ```
 
 ```bash
@@ -374,7 +407,7 @@ az monitor log-analytics query \
 For vehicle registration service:
 
 ```bash
-VEHICLE_REGISTRATION_SERVICE_REVISION=$(az containerapp revision list -n ca-vehicle-registration-service  -g $RESOURCE_GROUP_NAME --query [0].name -o tsv)
+VEHICLE_REGISTRATION_SERVICE_REVISION=$(az containerapp revision list -n "$VEHICLE_REGISTRATION_SERVICE_CA_NAME" -g $RESOURCE_GROUP_NAME --query [0].name -o tsv)
 ```
 
 ```bash

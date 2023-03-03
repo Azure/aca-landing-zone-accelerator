@@ -6,7 +6,7 @@ For the simulation of Fine Collection Service, 3 microservices are defined:
 * `fine-collection-service`
 * `traffic-control-service`
 
-![Services](media/application-diagram.png)]]
+![Services](media/application-diagram.png)
 
 Each microservice corresponds to a container app, as shown on the diagram below.
 

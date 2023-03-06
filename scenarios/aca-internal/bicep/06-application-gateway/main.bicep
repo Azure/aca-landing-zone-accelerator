@@ -99,3 +99,13 @@ module appGatewayConfiguration './modules/app-gateway-config.bicep'= {
     appGatewayLogAnalyticsId: applicationGatewayLogAnalyticsId
   }
 }
+
+// ------------------
+// OUTPUTS
+// ------------------
+
+@description('The FQDN of the application gateway.')
+output applicationGatewayFqdn string = appGatewayConfiguration.outputs.applicationGatewayFqdn
+
+@description('The public IP address of the application gateway.')
+output applicationGatewayPublicIp string = appGatewayConfiguration.outputs.applicationGatewayPublicIp

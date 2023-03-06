@@ -234,3 +234,25 @@ module applicationGateway '../../../bicep/06-application-gateway/main.bicep' = {
     keyVaultId: keyVaultId
   }
 }
+
+// ------------------
+// OUTPUTS
+// ------------------
+
+@description('The name of the container app for the vehicle registration service.')
+output vehicleRegistrationServiceContainerAppName string = containerApps.outputs.vehicleRegistrationServiceContainerAppName
+
+@description('The name of the container app for the fine collection service.')
+output fineCollectionServiceContainerAppName string = containerApps.outputs.fineCollectionServiceContainerAppName
+
+@description('The name of the container app for the traffic control service.')
+output trafficControlServiceContainerAppName string = containerApps.outputs.trafficControlServiceContainerAppName
+
+@description('The name of the container app for the simulation. If deploySimalutionIntheEnvironment is set to false, this output will be empty.')
+output simulationContainerAppName string = containerApps.outputs.simulationContainerAppName
+
+@description('The FQDN of the application gateway.')
+output applicationGatewayFqdn string = applicationGateway.outputs.applicationGatewayFqdn
+
+@description('The public IP address of the application gateway.')
+output applicationGatewayPublicIp string = applicationGateway.outputs.applicationGatewayPublicIp

@@ -86,3 +86,10 @@ resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
     }
   }
 }
+
+// ------------------
+// OUTPUTS
+// ------------------
+
+@description('The name of the container app for the simulation.')
+output simulationContainerAppName string = simulationService.name

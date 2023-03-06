@@ -89,3 +89,6 @@ resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
 
 @description('Dapr App Id of the vehicle registration service.')
 output vehicleRegistrationServiceDaprAppId string = vehicleRegistrationService.properties.configuration.dapr.appId
+
+@description('The name of the container app for the vehicle registration service.')
+output vehicleRegistrationServiceContainerAppName string = vehicleRegistrationService.name

@@ -198,64 +198,64 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
   }
 }
 
-// // ------------------
-// // OUTPUTS
-// // ------------------
+// ------------------
+// OUTPUTS
+// ------------------
 
-// // Hub
-// @description('The resource ID of hub virtual network.')
-// output hubVNetId string = hub.outputs.hubVNetId
+// Hub
+@description('The resource ID of hub virtual network.')
+output hubVNetId string = hub.outputs.hubVNetId
 
-// // Spoke
-// @description('The name of the Hub resource group.')
-// output spokeResourceGroupName string = spokeResourceGroup.name
+// Spoke
+@description('The name of the Hub resource group.')
+output spokeResourceGroupName string = spokeResourceGroup.name
 
-// @description('The  resource ID of the Spoke Virtual Network.')
-// output spokeVNetId string = spoke.outputs.spokeVNetId
+@description('The  resource ID of the Spoke Virtual Network.')
+output spokeVNetId string = spoke.outputs.spokeVNetId
 
-// @description('The name of the Spoke Virtual Network.')
-// output spokeVnetName string = spoke.outputs.spokeVNetName
+@description('The name of the Spoke Virtual Network.')
+output spokeVnetName string = spoke.outputs.spokeVNetName
 
-// @description('The resource ID of the Spoke Infrastructure Subnet.')
-// output spokeInfraSubnetId string = spoke.outputs.spokeInfraSubnetId
+@description('The resource ID of the Spoke Infrastructure Subnet.')
+output spokeInfraSubnetId string = spoke.outputs.spokeInfraSubnetId
 
-// @description('The name of the Spoke Infrastructure Subnet.')
-// output spokeInfraSubnetName string = spoke.outputs.spokeInfraSubnetName
+@description('The name of the Spoke Infrastructure Subnet.')
+output spokeInfraSubnetName string = spoke.outputs.spokeInfraSubnetName
 
-// @description('The resource ID of the Spoke Private Endpoints Subnet.')
-// output spokePrivateEndpointsSubnetId string = spoke.outputs.spokePrivateEndpointsSubnetId
+@description('The resource ID of the Spoke Private Endpoints Subnet.')
+output spokePrivateEndpointsSubnetId string = spoke.outputs.spokePrivateEndpointsSubnetId
 
-// @description('The name of the Spoke Private Endpoints Subnet.')
-// output spokePrivateEndpointsSubnetName string = spoke.outputs.spokePrivateEndpointsSubnetName
+@description('The name of the Spoke Private Endpoints Subnet.')
+output spokePrivateEndpointsSubnetName string = spoke.outputs.spokePrivateEndpointsSubnetName
 
-// @description('The resource ID of the Spoke Application Gateway Subnet. If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty.')
-// output spokeApplicationGatewaySubnetId string = spoke.outputs.spokeApplicationGatewaySubnetId
+@description('The resource ID of the Spoke Application Gateway Subnet. If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty.')
+output spokeApplicationGatewaySubnetId string = spoke.outputs.spokeApplicationGatewaySubnetId
 
-// @description('The name of the Spoke Application Gateway Subnet.  If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty.')
-// output spokeApplicationGatewaySubnetName string = spoke.outputs.spokeApplicationGatewaySubnetName
+@description('The name of the Spoke Application Gateway Subnet.  If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty.')
+output spokeApplicationGatewaySubnetName string = spoke.outputs.spokeApplicationGatewaySubnetName
 
-// // Supporting Services
-// @description('The resource ID of the container registry.')
-// output containerRegistryId string = supportingServices.outputs.containerRegistryId
+// Supporting Services
+@description('The resource ID of the container registry.')
+output containerRegistryId string = supportingServices.outputs.containerRegistryId
 
-// @description('The name of the container registry.')
-// output containerRegistryName string = supportingServices.outputs.containerRegistryName
+@description('The name of the container registry.')
+output containerRegistryName string = supportingServices.outputs.containerRegistryName
 
-// @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
-// output containerRegistryUserAssignedIdentityId string = supportingServices.outputs.containerRegistryUserAssignedIdentityId
+@description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
+output containerRegistryUserAssignedIdentityId string = supportingServices.outputs.containerRegistryUserAssignedIdentityId
 
-// @description('The resource ID of the key vault.')
-// output keyVaultId string = supportingServices.outputs.keyVaultId
+@description('The resource ID of the key vault.')
+output keyVaultId string = supportingServices.outputs.keyVaultId
 
-// @description('The name of the key vault.')
-// output keyVaultName string = supportingServices.outputs.keyVaultName
+@description('The name of the key vault.')
+output keyVaultName string = supportingServices.outputs.keyVaultName
 
-// @description('The resource ID of the user assigned managed identity to access the key vault.')
-// output keyVaultUserAssignedIdentityId string = supportingServices.outputs.keyVaultUserAssignedIdentityId
+@description('The resource ID of the user assigned managed identity to access the key vault.')
+output keyVaultUserAssignedIdentityId string = supportingServices.outputs.keyVaultUserAssignedIdentityId
 
-// // Container Apps Environment
-// @description('The resource ID of the container apps environment.')
-// output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.containerAppsEnvironmentId
+// Container Apps Environment
+@description('The resource ID of the container apps environment.')
+output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.containerAppsEnvironmentId
 
-// @description('The name of the container apps environment.')
-// output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.containerAppsEnvironmentName
+@description('The name of the container apps environment.')
+output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.containerAppsEnvironmentName

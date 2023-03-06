@@ -6,7 +6,7 @@
         "value": "hub"
     },
     "spokeWorkloadName": {
-        "value": "cas"
+        "value": "ca-lza"
     },
     "environmentName": {
         "value": "dev"

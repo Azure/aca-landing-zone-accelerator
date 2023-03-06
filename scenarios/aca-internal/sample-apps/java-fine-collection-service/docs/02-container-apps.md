@@ -85,22 +85,22 @@ az acr login -n $CONTAINER_REGISTRY_NAME
 
 az acr import \
   --name $CONTAINER_REGISTRY_NAME \
-  --image $VEHICLE_REGISTRATION_SERVICE_IMAGE \
-  --source --source ghcr.io/azure/vehicle-registration-service:a4fc4d9
+  --image vehicle-registration-service:$TAG \
+  --source ghcr.io/azure/vehicle-registration-service:a4fc4d9
 
 az acr import \
   --name $CONTAINER_REGISTRY_NAME \
-  --image $FINE_COLLECTION_SERVICE_IMAGE \
+  --image fine-collection-service:$TAG \
   --source ghcr.io/azure/fine-collection-service:a4fc4d9
 
 az acr import \
   --name $CONTAINER_REGISTRY_NAME \
-  --image $TRAFFIC_CONTROL_SERVICE_IMAGE \
+  --image traffic-control-service:$TAG \
   --source ghcr.io/azure/traffic-control-service:f39c844
 
 az acr import \
   --name $CONTAINER_REGISTRY_NAME \
-  --image $SIMULATION_IMAGE \
+  --image simulation:$TAG \
   --source ghcr.io/azure/simulation:a4fc4d9
 ```
 
@@ -190,6 +190,7 @@ You can get the parameters from the landing zone deployment:
 LZA_DEPLOYMENT_NAME=<LZA_DEPLOYMENT_NAME>
 SPOKE_RESOURCE_GROUP_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokeResourceGroupName.value -o tsv)
 CONTAINER_APPS_ENVIRONMENT_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.containerAppsEnvironmentName.value -o tsv)
+HUB_VNET_ID=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.hubVNetId.value -o tsv)
 SPOKE_VNET_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokeVnetName.value -o tsv)
 SPOKE_PRIVATE_ENDPOINTS_SUBNET_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokePrivateEndpointsSubnetName.value -o tsv)
 KEY_VAULT_ID=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.keyVaultId.value -o tsv)
@@ -207,6 +208,7 @@ To deploy the sample app using environment variables, run the following command 
 az deployment group create -g "$SPOKE_RESOURCE_GROUP_NAME" -f main.bicep -p main.parameters.jsonc \
   --name <DEPLOYMENT_NAME> \
   --parameters containerAppsEnvironmentName=$CONTAINER_APPS_ENVIRONMENT_NAME \
+  --parameters hubVNetId=$HUB_VNET_ID \
   --parameters spokeVNetName=$SPOKE_VNET_NAME \
   --parameters spokePrivateEndpointsSubnetName=$SPOKE_PRIVATE_ENDPOINTS_SUBNET_NAME \
   --parameters keyVaultId=$KEY_VAULT_ID \

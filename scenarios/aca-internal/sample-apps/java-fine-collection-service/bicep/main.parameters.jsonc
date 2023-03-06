@@ -31,7 +31,7 @@
     },
     // Replace with the resource ID of the hub virtual network - required to link the privateDNS zone to the Hub network as well 
     "hubVNetId": {
-      "value": "<HUB_VNET_RESOURCE_ID>"
+      "value": "<HUB_VNET_ID>"
     },
     /* SPOKE PRIVATE ENDPOINTS SUBNET */
     // Replace with the name of spoke virtual network

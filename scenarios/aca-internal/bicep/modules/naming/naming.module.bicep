@@ -19,7 +19,7 @@ var resourceTypeToken = 'RES_TYPE'
 
 // Define and adhere to a naming convention, such as: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming
 var namingBase = '${resourceTypeToken}-${workloadName}-${environmentName}-${naming.regionAbbreviations[toLower(location)]}'
-var namingBaseUnique = '${resourceTypeToken}-${uniqueIdShort}-${workloadName}-${environmentName}-${naming.regionAbbreviations[toLower(location)]}'
+var namingBaseUnique = '${resourceTypeToken}-${workloadName}-${uniqueIdShort}-${environmentName}-${naming.regionAbbreviations[toLower(location)]}'
 
 var resourceNames = {
   spokeVNet: '${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualNetwork)}-spoke'

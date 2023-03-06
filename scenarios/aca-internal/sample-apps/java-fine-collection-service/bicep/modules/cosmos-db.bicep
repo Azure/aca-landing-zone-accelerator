@@ -120,7 +120,7 @@ resource cosmosDbDatabaseCollection 'Microsoft.DocumentDB/databaseAccounts/sqlDa
 }
 
 module cosmosDbNetworking '../../../../bicep/modules/private-networking.bicep' = {
-  name: 'cosmosDbNetowrking-${uniqueString(resourceGroup().id)}'
+  name: 'cosmosDbNetworking-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
     azServicePrivateDnsZoneName: privateDnsZoneName

@@ -2,12 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "prefix": {
-        "value": ""
-    },
-    "suffix": {
-        "value": ""
-    },
     "tags": {
         "value": {}
     },
@@ -52,17 +46,17 @@
     },
     // If you want to deploy Application Insights, set this to true
     "enableApplicationInsights": {
-      "value": false
+      "value": true
     },
     // If you use Dapr, you can setup Dapr telemetry by setting this to true and enableApplicationInsights to true
     "enableDaprInstrumentation": {
-      "value": false
+      "value": true
     },
     // Set this to true if you want to deploy the sample application and the application gateway
     "deployHelloWorldSample": {
-      "value": false
+      "value": true
     },
-    // The FQDN of the Application Gateawy. Must match the TLS Certificate.
+    // The FQDN of the Application Gateawy. Must match the TLS Certificate. 
     "applicationGatewayFQDN": {
       "value": "acahello.demoapp.com"
     },

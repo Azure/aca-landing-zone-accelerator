@@ -128,6 +128,8 @@ module hub '01-hub/main.bicep' = {
     locationShortName: locationShortName
     hubVNetName: hubNaming.outputs.resourcesNames.hubVNet
     bastionName: hubNaming.outputs.resourcesNames.bastion
+    bastionNSGName: hubNaming.outputs.resourcesNames.bastionNsg
+    bastionPublicIpName: hubNaming.outputs.resourcesNames.bastionPublicIp
     vmName: hubNaming.outputs.resourcesNames.vmJumpbox
     vmNSGName: hubNaming.outputs.resourcesNames.vmJumpboxNSG
     vmNICName: hubNaming.outputs.resourcesNames.vmJumpboxNIC
@@ -208,6 +210,9 @@ module containerAppsEnvironment '04-container-apps-environment/main.bicep' = {
     workloadName: spokeWorkloadName
     environmentName: environmentName
     locationShortName: locationShortName
+    containerAppsEnvironmentName: spokeNaming.outputs.resourcesNames.containerAppsEnvironment
+    logAnalyticsWorkspaceName: spokeNaming.outputs.resourcesNames.logAnalyticsWorkspace
+    applicationInsightName: spokeNaming.outputs.resourcesNames.applicationInsight
     tags: tags
     hubVNetId:  hub.outputs.hubVNetId
     spokeVNetName: spoke.outputs.spokeVNetName
@@ -236,6 +241,9 @@ module applicationGateway '06-application-gateway/main.bicep' = if (deployHelloW
     workloadName: spokeWorkloadName
     environmentName: environmentName
     locationShortName: locationShortName
+    applicationGatewayName: spokeNaming.outputs.resourcesNames.applicationGateway
+    applicationGatewayPublicIpName: spokeNaming.outputs.resourcesNames.applicationGatewayPublicIp
+    applicationGatewayUserAssignedIdentityName: spokeNaming.outputs.resourcesNames.applicationGatewayUserAssignedIdentity
     tags: tags
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     applicationGatewayFQDN: applicationGatewayFQDN

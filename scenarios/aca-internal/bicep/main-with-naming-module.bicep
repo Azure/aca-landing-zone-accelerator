@@ -114,8 +114,10 @@ module hubNaming 'modules/naming/naming.module.bicep' = {
   scope: hubResourceGroup
   name: take('01-sharedNamingDeployment-${deployment().name}', 64)
   params: {
-    uniqueId: uniqueString(hubResourceGroup.id)
     location: location
+    workloadName: hubWorkloadName
+    environmentName: environmentName
+    uniqueId: uniqueString(hubResourceGroup.id)
   }
 }
 
@@ -154,8 +156,10 @@ module spokeNaming 'modules/naming/naming.module.bicep' = {
   scope: spokeResourceGroup
   name: take('02-sharedNamingDeployment-${deployment().name}', 64)
   params: {
-    uniqueId: uniqueString(spokeResourceGroup.id)
     location: location
+    workloadName: spokeWorkloadName
+    environmentName: environmentName
+    uniqueId: uniqueString(spokeResourceGroup.id)
   }
 }
 

@@ -1,7 +1,4 @@
 {
-    "workloadName": "LZA-ACA",
-    "environment": "dev",
-
     // Recommended abreviations: https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations
     "resourceTypeAbbreviations" : {
         "applicationGateway": "agw",

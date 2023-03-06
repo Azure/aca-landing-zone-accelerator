@@ -3,6 +3,10 @@ targetScope = 'resourceGroup'
 @description('Location for all Resources.')
 param location string
 
+param workloadName string
+
+param environmentName string
+
 @description('a unique ID that can be appended (or prepended) in azure resource names that require some kind of uniqueness')
 param uniqueId string
 
@@ -14,8 +18,8 @@ var uniqueIdShort = substring(uniqueId, 0, 5)
 var resourceTypeToken = 'RES_TYPE'
 
 // Define and adhere to a naming convention, such as: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming
-var namingBase = '${resourceTypeToken}-${naming.workloadName}-${naming.environment}-${naming.regionAbbreviations[toLower(location)]}'
-var namingBaseUnique = '${resourceTypeToken}-${uniqueIdShort}-${naming.workloadName}-${naming.environment}-${naming.regionAbbreviations[toLower(location)]}'
+var namingBase = '${resourceTypeToken}-${workloadName}-${environmentName}-${naming.regionAbbreviations[toLower(location)]}'
+var namingBaseUnique = '${resourceTypeToken}-${uniqueIdShort}-${workloadName}-${environmentName}-${naming.regionAbbreviations[toLower(location)]}'
 
 var resourceNames = {
   spokeVNet: '${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualNetwork)}-spoke'

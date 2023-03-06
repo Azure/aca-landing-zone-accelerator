@@ -40,7 +40,6 @@ param spokeInfraSubnetName string
 @description('The resource ID of the Hub Virtual Network.')
 param hubVNetId string
 
-
 // ------------------
 // VARIABLES
 // ------------------

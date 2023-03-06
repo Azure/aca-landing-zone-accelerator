@@ -92,13 +92,11 @@ param applicationGatewayCertificateKeyName string
 @description('Enable usage and telemetry feedback to Microsoft.')
 param enableTelemetry bool = true
 
-
 // ------------------
 // VARIABLES
 // ------------------
 
 var telemetryId = '9b4433d6-924a-4c07-b47c-7478619759c7-${location}-acasb'
-
 
 // ------------------
 // RESOURCES

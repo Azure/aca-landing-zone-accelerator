@@ -119,7 +119,7 @@ resource hubResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 module hubVNet '../modules/vnet.bicep' = {
-  name: '${deployment().name}-hub-vnet'
+  name: take('${deployment().name}-hub-vnet', 64)
   scope: hubResourceGroup
   params: {
     vnetName: hubVNetName
@@ -130,7 +130,7 @@ module hubVNet '../modules/vnet.bicep' = {
 }
 
 module bastion './modules/bastion.bicep' = if (enableBastion) {
-  name: '${deployment().name}-bastion'
+  name: take('${deployment().name}-bastion', 64)
   scope: hubResourceGroup
   params: {
     location: location
@@ -145,7 +145,7 @@ module bastion './modules/bastion.bicep' = if (enableBastion) {
  }
 
 module jumpboxLinuxVM './modules/vm/linux-vm.bicep' = if (vmJumpboxOSType == 'linux') {
-  name: '${deployment().name}-linux-vm'
+  name: take('${deployment().name}-linux-vm', 64)
   scope: hubResourceGroup
   params: {
     location: location
@@ -165,7 +165,7 @@ module jumpboxLinuxVM './modules/vm/linux-vm.bicep' = if (vmJumpboxOSType == 'li
 }
 
 module jumpboxWindowsVM './modules/vm/windows-vm.bicep' = if (vmJumpboxOSType == 'windows') {
-  name: '${deployment().name}-windows-vm'
+  name: take('${deployment().name}-windows-vm', 64)
   scope: hubResourceGroup
   params: {
     location: location

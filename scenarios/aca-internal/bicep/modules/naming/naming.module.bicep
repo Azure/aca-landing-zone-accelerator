@@ -46,12 +46,6 @@ var resourceNames = {
   vmJumpBox: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)
   vmJumpBoxNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'
   vmJumpBoxNic: '${naming.resourceTypeAbbreviations.networkInterface}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'
-
-
-  // Storage account names (and other resources) have strict naming rules. You may ignore here, but sanitize as much as possible in the resource module
-  //storageAppOne: replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.storageAccount)
-  //or without if you decide not to have module naming sanitization, you can add some basic rules here:....
-  storageAppOne: take ( toLower( replace ( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.storageAccount), '-', '' ) ), 24 )
 }
 
 output resourcesNames object = resourceNames

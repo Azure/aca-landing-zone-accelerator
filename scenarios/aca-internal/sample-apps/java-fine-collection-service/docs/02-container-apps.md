@@ -207,6 +207,9 @@ To deploy the sample app using environment variables, run the following command 
 ```bash
 az deployment group create -g "$SPOKE_RESOURCE_GROUP_NAME" -f main.bicep -p main.parameters.jsonc \
   --name <DEPLOYMENT_NAME> \
+  --parameters workloadName=<WORKLOAD_NAME> \
+  --parameters environmentName=<ENVIRONMENT_NAME> \
+  --parameters locationShortName=<LOCATION_SHORT_NAME> \
   --parameters containerAppsEnvironmentName=$CONTAINER_APPS_ENVIRONMENT_NAME \
   --parameters hubVNetId=$HUB_VNET_ID \
   --parameters spokeVNetName=$SPOKE_VNET_NAME \
@@ -222,7 +225,7 @@ az deployment group create -g "$SPOKE_RESOURCE_GROUP_NAME" -f main.bicep -p main
   --parameters spokeApplicationGatewaySubnetName=$SPOKE_APPLICATION_GATEWAY_SUBNET_NAME
 ```
 
-Where `<DEPLOYMENT_NAME>` is the name of the sample app deployment.
+Where `<DEPLOYMENT_NAME>` is the name of the sample app deployment, `<WORKLOAD_NAME>` is the name of the workload, `<ENVIRONMENT_NAME>` is the name of the environment, `<LOCATION_SHORT_NAME>` is the short name of the location.
 
 ## Camera Simulation
 

@@ -1,15 +1,28 @@
 targetScope = 'resourceGroup'
 
+// ------------------
+//    PARAMETERS
+// ------------------
+
 @description('Location for all Resources.')
 param location string
 
+@minLength(2)
+@maxLength(8)
+@description('The name of the workloard.')
 param workloadName string
 
+@minLength(1)
+@maxLength(4)
+@description('The name of the environment (e.g. "dev", "test", "prod").')
 param environmentName string
 
 @description('a unique ID that can be appended (or prepended) in azure resource names that require some kind of uniqueness')
 param uniqueId string
 
+// ------------------
+// VARIABLES
+// ------------------
 
 var naming = json(loadTextContent('./naming-rules.jsonc'))
 
@@ -47,5 +60,9 @@ var resourceNames = {
   vmJumpBoxNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'
   vmJumpBoxNic: '${naming.resourceTypeAbbreviations.networkInterface}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'
 }
+
+// ------------------
+// OUTPUTS
+// ------------------
 
 output resourcesNames object = resourceNames

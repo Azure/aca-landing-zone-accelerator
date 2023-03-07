@@ -22,8 +22,8 @@ var namingBase = '${resourceTypeToken}-${workloadName}-${environmentName}-${nami
 var namingBaseUnique = '${resourceTypeToken}-${workloadName}-${uniqueIdShort}-${environmentName}-${naming.regionAbbreviations[toLower(location)]}'
 
 var resourceNames = {
-  spokeVNet: '${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualNetwork)}-spoke'
-  hubVNet: '${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualNetwork)}-hub'
+  spokeVNet: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualNetwork)
+  hubVNet: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualNetwork)
   applicationGateway: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationGateway)
   applicationGatewayPublicIp: '${naming.resourceTypeAbbreviations.publicIpAddress}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationGateway)}'
   applicationGatewayUserAssignedIdentity: '${naming.resourceTypeAbbreviations.managedIdentity}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationGateway)}'

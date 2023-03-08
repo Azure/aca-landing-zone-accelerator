@@ -1,0 +1,8 @@
+# These owners will be the default owners for everything in
+# this repo. Unless a later match takes precedence,
+# @global-owner1 and @global-owner2 will be requested for
+# review when someone opens a pull request.
+*       @thotheod @aarthiem
+
+# Review of workflows and Devops
+.github/       @ibersanoMS

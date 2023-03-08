@@ -15,14 +15,13 @@ Each microservice corresponds to a container app, as shown on the diagram below.
 ## Supporting Services
 
 Supporting services used for the container apps are the following:
+
 * Azure Container Registry: used to store the image of the container apps;
 * Azure Key Vault: used by Fine Collection Service to get the license key of the fine calculation engine using Dapr secret store `secretstore`;
 * Azure Service Bus: used for communication between Traffic Control Service (i.e. the publisher) and Fine Collection Service (i.e. the subscriber);
 * Azure Cosmos DB: used by Traffic Control Service to store the state of vehicle and compute the speed violation.
 
-Both Azure Container Registry and Azure Key Vault are deployed by the landing zone accelerator in the spoke resource group. User managed identity `acaIdentity` is used to access these resource and is defined by the landing zone accelerator.
-
-Azure Service Bus and Azure Cosmos DB are deployed in the spoke resource group by the sample app bicep template. They are created with a private endpoint and private DNS. Public network access is disabled for both resources.
+Both Azure Container Registry and Azure Key Vault are deployed by the landing zone accelerator in the spoke resource group. Azure Service Bus and Azure Cosmos DB are deployed in the spoke resource group by the sample app Bicep template. They are created with a private endpoint and private DNS. Public network access is disabled for both resources.
 
 ## Dapr Components
 
@@ -60,13 +59,13 @@ template: {
   ]
 ```
 
-The value of this environment variable is the `App Id` of Vehicle Registration Service container app, here it is identical as Vehicle Registration Service container app name.
+The value of this environment variable is the Dapr `App Id` of Vehicle Registration Service container app. The sample apps are created with the following name: `ca-<service-name>` where the service name is also Dapr app id. For example, the Dapr app id of Vehicle Registration Service is `vehicle-registration-service` and the sample app name is `ca-vehicle-registration-service`.
 
 ## Container Apps Scale Rule
 
 If there is no message on Azure Service Bus topic *test*, Container Apps will scale down the number of replica of Fine Collection Service to 0. When a message is published on the topic, Container Apps will scale up the number of pods of Fine Collection Service.
 
-The scale rule sets the minimum number of replica to 0 and the maximum number of replica to 5. It is defined in the file `sampleApps/javaFineCollectionService/bicep/modules/container-apps.bicep`:
+The scale rule defines the minimum number of replica to 0 and the maximum number of replica to 6. It is defined in the file `sample-apps/java-fine-collection-service/bicep/modules/container-apps/fine-collection-service.bicep`:
 
 ```
 scale: {
@@ -113,14 +112,31 @@ When service bus topic is created, an authorization rule is created with the nam
 
 ## Managed identities
 
+For this sample app, it was decided to use system assigned managed identities (SMI) and respect the least privilege principle. This managed identity is created with sample app. The roles are assigned after the creation of the sample app. This can leads the app to fails when it is deployed until the roles are assigned. After the roles are assigned, the app will start correctly.
+
+For example, if you are using Dapr components with SMI, the Dapr side car will fail to start because the SMI does not have the right to access the service when it is first started. After several minutes, the SMI will have roles assigned and the Dapr side car will start correctly.
+
+User assigned managed identities (UMI) can be used for Dapr components. The Dapr side car will start correctly because the UMI has the right to access the service. However, the Dapr compenents required to be created with `azureClientId` metadata field. This field is the client id of the UMI. The consequence of using UMI instead of SMI is that you'll need to create one Dapr component per UMI to respect the least privilege principle.
+
+For example for a pub/sub component, if you want to have a sender and a receiver, you'll need to create 2 Dapr components. One with the UMI of the sender and the other with the UMI of the receiver. When creating your Dapr components, you'll need to choose what fits best your needs.
+
 The managed identities used by the container apps are the following:
-* User Managed Identity `acaIdentity` is used to access Azure Container Registry and Azure Key Vault. It is created by the landing zone accelerator in the spoke resource group.
-* Traffic Control Service uses System Assigned Identity to access Azure Service Bus and Azure Cosmos DB. It is created by the sample app bicep template.
-  * Traffic Control Service system assigned identity is granted the role `Azure Service Bus Data Sender` on the service bus topic.
-  * Traffic Control Service system assigned identity is granted the role `Cosmos DB Built-in Data Contributor` on the Cosmos DB account. More information can be found [here](Cosmos DB Built-in Data Contributor).
-* Fine Collection Service uses System Assigned Identity to access Azure Service Bus. It is created by the sample app bicep template. Fine Collection Service system assigned identity is granted the role `Azure Service Bus Data Receiver` on the service bus topic.
+
+* User managed identity `id-cr...` created in [Supporting Services](../../../bicep/03-supporting-services/main.bicep) is used to pull images from the private container registry.
+* Traffic Control Service uses System Assigned Identity to access Azure Service Bus and Azure Cosmos DB. It is assigned in bicep template [traffic-control-service.bicep](../bicep/modules/container-apps/traffic-control-service.bicep).
+  * Traffic Control Service system assigned identity is granted the built-in role `Azure Service Bus Data Sender` on the service bus topic.
+  * Traffic Control Service system assigned identity is granted the built-in role `DocumentDB Data Contributor` on the Cosmos DB container.
+* Fine Collection Service uses System Assigned Identity to access Azure Service Bus and Azure Key Vault.
+  * Fine Collection Service system assigned identity is granted the built-in role `Azure Service Bus Data Receiver` on the service bus topic. It is assigned in bicep template [fine-collection-service.bicep](../bicep/modules/container-apps/fine-collection-service.bicep).
+  * Fine Collection Service system assigned identity is granted the built-in role `Key Vault Secrets User` on the Key Vault secret `license-key`. It is assigned in bicep template [fine-license-key](../bicep/modules/container-apps/secrets/fine-license-key.bicep).
 
 Guidelines on managed identities can be found [here](../../../../../docs/design-areas/identity.md).
+
+More information on built-in roles can be found in the documentation:
+
+* [Configure role-based access control with Azure Active Directory for your Azure Cosmos DB account](https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac)
+* [Azure built-in roles for Azure Service Bus](https://learn.microsoft.com/en-us/azure/service-bus-messaging/authenticate-application#azure-built-in-roles-for-azure-service-bus)
+* [Azure built-in roles for Key Vault data plane operations](https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide?tabs=azure-cli#azure-built-in-roles-for-key-vault-data-plane-operations)
   
 ## Exposing Traffic Control Service endpoints
 

@@ -1,4 +1,4 @@
-# Enterprise Scale for ACA - Private 
+# Enterprise Scale for ACA - Private
 
 ## Steps of Implementation for Applications on Azure Container Apps
 

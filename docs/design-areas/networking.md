@@ -5,7 +5,7 @@
 * Container App Environment, which acts as a secure boundary around groups of container apps, are deployed in a VNet. You can bring your custom VNet. There are two deployment methods when you bring your own VNet.
   * External: This type of deployment exposes the hosted container apps by using a virtual IP address that is accessible on the internet. 
   * Internal: This type of deployment exposes the hosted container apps on an IP address inside your virtual network. The internal endpoint is an internal load balancer. 
-* A dedicated subnet is required for Container Apps Environment if you use custom virtual network. CIDR of the subnet should br /23 or larger.
+* A dedicated subnet is required for Container Apps Environment if you use custom virtual network. CIDR of the subnet should be /23 or larger.
 * Container Apps reserves 60 IPs in your VNET, and the amount may grow as your container environment scales. Each revision of your app is assigned an IP address from the subnet.  Outbound IPs aren't guaranteed and may change over time.
 * Container Apps creates a managed public IP resource (even with the internal container apps environment), which is used for outbound and management traffic. 
 * You can lock down a network via NSGs with more restrictive rules than the default NSG rules to control all inbound and outbound traffic for the Container App Environment.

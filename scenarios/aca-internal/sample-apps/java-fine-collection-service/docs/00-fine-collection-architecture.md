@@ -140,9 +140,31 @@ More information on built-in roles can be found in the documentation:
   
 ## Exposing Traffic Control Service endpoints
 
-Placeholder for Application Gateway. TODO Update this section
+Traffic Control Service endpoints are exposed using Azure Application Gateway. The endpoints are exposed using the FQDN set with parameters `applicationGatewayFqdn`.
 
-## Dapr Telemetry
+The landing zone provides a self-signed certificate for the FQDN `acahello.demoapp.com`. The certificate is used to secure the endpoints exposed by the Application Gateway. The certificate is store in the key vault in the bicep template [application-gateway.bicep](../../../bicep/06-application-gateway/modules/app-gateway-cert.bicep).
+
+> **Important**
+> The certificate is self-signed and is not trusted. It is used for demo purposes only. In a production environment and for real workload, you should use a trusted certificate.
+>
+
+The primary backend FQDN is set to the traffic control service FQDN. Ingress is enable for traffic control service and its traffic is limited to the VNet:
+
+```bicep
+      ingress: {
+        external: true
+        targetPort: 6000
+        allowInsecure: false
+      }
+```
+
+When the container app environment is deployed as internal, the external ingress corresponds to the ingress traffic limited to the VNet. When the container app environment is deployed as external, the external ingress corresponds to public ingress traffic.
+
+The application gateway is communicating with the backend pool (i.e. traffic control service) using HTTPS. Therefore, `allowInsecure` is set to `false`. To check that the service is healthy, it is using a health probe. The health probe is configured to use HTTPS and the path `/healthz`. Traffic control service is configured to return a 200 HTTP status code when the path `/healthz` is called.
+
+To know more about networking, see [Networking considerations for Azure Container Apps](../../../../../docs/design-areas/networking.md).
+
+## Dapr Observability
 
 By setting `daprAIInstrumentationKey` to `true`, Dapr will automatically send telemetry to Application Insights. The screenshot below shows the telemetry sent by Dapr to Application Insights.
 
@@ -151,3 +173,5 @@ By setting `daprAIInstrumentationKey` to `true`, Dapr will automatically send te
 ## Camera Simulation
 
 Camera simulation simulates traffic camera. It can be deployed in the container apps environment, in another Azure service or on a local machine. It is used to publish *VehicleRegistred* message to `/entrycam` and `/exitcam` endpoints of the Traffic Control Service. More information on how to deploy camera simultation can be found [here](./02-container-apps.md#camera-simulation).
+
+:arrow_forward: [Create the landing zone](./01-landing-zone.md)

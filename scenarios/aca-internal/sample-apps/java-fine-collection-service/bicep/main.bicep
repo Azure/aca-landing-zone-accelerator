@@ -155,7 +155,7 @@ param applicationGatewayCertificateKeyName string
 var keyVaultIdTokens = split(keyVaultId, '/')
 var keyVaultName = keyVaultIdTokens[8]
 
-var appGatewayBackendHealthProbePath = '/heatlhz'
+var appGatewayBackendHealthProbePath = '/healthz'
 
 // ------------------
 // RESOURCES

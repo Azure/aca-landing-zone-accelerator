@@ -96,7 +96,7 @@ az acr import \
 az acr import \
   --name $CONTAINER_REGISTRY_NAME \
   --image traffic-control-service:$TAG \
-  --source ghcr.io/azure/traffic-control-service:f39c844
+  --source ghcr.io/azure/traffic-control-service:506de24
 
 az acr import \
   --name $CONTAINER_REGISTRY_NAME \
@@ -127,7 +127,7 @@ The public images can be set directly in the `main.parameters.jsonc` file:
   "value": "ghcr.io/azure/fine-collection-service:a4fc4d9"
 },
 "trafficControlServiceImage": {
-  "value": "ghcr.io/azure/traffic-control-service:f39c844"
+  "value": "ghcr.io/azure/traffic-control-service:506de24"
 },
 
 ...
@@ -142,7 +142,7 @@ or in the environment variables:
 ```bash
 VEHICLE_REGISTRATION_SERVICE_IMAGE=ghcr.io/azure/vehicle-registration-service:a4fc4d9
 FINE_COLLECTION_SERVICE_IMAGE=ghcr.io/azure/fine-collection-service:a4fc4d9
-TRAFFIC_CONTROL_SERVICE_IMAGE=ghcr.io/azure/traffic-control-service:f39c844
+TRAFFIC_CONTROL_SERVICE_IMAGE=ghcr.io/azure/traffic-control-service:506de24
 SIMULATION_IMAGE=ghcr.io/azure/simulation:a4fc4d9
 ```
 

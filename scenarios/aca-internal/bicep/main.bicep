@@ -290,3 +290,6 @@ output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.cont
 
 @description('The name of the container apps environment.')
 output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.containerAppsEnvironmentName
+
+@description('The customer id of the log analytics workspace.')
+output logAnalyticsWorkspaceCustomerId string = containerAppsEnvironment.outputs.logAnalyticsWorkspaceCustomerId

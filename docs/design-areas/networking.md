@@ -17,14 +17,14 @@
 
 ## Design Area Recommendations
   
- * Deploy container apps in your own custom virtual network to have better control over the network.
- * Deploy container app environment as internal, if you don't need your apps to be exposed publically directly.
- * Enable ingress to expose your application over HTTPs or TCP port.
- * Secure your network by using NSGs with more restrictive rules than the default NSG rules to control all inbound and outbound traffic for the Container App Environment.
- * Use Azure DDoS Protection Standard to protect the virtual network used for the AKS cluster.
- * Use Private Link to secure network connections and use private IP-based connectivity to other managed Azure services used that support Private Link, such as Azure Storage, Azure Container Registry, Azure SQL Database, and Azure Key Vault.
-  * All web applications configured to use an ingress should use TLS encryption and not allow access over unencrypted HTTP.
-  * For internet-facing and security-critical, internal-facing web applications, use a web application firewall with the ingress controller. Azure Application Gateway and Azure Front Door both integrate the Azure Web Application Firewall to protect web-based applications.
+* Deploy container apps in your own custom virtual network to have better control over the network.
+* Deploy container app environment as internal, if you don't need your apps to be exposed publically directly.
+* Enable ingress to expose your application over HTTPs or TCP port.
+* Secure your network by using NSGs with more restrictive rules than the default NSG rules to control all inbound and outbound traffic for the Container App Environment.
+* Use Azure DDoS Protection Standard to protect the virtual network used for the AKS cluster.
+* Use Private Link to secure network connections and use private IP-based connectivity to other managed Azure services used that support Private Link, such as Azure Storage, Azure Container Registry, Azure SQL Database, and Azure Key Vault.
+* All web applications configured to use an ingress should use TLS encryption and not allow access over unencrypted HTTP.
+* For internet-facing and security-critical, internal-facing web applications, use a web application firewall with the ingress controller. Azure Application Gateway and Azure Front Door both integrate the Azure Web Application Firewall to protect web-based applications.
    
 ## References
 

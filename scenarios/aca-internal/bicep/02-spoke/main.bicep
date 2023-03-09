@@ -99,7 +99,7 @@ module naming '../modules/naming/naming.module.bicep' = {
 }
 
 module spokeVNet '../modules/vnet.bicep' = {
-  name: '${deployment().name}-spokeVNet'
+  name: take('${deployment().name}-spokeVNet', 64)
   scope: spokeResourceGroup
   params: {
     vnetName: naming.outputs.resourcesNames.vnetSpoke
@@ -111,7 +111,7 @@ module spokeVNet '../modules/vnet.bicep' = {
 }
 
 module peerSpokeToHub '../modules/peering.bicep' = if (!empty(hubVNetId))  {
-  name: '${deployment().name}-peerSpokeToHubDeployment'
+  name: take('${deployment().name}-peerSpokeToHubDeployment', 64)
   scope: spokeResourceGroup
   params: {
     localVnetName: spokeVNet.outputs.vnetName
@@ -122,7 +122,7 @@ module peerSpokeToHub '../modules/peering.bicep' = if (!empty(hubVNetId))  {
 }
 
 module peerHubToSpoke '../modules/peering.bicep' = if (!empty(hubVNetId) )  {
-  name: '${deployment().name}-peerHubToSpokeDeployment'
+  name: take('${deployment().name}-peerHubToSpokeDeployment', 64)
   scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
     params: {
       localVnetName: hubVNetName

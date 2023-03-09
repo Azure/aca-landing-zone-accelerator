@@ -14,7 +14,7 @@ The sample app is available [here](https://github.com/Azure/java-aks-aca-dapr-wo
 
 For the simulation, the following services are defined:
 
-![Services](docs/media/application-diagram.png)]]
+![Services](docs/media/application-diagram.png)
 
 1. The **Camera Simulation** generates a random license-number and sends a *VehicleRegistered* message (containing this license-number, a random entry-lane (1-3) and the timestamp) to the `/entrycam` endpoint of the Traffic Control Service.
 2. The **Traffic Control Service** stores the *VehicleState* (license-number and entry-timestamp) in Azure Cosmos DB.
@@ -29,7 +29,7 @@ For the simulation, the following services are defined:
 
 ![Fine Collection Service - Sequence Diagram](docs/media/fine-collection-sequence-diagram.png)
 
-More information on the architecture of the sample app can be found [here](,/../docs/00-fine-collection-architecture.md).
+More information on the architecture of the sample app can be found [here](./docs/00-fine-collection-architecture.md).
 
 ## Deployment
 

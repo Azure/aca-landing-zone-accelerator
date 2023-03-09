@@ -142,7 +142,7 @@ module serviceBus 'modules/service-bus.bicep' = {
     serviceBusTopicName: serviceBusTopicName
     serviceBusTopicAuthorizationRuleName: serviceBusTopicAuthorizationRuleName
     fineCollectionServiceName: fineCollectionServiceName
-    serviceBusPrivateEndpointName: naming.outputs.resourcesNames.serviceBusPe
+    serviceBusPrivateEndpointName: naming.outputs.resourcesNames.serviceBusPep
     hubVNetId: hubVNetId
   }
 }
@@ -157,7 +157,7 @@ module cosmosDb 'modules/cosmos-db.bicep' = {
     spokePrivateEndpointsSubnetName: spokePrivateEndpointsSubnetName
     cosmosDbDatabaseName: cosmosDbDatabaseName
     cosmosDbCollectionName: cosmosDbCollectionName
-    cosmosDbPrivateEndpointName: naming.outputs.resourcesNames.cosmosDbNoSqlPe
+    cosmosDbPrivateEndpointName: naming.outputs.resourcesNames.cosmosDbNoSqlPep
     hubVNetId: hubVNetId
   }
 }

@@ -57,10 +57,11 @@ module naming '../modules/naming/naming.module.bicep' = {
   }
 }
 
+// TODO: Check if this is required if enableApplicationCertificate is false
 module userAssignedIdentity '../modules/managed-identity.bicep' = {
   name: take('appGwUserAssignedIdentity-Deployment-${uniqueString(resourceGroup().id)}', 64)
   params: {
-    name: naming.outputs.resourcesNames.applicationGatewayId
+    name: naming.outputs.resourcesNames.applicationGatewayUserAssignedIdentity
     location: location
     tags: tags
   }

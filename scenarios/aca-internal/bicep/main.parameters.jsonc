@@ -5,6 +5,12 @@
     "tags": {
         "value": {}
     },
+    "hubResourceGroupName": {
+      "value": "rg-aca-test-hub"
+    },
+    "spokeResourceGroupName": {
+      "value": "rg-aca-test-spoke"
+    },
     "vnetAddressPrefixes": {
         "value":  ["10.0.0.0/16"]
     },

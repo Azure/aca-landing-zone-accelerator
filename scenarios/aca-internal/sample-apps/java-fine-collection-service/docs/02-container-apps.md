@@ -380,15 +380,21 @@ TRAFFIC_CONTROL_SERVICE_CA_NAME=$(az deployment group show -g "$SPOKE_RESOURCE_G
 
 Where `<DEPLOYMENT_NAME>` is the name of the sample app deployment.
 
+You also need the log analytics workspace customer id:
+
+```bash
+LOG_ANALYTICS_WORKSPACE_CUSTOMER_ID=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.logAnalyticsWorkspaceCustomerId.value -o tsv)
+```
+
 For traffic control service:
 
 ```bash
-TRAFFIC_CONTROL_SERVICE_REVISION=$(az containerapp revision list -n "$TRAFFIC_CONTROL_SERVICE_CA_NAME" -g $RESOURCE_GROUP_NAME --query [0].name -o tsv)
+TRAFFIC_CONTROL_SERVICE_REVISION=$(az containerapp revision list -n "$TRAFFIC_CONTROL_SERVICE_CA_NAME" -g $SPOKE_RESOURCE_GROUP_NAME --query [0].name -o tsv)
 ```
 
 ```bash
 az monitor log-analytics query \
-  --workspace $WORKSPACE_CUSTOMER_ID \
+  --workspace $LOG_ANALYTICS_WORKSPACE_CUSTOMER_ID \
   --analytics-query "ContainerAppConsoleLogs_CL | where RevisionName_s == '$TRAFFIC_CONTROL_SERVICE_REVISION' | project TimeGenerated, Log_s | take 5" \
   --out table
 ```
@@ -396,12 +402,12 @@ az monitor log-analytics query \
 For fine collection service:
 
 ```bash
-FINE_COLLECTION_SERVICE_REVISION=$(az containerapp revision list -n "$FINE_COLLECTION_SERVICE_CA_NAME" -g $RESOURCE_GROUP_NAME --query [0].name -o tsv)
+FINE_COLLECTION_SERVICE_REVISION=$(az containerapp revision list -n "$FINE_COLLECTION_SERVICE_CA_NAME" -g $SPOKE_RESOURCE_GROUP_NAME --query [0].name -o tsv)
 ```
 
 ```bash
 az monitor log-analytics query \
-  --workspace $WORKSPACE_CUSTOMER_ID \
+  --workspace $LOG_ANALYTICS_WORKSPACE_CUSTOMER_ID \
   --analytics-query "ContainerAppConsoleLogs_CL | where RevisionName_s == '$FINE_COLLECTION_SERVICE_REVISION' | project TimeGenerated, Log_s | take 5" \
   --out table
 ```
@@ -409,12 +415,12 @@ az monitor log-analytics query \
 For vehicle registration service:
 
 ```bash
-VEHICLE_REGISTRATION_SERVICE_REVISION=$(az containerapp revision list -n "$VEHICLE_REGISTRATION_SERVICE_CA_NAME" -g $RESOURCE_GROUP_NAME --query [0].name -o tsv)
+VEHICLE_REGISTRATION_SERVICE_REVISION=$(az containerapp revision list -n "$VEHICLE_REGISTRATION_SERVICE_CA_NAME" -g $SPOKE_RESOURCE_GROUP_NAME --query [0].name -o tsv)
 ```
 
 ```bash
 az monitor log-analytics query \
-  --workspace $WORKSPACE_CUSTOMER_ID \
+  --workspace $LOG_ANALYTICS_WORKSPACE_CUSTOMER_ID \
   --analytics-query "ContainerAppConsoleLogs_CL | where RevisionName_s == '$VEHICLE_REGISTRATION_SERVICE_REVISION' | project TimeGenerated, Log_s | take 5" \
   --out table
 ```

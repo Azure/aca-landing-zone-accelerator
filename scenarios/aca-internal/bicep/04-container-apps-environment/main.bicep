@@ -87,7 +87,7 @@ module logAnalyticsWorkspace '../modules/log-analytics-ws.bicep' = {
 module applicationInsights '../modules/app-insights.bicep' = if (enableApplicationInsights) {
   name: take('applicationInsights-Deployment-${uniqueString(resourceGroup().id)}', 64)
   params: {
-    name: naming.outputs.resourcesNames.appInsights
+    name: naming.outputs.resourcesNames.applicationInsights
     location: location
     tags: tags    
     workspaceResourceId: logAnalyticsWorkspace.outputs.logAnalyticsWsId
@@ -131,3 +131,7 @@ output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.acaE
 
 @description('The name of the container apps environment.')
 output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.acaEnvName
+
+
+@description('The customer id of the log analytics workspace.')
+output logAnalyticsWorkspaceCustomerId string = logAnalyticsWorkspace.outputs.customerId

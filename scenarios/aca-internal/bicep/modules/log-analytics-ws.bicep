@@ -69,4 +69,5 @@ output logAnalyticsWsName string = laws.name
 @description('The resource ID of the resource.')
 output logAnalyticsWsId string = laws.id
 
-
+@description('The customer id of the log analytics workspace.')
+output customerId string = laws.properties.customerId

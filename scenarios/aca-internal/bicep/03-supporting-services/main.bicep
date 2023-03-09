@@ -40,8 +40,8 @@ module containerRegistry 'modules/container-registry.bicep' = {
     spokeVNetId: spokeVNetId
     hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
-    containerRegistryPrivateEndpointName: naming.outputs.resourcesNames.containerRegistryPe
-    containerRegistryUserAssignedIdentityName: naming.outputs.resourcesNames.containerRegistryId 
+    containerRegistryPrivateEndpointName: naming.outputs.resourcesNames.containerRegistryPep
+    containerRegistryUserAssignedIdentityName: naming.outputs.resourcesNames.containerRegistryUserAssignedIdentity 
   }
 }
 
@@ -54,8 +54,8 @@ module keyVault 'modules/key-vault.bicep' = {
     spokeVNetId: spokeVNetId
     hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
-    keyVaultPrivateEndpointName: naming.outputs.resourcesNames.keyVaultPe
-    keyVaultUserAssignedIdentityName: naming.outputs.resourcesNames.keyVaultId
+    keyVaultPrivateEndpointName: naming.outputs.resourcesNames.keyVaultPep
+    keyVaultUserAssignedIdentityName: naming.outputs.resourcesNames.keyVaultUserAssignedIdentity
   }
 }
 

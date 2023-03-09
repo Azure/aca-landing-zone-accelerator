@@ -56,12 +56,12 @@ resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
         appProtocol: 'http'
         appPort: 6002
       }
-      registries: [
+      registries: !empty(containerRegistryName) ? [
         {
-          server: '${containerRegistryName}.azurecr.io'
+          server: !empty(containerRegistryName) ? '${containerRegistryName}.azurecr.io' : ''
           identity: containerRegistryUserAssignedIdentityId
         }
-      ]
+      ] : []
       secrets: []
     }
     template: {

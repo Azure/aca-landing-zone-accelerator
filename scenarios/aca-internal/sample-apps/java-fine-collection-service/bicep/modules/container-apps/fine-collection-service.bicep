@@ -110,12 +110,12 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
           value: serviceBusTopicAuthorizationRule.listKeys().primaryConnectionString
         }
       ]
-      registries: [
+      registries: !empty(containerRegistryName) ?[
         {
-          server: '${containerRegistryName}.azurecr.io'
+          server: !empty(containerRegistryName) ? '${containerRegistryName}.azurecr.io' : ''
           identity: containerRegistryUserAssignedIdentityId
         }
-      ]
+      ] : []
     }
     template: {
       containers: [

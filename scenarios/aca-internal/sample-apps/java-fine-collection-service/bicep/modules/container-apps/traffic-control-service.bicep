@@ -105,12 +105,12 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
       }
       secrets: [
       ]
-      registries: [
+      registries: !empty(containerRegistryName) ?[
         {
-          server: '${containerRegistryName}.azurecr.io'
+          server: !empty(containerRegistryName) ? '${containerRegistryName}.azurecr.io' : ''
           identity: containerRegistryUserAssignedIdentityId
         }
-      ]
+      ] : []
     }
     template: {
       containers: [

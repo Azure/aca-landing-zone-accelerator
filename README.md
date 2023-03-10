@@ -13,7 +13,7 @@ The enterprise architecture is broken down into key design areas, where you can 
 |:--------------:|:--------------:|
 | Identity and Access Management|[Design Considerations and Recommendations](/docs/design-areas/identity.md)
 | Network Topology and Connectivity|[Design Considerations and Recommendations](/docs/design-areas/networking.md)
-| Management and Monitoring|[Design Considerations and Recommendations](/docs/design-areas/operationsManagement.md)
+| Management and Monitoring|[Design Considerations and Recommendations](/docs/design-areas/management.md)
 | Security, Governance, and Compliance|[Design Considerations and Recommendations](/docs/design-areas/security.md)
 
 ## Steps of Implementation for Applications on Azure Container Apps

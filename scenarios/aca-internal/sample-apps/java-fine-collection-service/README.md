@@ -35,5 +35,5 @@ More information on the architecture of the sample app can be found [here](./doc
 
 The deployment of the sample app is done in 2 steps:
 
-1. [Create the landing zone](./docs/01-landing-zone.md)
+1. [Deploy the landing zone](./docs/01-landing-zone.md)
 2. [Deploy the container apps, their dependencies and the camera simulation](./docs/02-container-apps.md)

@@ -132,11 +132,11 @@ resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' 
 }
 
 // Enable send to servicebus using app managed identity.
-resource trafficControlService_sb_role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+resource trafficControlServiceSbRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(resourceGroup().id, trafficControlService.name, '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')
   properties: {
     principalId: trafficControlService.identity.principalId
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')//Azure Service Bus Data Sender
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39') //Azure Service Bus Data Sender
     principalType: 'ServicePrincipal'
   }
   
@@ -145,12 +145,12 @@ resource trafficControlService_sb_role_assignment 'Microsoft.Authorization/roleA
 
 // Assign cosmosdb account read/write access to aca user assigned identity
 // To know more: https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac
-resource trafficControlService_cosmosdb_role_assignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2022-08-15' = {
+resource cosmosDbCollectionDataContributorRoleAssignment  'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2022-08-15' = {
   name: guid(subscription().id, trafficControlService.name, '00000000-0000-0000-0000-000000000002')
   parent: cosmosDbAccount
   properties: {
     principalId: trafficControlService.identity.principalId
-    roleDefinitionId:  resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', cosmosDbAccount.name, '00000000-0000-0000-0000-000000000002')//DocumentDB Data Contributor
+    roleDefinitionId:  resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', cosmosDbAccount.name, '00000000-0000-0000-0000-000000000002') //DocumentDB Data Contributor
     scope: '${cosmosDbAccount.id}/dbs/${cosmosDbDatabase.name}/colls/${cosmosDbDatabaseCollection.name}'
   }
 }

@@ -162,7 +162,7 @@ resource fineCollectionService 'Microsoft.App/containerApps@2022-03-01' = {
 }
 
 // Enable consume from servicebus using app managed identity.
-resource fineCollectionService_sb_role_assignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+resource serviceBusDataReceiverRoleAssignment  'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(resourceGroup().id, fineCollectionServiceName, '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
   properties: {
     principalId: fineCollectionService.identity.principalId

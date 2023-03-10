@@ -1,4 +1,4 @@
-# Create the Landing Zone
+# Deploy the Landing Zone
 
 To deploy the Landing Zone, you can follow the complete guide in [Enterprise Scale for ACA - Private](../../../bicep/README.md).
 

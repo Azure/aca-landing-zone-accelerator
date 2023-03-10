@@ -61,7 +61,6 @@ module naming '../modules/naming/naming.module.bicep' = {
   }
 }
 
-
 resource vnetHub  'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
   scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
   name: hubVNetName
@@ -77,7 +76,7 @@ resource spokeInfraSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01'
 }
 
 module logAnalyticsWorkspace '../modules/log-analytics-ws.bicep' = {
-  name: take('logAnalyticsWs-Deployment-${uniqueString(resourceGroup().id)}', 64)
+  name: take('logAnalyticsWs-${uniqueString(resourceGroup().id)}', 64)
   params: {
     location: location
     name: naming.outputs.resourcesNames.logAnalyticsWorkspace
@@ -85,7 +84,7 @@ module logAnalyticsWorkspace '../modules/log-analytics-ws.bicep' = {
 }
 
 module applicationInsights '../modules/app-insights.bicep' = if (enableApplicationInsights) {
-  name: take('applicationInsights-Deployment-${uniqueString(resourceGroup().id)}', 64)
+  name: take('applicationInsights-${uniqueString(resourceGroup().id)}', 64)
   params: {
     name: naming.outputs.resourcesNames.applicationInsights
     location: location
@@ -95,7 +94,7 @@ module applicationInsights '../modules/app-insights.bicep' = if (enableApplicati
 }
 
 module containerAppsEnvironment '../modules/aca-environment.bicep' = {
-  name: take('containerAppsEnvironment-Deployment-${uniqueString(resourceGroup().id)}', 64)
+  name: take('containerAppsEnvironment-${uniqueString(resourceGroup().id)}', 64)
   params: {
     name: naming.outputs.resourcesNames.containerAppsEnvironment
     location: location
@@ -108,15 +107,15 @@ module containerAppsEnvironment '../modules/aca-environment.bicep' = {
 }
 
 module containerAppsEnvironmentPrivateDnsZone  '../modules/private-dns-zone.bicep' = {
-  name: 'containerAppsEnvironmentPrivateDnsZone-Deployment-${uniqueString(resourceGroup().id)}'
+  name: 'containerAppsEnvironmentPrivateDnsZone-${uniqueString(resourceGroup().id)}'
   params: {
-    name: containerAppsEnvironment.outputs.acaEnvDefaultDomain
+    name: containerAppsEnvironment.outputs.containerAppsEnvironmentDefaultDomain
     virtualNetworkLinks: spokeVNetLinks
     tags: tags
     aRecords: [
       {
         name: '*'
-        ipv4Address: containerAppsEnvironment.outputs.acaEnvLoadBalancerIP
+        ipv4Address: containerAppsEnvironment.outputs.containerAppsEnvironmentLoadBalancerIP
       }
     ]
   }
@@ -127,11 +126,10 @@ module containerAppsEnvironmentPrivateDnsZone  '../modules/private-dns-zone.bice
 // ------------------
 
 @description('The resource ID of the container apps environment.')
-output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.acaEnvResourceId
+output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.containerAppsEnvironmentNameId
 
 @description('The name of the container apps environment.')
-output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.acaEnvName
-
+output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.containerAppsEnvironmentName
 
 @description('The customer id of the log analytics workspace.')
 output logAnalyticsWorkspaceCustomerId string = logAnalyticsWorkspace.outputs.customerId

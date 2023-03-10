@@ -2,6 +2,10 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // optional. If empty automatic name will be generated. To override, please give name of spoke resource group name
+    "spokeResourceGroupName": {
+      "value": "rg-aca-test-spoke"
+    },
     "tags": {
         "value": {}
     },

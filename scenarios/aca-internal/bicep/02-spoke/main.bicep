@@ -43,22 +43,26 @@ param spokeApplicationGatewaySubnetAddressPrefix string
 // ------------------
 // VARIABLES
 // ------------------
+
+// load as text (and not as Json) to replace <location> placeholder in the nsg rules
+var nsgRules = json( replace( loadTextContent('./nsgContainerAppsEnvironment.jsonc') , '<location>', location) )
 var namingRules = json(loadTextContent('../modules/naming/naming-rules.jsonc'))
-// var rgHubName = !empty(hubResourceGroupName) ? hubResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${namingRules.workloadName}-hub-${namingRules.environment}-${namingRules.regionAbbreviations[toLower(location)]}'
+
 var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${namingRules.workloadName}-spoke-${namingRules.environment}-${namingRules.regionAbbreviations[toLower(location)]}'
-
-
 var hubVNetResourIdTokens = !empty(hubVNetId) ? split(hubVNetId, '/') : array('')
 var hubSubscriptionId = hubVNetResourIdTokens[2]
 var hubResourceGroupName = hubVNetResourIdTokens[4]
 var hubVNetName = hubVNetResourIdTokens[8]
 
-// => Subnet definition taking in consideration feature flags
+// Subnet definition taking in consideration feature flags
 var defaultSubnets = [
   {
     name: spokeInfraSubnetName
     properties: {
       addressPrefix: spokeInfraSubnetAddressPrefix
+      networkSecurityGroup: {
+        id: nsgContainerAppsEnvironment.outputs.nsgId
+      }
     }
   }
   {
@@ -79,6 +83,7 @@ var spokeSubnets = !empty(spokeApplicationGatewaySubnetAddressPrefix) ? concat(d
     }
   ]) : defaultSubnets
 
+
 // ------------------
 // RESOURCES
 // ------------------
@@ -98,11 +103,11 @@ module naming '../modules/naming/naming.module.bicep' = {
   }
 }
 
-module spokeVNet '../modules/vnet.bicep' = {
-  name: take('${deployment().name}-spokeVNet', 64)
+module vnetSpoke '../modules/vnet.bicep' = {
+  name: take('vnetSpoke-${deployment().name}', 64)
   scope: spokeResourceGroup
   params: {
-    vnetName: naming.outputs.resourcesNames.vnetSpoke
+    name: naming.outputs.resourcesNames.vnetSpoke
     location: location
     tags: tags
     subnets: spokeSubnets
@@ -110,11 +115,21 @@ module spokeVNet '../modules/vnet.bicep' = {
   }
 }
 
+module nsgContainerAppsEnvironment '../modules/nsg.bicep' = {
+  name: take('nsgContainerAppsEnvironment-${deployment().name}', 64)
+  scope: spokeResourceGroup
+  params: {
+    name: naming.outputs.resourcesNames.containerAppsEnvironmentNsg
+    location: location
+    tags: tags
+    securityRules: nsgRules.securityRules
+  }
+}
 module peerSpokeToHub '../modules/peering.bicep' = if (!empty(hubVNetId))  {
   name: take('${deployment().name}-peerSpokeToHubDeployment', 64)
   scope: spokeResourceGroup
   params: {
-    localVnetName: spokeVNet.outputs.vnetName
+    localVnetName: vnetSpoke.outputs.vnetName
     remoteSubscriptionId: hubSubscriptionId
     remoteRgName: hubResourceGroupName
     remoteVnetName: hubVNetName
@@ -128,29 +143,27 @@ module peerHubToSpoke '../modules/peering.bicep' = if (!empty(hubVNetId) )  {
       localVnetName: hubVNetName
       remoteSubscriptionId: last(split(subscription().id, '/'))!
       remoteRgName: spokeResourceGroup.name
-      remoteVnetName: spokeVNet.outputs.vnetName
+      remoteVnetName: vnetSpoke.outputs.vnetName
   }
 }
 
-// => Retrieve Subnets
-
-resource createdSpokeVNet 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
-  name: spokeVNet.outputs.vnetName
+resource vnetSpokeCreated 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
+  name: vnetSpoke.outputs.vnetName
   scope: spokeResourceGroup
 }
 
 resource spokeInfraSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
-  parent: createdSpokeVNet
+  parent: vnetSpokeCreated
   name: spokeInfraSubnetName
 }
 
 resource spokePrivateEndpointsSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
-  parent: createdSpokeVNet
+  parent: vnetSpokeCreated
   name: spokePrivateEndpointsSubnetName
 }
 
 resource spokeApplicationGatewaySubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = if (!empty(spokeApplicationGatewaySubnetAddressPrefix)) {
-  parent: createdSpokeVNet
+  parent: vnetSpokeCreated
   name: spokeApplicationGatewaySubnetName
 }
 
@@ -162,10 +175,10 @@ resource spokeApplicationGatewaySubnet 'Microsoft.Network/virtualNetworks/subnet
 output spokeResourceGroupName string = spokeResourceGroup.name
 
 @description('The  resource ID of the Spoke Virtual Network.')
-output spokeVNetId string = createdSpokeVNet.id
+output spokeVNetId string = vnetSpokeCreated.id
 
 @description('The name of the Spoke Virtual Network.')
-output spokeVNetName string = createdSpokeVNet.name
+output spokeVNetName string = vnetSpokeCreated.name
 
 @description('The resource ID of the Spoke Infrastructure Subnet.')
 output spokeInfraSubnetId string = spokeInfraSubnet.id

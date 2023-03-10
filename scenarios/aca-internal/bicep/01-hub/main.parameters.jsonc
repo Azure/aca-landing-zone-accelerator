@@ -5,6 +5,10 @@
         "tags": {
             "value": {}
         },
+        // optional. If empty automatic name will be generated. To override, please give name of hub resource group name
+        "hubResourceGroupName": {
+            "value": ""
+        },
         "vnetAddressPrefixes": {
             "value":  ["10.0.0.0/16"]
         },

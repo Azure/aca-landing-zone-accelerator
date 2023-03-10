@@ -1,3 +1,7 @@
+// ------------------
+//    PARAMETERS
+// ------------------
+
 @description('Required. Name of your Azure Container Apps Environment. ')
 param name string
 
@@ -29,7 +33,16 @@ param logAnalyticsWsResourceId string
 @description('optional, default is empty. App Insights instrumentation key provided to Dapr for tracing')
 param appInsightsInstrumentationKey string = ''
 
+
+// ------------------
+// VARIABLES
+// ------------------
+
 var lawsSplitTokens = !empty(logAnalyticsWsResourceId) ? split(logAnalyticsWsResourceId, '/') : array('')
+
+// ------------------
+// RESOURCES
+// ------------------
 
 resource laws 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!empty(logAnalyticsWsResourceId) ) {
   scope: resourceGroup(lawsSplitTokens[2], lawsSplitTokens[4])
@@ -64,14 +77,19 @@ resource acaEnvironment 'Microsoft.App/managedEnvironments@2022-10-01' = {
   }
 }
 
+
+// ------------------
+// OUTPUTS
+// ------------------
+
 @description('The Name of the Azure container app environment.')
-output acaEnvName string = acaEnvironment.name
+output containerAppsEnvironmentName string = acaEnvironment.name
 
 @description('The resource ID of the Azure container app environment.')
-output acaEnvResourceId string = acaEnvironment.id
+output containerAppsEnvironmentNameId string = acaEnvironment.id
 
 @description('The default domain of the Azure container app environment.')
-output acaEnvDefaultDomain string = acaEnvironment.properties.defaultDomain
+output containerAppsEnvironmentDefaultDomain string = acaEnvironment.properties.defaultDomain
 
 @description('The Azure container app environment\'s Load Balancer IP.')
-output acaEnvLoadBalancerIP string = acaEnvironment.properties.staticIp
+output containerAppsEnvironmentLoadBalancerIP string = acaEnvironment.properties.staticIp

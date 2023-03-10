@@ -88,12 +88,12 @@ param containerRegistryUserAssignedIdentityId string
 
 // Simulation
 @description('If true, the simulation will be deployed in the environment and use the traffic control service FQDN.')
-param deploySimalutionIntheEnvironment bool
+param deploySimulationInAcaEnvironment bool
 
-@description('Optional. The name of the the simulation. If deploySimalutionIntheEnvironment is set to true, this parameter is required.')
+@description('Optional. The name of the the simulation. If deploySimulationInAcaEnvironment is set to true, this parameter is required.')
 param simulationName string = ''
 
-@description('Optional. The image for the simulation. If deploySimalutionIntheEnvironment is set to true, this parameter is required.')
+@description('Optional. The image for the simulation. If deploySimulationInAcaEnvironment is set to true, this parameter is required.')
 param simulationImage string = ''
 
 // Application Gateway
@@ -202,7 +202,7 @@ module containerApps 'modules/container-apps.bicep' = {
     vehicleRegistrationServiceImage: vehicleRegistrationServiceImage
     fineCollectionServiceImage: fineCollectionServiceImage
     trafficControlServiceImage: trafficControlServiceImage
-    deploySimalutionIntheEnvironment: deploySimalutionIntheEnvironment
+    deploySimulationInAcaEnvironment: deploySimulationInAcaEnvironment
     simulationName: simulationName
     simulationImage: simulationImage
   }
@@ -248,7 +248,7 @@ output fineCollectionServiceContainerAppName string = containerApps.outputs.fine
 @description('The name of the container app for the traffic control service.')
 output trafficControlServiceContainerAppName string = containerApps.outputs.trafficControlServiceContainerAppName
 
-@description('The name of the container app for the simulation. If deploySimalutionIntheEnvironment is set to false, this output will be empty.')
+@description('The name of the container app for the simulation. If deploySimulationInAcaEnvironment is set to false, this output will be empty.')
 output simulationContainerAppName string = containerApps.outputs.simulationContainerAppName
 
 @description('The FQDN of the application gateway.')

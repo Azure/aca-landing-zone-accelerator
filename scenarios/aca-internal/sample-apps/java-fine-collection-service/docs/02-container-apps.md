@@ -217,7 +217,7 @@ az deployment group create -g "$SPOKE_RESOURCE_GROUP_NAME" -f main.bicep -p main
   --parameters fineCollectionServiceImage=$FINE_COLLECTION_SERVICE_IMAGE \
   --parameters trafficControlServiceImage=$TRAFFIC_CONTROL_SERVICE_IMAGE \
   --parameters containerRegistryUserAssignedIdentityId=$CONTAINER_REGISTRY_USER_ASSIGNED_IDENTITY_ID \
-  --parameters deploySimalutionIntheEnvironment=$DEPLOY_CAMERA_SIMULATION \
+  --parameters deploySimulationInAcaEnvironment=$DEPLOY_CAMERA_SIMULATION \
   --parameters simulationImage=$SIMULATION_IMAGE \
   --parameters spokeApplicationGatewaySubnetName=$SPOKE_APPLICATION_GATEWAY_SUBNET_NAME
 ```

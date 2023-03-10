@@ -96,14 +96,14 @@
 
     /* SIMULATION */
     // If true, the simulation will be deployed in the environment and use the traffic control service FQDN
-    "deploySimalutionIntheEnvironment": {
+    "deploySimulationInAcaEnvironment": {
       "value": false
     },
-    // If deploySimalutionIntheEnvironment is set to true, this parameter is required
+    // If deploySimulationInAcaEnvironment is set to true, this parameter is required
     "simulationName": {
       "value": "simulation"
     },
-    // If deploySimalutionIntheEnvironment is set to true, this parameter is required
+    // If deploySimulationInAcaEnvironment is set to true, this parameter is required
     "simulationImage": {
       "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/simulation:1.0"
     },

@@ -72,12 +72,12 @@ param trafficControlServiceImage string
 
 // Simulation
 @description('If true, the simulation will be deployed in the environment and use the traffic control service FQDN.')
-param deploySimalutionIntheEnvironment bool
+param deploySimulationInAcaEnvironment bool
 
-@description('Optional. The name of the the simulation. If deploySimalutionIntheEnvironment is set to true, this parameter is required.')
+@description('Optional. The name of the the simulation. If deploySimulationInAcaEnvironment is set to true, this parameter is required.')
 param simulationName string = ''
 
-@description('Optional. The image for the simulation. If deploySimalutionIntheEnvironment is set to true, this parameter is required.')
+@description('Optional. The image for the simulation. If deploySimulationInAcaEnvironment is set to true, this parameter is required.')
 param simulationImage string = ''
 
 // ------------------
@@ -143,7 +143,7 @@ module trafficControlService 'container-apps/traffic-control-service.bicep' = {
   ]
 }
 
-module simulation 'container-apps/simulation.bicep' = if (deploySimalutionIntheEnvironment) {
+module simulation 'container-apps/simulation.bicep' = if (deploySimulationInAcaEnvironment) {
   name: 'simulation-${uniqueString(resourceGroup().id)}'
   params: {
     simulationName: simulationName
@@ -170,8 +170,8 @@ output fineCollectionServiceContainerAppName string = fineCollectionService.outp
 @description('The name of the container app for the traffic control service.')
 output trafficControlServiceContainerAppName string = trafficControlService.outputs.trafficControlServiceContainerAppName
 
-@description('The name of the container app for the simulation. If deploySimalutionIntheEnvironment is set to false, this output will be empty.')
-output simulationContainerAppName string = (deploySimalutionIntheEnvironment) ? simulation.outputs.simulationContainerAppName : ''
+@description('The name of the container app for the simulation. If deploySimulationInAcaEnvironment is set to false, this output will be empty.')
+output simulationContainerAppName string = (deploySimulationInAcaEnvironment) ? simulation.outputs.simulationContainerAppName : ''
 
 @description('The FQDN of the traffic control service.')
 output trafficControlServiceFQDN string = trafficControlService.outputs.trafficControlServiceFQDN

@@ -72,24 +72,29 @@ docs
 scenarios
 ├── scenario1
 │   ├── bicep
+│   │   ├── modules
 │   |   ├── **/*.azcli
 │   |   ├── **/*.bicep
 │   |   ├── **/*.json
 │   |   ├── README.md
-│   ├── sample-apps
-│   |   ├── sample-app1
-│   |   ├── sample-app2
+│   │   ├── sample-apps
+│   │   |   ├── sample-app1
+│   |   │   |   ├── **/*.azcli
+│   |   │   |   ├── **/*.bicep
+│   |   │   |   ├── **/*.json
+│   │   |   ├── sample-app2 
 │   ├── terraform
 │   ├── README.md
 ├── scenario2
 │   ├── bicep
+│   │   ├── modules
 │   |   ├── **/*.azcli
 │   |   ├── **/*.bicep
 │   |   ├── **/*.json
 │   |   ├── README.md
-│   ├── sample-apps
-│   |   ├── sample-app1
-│   |   ├── sample-app2
+│   │   ├── sample-apps
+│   │   |   ├── sample-app1
+│   │   |   ├── sample-app2 
 │   ├── terraform
 │   ├── README.md
 ├── shared

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "tags": {
+      "value": {}
+    },
+    // Replace with the resource ID of the hub virtual network - required to link the privateDNS zone to the Hub network as well 
+    "hubVNetId": {
+      "value": "<HUB_VNET_RESOURCE_ID>"
+    },
+    // If you want to deploy Application Insights, set this to true
+    "enableApplicationInsights": {
+      "value": false
+    },
+    // If you use Dapr, you can setup Dapr telemetry by setting this to true and enableApplicationInsights to true
+    "enableDaprInstrumentation": {
+      "value": false
+    },
+    // Replace with the name of the spoke VNet
+    "spokeVNetName": {
+      "value": "<SPOKE_VNET_NAME>"
+    },
+    "spokeInfraSubnetName": {
+      "value": "snet-infra"
+    }
+  }
+}

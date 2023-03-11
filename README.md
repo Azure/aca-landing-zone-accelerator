@@ -32,14 +32,24 @@ The code here is purposely written to avoid loops, complex variables and logic. 
 
 ## Getting Started
 
+### Prerequisites 
+- Clone this repo, 
+- Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+- Install [bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
+
+### Deployment
+To deploy the Landing Zone Accelerator follow the instructions [here](scenarios/aca-internal/bicep/README.md#fast-deployment)
+
+### Step-by-Step (selective) deployment
+
 This section is organized using folders that match the steps outlined below. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment.
 
-1. Preqs - Clone this repo, install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), install [bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
-2. [Creation of Hub Network & its respective Components](scenarios/acaInternal/bicep/01-network-hub.md))
-3. [Creation of Spoke Network & its respective Components](./scenarios/acaInternal/bicep/02-network-lz.md)
-4. [Creation of Supporting Components for ACA](./scenarios/acaInternal/bicep/03-aks-supporting.md)
-5. [Creation of ACA Environment](./scenarios/acaInternal/bicep/04-aca-env.md)
-6. [Creation of Azure container apps](./scenarios/acaInternal/bicep/05-aca-apps.md)
+
+1. [Creation of Hub Network & its respective Components](scenarios/aca-internal/bicep/modules/01-hub/README.md)
+2. [Creation of Spoke Network & its respective Components](scenarios/aca-internal/bicep/modules/02-spoke/README.md)
+3. [Creation of Supporting Components for ACA](scenarios/aca-internal/bicep/modules/03-supporting-services/README.md)
+4. [Creation of ACA Environment](scenarios/aca-internal/bicep/modules/04-container-apps-environment/README.md)
+5. [Simple *Hello World* Sample App](scenarios/aca-internal/bicep/modules/05-hello-world-sample-app/README.md) or [Java Dapr-enabled Micrososervices Sample app](scenarios/aca-internal/bicep/sample-apps/java-fine-collection-service/README.md)
 
 ## Got a feedback
 Please leverage issues if you have any feedback or request on how we can improve on this repository.
@@ -50,7 +60,7 @@ The software may collect information about you and your use of the software and 
 ## Telemetry Configuration
 Telemetry collection is on by default.
 
-To opt-out, set the variable enableTelemetry to false in Bicep/ARM file and disable_terraform_partner_id to false on Terraform files.
+To opt-out, set the variable `enableTelemetry` to `false` in [Bicep parameter file](scenarios/aca-internal/bicep/main.parameters.jsonc).
 
 ## Contributing
 See more at [Contributing](CONTRIBUTING.md)

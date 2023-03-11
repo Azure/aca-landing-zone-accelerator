@@ -29,7 +29,7 @@ There are 3 Darp compenents for Fine Collection Service sample app:
 * `secretstore`: corresponds to [Dapr Secret Management building block](https://docs.dapr.io/developing-applications/building-blocks/secrets/). It is used by Fine Collection Service to retrieve the license key secret for the fine calculation engine.
 * `pubsub`: corresponds to [Dapr Publish and Subscribe building block](https://docs.dapr.io/developing-applications/building-blocks/pubsub/pubsub-overview/). It used by:
   * Traffic Control Service to publish a *SpeedingViolation* payload when the average speed is above the speed-limit;
-  * Fine Collection Service to subscribe to the topic *test* to consume speeding violation and computing corresponding fine. The subscription for the topic is created in bicep template [service-bus.bicep](../bicep/modules/service-bus.bicep) and the subscription name is the same as the Dapr app id of fine collection service container apps. To disable the management of the subscription by dapr, `disableEntityManagement` metadata field is set to `true`.
+  * Fine Collection Service to subscribe to the topic *test* to consume speeding violation and computing corresponding fine. The subscription for the topic is created in bicep template [service-bus.bicep](../modules/service-bus.bicep) and the subscription name is the same as the Dapr app id of fine collection service container apps. To disable the management of the subscription by dapr, `disableEntityManagement` metadata field is set to `true`.
 * `statestore`: corresponds to [Dapr State Management building block](https://docs.dapr.io/developing-applications/building-blocks/state-management/state-management-overview/). It is used by Traffic Control Service to store and retrieve the state of a vehicle when one of its public endpoints is called.
 
 ## Service-to-Service invocation
@@ -98,7 +98,7 @@ scale: {
 
  Container Apps scale rules only support secret reference. The secret reference is defined in the file [container-apps.bicep](../modules/container-apps.bicep)
 
-```
+``` bicep
 secrets: [
   {
     name: 'service-bus-connection-string'
@@ -120,15 +120,15 @@ User assigned managed identities (UMI) can be used for Dapr components. The Dapr
 For example for a pub/sub component, if you want to have a sender and a receiver, you'll need to create 2 Dapr components. One with the UMI of the sender and the other with the UMI of the receiver. The sender is assigned on topic level and the receiver on the subscription level. When creating your Dapr components, you'll need to choose what fits best your needs.
 
 The managed identities used by the container apps are the following:
-* User managed identity `id-cr...` created in [Supporting Services](../../../bicep/03-supporting-services/main.bicep) is used to pull images from the private container registry.
-* Traffic Control Service uses System Assigned Identity to access Azure Service Bus and Azure Cosmos DB. It is assigned in bicep template [traffic-control-service.bicep](../bicep/modules/container-apps/traffic-control-service.bicep).
+* User managed identity `id-cr...` created in [Supporting Services](../../../modules/03-supporting-services/main.bicep) is used to pull images from the private container registry.
+* Traffic Control Service uses System Assigned Identity to access Azure Service Bus and Azure Cosmos DB. It is assigned in bicep template [traffic-control-service.bicep](../modules/container-apps/traffic-control-service.bicep).
   * Traffic Control Service system assigned identity is granted the built-in role `Azure Service Bus Data Sender` on the service bus topic.
   * Traffic Control Service system assigned identity is granted the built-in role `DocumentDB Data Contributor` on the Cosmos DB container.
 * Fine Collection Service uses System Assigned Identity to access Azure Service Bus and Azure Key Vault.
-  * Fine Collection Service system assigned identity is granted the built-in role `Azure Service Bus Data Receiver` on the service bus topic. It is assigned in bicep template [fine-collection-service.bicep](../bicep/modules/container-apps/fine-collection-service.bicep).
-  * Fine Collection Service system assigned identity is granted the built-in role `Key Vault Secrets User` on the Key Vault secret `license-key`. It is assigned in bicep template [fine-license-key](../bicep/modules/container-apps/secrets/fine-license-key.bicep).
+  * Fine Collection Service system assigned identity is granted the built-in role `Azure Service Bus Data Receiver` on the service bus topic. It is assigned in bicep template [fine-collection-service.bicep](../modules/container-apps/fine-collection-service.bicep).
+  * Fine Collection Service system assigned identity is granted the built-in role `Key Vault Secrets User` on the Key Vault secret `license-key`. It is assigned in bicep template [fine-license-key](../modules/container-apps/secrets/fine-license-key.bicep).
 
-Guidelines on managed identities can be found [here](../../../../../docs/design-areas/identity.md).
+Guidelines on managed identities can be found [here](../../../../../../docs/design-areas/identity.md).
   
 ## Exposing Traffic Control Service endpoints
 
@@ -142,7 +142,7 @@ The landing zone provides a self-signed certificate for the FQDN `acahello.demoa
 >
 The primary backend FQDN is set to the traffic control service FQDN. Ingress is enable for traffic control service and its traffic is limited to the VNet:
 
-```bicep
+``` bicep
       ingress: {
         external: true
         targetPort: 6000

@@ -30,7 +30,7 @@ There are 3 Darp compenents for Fine Collection Service sample app:
 * `pubsub`: corresponds to [Dapr Publish and Subscribe building block](https://docs.dapr.io/developing-applications/building-blocks/pubsub/pubsub-overview/). It used by:
   * Traffic Control Service to publish a *SpeedingViolation* payload when the average speed is above the speed-limit;
   * Fine Collection Service to subscribe to the topic *test* to consume speeding violation and computing corresponding fine. The subscription for the topic is created in bicep template [service-bus.bicep](../bicep/modules/service-bus.bicep) and the subscription name is the same as the Dapr app id of fine collection service container apps. To disable the management of the subscription by dapr, `disableEntityManagement` metadata field is set to `true`.
-* `statestore`: corresponds to [Dapr State Management building block](https://docs.dapr.io/developing-applications/building-blocks/state-management/state-management-overview/). It is used by Traffic Control Service to store and retrieve the state of a vehicle when one of its public endpoint is called.
+* `statestore`: corresponds to [Dapr State Management building block](https://docs.dapr.io/developing-applications/building-blocks/state-management/state-management-overview/). It is used by Traffic Control Service to store and retrieve the state of a vehicle when one of its public endpoints is called.
 
 ## Service-to-Service invocation
 
@@ -38,7 +38,7 @@ Fine Collection Service received the license plate number when there is a speed 
 
 In the bicep template, the name of Vehicle Registration Service is passed to Fine Collection as an environment variable `VEHICLE_REGISTRATION_SERVICE`:
 
-```
+``` bicep
 template: {
   containers: [
     {
@@ -58,15 +58,15 @@ template: {
   ]
 ```
 
-The value of this environment variable is the Dapr `App Id` of Vehicle Registration Service container app. The sample apps are created with the following name: `ca-<service-name>` where the service name is also Dapr app id. For example, the Dapr app id of Vehicle Registration Service is `vehicle-registration-service` and the sample app name is `ca-vehicle-registration-service`.
+The value of this environment variable is the Dapr `App Id` of Vehicle Registration Service container app. The container apps are created with the following name: `ca-<service-name>` where the service name is also Dapr app id. For example, the Dapr app id of Vehicle Registration Service is `vehicle-registration-service` and the container app name is `ca-vehicle-registration-service`.
 
 ## Container Apps Scale Rule
 
 If there is no message on Azure Service Bus topic *test*, Container Apps will scale down the number of replica of Fine Collection Service to 0. When a message is published on the topic, Container Apps will scale up the number of pods of Fine Collection Service.
 
-The scale rule defines the minimum number of replica to 0 and the maximum number of replica to 6. It is defined in the file `sample-apps/java-fine-collection-service/bicep/modules/container-apps/fine-collection-service.bicep`:
+The scale rule defines the minimum number of replica to 0 and the maximum number of replica to 6. It is defined in the file [fine-collection-service.bicep](../modules/container-apps/fine-collection-service.bicep):
 
-```
+``` bicep
 scale: {
   minReplicas: 0
   maxReplicas: 5
@@ -96,7 +96,7 @@ scale: {
 
 ### Scale Rule with Secret Reference
 
- Container Apps scale rules only support secret reference. The secret reference is defined in the file `sampleApps/javaFineCollectionService/bicep/modules/container-apps.bicep`:
+ Container Apps scale rules only support secret reference. The secret reference is defined in the file [container-apps.bicep](../modules/container-apps.bicep)
 
 ```
 secrets: [
@@ -134,7 +134,7 @@ Guidelines on managed identities can be found [here](../../../../../docs/design-
 
 Traffic Control Service endpoints are exposed using Azure Application Gateway. The endpoints are exposed using the FQDN set with parameters `applicationGatewayFqdn`.
 
-The landing zone provides a self-signed certificate for the FQDN `acahello.demoapp.com`. The certificate is used to secure the endpoints exposed by the Application Gateway. The certificate is store in the key vault in the bicep template [application-gateway.bicep](../../../bicep/06-application-gateway/modules/app-gateway-cert.bicep).
+The landing zone provides a self-signed certificate for the FQDN `acahello.demoapp.com`. The certificate is used to secure the endpoints exposed by the Application Gateway. The certificate is stored in the key vault in the bicep template [app-gateway-cert.bicep](../../../modules/06-application-gateway/modules/app-gateway-cert.bicep).
 
 ## Dapr Telemetry
 > **Important**
@@ -154,7 +154,7 @@ When the container app environment is deployed as internal, the external ingress
 
 The application gateway is communicating with the backend pool (i.e. traffic control service) using HTTPS. Therefore, `allowInsecure` is set to `false`. To check that the service is healthy, it is using a health probe. The health probe is configured to use HTTPS and the path `/healthz`. Traffic control service is configured to return a 200 HTTP status code when the path `/healthz` is called.
 
-To know more about networking, see [Networking considerations for Azure Container Apps](../../../../../docs/design-areas/networking.md).
+To know more about networking, see [Networking considerations for Azure Container Apps](../../../../../../docs/design-areas/networking.md).
 
 ## Dapr Observability
 

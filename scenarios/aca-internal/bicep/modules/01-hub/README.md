@@ -16,6 +16,8 @@ The following will be created:
 
 Review the `main.parameters.jsonc` file and update the parameter values if required according to your needs. Pay attentions to VNET address prefixes and subnets so it doesn't overlap Spoke VNET in further steps. Also, please pay attention to update Subnet prefix for ACA environment in Spoke VNET in the further steps to be planned and update in this file.
 
+> TODO: Add VM AAD joined (needs bastion Standard)
+
 Note: `main.parameters.jsonc` file contains the username and password for the virtual machine. These can be changed in the parameters file for the vm, however these are the default values:
 
 ```

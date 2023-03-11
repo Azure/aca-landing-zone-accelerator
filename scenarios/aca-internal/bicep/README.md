@@ -23,7 +23,7 @@ Resource naming is always defined in `main.bicep` of each building block make it
 
 ## Fast Deployment
 
-On the contrary, if you want to deploy the complete landing zone in a single subscription, you can do so by using the main.bicep file in the root of this folder. If you want to deploy with one of the sample applications, you can find the documentation in the [sample-apps](./sample-apps) folder. Each application has its own bicep file and parameters file and describe how to deploy them in an existing landing zone or with a new one.
+On the contrary, if you want to deploy the complete landing zone in a single subscription, you can do so by using the main.bicep file in the root of this folder. If you want to deploy with one of the sample applications, you can find the documentation in the [sample-apps](sample-apps/) folder. Each application has its own bicep file and parameters file and describe how to deploy them in an existing landing zone or with a new one.
 
 To deploy the complete landing zone, first review the parameters in [main.parameters.jsonc](./main.parameters.jsonc). Then you can use the following command to deploy the landing zone:
 
@@ -34,19 +34,19 @@ az deployment sub create \
     --name <DEPLOYMENT_NAME> \
     --parameters ./main.parameters.jsonc
 ```
- Where `<LOCATION>` is the location where you want to deploy the landing zone and `<DEPLOYMENT_NAME>` is the name of the deployment.
+ where `<LOCATION>` is the location where you want to deploy the landing zone and `<DEPLOYMENT_NAME>` is the name of the deployment.
 
 ## Complete Deployment Guide
 
 This section is organized using folders that match the steps outlined below. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment. Please read carrefully the documentation of each step before deploying it. All bicep templates parameters are documented in the bicep templates.
 
 0. Preqs - Clone this repo, install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), install [Bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
-1. [Hub](./01-hub)
-2. [Spoke](./02-spoke)
-3. [Supporting Services](./03-supporting-services)
-4. [ACA Environment](./04-container-apps-environment)
-5. [Hello World Sample Container App (Optional)](./05-hello-world-sample-app)
-6. [Application Gateway](./06-application-gateway) or [Front Door](./06-azure-front-door)  
+1. [Hub](modules/01-hub/README.md)
+2. [Spoke](modules/02-spoke/README.md)
+3. [Supporting Services](modules/03-supporting-services/README.md)
+4. [ACA Environment](modules/04-container-apps-environment/README.md)
+5. [Hello World Sample Container App (Optional)](modules/05-hello-world-sample-app/README.md)
+6. [Application Gateway](modules/06-application-gateway/README.md) or [Front Door](modules/06-front-door/README.md)  
 
 ## Cleanup
 

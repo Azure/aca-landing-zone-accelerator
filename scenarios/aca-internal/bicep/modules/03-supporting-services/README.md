@@ -11,6 +11,8 @@ An for each of the above:
 * Related DNS settings for the private endpoint
 * A managed identity
 
+> TODO: Do we need Managed Idenity for AKV?  - Exaplain why the PRivate Link, DNS, Managed Idenity is used for
+
 ![Supporting Services](./media/supporting-services.png)
 
 Review `parameters-main.json` and update the values as required. Once the files are updated, deploy using az cli or Az PowerShell.

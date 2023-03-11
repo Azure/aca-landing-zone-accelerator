@@ -59,7 +59,7 @@ Below you can see the selected folder structure for the project. The main folder
   - (scenario1)\sample-apps
     This folder may contain one or more subfolders, depending on the selected sample applications that will be created to serve as smoke tests or best-practices examples using the specific Landing Zone Accelerator artifacts. Folder structure inside each sample application sub-folder is free. 
   - *shared* 
-    To avoid duplication of code modules/artifacts, we store all scripts, modules or coding artifacts in general, in this subfolder. This folder can have more depth, i.e. one folder for every deployment method (i.e. bicep, terraform etc) as shown below in the sample folder structure. Contains also a README.md file that gives details of the shared modules/scripts to help end-users understand their functionality. When moving a module to shared, always prioritize readability and ease-to-use over reusability.
+    To avoid duplication of code modules/artifacts, we store all scripts, modules or coding artifacts in general, in this subfolder. This folder can have more depth, i.e. one folder for every deployment method (i.e. bicep, terraform etc) as shown below in the sample folder structure. Contains also a README.md file that gives details of the shared modules/scripts to help end-users understand their functionality.
 
 ``` bash
 docs
@@ -144,17 +144,15 @@ A guide outlining the coding conventions and style guidelines that should be fol
 
 - Do not include compiled versions of the bicep files (i.e. no `main.json ` files)
 
-- Always keep it simple and straighforward. Readibility is preferred to complex logic.
-
-- Follow the best practices as defined in [Best practices for Bicep] (https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/best-practices).
+- Follow the best practices as defined in [Best practices for Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/best-practices).
 
 - Use strictly `camelCasing` for all elements like parameters, variables, resources, modules and outputs, and avoid prepending those elements in a [Hungarian Notation](https://en.wikipedia.org/wiki/Hungarian_notation) style.
-  - Put the context in front like hub or spoke to avoid confusion. For example, `hubVNetName` is better than `vnetName`.
-  - Use only abreviation that are well known like URL, FQDN, VNet, etc.
-  - Each parameter should be descriptive and pronounceable. For example, `vmName` is better than `vmnm`.
-  - For outputs be explicit about the type of the output. For example, `vmName` is better than `name`.
-  - All parameters and outputs should be documented using the `description` property. The description should always be ended with a dot.
-  - Use id instead of resource id in the name of the parameter or variable. For example, `subnetId` is better than `subnetResourceId`.
+  - Put always the resource type identifier in front accompanied, where applicable, from some conext, like hub or spoke. For example, `vnetHubName` is better than `vnetName` or `hubVNetName`.
+  - Use only well known abreviations like *Url, Fqdn, Vnet*, adhering to the CamelCasing rule.
+  - Each parameter, variable or resource identifier should be descriptive and pronounceable. For example, `vmName` is better than `vmnm`.
+  - Outputs should also be descriptive. Do not output just `name` or `id` but prefer to output as `<resourceType>Name` and `<resourceType>Id` to avoid confusion, especially in the case where a module outputs many different resources. For example, use `storageAccountName`  and `storageAccountId`, which is better than just `name` and `id`.
+  - All parameters and outputs should be documented using the `@description` decorator.
+  - Use id instead of resourceId in the name of the parameter or variable. For example, `subnetId` is better than `subnetResourceId`.
   - If you split a resource id into tokens, use explicit names for the tokens. For example:
   
     ```bicep
@@ -164,25 +162,22 @@ A guide outlining the coding conventions and style guidelines that should be fol
     var hubVnetName = virtualNetworkHubResourceIdsSplitTokens[8]
     ```
 
-- The naming of Azure resource should be done using the following conventions:
-  - For resource, use the following template:
-
-    ```bicep
-    param resourceName string = '${prefix}<resourceAbbreviation>[-<parentResourceAbbreviation>]-<uniqueStringBasedOnSubscriptionOrResourceGroupId>${suffix}'
-    ```
-  - Abbreviations used are defined in the [Azure Abbreviations](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations) document
-  - For resource group the unique string is not mandatory but recommended
-  - Put the parameters for the name of the resource always in the `main.bicep` file and not in the module
+- If naming of Azure resources is chosen to be done manually, follow some best practices as defined in:
+  - [Define your naming convention](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) 
+  - Use abbreviations of resource type as proposed in [Abbreviation examples for Azure resources](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations) document
+  - Always take into consideration [naming rules and restrictions for Azure resources](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules)
   
   **Bad practice examples that should be avoided:**
   ``` bicep
   \\ BAD PRACTICE param EXAMPLES
-  param 	appGwName string
-  param 	fineColServFQDN string
+  param parVmSubnetAddressPrefix string
+  param strVmSubnetAddressPrefix string
+  param appGwName string
+  param fineColServFQDN string
 
   \\ GOOD PRACTICE param EXAMPLES
-  param 	applicationGatewayName string
-  param 	fineCollectionServiceFQDN string OR param 	fineCollectionServiceFqdn string
+  param applicationGatewayName string
+  param fineCollectionServiceFqdn string
 
   \\ BAD PRACTICE variable EXAMPLES
   var varAppGwDeploymentName = 'xyz'
@@ -191,12 +186,14 @@ A guide outlining the coding conventions and style guidelines that should be fol
   var applicationGatewayDeploymentName = 'xyz'  
 
   \\ BAD PRACTICE output EXAMPLES
+  output name string = containerRegistry.name
   output id string = containerRegistry.id
   output outAcrId string = containerRegistry.id
   output strAcrId string = containerRegistry.id
   output outStrAcrId string = containerRegistry.id
 
   \\ GOOD PRACTICE output EXAMPLES
+  output containerRegistryName string = containerRegistry.name
   output containerRegistryId string = containerRegistry.id
   ```
 
@@ -208,10 +205,10 @@ A guide outlining the coding conventions and style guidelines that should be fol
   //    PARAMETERS
   // ------------------
 
-  @description('suffix that will be used to name the resources in a pattern like <resourceAbbreviation>-<applicationName>.')
+  @description('suffix that will be used to name the resources in a pattern similar to <resourceAbbreviation>-<applicationName>.')
   param applicationName string
 
-  @description('The environment for which the deployment is being executed.')
+  @description('Required. The environment for which the deployment is being executed.')
   @allowed([
     'dev'
     'uat'
@@ -236,8 +233,8 @@ A guide outlining the coding conventions and style guidelines that should be fol
   // RESOURCES
   // ------------------
 
-  resource spokeResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-    name: spokeResourceGroupName
+  resource resourceGroupSpoke 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+    name: resourceGroupSpokeName
     location: location
     tags: tags
   }
@@ -247,15 +244,15 @@ A guide outlining the coding conventions and style guidelines that should be fol
   // ------------------
 
   @description('The name of the spoke resource group.')
-  output spokeResourceGroupName string = spokeResourceGroup.name
+  output spokeResourceGroupName string = resourceGroupSpoke.name
 
   ```
 
 - Use [parameter decorators](https://docs.microsoft.com/azure/azure-resource-manager/bicep/parameters#decorators) to ensure integrity of user inputs are complete and therefore enable successful deployment
   - Use the [`@secure()` parameter decorator](https://docs.microsoft.com/azure/azure-resource-manager/bicep/parameters#secure-parameters) **ONLY** for inputs. Never for outputs as this is not stored securely and will be stored/shown as plain-text!
-  - All parameters should have a meaningful `@description `
+  - All parameters should have a meaningful `@description` decorator
   - Use constraints where possible, allowed values, min/max, but Use the `@allowed` decorator sparingly, as it can mistakenly result in blocking valid deployments
-  - If more than one parameter decorators are present, the `@description` decorator should always come last. 
+  - If more than one parameter decorators are present, the `@description` decorator should always come first. 
   - Avoid prompting for parameter value at runtime. Parameters should either be initialized in the bicep template file and/or in the accompanying pramater file.
 
 - `targetScope` should always be indicated at the beginning of the bicep template file
@@ -268,12 +265,11 @@ A guide outlining the coding conventions and style guidelines that should be fol
 - Consider sanitizing names of resources to avoid deployment errors. For example consider the name limitations for a storage account (all lowercase, less than 24 characters long, no dashes etc). 
   ``` bicep
   var maxStorageNameLength = 24
-  var storageName = length(name) > maxStorageNameLength ? toLower(substring(replace(name, '-', ''), 0, maxStorageNameLength)) : toLower(replace(name, '-', ''))
+  var storageName = take( toLower(substring(replace(name, '-', ''), 0, maxStorageNameLength)), maxStorageNameLength)
   ``` 
+- Use bicep **parameter** files for giving the end user the ability to parametrize the deployed resources. (i.e. to select CIDR network spaces, to select SKUs for given resources etc). As a rule of thumb, avoid using the parameter file for *naming recources*, unless there is a really good reason for that. Naming resources should be handled centrally (preferably with variables), following specific rules (as already described). Try not to overuse parameters in the template, because this creates a burden on your template users, since they need to understand the values to use for each resource, and the impact of setting each parameter. Consider using the [t-shirt sizing pattern](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/patterns-configuration-set#solution)
 
-- Use bicep **parameter** files for giving the end user the ability to paramterize the deployed resources. (i.e. to select CIDR network spaces, to select SKUs for given resources etc). As a rule of thumb, avoid using the parameter file for *naming recources*, unless there is a really good reason for that. Naming resources should be handled centrally in main.bicep of each building block, following specific rules (as already described). Try not to overuse parameters in the template, because this creates a burden on your template users, since they need to understand the values to use for each resource, and the impact of setting each parameter. Consider using the [t-shirt sizing pattern](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/patterns-configuration-set#solution)
-
-- Prefer using implicit dependencies over explicit dependencies. For example, if you have a resource that depends on another resource, you can use the `dependsOn` property to specify the dependency. However, if you are referencing a property of the resource, Bicep will automatically add the dependency for you. For example, if you are referencing the `id` property of a resource, Bicep will automatically add the dependency for you.
+- Avoid using `dependsOn` in the bicep template files. Bicep is building [implicit depedencies](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/resource-dependencies#implicit-dependency) for us, as long as we follow some good practices rules. For instance a resource A depends on a Resource B (i.e. a storage Account) chances are that in resource A you need somehow to pass data of the Resource B(i.e. name, ID etc.). In that case, avoid passing the resource name as string, but pass the property Name of the resource instead (i.e. `myStorage.Name`)
 
 ``` bicep
 var storageName='ttst20230301'

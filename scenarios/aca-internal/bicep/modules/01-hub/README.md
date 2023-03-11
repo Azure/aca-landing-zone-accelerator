@@ -1,7 +1,7 @@
 # Hub
 
-If you havent yet, clone the repo and cd to the appropriate folder
-```bash
+If you haven't yet, clone the repo and cd to the appropriate folder
+``` bash
 git clone https://github.com/Azure/ACA-Landing-Zone-Accelerator
 ```
 
@@ -14,11 +14,11 @@ The following will be created:
 
 ![Hub](./media/hub.png)
 
-Review the `main.parameters.jsonc` file and update the parameter values if required according to your needs. Pay attentions to VNET address prefixes and subnets so it doesn't overlap Spoke VNET in further steps. Also, please pay attention to update Subnet prefix for ACA environment in Spoke VNET in the further steps to be planned and update in this file.
+Review the `deploy.hub.parameters.jsonc` file and update the parameter values if required according to your needs. Pay attentions to VNET address prefixes and subnets so it doesn't overlap Spoke VNET in further steps. Also, please pay attention to update Subnet prefix for ACA environment in Spoke VNET in the further steps to be planned and update in this file.
 
 > TODO: Add VM AAD joined (needs bastion Standard)
 
-Note: `main.parameters.jsonc` file contains the username and password for the virtual machine. These can be changed in the parameters file for the vm, however these are the default values:
+Note: `deploy.hub.parameters.jsonc` file contains the username and password for the virtual machine. These can be changed in the parameters file for the vm, however these are the default values:
 
 ```
 Username: azureuser
@@ -30,7 +30,7 @@ Once the files are updated, deploy using az cli or Az PowerShell.
 ## [CLI](#tab/CLI)
 
 ```azurecli
-az deployment sub create -n <DEPLOYMENT_NAME> -l <LOCATION> -f main.bicep -p main.parameters.jsonc
+az deployment sub create -n <DEPLOYMENT_NAME> -l <LOCATION> -f deploy.hub.bicep -p deploy.hub.parameters.jsonc
 ```
 
  Where `<LOCATION>` is the location where you want to deploy the landing zone and `<DEPLOYMENT_NAME>` is the name of the deployment.
@@ -38,7 +38,7 @@ az deployment sub create -n <DEPLOYMENT_NAME> -l <LOCATION> -f main.bicep -p mai
 ## [PowerShell](#tab/PowerShell)
 
 ```azurepowershell
-New-AzSubscriptionDeployment -TemplateFile main.bicep -TemplateParameterFile main.parameters.jsonc -Location "<LOCATION>" -Name <DEPLOYMENT_NAME>
+New-AzSubscriptionDeployment -TemplateFile deploy.hub.bicep -TemplateParameterFile deploy.hub.parameters.jsonc -Location "<LOCATION>" -Name <DEPLOYMENT_NAME>
 ```
 
 Where `<LOCATION>` is the location where you want to deploy the landing zone and `<DEPLOYMENT_NAME>` is the name of the deployment.

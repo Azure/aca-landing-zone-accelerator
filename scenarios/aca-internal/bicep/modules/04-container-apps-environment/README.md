@@ -10,7 +10,7 @@ The following will be created:
 
 ![Container Apps Environment](./media/container-apps-environment.png)
 
-Review `parameters-main.json` and update the values as required. Once the files are updated, deploy using az cli or Az PowerShell.
+Review `deploy.aca-environment.parameters.jsonc` and update the values as required. Once the files are updated, deploy using az cli or Az PowerShell.
 
 ## [CLI](#tab/CLI)
 
@@ -24,7 +24,7 @@ keyVaultId=$(az deployment sub show -n "<SUPPORTING_SERVICES_DEPLOYMENT_NAME>" -
 Where `<SUPPORTING_SERVICES_DEPLOYMENT_NAME>` is the name of the deployment of the supporting services.
 
 ```azurecli
-az deployment group create -n <DEPLOYMENT_NAME> -l <LOCATION> -g <SPOKE_RESOURCE_GROUP> -f main.bicep -p main.parameters.jsonc -p containerRegistryId=$containerRegistryId -p keyVaultId=$keyVaultId
+az deployment group create -n <DEPLOYMENT_NAME> -l <LOCATION> -g <SPOKE_RESOURCE_GROUP> -f deploy.aca-environment.bicep -p deploy.aca-environment.parameters.jsonc -p containerRegistryId=$containerRegistryId -p keyVaultId=$keyVaultId
 ```
 
 Where `<LOCATION>` is the location where you want to deploy the landing zone, `<DEPLOYMENT_NAME>` is the name of the deployment and `<SPOKE_RESOURCE_GROUP>` is the name of the spoke resource group.
@@ -32,7 +32,7 @@ Where `<LOCATION>` is the location where you want to deploy the landing zone, `<
 ## [PowerShell](#tab/PowerShell)
 
 ```azurepowershell
-New-AzResourceGroupDeployment -ResourceGroupName "<SPOKE_RESOURCE_GROUP>" -TemplateFile main.bicep -TemplateParameterFile main.parameters.jsonc -Location "<LOCATION>" -Name <DEPLOYMENT_NAME>
+New-AzResourceGroupDeployment -ResourceGroupName "<SPOKE_RESOURCE_GROUP>" -TemplateFile deploy.aca-environment.bicep -TemplateParameterFile deploy.aca-environment.parameters.jsonc -Location "<LOCATION>" -Name <DEPLOYMENT_NAME>
 ```
 
 Where `<LOCATION>` is the location where you want to deploy the landing zone, `<DEPLOYMENT_NAME>` is the name of the deployment and `<SPOKE_RESOURCE_GROUP>` is the name of the spoke resource group.

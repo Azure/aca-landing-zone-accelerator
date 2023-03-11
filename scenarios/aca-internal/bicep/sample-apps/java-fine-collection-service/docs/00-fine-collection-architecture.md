@@ -120,7 +120,7 @@ User assigned managed identities (UMI) can be used for Dapr components. The Dapr
 For example for a pub/sub component, if you want to have a sender and a receiver, you'll need to create 2 Dapr components. One with the UMI of the sender and the other with the UMI of the receiver. The sender is assigned on topic level and the receiver on the subscription level. When creating your Dapr components, you'll need to choose what fits best your needs.
 
 The managed identities used by the container apps are the following:
-* User managed identity `id-cr...` created in [Supporting Services](../../../modules/03-supporting-services/main.bicep) is used to pull images from the private container registry.
+* User managed identity `id-cr...` created in [Supporting Services](../../../modules/03-supporting-services/deploy.supporting-services.bicep) is used to pull images from the private container registry.
 * Traffic Control Service uses System Assigned Identity to access Azure Service Bus and Azure Cosmos DB. It is assigned in bicep template [traffic-control-service.bicep](../modules/container-apps/traffic-control-service.bicep).
   * Traffic Control Service system assigned identity is granted the built-in role `Azure Service Bus Data Sender` on the service bus topic.
   * Traffic Control Service system assigned identity is granted the built-in role `DocumentDB Data Contributor` on the Cosmos DB container.

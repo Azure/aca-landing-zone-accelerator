@@ -21,7 +21,6 @@
     "spokeVNetName": {
       "value": "<SPOKE_VNET_NAME>"
     },
-    // If the name was updated in the main.bicep file of 02-spoke, update it here as well
     "spokeInfraSubnetName": {
       "value": "snet-infra"
     }

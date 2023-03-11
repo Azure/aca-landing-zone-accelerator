@@ -220,7 +220,7 @@ resource spokeApplicationGatewaySubnet 'Microsoft.Network/virtualNetworks/subnet
   parent: spokeVNet
 }
 
-module applicationGateway '../../modules/06-application-gateway/main.bicep' = {
+module applicationGateway '../../modules/06-application-gateway/deploy.app-gateway.bicep' = {
   name: 'applicationGateway-${uniqueString(resourceGroup().id)}'
   params: {
     location: location

@@ -98,7 +98,7 @@ var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${n
 // RESOURCES
 // ------------------
 
-module hub 'modules/01-hub/main.bicep' = {
+module hub 'modules/01-hub/deploy.hub.bicep' = {
   name: take('hub-${deployment().name}-deployment', 64)
   params: {
     location: location
@@ -122,7 +122,7 @@ resource spokeResourceGroup 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   tags: tags
 }
 
-module spoke 'modules/02-spoke/main.bicep' = {
+module spoke 'modules/02-spoke/deploy.spoke.bicep' = {
   name: take('spoke-${deployment().name}-deployment', 64)
   params: {
     spokeResourceGroupName: spokeResourceGroup.name
@@ -136,7 +136,7 @@ module spoke 'modules/02-spoke/main.bicep' = {
   }
 }
 
-module supportingServices 'modules/03-supporting-services/main.bicep' = {
+module supportingServices 'modules/03-supporting-services/deploy.supporting-services.bicep' = {
   name: take('supportingServices-${deployment().name}-deployment', 64)
   scope: spokeResourceGroup
   params: {
@@ -148,7 +148,7 @@ module supportingServices 'modules/03-supporting-services/main.bicep' = {
   }
 }
 
-module containerAppsEnvironment 'modules/04-container-apps-environment/main.bicep' = {
+module containerAppsEnvironment 'modules/04-container-apps-environment/deploy.aca-environment.bicep' = {
   name: take('containerAppsEnvironment-${deployment().name}-deployment', 64)
   scope: spokeResourceGroup
   params: {
@@ -162,7 +162,7 @@ module containerAppsEnvironment 'modules/04-container-apps-environment/main.bice
   }
 }
 
-module helloWorlSampleApp 'modules/05-hello-world-sample-app/main.bicep' = if (deployHelloWorldSample) {
+module helloWorlSampleApp 'modules/05-hello-world-sample-app/deploy.hello-world.bicep' = if (deployHelloWorldSample) {
   name: take('helloWorlSampleApp-${deployment().name}-deployment', 64)
   scope: spokeResourceGroup
   params: {
@@ -173,7 +173,7 @@ module helloWorlSampleApp 'modules/05-hello-world-sample-app/main.bicep' = if (d
   }
 }
 
-module applicationGateway 'modules/06-application-gateway/main.bicep' = if (deployHelloWorldSample) {
+module applicationGateway 'modules/06-application-gateway/deploy.app-gateway.bicep' = if (deployHelloWorldSample) {
   name: take('applicationGateway-${deployment().name}-deployment', 64)
   scope: spokeResourceGroup
   params: {

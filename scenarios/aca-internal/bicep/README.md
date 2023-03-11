@@ -18,8 +18,7 @@ The code here is purposely written to avoid loops, complex variables and logic. 
 
 Resources are broken into 6 main building blocks for future modularization or adjustments as needed by your organization: hub, spoke, supporting services, container apps environment, Hello World sample app (optional) and application gateway. Front Door is also available as an alternative to Application Gateway.
 
-TODO: Centralized Resource naming following CAF reccomendations
-Resource naming is always defined in `main.bicep` of each building block make it easier to find and adapt to your needs.
+TODO: Centralized Resource naming following CAF recommendations
 
 ## Fast Deployment
 

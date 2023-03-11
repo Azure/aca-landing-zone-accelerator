@@ -80,7 +80,7 @@ param enableApplicationGatewayCertificate bool
 param applicationGatewayCertificateKeyName string
 
 @description('Enable usage and telemetry feedback to Microsoft.')
-param enableTelemetry bool = true
+param enableTelemetry bool
 
 
 // ------------------
@@ -89,7 +89,7 @@ param enableTelemetry bool = true
 
 var telemetryId = '9b4433d6-924a-4c07-b47c-7478619759c7-${location}-acasb'
 
-var namingRules = json(loadTextContent('modules/naming/naming-rules.jsonc'))
+var namingRules = json(loadTextContent('../../shared/bicep/naming/naming-rules.jsonc'))
 var rgHubName = !empty(hubResourceGroupName) ? hubResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${namingRules.workloadName}-hub-${namingRules.environment}-${namingRules.regionAbbreviations[toLower(location)]}'
 var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${namingRules.workloadName}-spoke-${namingRules.environment}-${namingRules.regionAbbreviations[toLower(location)]}'
 
@@ -98,7 +98,7 @@ var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${n
 // RESOURCES
 // ------------------
 
-module hub '01-hub/main.bicep' = {
+module hub 'modules/01-hub/main.bicep' = {
   name: take('hub-${deployment().name}-deployment', 64)
   params: {
     location: location
@@ -122,7 +122,7 @@ resource spokeResourceGroup 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   tags: tags
 }
 
-module spoke '02-spoke/main.bicep' = {
+module spoke 'modules/02-spoke/main.bicep' = {
   name: take('spoke-${deployment().name}-deployment', 64)
   params: {
     spokeResourceGroupName: spokeResourceGroup.name
@@ -136,7 +136,7 @@ module spoke '02-spoke/main.bicep' = {
   }
 }
 
-module supportingServices '03-supporting-services/main.bicep' = {
+module supportingServices 'modules/03-supporting-services/main.bicep' = {
   name: take('supportingServices-${deployment().name}-deployment', 64)
   scope: spokeResourceGroup
   params: {
@@ -148,7 +148,7 @@ module supportingServices '03-supporting-services/main.bicep' = {
   }
 }
 
-module containerAppsEnvironment '04-container-apps-environment/main.bicep' = {
+module containerAppsEnvironment 'modules/04-container-apps-environment/main.bicep' = {
   name: take('containerAppsEnvironment-${deployment().name}-deployment', 64)
   scope: spokeResourceGroup
   params: {
@@ -162,7 +162,7 @@ module containerAppsEnvironment '04-container-apps-environment/main.bicep' = {
   }
 }
 
-module helloWorlSampleApp '05-hello-world-sample-app/main.bicep' = if (deployHelloWorldSample) {
+module helloWorlSampleApp 'modules/05-hello-world-sample-app/main.bicep' = if (deployHelloWorldSample) {
   name: take('helloWorlSampleApp-${deployment().name}-deployment', 64)
   scope: spokeResourceGroup
   params: {
@@ -173,7 +173,7 @@ module helloWorlSampleApp '05-hello-world-sample-app/main.bicep' = if (deployHel
   }
 }
 
-module applicationGateway '06-application-gateway/main.bicep' = if (deployHelloWorldSample) {
+module applicationGateway 'modules/06-application-gateway/main.bicep' = if (deployHelloWorldSample) {
   name: take('applicationGateway-${deployment().name}-deployment', 64)
   scope: spokeResourceGroup
   params: {

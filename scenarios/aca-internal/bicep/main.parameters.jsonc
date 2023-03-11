@@ -5,6 +5,9 @@
     "tags": {
         "value": {}
     },
+    "enableTelemetry": {
+      "value": true
+    },
     "hubResourceGroupName": {
       "value": "rg-aca-test-hub"
     },

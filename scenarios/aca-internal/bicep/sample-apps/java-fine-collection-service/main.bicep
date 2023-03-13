@@ -4,6 +4,15 @@ targetScope = 'resourceGroup'
 //    PARAMETERS
 // ------------------
 
+@minLength(2)
+@maxLength(10)
+@description('The name of the workloard that is being deployed. Up to 10 characters long.')
+param workloadName string
+
+@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa") Up to 8 characters long.')
+@maxLength(8)
+param environment string
+
 @description('The location where the resources will be created.')
 param location string = resourceGroup().location
 
@@ -127,6 +136,8 @@ module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
   name: take('javaFineCollection-sharedNamingDeployment-${uniqueString(resourceGroup().id)}', 64)
   params: {
     uniqueId: uniqueString(resourceGroup().id)
+    environment: environment
+    workloadName: workloadName
     location: location
   }
 }
@@ -225,6 +236,8 @@ module applicationGateway '../../modules/06-application-gateway/deploy.app-gatew
   params: {
     location: location
     tags: tags
+    environment: environment
+    workloadName: workloadName
     applicationGatewayFQDN: applicationGatewayFQDN
     applicationGatewaySubnetId: spokeApplicationGatewaySubnet.id
     applicationGatewayPrimaryBackendEndFQDN: containerApps.outputs.trafficControlServiceFQDN

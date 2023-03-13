@@ -1,7 +1,4 @@
 {
-    "workloadName": "acalza",
-    "environment": "dev",
-
     // Recommended abreviations: https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations
     "resourceTypeAbbreviations" : {
         "applicationGateway": "agw",
@@ -11,12 +8,16 @@
         "containerAppsEnvironment": "cae",
         "containerRegistry": "cr",
         "cosmosDbNoSql": "cosno",
+        "frontDoor": "afd",
+        "frontDoorEndpoint": "fde",
+        "frontDoorWaf": "fdfp",
         "keyVault": "kv",
         "logAnalyticsWorkspace": "log",
         "managedIdentity": "id",
         "networkInterface": "nic",
         "networkSecurityGroup": "nsg",
         "privateEndpoint": "pep",
+        "privateLinkService": "pls",
         "publicIpAddress": "pip",
         "resourceGroup": "rg",
         "serviceBus": "sb",

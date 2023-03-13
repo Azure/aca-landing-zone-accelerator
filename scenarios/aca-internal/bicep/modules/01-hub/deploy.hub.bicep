@@ -4,6 +4,15 @@ targetScope = 'subscription'
 //    PARAMETERS
 // ------------------
 
+@minLength(2)
+@maxLength(10)
+@description('The name of the workloard that is being deployed. Up to 10 characters long.')
+param workloadName string
+
+@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa") Up to 8 characters long.')
+@maxLength(8)
+param environment string
+
 @description('The location where the resources will be created.')
 param location string = deployment().location
 
@@ -79,7 +88,7 @@ var vnetSubnets = vmJumpboxOSType != 'none' ? concat(subnets, [
 
 //used only to override the RG name - because it is created at the subscription level, the naming module cannot be loaded/used
 var namingRules = json(loadTextContent('../../../../shared/bicep/naming/naming-rules.jsonc'))
-var rgHubName = !empty(hubResourceGroupName) ? hubResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${namingRules.workloadName}-hub-${namingRules.environment}-${namingRules.regionAbbreviations[toLower(location)]}'
+var rgHubName = !empty(hubResourceGroupName) ? hubResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-hub-${environment}-${namingRules.regionAbbreviations[toLower(location)]}'
 
 
 // ------------------
@@ -97,6 +106,8 @@ module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
   name: take('01-sharedNamingDeployment-${deployment().name}', 64)
   params: {
     uniqueId: uniqueString(hubResourceGroup.id)
+    environment: environment
+    workloadName: workloadName
     location: location
   }
 }

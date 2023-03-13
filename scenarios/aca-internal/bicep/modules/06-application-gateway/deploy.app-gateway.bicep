@@ -4,6 +4,15 @@ targetScope = 'resourceGroup'
 //    PARAMETERS
 // ------------------
 
+@minLength(2)
+@maxLength(10)
+@description('The name of the workloard that is being deployed. Up to 10 characters long.')
+param workloadName string
+
+@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa") Up to 8 characters long.')
+@maxLength(8)
+param environment string
+
 @description('The location where the resources will be created.')
 param location string = resourceGroup().location
 
@@ -53,6 +62,8 @@ module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
   name: take('06-sharedNamingDeployment-${deployment().name}', 64)
   params: {
     uniqueId: uniqueString(resourceGroup().id)
+    environment: environment
+    workloadName: workloadName
     location: location
   }
 }

@@ -67,3 +67,5 @@ resource privateLinkService 'Microsoft.Network/privateLinkServices@2022-01-01' =
 }
 
 output privateLinkServiceId string = privateLinkService.id
+
+output privateEndpointConnections array = privateLinkService.properties.privateEndpointConnections

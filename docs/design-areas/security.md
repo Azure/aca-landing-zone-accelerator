@@ -2,23 +2,17 @@
 
 ## Security considerations for Azure Container Apps Landing Zone Accelerator
 
-This ReadMe File provides design considerations and recommendations for Security when you use Azure Container Apps landing zone accelerator.  It walks through aspects of Azure Contianer Apps (ACA) security governance to think about before implementing any solution.
+This ReadMe File provides design considerations and recommendations for Security when you use the Azure Container Apps landing zone accelerator.  It walks through the decisions related to security and governance that need to be taken before implementing an Azure Container Apps (ACA) solution.
 
-Most of this content is technology-agnostic, because implementation varies among customers. The ReadMe File focuses on how to implement solutions using Azure and open-source software. The decisions made when you create an enterprise-scale landing zone can partially predefine your governance. It's important to understand governance principles because of the effect of the decisions made.
+Most of this content is technology-agnostic, because implementations vary among customers. The README File focuses on how to implement solutions using Azure and open-source software. The decisions made when you create an enterprise-scale landing zone can partially predefine your governance. It's important to understand governance principles because of the effect of the decisions made.
 
-The security profile summarizes high-impact behaviors of Azure Container Apps, which may result in increased security considerations.  When a workload or the landing zones that hosts it require access to any sensitive data or critical systems, it's important to protect the data and assets.
+When a workload in a landing zone requires access to sensitive data and/or critical systems, extra measures may need to be taken to protect company assets. One of the security measures often taken is to eliminate the use of public endpoints. This reference implementation presents such a solution and its security profile is described in this document. 
 
 ### Azure Container  Apps Landing Zone - Topology
 
-![ACA Hub and Spoke architecture](./docs/media/acaInternal/aca-internal.png)
+![ACA Hub and Spoke architecture](../media/acaInternal/aca-internal.png)
 
-### Azure Container Apps Landing Zone - Azure Components
-Pending 
-| Component | Version | Location |
-|-------------|---------------|---------------|
-
--------
-Cloud security is also an incremental process instead of just a static destination. Focus on objectives and key results when envisioning a security end state. Map concepts, frameworks, and standards to the disciplines in the CAF secure methodology alongside mapping to roles and responsibilities for human discipline. The secure methodology provides guidance.
+Cloud security is also an incremental process instead of just a static destination. Architects must focus on objectives and key results when envisioning a security end-state and map concepts, frameworks, and standards to the disciplines in the CAF secure methodology. Alongside this, roles and responsibilities in human disciplines must also be considered. The secure methodology provides guidance.
 
 ### Design Considerations
 

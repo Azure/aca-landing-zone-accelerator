@@ -1,6 +1,4 @@
-<!--Begining of Landing Zone Accelerator - Azure Container Apps -Security.MD v1 -->
-
-## Security considerations for Azure Container Apps Landing Zone Accelerator
+# Azure Container Apps Landing Zone Accelerator - Security
 
 This ReadMe File provides design considerations and recommendations for Security when you use the Azure Container Apps landing zone accelerator.  It walks through the decisions related to security and governance that need to be taken before implementing an Azure Container Apps (ACA) solution.
 
@@ -14,7 +12,8 @@ When a workload in a landing zone requires access to sensitive data and/or criti
 
 Cloud security is also an incremental process instead of just a static destination. Architects must focus on objectives and key results when envisioning a security end-state and map concepts, frameworks, and standards to the disciplines in the CAF secure methodology. Alongside this, roles and responsibilities in human disciplines must also be considered. The secure methodology provides guidance.
 
-### Design Considerations
+---
+### Design Area Considerations
 
 ### 1. Azure Security Baseline for Azure Container Apps Service
 <!-- <content> --> 
@@ -227,9 +226,8 @@ The security profile summarizes high-impact behaviors of Azure Container Apps, w
 <p><strong>Configuration Guidance</strong>: Though Container Apps does not support vulnerability assessment performed by Defender for Containers, the Azure Container Registry that may be integrated with Container Apps does support vulnerability assessment.</p>
 <p><strong>Reference</strong>: <a href="/en-us/azure/defender-for-cloud/defender-for-containers-va-acr" data-linktype="absolute-path">Use Defender for Containers to scan your Azure Container Registry images for vulnerabilities</a></p>
 
------
 
-
+---
 ### Design Recommendations
 ### 1. Network Security
 <p><em>For more information, see the <a href="../mcsb-network-security" data-linktype="relative-path">Microsoft cloud security benchmark: Network security</a>.</em></p>

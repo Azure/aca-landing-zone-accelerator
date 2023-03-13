@@ -1,5 +1,6 @@
-# Networking considerations for Azure Container Apps
+# Azure Container Apps Landing Zone Accelerator - Networking
 
+---
 ## Design Area Considerations
 
 * The Container App Environment acts as a secure boundary around groups of container apps. This environment is connected to an Azure Virtual Network (VNet). You can choose to use an Azure managed VNet if this is a standalone environment without any additional network requirements, or you can use your own VNet. The latter offers two different connectivity models:
@@ -16,7 +17,7 @@
 * For internal facing applications running on Azure Container Apps, resolution of the DNS name to the internal IP address relies on Azure Private DNS Zones. For either the [identifier].[region].azurecontainerapps.io or any custom domain suffix, a Private DNS Zone should be created and linked to any virtual network that needs to resolve the domain name. If a custom DNS solution is used, ensure that a conditional forwarder is set that points the custom domain suffix used for the Azure Container Apps Environment to 168.63.129.16 (Azure DNS).
 * Inside the Private DNS Zone, a wildcard (*) A record can be pointed to the internal load-balancer IP address. 
   
-
+---
 ## Design Area Recommendations
   
 * Deploy container apps in your own custom virtual network to have more control over the network configuration.

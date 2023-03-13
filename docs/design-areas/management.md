@@ -1,8 +1,8 @@
-# Operations management considerations for Azure Container Apps
+# Azure Container Apps Landing Zone Accelerator - Management & Operations
 
 You can work toward operational excellence and customer success by properly designing your Azure Container Apps (ACA) solution with management and monitoring in mind.
 
-----
+---
 ## Design Area considerations
 
 - Understand [ACA limits](https://learn.microsoft.com/en-us/azure/container-apps/quotas).
@@ -30,7 +30,7 @@ You can work toward operational excellence and customer success by properly desi
 
 - A key factor in successful operations is _automation_. Azure DevOps and Github provide ways of managing the development, build and deployment process in a fully automated way. This minimizes the chance of human error and potential downtime for your users. 
 
-----
+---
 ## Design Area Recommendations
 
 - Create distinct ACA environments if you need full resource isolation. Don't use revisions to create tenant specific container apps. [ACA in multitenant solution](https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/service/container-apps).

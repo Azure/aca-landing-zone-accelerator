@@ -2,7 +2,7 @@
 
 This section provides technical documentation for the Azure Container Apps - Landing Zone Accelerator. The following topics are addressed:
 
-1. [Identity](design-areas/identity.md)
+1. [Identity & Access Management](design-areas/identity.md)
 2. [Management & Operations](design-areas/management.md)
 3. [Networking](design-areas/networking.md)
 4. [Security](design-areas/security.md)

@@ -4,6 +4,15 @@ targetScope = 'subscription'
 //    PARAMETERS
 // ------------------
 
+@minLength(2)
+@maxLength(10)
+@description('The name of the workloard that is being deployed. Up to 10 characters long.')
+param workloadName string
+
+@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa") Up to 8 characters long.')
+@maxLength(8)
+param environment string
+
 @description('The location where the resources will be created.')
 param location string = deployment().location
 
@@ -48,7 +57,7 @@ param spokeApplicationGatewaySubnetAddressPrefix string
 var nsgRules = json( replace( loadTextContent('./nsgContainerAppsEnvironment.jsonc') , '<location>', location) )
 var namingRules = json(loadTextContent('../../../../shared/bicep/naming/naming-rules.jsonc'))
 
-var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${namingRules.workloadName}-spoke-${namingRules.environment}-${namingRules.regionAbbreviations[toLower(location)]}'
+var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-spoke-${environment}-${namingRules.regionAbbreviations[toLower(location)]}'
 var hubVNetResourIdTokens = !empty(hubVNetId) ? split(hubVNetId, '/') : array('')
 var hubSubscriptionId = hubVNetResourIdTokens[2]
 var hubResourceGroupName = hubVNetResourIdTokens[4]
@@ -99,6 +108,8 @@ module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
   name: take('02-sharedNamingDeployment-${deployment().name}', 64)
   params: {
     uniqueId: uniqueString(spokeResourceGroup.id)
+    environment: environment
+    workloadName: workloadName
     location: location
   }
 }

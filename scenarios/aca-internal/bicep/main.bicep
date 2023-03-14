@@ -3,9 +3,17 @@ targetScope = 'subscription'
 // ------------------
 //    PARAMETERS
 // ------------------
+@minLength(2)
+@maxLength(10)
+@description('The name of the workloard that is being deployed. Up to 10 characters long.')
+param workloadName string = 'aca-lza'
+
+@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa") Up to 8 characters long.')
+@maxLength(8)
+param environment string = 'test'
 
 @description('The location where the resources will be created.')
-param location string = deployment().location
+param location string =  deployment().location
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
@@ -90,8 +98,8 @@ param enableTelemetry bool
 var telemetryId = '9b4433d6-924a-4c07-b47c-7478619759c7-${location}-acasb'
 
 var namingRules = json(loadTextContent('../../shared/bicep/naming/naming-rules.jsonc'))
-var rgHubName = !empty(hubResourceGroupName) ? hubResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${namingRules.workloadName}-hub-${namingRules.environment}-${namingRules.regionAbbreviations[toLower(location)]}'
-var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${namingRules.workloadName}-spoke-${namingRules.environment}-${namingRules.regionAbbreviations[toLower(location)]}'
+var rgHubName = !empty(hubResourceGroupName) ? hubResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-hub-${environment}-${namingRules.regionAbbreviations[toLower(location)]}'
+var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-spoke-${environment}-${namingRules.regionAbbreviations[toLower(location)]}'
 
 
 // ------------------
@@ -104,6 +112,8 @@ module hub 'modules/01-hub/deploy.hub.bicep' = {
     location: location
     tags: tags
     hubResourceGroupName: rgHubName
+    environment: environment
+    workloadName: workloadName
     vnetAddressPrefixes: vnetAddressPrefixes
     enableBastion: enableBastion
     bastionSubnetAddressPrefix: bastionSubnetAddressPrefix
@@ -128,6 +138,8 @@ module spoke 'modules/02-spoke/deploy.spoke.bicep' = {
     spokeResourceGroupName: spokeResourceGroup.name
     location: location
     tags: tags
+    environment: environment
+    workloadName: workloadName
     hubVNetId:  hub.outputs.hubVNetId
     spokeApplicationGatewaySubnetAddressPrefix: spokeApplicationGatewaySubnetAddressPrefix
     spokeInfraSubnetAddressPrefix: spokeInfraSubnetAddressPrefix
@@ -143,6 +155,8 @@ module supportingServices 'modules/03-supporting-services/deploy.supporting-serv
     location: location
     tags: tags
     spokePrivateEndpointSubnetName: spoke.outputs.spokePrivateEndpointsSubnetName
+    environment: environment
+    workloadName: workloadName
     spokeVNetId: spoke.outputs.spokeVNetId
     hubVNetId: hub.outputs.hubVNetId
   }
@@ -154,6 +168,8 @@ module containerAppsEnvironment 'modules/04-container-apps-environment/deploy.ac
   params: {
     location: location
     tags: tags
+    environment: environment
+    workloadName: workloadName
     hubVNetId:  hub.outputs.hubVNetId
     spokeVNetName: spoke.outputs.spokeVNetName
     spokeInfraSubnetName: spoke.outputs.spokeInfraSubnetName
@@ -179,6 +195,8 @@ module applicationGateway 'modules/06-application-gateway/deploy.app-gateway.bic
   params: {
     location: location
     tags: tags
+    environment: environment
+    workloadName: workloadName
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     applicationGatewayFQDN: applicationGatewayFQDN
     applicationGatewayPrimaryBackendEndFQDN: (deployHelloWorldSample) ? helloWorlSampleApp.outputs.helloWorldAppFQDN : '' // To fix issue when hello world is not deployed

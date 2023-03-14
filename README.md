@@ -34,8 +34,8 @@ The code here is purposely written to avoid loops, complex variables and logic. 
 
 ### Prerequisites 
 - Clone this repo, 
-- Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-- Install [bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
+- Install [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
+- Install [bicep tools](https://docs.microsoft.com/azure/azure-resource-manager/bicep/install)
 
 ### Deployment
 To deploy the Landing Zone Accelerator follow the instructions [here](scenarios/aca-internal/bicep/README.md#fast-deployment)

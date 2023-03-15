@@ -9,7 +9,7 @@ Security is a one of the foundational design principles and also a key design ar
     - The [Container Apps security profile](https://learn.microsoft.com/security/benchmark/azure/baselines/azure-container-apps-security-baseline) from the Microsoft [Cloud Security Benchmark](https://learn.microsoft.com/en-us/security/benchmark/azure/overview) provides a good starting point
     - The [Azure Landing Zone security documentation](https://learn.microsoft.com/azure/cloud-adoption-framework/secure/), part of the Cloud Adoption Framework, provides an additional security view on Landing Zones. 
 
-- Azure Container Apps allows for _internal_ and _external_ connectivity models. This allows for connecting the Container Apps to the outside world directly or not at all. In this Landing Zone Accelerator, we recommend the _internal_ model and assume that the application will be either fully internal facing or will be published externally through a service that adds the appropriate security controls, such as Azure Application Gateway. The security architecture would then look as follows (with the right-most box being optional):
+- Azure Container Apps allows for _internal_ and _external_ connectivity models. This allows for connecting the Container Apps to the outside world directly or not at all. In this Landing Zone Accelerator, we recommend the _internal_ model and assume that the application will be either fully internal facing or will be published externally through a service that adds the appropriate security controls, such as Azure Application Gateway. The security architecture would then look as follows (with the left-most box being optional):
 ![ACA Hub and Spoke architecture](../media/acaInternal/aca-internal.png)
 
 - Security requirements may dictate the collection of certain logs or telemetry. Azure services offer diagnostic settings that enable the collection of platform metrics through Log Analytics or custom solutions. Application specific data-points may also be needed. These can also be collected using Log Analytics or Application Insights, but require the application to be properly instrumented. For this to be done, it is necessary to properly map these requirements before implementing the solution.
@@ -23,4 +23,3 @@ Security is a one of the foundational design principles and also a key design ar
 - Use the Container Apps Security Profile and Azure Landing Zone security documentation as a starting point for securing your Container Apps
 
 - Assess the security log collection requirements and implement the required data collection in the application and infrastructure
-

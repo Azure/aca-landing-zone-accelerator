@@ -23,3 +23,11 @@ Security is a one of the foundational design principles and also a key design ar
 - Use the Container Apps Security Profile and Azure Landing Zone security documentation as a starting point for securing your Container Apps
 
 - Assess the security log collection requirements and implement the required data collection in the application and infrastructure
+
+## References
+
+- [Container Apps security profile](https://learn.microsoft.com/security/benchmark/azure/baselines/azure-container-apps-security-baseline) 
+- [Cloud Security Benchmark](https://learn.microsoft.com/en-us/security/benchmark/azure/overview)
+- [Securing a custom VNET in Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/firewall-integration)
+- [Azure Landing Zone security documentation](https://learn.microsoft.com/azure/cloud-adoption-framework/secure/)
+  

@@ -14,6 +14,7 @@ on:
 env:
   ENVIRONMENT: dev
   LOCATION: northeurope
+  ENABLE_TEARDOWN: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -80,6 +81,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - uses: azure/arm-deploy@v1.0.9
+        id: deployment
         name: Deployment
         with:
           deploymentName: "GitHubAction-${{ github.run_number }}"
@@ -88,3 +90,38 @@ jobs:
           template: ./scenarios/aca-internal/bicep/main.bicep
           parameters: ./scenarios/aca-internal/bicep/main.parameters.jsonc deployHelloWorldSample=false
           failOnStdErr: false
+    outputs:
+      spokeResourceGroupName: ${{ steps.deployment.outputs.spokeResourceGroupName }}
+      hubResourceGroupName: ${{ steps.deployment.outputs.hubResourceGroupName }}
+
+  teardown:
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: ${{ env.ENABLE_TEARDOWN == 'true' }}
+    steps:
+    - uses: trstringer/manual-approval@v1
+      name: Manual Approval of tear-down
+      with:
+        secret: ${{ github.TOKEN }}
+        timeout-minutes: 120
+        approvers: thotheod,aarthiem,kpantos
+        minimum-approvals: 1
+        issue-title: "Deployed ACA-LZA GitHubAction-${{ github.run_number }}"
+        issue-body: "Please approve or deny the tear-down of deployment GitHubAction-${{ github.run_number }}"
+        exclude-workflow-initiator-as-approver: false
+        additional-approved-words: ''
+        additional-denied-words: ''
+    
+    - uses: azure/login@v1
+      name: Sign in to Azure
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - uses: Azure/cli@v1
+      name: Run tear-down
+      with:
+        azcliversion: 2.45.0
+        inlineScript: |
+          az group delete --name ${{ needs.deploy.outputs.spokeResourceGroupName }} --yes
+          az group delete --name ${{ needs.deploy.outputs.hubResourceGroupName }} --yes
+          az deployment delete --name "GitHubAction-${{ github.run_number }}" --no-wait

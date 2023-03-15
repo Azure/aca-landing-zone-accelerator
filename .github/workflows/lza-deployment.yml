@@ -120,5 +120,5 @@ jobs:
       with:
         azcliversion: 2.45.0
         inlineScript: |
-          az group delete --name ${{ needs.deploy.outputs.spokeResourceGroupName }} --yes --no-wait false
-          az group delete --name ${{ needs.deploy.outputs.hubResourceGroupName }} --yes --no-wait false
+          az group delete --name ${{ needs.deploy.outputs.spokeResourceGroupName }} --yes
+          az group delete --name ${{ needs.deploy.outputs.hubResourceGroupName }} --yes

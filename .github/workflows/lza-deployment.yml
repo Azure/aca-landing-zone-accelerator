@@ -86,5 +86,5 @@ jobs:
           scope: subscription
           region: ${{ env.LOCATION }}
           template: ./scenarios/aca-internal/bicep/main.bicep
-          parameters: ./scenarios/aca-internal/bicep/main.parameters.jsonc parameters deployHelloWorldSample=false
+          parameters: ./scenarios/aca-internal/bicep/main.parameters.jsonc deployHelloWorldSample=false
           failOnStdErr: false

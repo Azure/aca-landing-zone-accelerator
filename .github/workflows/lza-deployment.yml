@@ -97,7 +97,7 @@ jobs:
   teardown:
     runs-on: ubuntu-latest
     needs: [deploy]
-    if: ${{ vars.ENABLE_TEARDOWN == 'true' }}
+    if: env.ENABLE_TEARDOWN == 'true'
     steps:
     - uses: trstringer/manual-approval@v1
       name: Manual Approval of tear-down

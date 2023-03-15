@@ -4,9 +4,10 @@
 
 * Container App Environment, which acts as a secure boundary around groups of container apps, are deployed in a VNet. You can bring your custom VNet. There are two deployment methods when you bring your own VNet.
   * External: This type of deployment exposes the hosted container apps by using a virtual IP address that is accessible on the internet. 
-  * Internal: This type of deployment exposes the hosted container apps on an IP address inside your virtual network. The internal endpoint is an internal load balancer. 
+  * Internal: This type of deployment exposes the hosted container apps on an IP address inside your virtual network. The internal endpoint is an internal load balancer. You can restrict the traffic within the container app environment or within the VNet.
 * A dedicated subnet is required for Container Apps Environment if you use custom virtual network. CIDR of the subnet should be /23 or larger.
 * Container Apps reserves 60 IPs in your VNET, and the amount may grow as your container environment scales. Each revision of your app is assigned an IP address from the subnet.  Outbound IPs aren't guaranteed and may change over time.
+* Container Apps currently supports only IPv4 addresses, and IPv6 is not supported.
 * Container Apps creates a managed public IP resource (even with the internal container apps environment), which is used for outbound and management traffic. 
 * You can lock down a network via NSGs with more restrictive rules than the default NSG rules to control all inbound and outbound traffic for the Container App Environment.
 * Azure Container Apps uses Envoy proxy as an edge HTTP proxy. HTTP requests are automatically redirected to HTTPs. Envoy terminates TLS after crossing its boundary. mTLS is only available when using Dapr. When you use Dapr service invocation APIs, mTLS is enabled. However, because Envoy terminates mTLS, inbound calls from Envoy to Dapr-enabled container apps isn't encrypted.
@@ -23,8 +24,10 @@
 * Secure your network by using NSGs with more restrictive rules than the default NSG rules to control all inbound and outbound traffic for the Container App Environment.
 * Use Azure DDoS Protection Standard to protect the virtual network used for the AKS cluster.
 * Use Private Link to secure network connections and use private IP-based connectivity to other managed Azure services used that support Private Link, such as Azure Storage, Azure Container Registry, Azure SQL Database, and Azure Key Vault.
+* Link the private DNS zone with all virtual networks that need to resolve your private endpoint DNS zone.
+* If you are using a custom DNS server, you should ensure that it is configured correctly to resolve the necessary endpoints.
 * All web applications configured to use an ingress should use TLS encryption and not allow access over unencrypted HTTP.
-* For internet-facing and security-critical, internal-facing web applications, use a web application firewall with the ingress controller. Azure Application Gateway and Azure Front Door both integrate the Azure Web Application Firewall to protect web-based applications.
+* For internet-facing and security-critical, internal-facing web applications, use a web application firewall with the http/tcp ingress. Azure Application Gateway and Azure Front Door both integrate the Azure Web Application Firewall to protect web-based applications.
    
 ## References
 

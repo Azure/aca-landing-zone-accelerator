@@ -6,6 +6,8 @@ Azure Container apps Landing Zone Accelerator represents the strategic design pa
 
 This repository provides packaged guidance for customer scenarios, reference architecture, reference implementation, tooling, design area guidance, sample application deployed after provisioning the infrastructure using the accelerator. The architectural approach can be used as design guidance for greenfield implementation and as an assessment for brownfield customers already using containerized apps. 
 
+![ACA Hub and Spoke architecture](./docs/media/acaInternal/aca-internal.png)
+
 ## Enterprise-Scale Architecture
 
 The enterprise architecture is broken down into key design areas, where you can find the links to each at:
@@ -16,40 +18,10 @@ The enterprise architecture is broken down into key design areas, where you can 
 | Management and Monitoring|[Design Considerations and Recommendations](/docs/design-areas/management.md)
 | Security, Governance, and Compliance|[Design Considerations and Recommendations](/docs/design-areas/security.md)
 
-## Steps of Implementation for Applications on Azure Container Apps
+## Enterprise-Scale Reference Implementation
 
-A deployment of ACA-hosted workloads typically experiences a separation of duties and lifecycle management in the area of prerequisites, the host network, the cluster infrastructure, and finally the workload itself. This reference implementation steps are created by keeping that in mind. Also, be aware our primary purpose is to illustrate the topology and decisions of a baseline cluster. We feel a "step-by-step" flow will help you learn the pieces of the solution and give you insight into the relationship between them. Ultimately, lifecycle/SDLC management of your cluster and its dependencies will depend on your situation (team roles, organizational standards, tooling, etc), and must be implemented as appropriate for your needs.
+In this repo you will find reference implementations with supporting *Infrastructure as Code* artifacts. Currently we support one scenario named [Azure Container Apps Internal](scenarios/aca-internal/README.md), implementated with [Bicep](scenarios/aca-internal/bicep/README.md). More reference implementations will be added as they become available.
 
-![ACA Hub and Spoke architecture](./docs/media/acaInternal/aca-internal.png)
-
-## Accounting for Separation of Duties
-
-While the code here is located in one folder in a single repo, the steps are designed to mimic how an organization may break up the deployment of various Azure components across teams, into different code repos or have them run by different pipelines with specific credentials.
-
-## Keeping It As Simple As Possible
-
-The code here is purposely written to avoid loops, complex variables and logic. In most cases, it is resource blocks, small modules and limited variables, with the goal of making it easier to determine what is being deployed and how they are connected. Resources are broken into separate files for future modularization or adjustments as needed by your organization.
-
-## Getting Started
-
-### Prerequisites 
-- Clone this repo, 
-- Install [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
-- Install [bicep tools](https://docs.microsoft.com/azure/azure-resource-manager/bicep/install)
-
-### Deployment
-To deploy the Landing Zone Accelerator follow the instructions [here](scenarios/aca-internal/bicep/README.md#fast-deployment)
-
-### Step-by-Step (selective) deployment
-
-This section is organized using folders that match the steps outlined below. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment.
-
-
-1. [Creation of Hub Network & its respective Components](scenarios/aca-internal/bicep/modules/01-hub/README.md)
-2. [Creation of Spoke Network & its respective Components](scenarios/aca-internal/bicep/modules/02-spoke/README.md)
-3. [Creation of Supporting Components for ACA](scenarios/aca-internal/bicep/modules/03-supporting-services/README.md)
-4. [Creation of ACA Environment](scenarios/aca-internal/bicep/modules/04-container-apps-environment/README.md)
-5. [Simple *Hello World* Sample App](scenarios/aca-internal/bicep/modules/05-hello-world-sample-app/README.md) or [Java Dapr-enabled Micrososervices Sample app](scenarios/aca-internal/bicep/sample-apps/java-fine-collection-service/README.md)
 
 ## Got a feedback
 Please leverage issues if you have any feedback or request on how we can improve on this repository.

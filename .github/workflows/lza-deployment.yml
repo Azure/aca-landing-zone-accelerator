@@ -14,7 +14,6 @@ on:
 env:
   ENVIRONMENT: dev
   LOCATION: northeurope
-  ENABLE_TEARDOWN: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -97,10 +96,13 @@ jobs:
   teardown:
     runs-on: ubuntu-latest
     needs: [deploy]
-    if: env.ENABLE_TEARDOWN == 'true'
+    env:
+      ENABLE_TEARDOWN: true    
+    
     steps:
     - uses: trstringer/manual-approval@v1
       name: Manual Approval of tear-down
+      if: env.ENABLE_TEARDOWN == 'true'      
       with:
         secret: ${{ github.TOKEN }}
         timeout-minutes: 120
@@ -113,12 +115,14 @@ jobs:
         additional-denied-words: ''
     
     - uses: azure/login@v1
+      if: env.ENABLE_TEARDOWN == 'true'
       name: Sign in to Azure
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
     - uses: Azure/cli@v1
       name: Run tear-down
+      if: env.ENABLE_TEARDOWN == 'true'
       with:
         azcliversion: 2.45.0
         inlineScript: |

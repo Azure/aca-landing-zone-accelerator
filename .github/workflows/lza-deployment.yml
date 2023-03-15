@@ -80,6 +80,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - uses: azure/arm-deploy@v1.0.9
+        id: deployment
         name: Deployment
         with:
           deploymentName: "GitHubAction-${{ github.run_number }}"
@@ -88,6 +89,9 @@ jobs:
           template: ./scenarios/aca-internal/bicep/main.bicep
           parameters: ./scenarios/aca-internal/bicep/main.parameters.jsonc deployHelloWorldSample=false
           failOnStdErr: false
+    outputs:
+      spokeResourceGroupName: ${{ steps.deployment.outputs.spokeResourceGroupName }}
+      hubResourceGroupName: ${{ steps.deployment.outputs.hubResourceGroupName }}
 
   teardown:
     runs-on: ubuntu-latest
@@ -116,5 +120,5 @@ jobs:
       with:
         azcliversion: 2.45.0
         inlineScript: |
-          az group delete --name ${{ steps.deploy.outputs.spokeResourceGroupName }} --yes --no-wait false
-          az group delete --name ${{ steps.deploy.outputs.hubResourceGroupName }} --yes --no-wait false
+          az group delete --name ${{ needs.deploy.outputs.spokeResourceGroupName }} --yes --no-wait false
+          az group delete --name ${{ needs.deploy.outputs.hubResourceGroupName }} --yes --no-wait false

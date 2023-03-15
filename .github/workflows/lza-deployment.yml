@@ -84,7 +84,7 @@ jobs:
         with:
           deploymentName: "GitHubAction-${{ github.run_number }}"
           scope: subscription
-          region: ${{ ${{ env.LOCATION }} }}
+          region: ${{ env.LOCATION }}
           template: ./scenarios/aca-internal/bicep/main.bicep
           parameters: ./scenarios/aca-internal/bicep/main.parameters.jsonc parameters deployHelloWorldSample=false
           failOnStdErr: false

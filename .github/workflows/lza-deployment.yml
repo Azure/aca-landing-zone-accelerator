@@ -97,7 +97,7 @@ jobs:
   teardown:
     runs-on: ubuntu-latest
     needs: [deploy]
-    if: ${{ env.ENABLE_TEARDOWN == 'true' }}
+    if: env.ENABLE_TEARDOWN == 'true'
     steps:
     - uses: trstringer/manual-approval@v1
       name: Manual Approval of tear-down
@@ -124,4 +124,4 @@ jobs:
         inlineScript: |
           az group delete --name ${{ needs.deploy.outputs.spokeResourceGroupName }} --yes
           az group delete --name ${{ needs.deploy.outputs.hubResourceGroupName }} --yes
-          az deployment delete --name "GitHubAction-${{ github.run_number }}" --no-wait
+          az deployment sub delete --name "GitHubAction-${{ github.run_number }}" --no-wait

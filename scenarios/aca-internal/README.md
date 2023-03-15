@@ -23,6 +23,6 @@ For this scenario, we will have various IaC technology that you can choose from 
 ## Next
 Pick one of the IaC options below and follow the instructions to deploy the ACA reference implementation.
 
-:arrow_forward: [Bicep](./Bicep) 
+:arrow_forward: [Bicep](./bicep) 
 
 :arrow_forward: [Terraform](./Terraform) (coming soon)

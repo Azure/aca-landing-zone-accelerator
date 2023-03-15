@@ -1,30 +1,47 @@
-# Enterprise Scale for ACA - Private 
+# Enterprise Scale for ACA Internal  - Bicep Implementation
 
-## Steps of Implementation for Applications on Azure Container Apps
-
-A deployment of ACA-hosted workloads typically experiences a separation of duties and lifecycle management in the area of prerequisites, the host network, the cluster infrastructure, and finally the workload itself. This reference implementation steps are created by keeping that in mind. Also, be aware our primary purpose is to illustrate the topology and decisions of a baseline cluster. We feel a "step-by-step" flow will help you learn the pieces of the solution and give you insight into the relationship between them. Ultimately, lifecycle/SDLC management of your cluster and its dependencies will depend on your situation (team roles, organizational standards, tooling, etc), and must be implemented as appropriate for your needs.
-
-## Accounting for Separation of Duties
-
-While the code here is located in one folder in a single repo, the steps are designed to mimic how an organization may break up the deployment of various Azure components across teams, into different code repos or have them run by different pipelines with specific credentials.
-
-Some organizations or end users of this LZA most possibly have already a Hub and Spoke topology. Each building block of the landing zone can be deployed by a different team, or even by different pipelines. The code here is designed to be modular and flexible to allow for that. You can easily adapt them to your own needs and requirements.
-
-If you already have a hub or supporting services, you can bypass the creation of these building blocks and brind your own hub and supporting services. You can also deploy the hub and supporting services in a different subscription or resource group.
-
-## Keeping It As Simple As Possible
-
-The code here is purposely written to avoid loops, complex variables and logic. In most cases, it is resource blocks, small modules and limited variables, with the goal of making it easier to determine what is being deployed and how they are connected.
-
-Resources are broken into 6 main building blocks for future modularization or adjustments as needed by your organization: hub, spoke, supporting services, container apps environment, Hello World sample app (optional) and application gateway. Front Door is also available as an alternative to Application Gateway.
+A deployment of ACA-hosted workloads typically experiences a separation of duties and lifecycle management in the area of prerequisites, the host network, the cluster infrastructure, and finally the workload itself. This reference implementation  can be used with two different ways, as explained next. The primary purpose of this implementation is to illustrate the topology and decisions of a secure baseline Azure COntainer Apps environment. 
 
 TODO: Centralized Resource naming following CAF recommendations
 
-## Fast Deployment
+## Prerequisites 
+- Clone this repo
+- Install [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
+- Install [bicep tools](https://docs.microsoft.com/azure/azure-resource-manager/bicep/install)
 
-On the contrary, if you want to deploy the complete landing zone in a single subscription, you can do so by using the main.bicep file in the root of this folder. If you want to deploy with one of the sample applications, you can find the documentation in the [sample-apps](sample-apps/) folder. Each application has its own bicep file and parameters file and describe how to deploy them in an existing landing zone or with a new one.
 
-To deploy the complete landing zone, first review the parameters in [main.parameters.jsonc](./main.parameters.jsonc). Then you can use the following command to deploy the landing zone:
+
+### Standalone Deployment Guide
+
+You can deploy the complete landing zone in a single subscription, by using the main.bicep file in the root of this folder. If you want to deploy with one of the sample applications, you can find the documentation in the [sample-apps](sample-apps/) folder. Each application has its own bicep file and parameters file and describe how to deploy them in an existing landing zone or with a new one.
+
+To deploy the complete landing zone, first review the parameters in [main.parameters.jsonc](./main.parameters.jsonc). 
+
+Before deploying the Bicep IaC artifacts, you need to review and customize the values of the parameters in the [main.parameters.jsonc](main.parameters.jsonc) file. 
+
+The table below summurizes the avaialble parameters and the possible values that can be set. 
+
+TODO: Change
+| Name | Description | Example | 
+|------|-------------|---------|
+|applicationName|A suffix that will be used to name the resources in a pattern similar to ` <resourceAbbreviation>-<applicationName> ` . Must be up to 10 characters long, alphanumeric with dashes|app-svc-01|
+|location|Azure region where the resources will be deployed in||
+|environment|Required. The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.||
+|vnetHubResourceId|If empty, then a new hub will be created. If you select not to deploy a new Hub resource group, set the resource id of the Hub Virtual Network that you want to peer to. In that case, no new hub will be created and a peering will be created between the new spoke and and existing hub vnet|/subscriptions/<subscription_id>/ resourceGroups/<rg_name>/providers/ Microsoft.Network/virtualNetworks/<vnet_name>|
+|firewallInternalIp|If you select to create a new Hub, the UDR for locking the egress traffic will be created as well, no matter what value you set to that variable. However, if you select to connect to an existing hub, then you need to provide the internal IP of the azure firewal so that the deployment can create the UDR for locking down egress traffic. If not given, no UDR will be created||
+|hubVnetAddressSpace|If you deploy a new hub, you need to set the appropriate CIDR of the newly created Hub virtual network|10.242.0.0/20|
+|subnetHubFirewallAddressSpace|CIDR of the subnet that will host the azure Firewall|10.242.0.0/26|
+|subnetHubBastionddressSpace|CIDR of the subnet that will host the Bastion Service|10.242.0.64/26|
+|spokeVnetAddressSpace|CIDR of the spoke vnet that will hold the app services plan and the rest supporting services (and their private endpoints)|10.240.0.0/20|
+|subnetSpokeAppSvcAddressSpace|CIDR of the subnet that will hold the app services plan|10.240.0.0/26|
+|subnetSpokeDevOpsAddressSpace|CIDR of the subnet that will hold devOps agents etc|10.240.10.128/26|
+|subnetSpokePrivateEndpointAddressSpace|CIDR of the subnet that will hold the private endpoints of the supporting services|10.240.11.0/24|
+|webAppPlanSku|Defines the name, tier, size, family and capacity of the App Service Plan. Plans ending to _AZ, are deplying at least three instances in three Availability Zones. select one from: 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V3', 'P2V3', 'P3V3', 'P1V3_AZ', 'P2V3_AZ', 'P3V3_AZ' ||
+|webAppBaseOs|The OS for the App service plan. Two options available: Windows or Linux||
+|resourceTags|Resource tags that we might need to add to all resources (i.e. Environment, Cost center, application name etc)|"resourceTags": {<br>         "value": { <br>               "deployment": "bicep", <br>  "key1": "value1" <br>           } <br>         } |
+|sqlServerAdministrators|The Azure Active Directory (AAD) administrator group used for SQL Server authentication.  The Azure AD group  must be created before running deployment. This has three values that need to be filled, as shown below <br> **login**: the name of the AAD Group <br> **sid**: the object id  of the AAD Group <br> **tenantId**: The tenantId of the AAD ||
+
+Then you can use the following command to deploy the landing zone:
 
 ```azcli
 az deployment sub create \
@@ -35,7 +52,7 @@ az deployment sub create \
 ```
  where `<LOCATION>` is the location where you want to deploy the landing zone and `<DEPLOYMENT_NAME>` is the name of the deployment.
 
-## Complete Deployment Guide
+### End-to-End Deployment with Sample Application
 
 This section is organized using folders that match the steps outlined below. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment. Please read carrefully the documentation of each step before deploying it. All bicep templates parameters are documented in the bicep templates.
 
@@ -47,7 +64,7 @@ This section is organized using folders that match the steps outlined below. Mak
 5. [Hello World Sample Container App (Optional)](modules/05-hello-world-sample-app/README.md)
 6. [Application Gateway](modules/06-application-gateway/README.md) or [Front Door](modules/06-front-door/README.md)  
 
-## Cleanup
+### Cleanup
 
 To remove the resources created by this landing zone, you can use the following command:
 

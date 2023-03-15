@@ -229,7 +229,7 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
 output hubVNetId string = hub.outputs.hubVNetId
 
 // Spoke
-@description('The name of the Hub resource group.')
+@description('The name of the Spoke resource group.')
 output spokeResourceGroupName string = spokeResourceGroup.name
 
 @description('The  resource ID of the Spoke Virtual Network.')

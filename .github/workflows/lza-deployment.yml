@@ -65,7 +65,7 @@ jobs:
           azcliversion: 2.45.0
           inlineScript: |
             az deployment sub what-if \
-              --location ${{ ${{ env.LOCATION }} }} \
+              --location ${{ env.LOCATION }} \
               --template-file ./scenarios/aca-internal/bicep/main.bicep \
               --parameters ./scenarios/aca-internal/bicep/main.parameters.jsonc \
               --parameters deployHelloWorldSample=false

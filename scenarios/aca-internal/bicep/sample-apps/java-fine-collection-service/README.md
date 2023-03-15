@@ -12,9 +12,15 @@ The sample app is available [here](https://github.com/Azure/java-aks-aca-dapr-wo
 
 ## Overview
 
-For the simulation, the following services are defined:
+The Fine Collection Service sample app consists of three microservices:
 
-![Services](docs/media/application-diagram.png)
+* `vehicle-registration-service`
+* `fine-collection-service`
+* `traffic-control-service`
+
+Interraction/communication between these microservices is described below: 
+
+![Services](docs/media/fine-collection-sequence-diagram.png)
 
 1. The **Camera Simulation** generates a random license-number and sends a *VehicleRegistered* message (containing this license-number, a random entry-lane (1-3) and the timestamp) to the `/entrycam` endpoint of the Traffic Control Service.
 2. The **Traffic Control Service** stores the *VehicleState* (license-number and entry-timestamp) in Azure Cosmos DB.

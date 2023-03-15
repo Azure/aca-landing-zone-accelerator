@@ -20,20 +20,19 @@ For the simulation, the following services are defined:
 2. The **Traffic Control Service** stores the *VehicleState* (license-number and entry-timestamp) in Azure Cosmos DB.
 3. After some random interval, the Camera Simulation sends a *VehicleRegistered* message to the `/exitcam` endpoint of the Traffic Control Service (containing the license-number generated in step 1, a random exit-lane (1-3) and the exit timestamp).
 4. The Traffic Control Service retrieves the *VehicleState* that was stored in Azure Cosmos DB at vehicle entry.
-5. The Traffic Control Service calculates the average speed of the vehicle using the entry- and exit-timestamp. It also stores the *VehicleState* in Azure Cosmos DB with the exit timestamp for audit purposes, but this is left out of the sequence diagram for clarity.
+5. The Traffic Control Service calculates the average speed of the vehicle using the entry- and exit-timestamp. It also stores the *VehicleState* in Azure Cosmos DB with the exit timestamp for audit purposes.
 6. If the average speed is above the speed-limit, the Traffic Control Service publishes *SpeedingViolation* payload to Azure Service Bus topic *test*. 
 7. The **Fine Collection Service** subscribes to Azure Service Bus topic *test*.
 8. The Fine Collection Service calculates the fine for the speeding-violation.
 9. The Fine Collection Serivice calls the `/vehicleinfo/{license-number}` endpoint of the Vehicle Registration Service with the license-number of the speeding vehicle to retrieve its vehicle- and owner-information. It uses Dapr service-to-service invocation to call the Vehicle Registration Service.
 10. The **Vehicle Registration Service** offers 1 REST endpoint: `/getvehicleinfo/{license-number}` for getting the vehicle- and owner-information of a vehicle.
 
-![Fine Collection Service - Sequence Diagram](docs/media/fine-collection-sequence-diagram.png)
 
-More information on the architecture of the sample app can be found [here](./docs/00-fine-collection-architecture.md).
+:arrow_forward: [More information on the architecture of the sample app](./docs/00-fine-collection-architecture.md)
 
 ## Deployment
 
 The deployment of the sample app is done in 2 steps:
 
-1. [Deploy the landing zone](./docs/01-landing-zone.md)
-2. [Deploy the container apps, their dependencies and the camera simulation](./docs/02-container-apps.md)
+1. :arrow_forward: [Deploy the landing zone](./docs/01-landing-zone.md)
+2. :arrow_forward: [Deploy the container apps, their dependencies and the camera simulation](./docs/02-container-apps.md)

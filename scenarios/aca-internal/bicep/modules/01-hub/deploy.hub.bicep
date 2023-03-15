@@ -183,3 +183,6 @@ module jumpboxWindowsVM './modules/vm/windows-vm.bicep' = if (vmJumpboxOSType ==
 
 @description('The resource ID of hub virtual network.')
 output hubVNetId string = vnetHub.outputs.vnetId
+
+@description('The name of the Hub resource group.')
+output resourceGroupName string = hubResourceGroup.name

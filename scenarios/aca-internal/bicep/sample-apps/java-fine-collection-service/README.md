@@ -30,7 +30,7 @@ Interraction/communication between these microservices is described below:
 6. If the average speed is above the speed-limit, the Traffic Control Service publishes *SpeedingViolation* payload to Azure Service Bus topic *test*. 
 7. The **Fine Collection Service** subscribes to Azure Service Bus topic *test*.
 8. The Fine Collection Service calculates the fine for the speeding-violation.
-9. The Fine Collection Serivice calls the `/vehicleinfo/{license-number}` endpoint of the Vehicle Registration Service with the license-number of the speeding vehicle to retrieve its vehicle- and owner-information. It uses Dapr service-to-service invocation to call the Vehicle Registration Service.
+9. The Fine Collection Service calls the `/vehicleinfo/{license-number}` endpoint of the Vehicle Registration Service with the license-number of the speeding vehicle to retrieve its vehicle- and owner-information. It uses Dapr service-to-service invocation to call the Vehicle Registration Service.
 10. The **Vehicle Registration Service** offers 1 REST endpoint: `/getvehicleinfo/{license-number}` for getting the vehicle- and owner-information of a vehicle.
 
 

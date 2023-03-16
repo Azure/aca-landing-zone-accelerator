@@ -46,10 +46,10 @@ Below you can see the selected folder structure for the project. The main folder
 - **docs**
   The *docs* folder contains two subfolders; **design-areas** and **media**.
   - The **design-areas** subfolder contains the relevant documentation. 
-  - The **media** subfolder  will contain images or other media file types used in the README.md files. Folder structure inside that subfolder is optional and free to the grouping desires of every author. For instance if you create the README.md file describing the architecture of the *scenario1* scenario, and *scenario1* sub-folder may be created to group all supporting media files together. In the same context, if the *Design Area* documents (as described above) need some supporting media material, we can add them in this subfolder or create a new subfolder, named *design-areas* and add them all there, for grouping puproses
+  - The **media** subfolder  will contain images or other media file types used in the README.md files. Folder structure inside that subfolder is optional and free to the grouping desires of every author. For instance if you create the README.md file describing the architecture of the *scenario1* scenario, and *scenario1* sub-folder may be created to group all supporting media files together. In the same context, if the *Design Area* documents (as described above) need some supporting media material, we can add them in this subfolder or create a new subfolder, named *design-areas* and add them all there, for grouping purposes
   
 - **scenarios**
-  This folder can contain one or more scenarios (currently contains secure-baseline-ase and secure-baseline-multitenant), but in the future more scenarios might be added. Each scenario has the following (minimum) folder structure
+  This folder can contain one or more scenarios. Each scenario has the following (minimum) folder structure
   - (scenario1)\bicep
     Stores Azure Bicep related deployment scripts and artifacts for the given scenario. Contains also a README.md file that gives detailed instructions on how to use the specific IaC artifacts and scripts, to help end users parameterize and deploy successfully the LZA scenario
   - (scenario1)\terraform
@@ -143,9 +143,9 @@ A guide outlining the coding conventions and style guidelines that should be fol
 ### Bicep Best Practices and Conventions
 - The starting point for any deployment should be named **main.bicep**. This (usually) should be the main deployment file, scoped at *subscription* level, and it would call several sub-deployments, usually at the resource group scope. 
   - The **main.bicep** file should be accompanied with a parameter file named **main.parameters.jsonc**. The benefit of the `*.jsonc` file extension is that you can use  inline comments (either `//` or `/* ... */`) in Visual Studio Code (otherwise you will get an error message saying "*Comments not permitted in JSON*"). [Bicep Parameter Files](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/parameter-files)
-  - Details of using the deployment should be given in the README.md file. However if we need extra scripts to either deploy the bicep files or other functionality use a naming conventions as the following
+  - Details of using the deployment should be given in the README.md file. However if we need extra scripts to either deploy the bicep files or other functionality use a naming convention as the following
     - deploy.main.sh: for bash-based script deploying the main.bicep
-    - deploy.main.ps1: for powershell-based script deploying the main.bicep
+    - deploy.main.ps1: for PowerShell-based script deploying the main.bicep
 
 - Do not include compiled versions of the bicep files (i.e. no `main.json ` files)
 
@@ -258,21 +258,21 @@ A guide outlining the coding conventions and style guidelines that should be fol
   - All parameters should have a meaningful `@description` decorator
   - Use constraints where possible, allowed values, min/max, but Use the `@allowed` decorator sparingly, as it can mistakenly result in blocking valid deployments
   - If more than one parameter decorators are present, the `@description` decorator should always come first. 
-  - Avoid prompting for parameter value at runtime. Parameters should either be initialized in the bicep template file and/or in the accompanying pramater file.
+  - Avoid prompting for parameter value at runtime. Parameters should either be initialized in the bicep template file and/or in the accompanying paramater file.
 
 - `targetScope` should always be indicated at the beginning of the bicep template file
 
 - Use variables for values that are used multiple times throughout a template or for creating complex expressions
 - Remove all unused variables from all templates
 
-- Parameters and variables should be named according to their use on specific properties where applicable.  For example a parameter used for the name property on a storageAccount would be named `storageAccountName` rather than simple `name` or `storageAccount`. A parameter used for the size of a VM should be `vmSize` rather than `size`.  As well, parameters, variables and outputs that related to a specific resource should use the resource's symbolic name as a prefix.
+- Parameters and variables should be named according to their use on specific properties where applicable.  For example a parameter used for the name property on a Storage Account would be named `storageAccountName` rather than simple `name` or `storageAccount`. A parameter used for the size of a VM should be `vmSize` rather than `size`.  As well, parameters, variables and outputs that related to a specific resource should use the resource's symbolic name as a prefix.
   
 - Consider sanitizing names of resources to avoid deployment errors. For example consider the name limitations for a storage account (all lowercase, less than 24 characters long, no dashes etc). 
   ``` bicep
   var maxStorageNameLength = 24
   var storageName = take( toLower(substring(replace(name, '-', ''), 0, maxStorageNameLength)), maxStorageNameLength)
   ``` 
-- Use bicep **parameter** files for giving the end user the ability to parametrize the deployed resources. (i.e. to select CIDR network spaces, to select SKUs for given resources etc). As a rule of thumb, avoid using the parameter file for *naming recources*, unless there is a really good reason for that. Naming resources should be handled centrally (preferably with variables), following specific rules (as already described). Try not to overuse parameters in the template, because this creates a burden on your template users, since they need to understand the values to use for each resource, and the impact of setting each parameter. Consider using the [t-shirt sizing pattern](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/patterns-configuration-set#solution)
+- Use bicep **parameter** files for giving the end user the ability to parametrize the deployed resources. (i.e. to select CIDR network spaces, to select SKUs for given resources etc). As a rule of thumb, avoid using the parameter file for *naming resources*, unless there is a really good reason for that. Naming resources should be handled centrally (preferably with variables), following specific rules (as already described). Try not to overuse parameters in the template, because this creates a burden on your template users, since they need to understand the values to use for each resource, and the impact of setting each parameter. Consider using the [t-shirt sizing pattern](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/patterns-configuration-set#solution)
 
 - Avoid using `dependsOn` in the bicep template files. Bicep is building [implicit depedencies](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/resource-dependencies#implicit-dependency) for us, as long as we follow some good practices rules. For instance a resource A depends on a Resource B (i.e. a storage Account) chances are that in resource A you need somehow to pass data of the Resource B(i.e. name, ID etc.). In that case, avoid passing the resource name as string, but pass the property Name of the resource instead (i.e. `myStorage.Name`)
 

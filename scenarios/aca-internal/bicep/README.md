@@ -147,12 +147,12 @@ The [LZA Deployment Github Action](../../../.github/workflows/lza-deployment.yml
 
 ### End-to-End Deployment with Sample Application
 
-This section is organized using folders that match the steps outlined below. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment. Please read carrefully the documentation of each step before deploying it. All bicep templates parameters are documented in the bicep templates.
+With this method of deployment, you can leverage the step-by-step process, where possibly different teams (devops, network, operations etc) with different levels of access, are required to co-ordinate and deploy all of the required resources. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment. Please read carrefully the documentation of each step before deploying it. All bicep templates parameters are documented in the bicep templates.
 
-0. Preqs - Clone this repo, install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), install [Bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
-1. [Hub](modules/01-hub/README.md)
-2. [Spoke](modules/02-spoke/README.md)
-3. [Supporting Services](modules/03-supporting-services/README.md)
-4. [ACA Environment](modules/04-container-apps-environment/README.md)
-5. [Hello World Sample Container App (Optional)](modules/05-hello-world-sample-app/README.md)
-6. [Application Gateway](modules/06-application-gateway/README.md) or [Front Door](modules/06-front-door/README.md)  
+1. Preqs - Clone this repo, install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), install [Bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
+2. [Hub](modules/01-hub/README.md)
+3. [Spoke](modules/02-spoke/README.md)
+4. [Supporting Services](modules/03-supporting-services/README.md)
+5. [ACA Environment](modules/04-container-apps-environment/README.md)
+6. [Hello World Sample Container App (Optional)](modules/05-hello-world-sample-app/README.md)
+7. [Application Gateway](modules/06-application-gateway/README.md) or [Front Door](modules/06-front-door/README.md)  

@@ -7,7 +7,7 @@ The following will be created:
 
 ![Application Gateway](./media/application-gateway.png)
 
-Review `parameters-main.json` and update the values as required. Once the files are updated, deploy using az cli or Az PowerShell.
+Review `deploy.app-gateway.parameters.jsonc` and update the values as required. Once the files are updated, deploy using az cli or Az PowerShell.
 
 ## [CLI](#tab/CLI)
 

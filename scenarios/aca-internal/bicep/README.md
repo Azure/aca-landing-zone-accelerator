@@ -3,7 +3,7 @@
 A deployment of ACA-hosted workloads typically experiences a separation of duties and lifecycle management in the area of prerequisites, the host network, the cluster infrastructure, and finally the workload itself. This reference implementation  can be used with two different ways, as explained next. The primary purpose of this implementation is to illustrate the topology and decisions of a secure baseline Azure Container Apps environment. 
 
 ## Prerequisites 
-- Clone this repo (you may need to fork it, if you wish to utilize the [LZA Deployment Github Action](../../../.github/workflows/lza-deployment.yml))
+- Clone this repo (you may need to fork it, if you wish to utilize the [LZA Deployment GitHub Action](../../../.github/workflows/lza-deployment.yml))
 - Install [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
 - Install [bicep tools](https://docs.microsoft.com/azure/azure-resource-manager/bicep/install)
 - Register the following Azure Resource Providers (if not already registered)
@@ -29,7 +29,7 @@ A deployment of ACA-hosted workloads typically experiences a separation of dutie
         ```
 
 ### Resource Naming Convention
-An effective naming convention consists of resource names from important information about each resource. A good name helps you quickly identify the resource's type, associated workload, environment, and the Azure region hosting it. The naming of the resources in this implementation follow [Azure Best Practices](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming). Your organization might has already a naming strategy in place, which possibly deviates from the current implementation. The naming of the resources, is automated and centralized, so that in most of the cases can be easily modified or even overriden. The naming module consists of two files
+An effective naming convention consists of resource names from important information about each resource. A good name helps you quickly identify the resource's type, associated workload, environment, and the Azure region hosting it. The naming of the resources in this implementation follow [Azure Best Practices](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming). Your organization might has already a naming strategy in place, which possibly deviates from the current implementation. The naming of the resources, is automated and centralized, so that in most of the cases can be easily modified or even overridden. The naming module consists of two files
 -  [naming-rules.jsonc](../../shared/bicep/naming/naming-rules.jsonc). In this file you can override: 
    -  the abbreviation of the resources (`resourceTypeAbbreviations`), which currently follows Azure [recommended abreviations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations). 
    -  the list of azure regions and their abbreviation (`regionAbbreviations`) (NOTE: the list may not be complete - check if the region you plan to deploy is included)
@@ -57,7 +57,7 @@ The table below summurizes the avaialble parameters and the possible values that
 | vmAdminUsername | The username to use for the virtual machine |  | 
 | vmAdminPassword | The password to use for the virtual machine |  | 
 | vmLinuxSshAuthorizedKeys | The SSH public key to use for the virtual machine (if VM is linux) |  | 
-| vmJumpboxOSType | The type of OS for the deployed jumbbox - Can be `linux` or `windows` |  | 
+| vmJumpboxOSType | The type of OS for the deployed jump box - Can be `linux` or `windows` |  | 
 | vmJumpBoxSubnetAddressPrefix | CIDR to use for the virtual machine subnet |  | 
 | spokeVNetAddressPrefixes | An array of string. The address prefixes to use for the spoke virtual network |  | 
 | spokeInfraSubnetAddressPrefix | CIDR of the Spoke Infrastructure Subnet |  | 
@@ -97,7 +97,7 @@ az deployment sub create `
 After your Hub, Spoke, supporting services and Azure Container Apps Environment are deployed (and if you selected `deployHelloWorldSample: false`) you may proceed to deploy Fine Collection Sample App
 :arrow_forward: [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md)
 
-#### Cleanup
+#### Clean up resources
 
 To remove the resources created by this landing zone, you can use the following command:
 
@@ -114,9 +114,9 @@ az group delete -n $SPOKE_RESOURCE_GROUP_NAME --yes
 az group delete -n $HUB_RESOURCE_GROUP_NAME --yes
 ```
 
-### Standalone Deployment Guide With Github Action
-With this method, you can leverage the included [LZA Deployment github action](../../../.github/workflows/lza-deployment.yml) to deploy the Azure Container Apps Infrastructure resources. 
-> NOTE: To use the github action you need to [fork the repository](https://github.com/Azure/ACA-Landing-Zone-Accelerator/fork) to your organization. 
+### Standalone Deployment Guide With GitHub Action
+With this method, you can leverage the included [LZA Deployment gitHub action](../../../.github/workflows/lza-deployment.yml) to deploy the Azure Container Apps Infrastructure resources. 
+> NOTE: To use the gitHub action you need to [fork the repository](https://github.com/Azure/ACA-Landing-Zone-Accelerator/fork) to your organization. 
 
 #### Setup authentication between Azure and GitHub.
 The easiest way to do that, is to use a [service principal](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#use-the-azure-login-action-with-a-service-principal-secret). 
@@ -140,14 +140,14 @@ The easiest way to do that, is to use a [service principal](https://learn.micros
 4. Navigate to where you cloned the GitHub repository and go to **Settings** > **Secrets and variables** > **Actions** > **New repository secret**.
 5. Create a new secret called `AZURE_CREDENTIALS` with the JSON information in step 3 (in JSON format).
 
-#### Modify/Parametrize the github Action
+#### Modify/Parametrize the gitHub Action
 The [LZA Deployment Github Action](../../../.github/workflows/lza-deployment.yml) can be triggered manually, or automatically When a pull request is issued for the main branch. There are two importan environment variables
 - `LOCATION`: Default value is `northeurope`, but you may wish to change it to deploy in a region of your choice 
 - `ENABLE_TEARDOWN`: Default value is `true`, which means that the deployment will be cleaned up at the end (after manual approval or after 120 minutes have expired). If you wish not to clean up automatically the resources you need to change that value to `false`. 
 
 ### End-to-End Deployment with Sample Application
 
-With this method of deployment, you can leverage the step-by-step process, where possibly different teams (devops, network, operations etc) with different levels of access, are required to co-ordinate and deploy all of the required resources. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment. Please read carrefully the documentation of each step before deploying it. All bicep templates parameters are documented in the bicep templates.
+With this method of deployment, you can leverage the step-by-step process, where possibly different teams (devops, network, operations etc) with different levels of access, are required to co-ordinate and deploy all of the required resources. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment. Please read carefully the documentation of each step before deploying it.
 
 1. Preqs - Clone this repo, install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), install [Bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
 2. [Hub](modules/01-hub/README.md)

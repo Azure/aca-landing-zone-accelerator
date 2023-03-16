@@ -1,15 +1,15 @@
 # Deploy the Container Apps
 
-Once the landing is deployed, the container apps, their dependencies and the camera simulation can be deployed. 
+Once the landing zone is deployed, the container apps, their dependencies and the camera simulation can be deployed. 
 
 The 5 building blocks for this sample app are:
 
 * Azure Service Bus: the messaging supporting service used by traffic control service and fine collection service
 * Azure Cosmos DB: the state store supporting service used by traffic control service
 * The dapr components used by fine collection service and traffic control service:
-  * secretstore: to access the license key of the fine calculation engine
-  * pubsub: to publish and subscribe to the topic *test*
-  * statestore: to store and retrieve the state of a vehicle
+  * **secretstore**: to access the license key of the fine calculation engine
+  * **pubsub**: to publish and subscribe to the topic *test*
+  * **statestore**: to store and retrieve the state of a vehicle
 - Container apps (i.e. microservices and optionally the camera simulation):
   - fine collection service
   - traffic control service
@@ -33,7 +33,7 @@ This guide is divided in 4 sections:
 
 There are 3 options to build the container images:
 
-1. Build the container images in the jumpbox VM and push them to your private Azure Container Registry
+1. Build the container images in the jump box VM and push them to your private Azure Container Registry
 2. Import pre-built public images to your private Azure Container Registry
 3. Use the pre-built public images from Azure Container Registry
 
@@ -50,9 +50,8 @@ The latest images can be found [here](https://github.com/orgs/Azure/packages?rep
 
 ### Option 1 - Build and push the container images in your private Azure Container Registry
 
-* An example of shell script [jumpbox-setup.sh](../../../../../shared/scripts/jumpbox-setup.sh) can be used to build the container images in the jumpbox and push it into a private ACR.
+* An example of shell script [jumpbox-setup.sh](../../../../../shared/scripts/jumpbox-setup.sh) can be used to build the container images in the jump box and push it into a private ACR.
 * A detailed explanation of how the entire solution and each of the microservices can be built, containerized and deployed can be found in this [workshop](https://azure.github.io/java-aks-aca-dapr-workshop/modules/05-assignment-5-aks-aca/02-aca/1-aca-instructions.html#generate-docker-images-for-applications-and-push-them-to-acr)
-* TBD - GitHub actions to build and push the container images in ACR
 
 When the images are pushed to your private container registry, set the following parameters in the `main.parameters.jsonc` file or set environment variables with the same name:
 
@@ -70,7 +69,7 @@ Where `TAG` is the tag of the container images. `SIMULATION_IMAGE` is optional a
 
 ### Option 2 - Import pre-built public images to your private Azure Container Registry
 
-All the container image are available in a public image repository. If you do not wish to build the container images from code directly, you can import it directly into your private container instance as shown below. Note - you might need to execute this from a jumpbox or workstation which can reach your private container registry instance.
+All the container image are available in a public image repository. If you do not wish to build the container images from code directly, you can import it directly into your private container instance as shown below. Note - you might need to execute this from a jump box or workstation which can reach your private container registry instance.
 
 ```bash
 TAG=<TAG>
@@ -110,7 +109,7 @@ Like for option 1, you can set the Bicep parameters for the image in the `main.p
 
 > **NOTE**
 >
-> To be able to import the images from the public repository, you need to be logged in to the private container registry. To do so you'll need to install docker in the jumpbox VM or workstation. The script [jumpbox-setup.sh](../../../../../shared/scripts/jumpbox-setup.sh) can be used as an example on how to install docker.
+> To be able to import the images from the public repository, you need to be logged in to the private container registry. To do so you'll need to install docker in the jump box VM or workstation. The script [jumpbox-setup.sh](../../../../../shared/scripts/jumpbox-setup.sh) can be used as an example on how to install docker.
 >
 
 :arrow_down: [Deploy the sample app](#deploy-the-sample-app)
@@ -150,7 +149,7 @@ The simulation image is optional and is only needed if you want to deploy the ca
 
 ## Deploy the sample app
 
-The sample app can be deployed using the [main.bicep](../bicep/main.bicep) template. It will deployed all the the building blocks described above.
+The sample app can be deployed using the [main.bicep](../bicep/main.bicep) template. It will deployed all the building blocks described above.
 
 To set the parameters for the deployment, you can either use the `main.parameters.jsonc` file or set environment variables.
 
@@ -230,7 +229,7 @@ There are 3 ways to run the camera simulation service:
 
 1. Run the camera simulation in a container app
 2. Use a REST client template to send requests to the traffic control service
-3. Run the camera simulation service from your development machine or the jumpbox VM
+3. Run the camera simulation service from your development machine or the jump box VM
 
 ### Option 1: Run the camera simulation in a container app
 
@@ -280,9 +279,9 @@ Where `<DEPLOYMENT_NAME>` is the name of the sample app deployment.
 
 :arrow_down: [Test the sample app](#test-the-sample-app)
 
-### Option 3: Run the camera simulation service from your development machine or the jumpbox VM
+### Option 3: Run the camera simulation service from your development machine or the jump box VM
 
-If you want to run the camera simulation service from your development machine or the jumpbox VM, you need to set the environment variable `TRAFFIC_CONTROL_SERVICE_BASE_URL` to the FQDN of the application gateway. You can get the FQDN of the application gateway from the sample app deployment outputs using:
+If you want to run the camera simulation service from your development machine or the jump box VM, you need to set the environment variable `TRAFFIC_CONTROL_SERVICE_BASE_URL` to the FQDN of the application gateway. You can get the FQDN of the application gateway from the sample app deployment outputs using:
 
 ```bash
 export TRAFFIC_CONTROL_SERVICE_BASE_URL=https://$(az deployment group show -g "$SPOKE_RESOURCE_GROUP_NAME" -n "<DEPLOYMENT_NAME>" --query properties.outputs.applicationGatewayFqdn.value -o tsv)
@@ -311,7 +310,7 @@ If you use a self-signed certificate like the one provided in the landing zone, 
 1. Add the certificate to the Java keystore
 2. Update Simulation REST template to disable certificate validation
 
-You also need to add the FQDN of the application gateway to the `hosts` file of your development machine or the jumpbox VM. For example on Windows, you can add the following line to the `C:\Windows\System32\drivers\etc\hosts` file and on Linux, you can add the following line to the `/etc/hosts` file:
+You also need to add the FQDN of the application gateway to the `hosts` file of your development machine or the jump box VM. For example on Windows, you can add the following line to the `C:\Windows\System32\drivers\etc\hosts` file and on Linux, you can add the following line to the `/etc/hosts` file:
 
 ```
 <APPLICATION_GATEWAY_PUBLIC_IP> <APPLICATION_GATEWAY_FQDN>
@@ -395,7 +394,7 @@ TRAFFIC_CONTROL_SERVICE_REVISION=$(az containerapp revision list -n "$TRAFFIC_CO
 ```bash
 az monitor log-analytics query \
   --workspace $LOG_ANALYTICS_WORKSPACE_CUSTOMER_ID \
-  --analytics-query "ContainerAppConsoleLogs_CL | where RevisionName_s == '$TRAFFIC_CONTROL_SERVICE_REVISION' | project TimeGenerated, Log_s | take 5" \
+  --analytics-query "ContainerAppConsoleLogs_CL | where RevisionName_s == '$TRAFFIC_CONTROL_SERVICE_REVISION' | project TimeGenerated, Log_s | order by TimeGenerated | take 5" \
   --out table
 ```
 
@@ -408,7 +407,7 @@ FINE_COLLECTION_SERVICE_REVISION=$(az containerapp revision list -n "$FINE_COLLE
 ```bash
 az monitor log-analytics query \
   --workspace $LOG_ANALYTICS_WORKSPACE_CUSTOMER_ID \
-  --analytics-query "ContainerAppConsoleLogs_CL | where RevisionName_s == '$FINE_COLLECTION_SERVICE_REVISION' | project TimeGenerated, Log_s | take 5" \
+  --analytics-query "ContainerAppConsoleLogs_CL | where RevisionName_s == '$FINE_COLLECTION_SERVICE_REVISION' | project TimeGenerated, Log_s | order by TimeGenerated | take 5" \
   --out table
 ```
 
@@ -421,6 +420,6 @@ VEHICLE_REGISTRATION_SERVICE_REVISION=$(az containerapp revision list -n "$VEHIC
 ```bash
 az monitor log-analytics query \
   --workspace $LOG_ANALYTICS_WORKSPACE_CUSTOMER_ID \
-  --analytics-query "ContainerAppConsoleLogs_CL | where RevisionName_s == '$VEHICLE_REGISTRATION_SERVICE_REVISION' | project TimeGenerated, Log_s | take 5" \
+  --analytics-query "ContainerAppConsoleLogs_CL | where RevisionName_s == '$VEHICLE_REGISTRATION_SERVICE_REVISION' | project TimeGenerated, Log_s | order by TimeGenerated | take 5" \
   --out table
 ```

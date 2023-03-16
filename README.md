@@ -20,7 +20,7 @@ The enterprise architecture is broken down into key design areas, where you can 
 
 ## Enterprise-Scale Reference Implementation
 
-In this repo you will find reference implementations with supporting *Infrastructure as Code* artifacts. Currently we support one scenario named [Azure Container Apps Internal](scenarios/aca-internal/README.md), implemented with [Bicep](scenarios/aca-internal/bicep/README.md). More reference implementations will be added as they become available.
+In this repo you will find reference implementations with supporting *Infrastructure as Code* artifacts. Currently we support one scenario named [Azure Container Apps Internal](scenarios/aca-internal/README.md), implemented with [Bicep](scenarios/aca-internal/bicep/). More reference implementations will be added as they become available.
 
 
 ## Got a feedback

@@ -115,8 +115,8 @@ az group delete -n $HUB_RESOURCE_GROUP_NAME --yes
 ```
 
 ### Standalone Deployment Guide With GitHub Action
-With this method, you can leverage the included [LZA Deployment gitHub action](../../../.github/workflows/lza-deployment.yml) to deploy the Azure Container Apps Infrastructure resources. 
-> NOTE: To use the gitHub action you need to [fork the repository](https://github.com/Azure/ACA-Landing-Zone-Accelerator/fork) to your organization. 
+With this method, you can leverage the included [LZA Deployment GitHub action](../../../.github/workflows/lza-deployment.yml) to deploy the Azure Container Apps Infrastructure resources. 
+> NOTE: To use the GitHub action you need to [fork the repository](https://github.com/Azure/ACA-Landing-Zone-Accelerator/fork) to your organization. 
 
 #### Setup authentication between Azure and GitHub.
 The easiest way to do that, is to use a [service principal](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#use-the-azure-login-action-with-a-service-principal-secret). 
@@ -127,6 +127,7 @@ The easiest way to do that, is to use a [service principal](https://learn.micros
                        --scopes /subscriptions/{subscription-id} \
                        --sdk-auth
    ```
+   > Note that this command will output the following warning `Option '--sdk-auth' has been deprecated and will be removed in a future release.`. Nevertheless, this method is still **strongly recommend** as documented by the [Azure\login team](https://github.com/azure/login#configure-a-service-principal-with-a-secret).
 3. Copy the JSON object for your service principal
    ```json
    {
@@ -138,12 +139,10 @@ The easiest way to do that, is to use a [service principal](https://learn.micros
    }
    ```
 4. Navigate to where you cloned the GitHub repository and go to **Settings** > **Secrets and variables** > **Actions** > **New repository secret**.
-5. Create a new secret called `AZURE_CREDENTIALS` with the JSON information in step 3 (in JSON format).
-
-#### Modify/Parametrize the gitHub Action
-The [LZA Deployment Github Action](../../../.github/workflows/lza-deployment.yml) can be triggered manually, or automatically When a pull request is issued for the main branch. There are two importan environment variables
-- `LOCATION`: Default value is `northeurope`, but you may wish to change it to deploy in a region of your choice 
-- `ENABLE_TEARDOWN`: Default value is `true`, which means that the deployment will be cleaned up at the end (after manual approval or after 120 minutes have expired). If you wish not to clean up automatically the resources you need to change that value to `false`. 
+5. Create a new secret called `AZURE_CREDENTIALS` with the JSON information in step 3 (in JSON format) and press *Add Secret*.
+6. On the same screen ( **Settings** > **Secrets and variables** > **Actions** ), we need to add two repository variables. Click on the Tab Page titled **Variables**, and then click on **New repository variable**
+   1. Add the first variable named `LOCATION` and enter as value, a valid Azure datacenter location (i.e. northeurope). This will be the region where all of your resources will be deployed.
+   2. Add the second variable named `ENABLE_TEARDOWN` typed as a boolean. If you wish the environment to be cleaned up after some manual approval, or after 120 minutes, then set this variable to `true`. If you don't want automatic clean up of the deployed resources, set this variable to `false`. You need also to update the `CODEOWNERS` file, whith the right GitHub handles.  
 
 ### End-to-End Deployment with Sample Application
 

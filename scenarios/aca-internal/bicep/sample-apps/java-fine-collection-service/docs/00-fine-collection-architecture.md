@@ -24,12 +24,12 @@ Both Azure Container Registry and Azure Key Vault are deployed by the landing zo
 
 ## Dapr Components
 
-There are 3 Darp compenents for Fine Collection Service sample app:
+There are 3 Darp components for Fine Collection Service sample app:
 
 * `secretstore`: corresponds to [Dapr Secret Management building block](https://docs.dapr.io/developing-applications/building-blocks/secrets/). It is used by Fine Collection Service to retrieve the license key secret for the fine calculation engine.
 * `pubsub`: corresponds to [Dapr Publish and Subscribe building block](https://docs.dapr.io/developing-applications/building-blocks/pubsub/pubsub-overview/). It used by:
   * Traffic Control Service to publish a *SpeedingViolation* payload when the average speed is above the speed-limit;
-  * Fine Collection Service to subscribe to the topic *test* to consume speeding violation and computing corresponding fine. The subscription for the topic is created in bicep template [service-bus.bicep](../modules/service-bus.bicep) and the subscription name is the same as the Dapr app id of fine collection service container apps. To disable the management of the subscription by dapr, `disableEntityManagement` metadata field is set to `true`.
+  * Fine Collection Service to subscribe to the topic *test* to consume speeding violation and computing corresponding fine. The subscription for the topic is created in bicep template [service-bus.bicep](../modules/service-bus.bicep) and the subscription name is the same as the Dapr `App Id` of fine collection service container apps. To disable the management of the subscription by Dapr, `disableEntityManagement` metadata field is set to `true`.
 * `statestore`: corresponds to [Dapr State Management building block](https://docs.dapr.io/developing-applications/building-blocks/state-management/state-management-overview/). It is used by Traffic Control Service to store and retrieve the state of a vehicle when one of its public endpoints is called.
 
 ## Service-to-Service invocation
@@ -58,7 +58,7 @@ template: {
   ]
 ```
 
-The value of this environment variable is the Dapr `App Id` of Vehicle Registration Service container app. The container apps are created with the following name: `ca-<service-name>` where the service name is also Dapr app id. For example, the Dapr app id of Vehicle Registration Service is `vehicle-registration-service` and the container app name is `ca-vehicle-registration-service`.
+The value of this environment variable is the Dapr `App Id` of Vehicle Registration Service container app. The container apps are created with the following name: `ca-<service-name>` where the service name is also Dapr `App Id`. For example, the Dapr `App Id` of Vehicle Registration Service is `vehicle-registration-service` and the container app name is `ca-vehicle-registration-service`.
 
 ## Container Apps Scale Rule
 
@@ -115,7 +115,7 @@ For this sample app, it was decided to use system assigned managed identities (S
 
 For example, if you are using Dapr components with SMI, the Dapr side car will fail to start because the SMI does not have the right to access the service when it is first started. After several minutes, the SMI will have roles assigned and the Dapr side car will start correctly.
 
-User assigned managed identities (UMI) can be used for Dapr components. The Dapr side car will start correctly because the UMI has the right to access the service. However, the Dapr compenents required to be created with `azureClientId` metadata field. This field is the client id of the UMI. The consequence of using UMI instead of SMI is that you'll need to create one Dapr component per UMI to respect the least privilege principle.
+User assigned managed identities (UMI) can be used for Dapr components. The Dapr side car will start correctly because the UMI has the right to access the service. However, the Dapr components required to be created with `azureClientId` metadata field. This field is the client id of the UMI. The consequence of using UMI instead of SMI is that you'll need to create one Dapr component per UMI to respect the least privilege principle.
 
 For example for a pub/sub component, if you want to have a sender and a receiver, you'll need to create 2 Dapr components. One with the UMI of the sender and the other with the UMI of the receiver. The sender is assigned on topic level and the receiver on the subscription level. When creating your Dapr components, you'll need to choose what fits best your needs.
 
@@ -165,6 +165,6 @@ By setting `daprAIInstrumentationKey` to `true`, Dapr will automatically send te
 
 ## Camera Simulation
 
-Camera simulation simulates traffic camera. It can be deployed in the container apps environment, in another Azure service or on a local machine. It is used to publish *VehicleRegistred* message to `/entrycam` and `/exitcam` endpoints of the Traffic Control Service. More information on how to deploy camera simultation can be found [here](./02-container-apps.md#camera-simulation).
+Camera simulation simulates traffic camera. It can be deployed in the container apps environment, in another Azure service or on a local machine. It is used to publish *VehicleRegistred* message to `/entrycam` and `/exitcam` endpoints of the Traffic Control Service. More information on how to deploy camera simulation can be found [here](./02-container-apps.md#camera-simulation).
 
 :arrow_forward: [Deploy the landing zone](./01-landing-zone.md)

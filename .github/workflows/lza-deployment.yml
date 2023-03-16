@@ -10,11 +10,6 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   
-#Set any environment variables needed
-env:
-  ENVIRONMENT: dev
-  LOCATION: northeurope
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # The lint job performs linting on the bicep code
@@ -45,7 +40,7 @@ jobs:
         with:
           deploymentName: ${{ github.run_number }}
           scope: subscription
-          region: ${{ env.LOCATION }}
+          region: ${{ vars.LOCATION }}
           template: ./scenarios/aca-internal/bicep/main.bicep
           parameters: ./scenarios/aca-internal/bicep/main.parameters.jsonc
           deploymentMode: Validate
@@ -65,7 +60,7 @@ jobs:
           azcliversion: 2.45.0
           inlineScript: |
             az deployment sub what-if \
-              --location ${{ env.LOCATION }} \
+              --location ${{ vars.LOCATION }} \
               --template-file ./scenarios/aca-internal/bicep/main.bicep \
               --parameters ./scenarios/aca-internal/bicep/main.parameters.jsonc \
               --parameters deployHelloWorldSample=false
@@ -85,7 +80,7 @@ jobs:
         with:
           deploymentName: "GitHubAction-${{ github.run_number }}"
           scope: subscription
-          region: ${{ env.LOCATION }}
+          region: ${{ vars.LOCATION }}
           template: ./scenarios/aca-internal/bicep/main.bicep
           parameters: ./scenarios/aca-internal/bicep/main.parameters.jsonc deployHelloWorldSample=false
           failOnStdErr: false
@@ -102,7 +97,7 @@ jobs:
     steps:
     - uses: trstringer/manual-approval@v1
       name: Manual Approval of tear-down
-      if: env.ENABLE_TEARDOWN == 'true'      
+      if: vars.ENABLE_TEARDOWN == 'true'      
       with:
         secret: ${{ github.TOKEN }}
         timeout-minutes: 120
@@ -115,14 +110,14 @@ jobs:
         additional-denied-words: ''
     
     - uses: azure/login@v1
-      if: env.ENABLE_TEARDOWN == 'true'
+      if: vars.ENABLE_TEARDOWN == 'true'
       name: Sign in to Azure
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
     - uses: Azure/cli@v1
       name: Run tear-down
-      if: env.ENABLE_TEARDOWN == 'true'
+      if: vars.ENABLE_TEARDOWN == 'true'
       with:
         azcliversion: 2.45.0
         inlineScript: |

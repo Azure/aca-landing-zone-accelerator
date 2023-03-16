@@ -13,7 +13,7 @@ For this scenario, we will have various IaC technology that you can choose from 
 ## Core architecture components
 * Azure Container Apps
 * Azure Virtual Networks (hub-spoke)
-* Azure Conainer Registry
+* Azure Container Registry
 * Azure Bastion
 * Azure Application Gateway with WAF
 * Azure Key vault

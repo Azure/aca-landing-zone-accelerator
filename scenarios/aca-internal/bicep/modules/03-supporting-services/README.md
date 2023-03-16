@@ -11,7 +11,6 @@ An for each of the above:
 * Related DNS settings for the private endpoint
 * A managed identity
 
-> TODO: Do we need Managed Idenity for AKV?  - Exaplain why the PRivate Link, DNS, Managed Idenity is used for
 
 ![Supporting Services](./media/supporting-services.png)
 

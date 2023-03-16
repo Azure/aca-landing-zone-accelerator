@@ -18,7 +18,7 @@ Review the `deploy.hub.parameters.jsonc` file and update the parameter values if
 
 > TODO: Add VM AAD joined (needs bastion Standard)
 
-Note: `deploy.hub.parameters.jsonc` file contains the username and password for the virtual machine. These can be changed in the parameters file for the vm, however these are the default values:
+Note: `deploy.hub.parameters.jsonc` file contains the username and password for the virtual machine. These can be changed in the parameters file for the VM, however these are the default values:
 
 ```
 Username: azureuser

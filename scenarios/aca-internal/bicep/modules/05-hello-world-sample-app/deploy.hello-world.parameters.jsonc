@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "tags": {
+        "value": {}
+    },
+    // Replace with the resource ID of the container apps environment 
+    "containerRegistryUserAssignedIdentityId": {
+        "value": "<CONTAINER_REGISTRY_USER_ASSIGNED_IDENTITY_RESOURCE_ID>"
+    },
+    // Replace with the resource ID of the container apps environment 
+    "containerAppsEnvironmentId": {
+      "value": "<CONTAINER_APPS_ENVIRONMENT_RESOURCE_ID>"
+    }
+  }
+}

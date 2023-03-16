@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // The name of the workloard that is being deployed. Up to 10 characters long. This wil be used as part of the naming convention (i.e. as defined here: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) 
+    "workloadName": {
+      "value": "lzaaca"
+    },
+    //The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.
+    "environment": {
+      "value": "dev"
+    },
+    "tags": {
+        "value": {}
+    },
+    // Replace with the resource ID of the spoke virtual network 
+    "spokeVNetId": {
+        "value": "<SPOKE_VNET_RESOURCE_ID>"
+    },
+    // Replace with the resource ID of the hub virtual network - required to link the privateDNS zone to the Hub network as well 
+    "hubVNetId": {
+      "value": "<HUB_VNET_RESOURCE_ID>"
+    },
+    "spokePrivateEndpointSubnetName": {
+      "value": "snet-pep"
+    }
+  }
+}

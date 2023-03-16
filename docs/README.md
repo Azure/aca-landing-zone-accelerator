@@ -7,4 +7,4 @@ This section provides technical documentation for the Azure Container Apps - Lan
 3. [Networking](design-areas/networking.md)
 4. [Security](design-areas/security.md)
 
-Each topic provides a Design Area Considerations section to provide context to the archtiectural decisions at hand, and a Design Area Recommendations section that gives a recommendation on the implementation of a specific topic. 
+Each topic provides a Design Area Considerations section to provide context to the architectural decisions at hand, and a Design Area Recommendations section that gives a recommendation on the implementation of a specific topic. 

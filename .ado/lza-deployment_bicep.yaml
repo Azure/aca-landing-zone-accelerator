@@ -1,20 +1,18 @@
 # This workflow will deploy the LZA in ADO
-name: LZA Deployment - Bicep on ADO
+name: LZA_Deployment
 
-trigger:
-  - main
+trigger: none
 
 pr:
   branches:
-    - main
+    include:
+      - main
   paths:
+    include:
     - scenarios/aca-internal/bicep
 
 variables:
-  - group: ACA-LZA
-  azureServiceConnection: '<your-connection-name>'
-  location: $(VARIABLE GROUP NAME)
-  templateFile: 'main.bicep'
+  - group: "ACA-LZA"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -31,25 +29,24 @@ jobs:
       # Runs the Bicep linter to ensure build is successful
       - bash: az bicep build --file ./scenarios/aca-internal/bicep/main.bicep
 
-  - job: validate:
+  - job: validate
     pool: 
       vmImage: 'ubuntu-latest'
-    dependson: [lint]
+    dependsOn: [lint]
     steps:
       - checkout: self
-
       - task: AzureCLI@2
         inputs:
           azureSubscription: $(azureServiceConnection)
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            az deployment sub validate --name "ACA-$(Build.BuildNumber)" --location $(vars.location) --template-file ./scenarios/aca-internal/bicep/main.bicep --parameters ./scenarios/aca-internal/bicep/main.parameters.jsonc
+            az deployment sub validate --name "ACA-$(Build.BuildId)" --location $(location) --template-file ./scenarios/aca-internal/bicep/main.bicep --parameters ./scenarios/aca-internal/bicep/main.parameters.jsonc
 
   - job: preview
     pool: 
       vmImage: 'ubuntu-latest'
-    dependson: [lint, validate]
+    dependsOn: [lint, validate]
     steps:
       - checkout: self
       - task: AzureCLI@2 
@@ -59,14 +56,14 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az deployment sub what-if \
-              --location $(vars.location) \
+              --location $(location) \
               --template-file ./scenarios/aca-internal/bicep/main.bicep \
               --parameters ./scenarios/aca-internal/bicep/main.parameters.jsonc \
               --parameters deployHelloWorldSample=false
   - job: deploy
     pool: 
       vmImage: 'ubuntu-latest'
-    dependson: [preview]
+    dependsOn: [preview]
     steps:
       - checkout: self
       - task: AzureCLI@2 
@@ -76,23 +73,27 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             az deployment sub create \
-              --location $(vars.location) \
+              --name "ADO-$(Build.BuildId)" \
+              --location $(location) \
               --template-file ./scenarios/aca-internal/bicep/main.bicep \
               --parameters ./scenarios/aca-internal/bicep/main.parameters.jsonc \
               --parameters deployHelloWorldSample=false
+            echo "##vso[task.setvariable variable=spokeResourceGroupName;isoutput=true]$spokeResourceGroupName"
+            echo "##vso[task.setvariable variable=hubResourceGroupName;isoutput=true]$hubResourceGroupName"
+
 
   - job: teardown
     pool: 
       vmImage: 'ubuntu-latest'
-    dependson: [deploy]
+    dependsOn: [deploy]
     steps:
     - task: AzureCLI@2 
-      condition: $(enable_teardown)
+      condition: $[eq(variables['enable_teardown'], 'true')]
       inputs: 
         azureSubscription: $(azureServiceConnection)
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          az group delete --name ${{ needs.deploy.outputs.spokeResourceGroupName }} --yes
-          az group delete --name ${{ needs.deploy.outputs.hubResourceGroupName }} --yes
-          az deployment sub --name "ADO-$(Build.Build_Number)" --no-wait
+          az group delete --name $(deploy.spokeResourceGroupName) --yes
+          az group delete --name $(deploy.hubResourceGroupName) --yes
+          az deployment sub --name "ADO-$(Build.BuildId)" --no-wait

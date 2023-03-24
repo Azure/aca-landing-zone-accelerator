@@ -67,33 +67,41 @@ jobs:
     steps:
       - checkout: self
       - task: AzureCLI@2 
+        name: deploy
         inputs: 
           azureSubscription: $(azureServiceConnection)
           scriptType: bash
           scriptLocation: inlineScript
+          failOnStandardError: true
           inlineScript: |
-            az deployment sub create \
+            output=$(az deployment sub create \
               --name "ADO-$(Build.BuildId)" \
               --location $(location) \
               --template-file ./scenarios/aca-internal/bicep/main.bicep \
               --parameters ./scenarios/aca-internal/bicep/main.parameters.jsonc \
-              --parameters deployHelloWorldSample=false
+              --parameters deployHelloWorldSample=false)
+            echo $output | jq .
+            spokeResourceGroup=$(echo $output | jq -r '.properties.outputs.spokeResourceGroupName.value')
+            hubResourceGroup=$(echo $output | jq -r '.properties.outputs.hubResourceGroupName.value')
             echo "##vso[task.setvariable variable=spokeResourceGroupName;isoutput=true]$spokeResourceGroupName"
             echo "##vso[task.setvariable variable=hubResourceGroupName;isoutput=true]$hubResourceGroupName"
-
 
   - job: teardown
     pool: 
       vmImage: 'ubuntu-latest'
+    variables:
+      spokeRG: dependencies.deploy.outputs['deploy.spokeResourceGroupName']
+      hubRG: dependencies.deploy.outputs['deploy.hubResourceGroupName']
     dependsOn: [deploy]
+    condition: and(succeeded(), eq(variables.enable_teardown, 'true'))
+
     steps:
     - task: AzureCLI@2 
-      condition: $[eq(variables['enable_teardown'], 'true')]
       inputs: 
         azureSubscription: $(azureServiceConnection)
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          az group delete --name $(deploy.spokeResourceGroupName) --yes
-          az group delete --name $(deploy.hubResourceGroupName) --yes
+          az group delete --name $(spokeRG)  --yes
+          az group delete --name $(hubRG) --yes
           az deployment sub --name "ADO-$(Build.BuildId)" --no-wait

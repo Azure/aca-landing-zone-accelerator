@@ -104,4 +104,4 @@ jobs:
         inlineScript: |
           az group delete --name $(spokeRG)  --yes
           az group delete --name $(hubRG) --yes
-          az deployment sub --name "ADO-$(Build.BuildId)" --no-wait
+          az deployment sub delete --name "ADO-$(Build.BuildId)" --no-wait

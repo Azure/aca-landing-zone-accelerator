@@ -43,6 +43,8 @@ var hubResourceGroupName = hubVNetIdTokens[4]
 var hubVNetName = hubVNetIdTokens[8]
 
 var spokeVNetIdTokens = split(spokeVNetId, '/')
+var spokeSubscriptionId = spokeVNetIdTokens[2]
+var spokeResourceGroupName = spokeVNetIdTokens[4]
 var spokeVNetName = spokeVNetIdTokens[8]
 
 var containerRegistryPullRoleGuid='7f951dda-4ed3-4680-a7ca-43fe172d538d'
@@ -70,6 +72,7 @@ resource vnetHub  'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
 }
 
 resource vnetSpoke 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
+  scope: resourceGroup(spokeSubscriptionId, spokeResourceGroupName)
   name: spokeVNetName
 }
 

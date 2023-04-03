@@ -31,6 +31,9 @@
     },
     "spokeInfraSubnetName": {
       "value": "snet-infra"
+    },
+    "enableTelemetry": {
+      "value": true
     }
   }
 }

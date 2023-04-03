@@ -54,6 +54,8 @@ var hubResourceGroupName = hubVNetIdTokens[4]
 var hubVNetName = hubVNetIdTokens[8]
 
 var spokeVNetIdTokens = split(spokeVNetId, '/')
+var spokeSubscriptionId = spokeVNetIdTokens[2]
+var spokeResourceGroupName = spokeVNetIdTokens[4]
 var spokeVNetName = spokeVNetIdTokens[8]
 
 var keyvaultReaderRoleGuid = '21090545-7ca7-4776-b22c-e363652d74d2'
@@ -68,6 +70,7 @@ resource vnetHub  'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
 }
 
 resource vnetSpoke 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
+  scope: resourceGroup(spokeSubscriptionId, spokeResourceGroupName)  
   name: spokeVNetName
 }
 

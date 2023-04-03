@@ -33,6 +33,8 @@ param spokeInfraSubnetName string
 @description('The resource ID of the Hub Virtual Network.')
 param hubVNetId string
 
+@description('Enable usage and telemetry feedback to Microsoft.')
+param enableTelemetry bool = true
 
 // ------------------
 // VARIABLES
@@ -56,6 +58,7 @@ var spokeVNetLinks = [
   }
 ]
 
+var telemetryId = '9b4433d6-924a-4c07-b47c-7478619759c7-${location}-acasb'
 
 // ------------------
 // RESOURCES
@@ -128,6 +131,19 @@ module containerAppsEnvironmentPrivateDnsZone  '../../../../shared/bicep/private
         ipv4Address: containerAppsEnvironment.outputs.containerAppsEnvironmentLoadBalancerIP
       }
     ]
+  }
+}
+
+//  Telemetry Deployment
+resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
+  name: telemetryId
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'
+      contentVersion: '1.0.0.0'
+      resources: {}
+    }
   }
 }
 

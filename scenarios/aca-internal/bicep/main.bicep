@@ -88,14 +88,12 @@ param enableApplicationGatewayCertificate bool
 param applicationGatewayCertificateKeyName string
 
 @description('Enable usage and telemetry feedback to Microsoft.')
-param enableTelemetry bool
+param enableTelemetry bool = true
 
 
 // ------------------
 // VARIABLES
 // ------------------
-
-var telemetryId = '9b4433d6-924a-4c07-b47c-7478619759c7-${location}-acasb'
 
 var namingRules = json(loadTextContent('../../shared/bicep/naming/naming-rules.jsonc'))
 var rgHubName = !empty(hubResourceGroupName) ? hubResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-hub-${environment}-${namingRules.regionAbbreviations[toLower(location)]}'
@@ -175,6 +173,7 @@ module containerAppsEnvironment 'modules/04-container-apps-environment/deploy.ac
     spokeInfraSubnetName: spoke.outputs.spokeInfraSubnetName
     enableApplicationInsights: enableApplicationInsights
     enableDaprInstrumentation: enableDaprInstrumentation
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -203,20 +202,6 @@ module applicationGateway 'modules/06-application-gateway/deploy.app-gateway.bic
     applicationGatewaySubnetId: spoke.outputs.spokeApplicationGatewaySubnetId
     enableApplicationGatewayCertificate: enableApplicationGatewayCertificate
     keyVaultId: supportingServices.outputs.keyVaultId
-  }
-}
-
-//  Telemetry Deployment
-resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
-  name: telemetryId
-  location: location
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'
-      contentVersion: '1.0.0.0'
-      resources: {}
-    }
   }
 }
 

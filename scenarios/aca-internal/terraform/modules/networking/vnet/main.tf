@@ -12,15 +12,24 @@ resource "azurerm_virtual_network" "vnet" {
 
     tags = var.tags
 
-    dynamic "subnet" {
-        for_each = [for subnet in var.subnets: {
-            name = subnet.name
-            address_prefix = subnet.address_prefix
-        }]
+    # dynamic "subnet" {
+    #     for_each = [for subnet in var.subnets: {
+    #         name = subnet.name
+    #         address_prefix = subnet.address_prefix
+    #     }]
 
-        content {
-          name = subnet.value.name
-          address_prefix = subnet.value.prefix
-        }
-    }
+    #     content {
+    #       name = subnet.value.name
+    #       address_prefix = subnet.value.prefix
+    #     }
+    # }
+}
+
+resource "azurerm_subnet" "subnets" {
+  for_each = var.subnets
+
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  resource_group_name = azurerm_virtual_network.vnet.resource_group_name
+  
+  address_prefixes = each.value.addressPrefixes
 }

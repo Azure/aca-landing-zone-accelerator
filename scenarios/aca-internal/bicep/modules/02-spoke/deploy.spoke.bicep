@@ -54,7 +54,8 @@ param spokeApplicationGatewaySubnetAddressPrefix string
 // ------------------
 
 // load as text (and not as Json) to replace <location> placeholder in the nsg rules
-var nsgRules = json( replace( loadTextContent('./nsgContainerAppsEnvironment.jsonc') , '<location>', location) )
+var nsgCaeRules = json( replace( loadTextContent('./nsgContainerAppsEnvironment.jsonc') , '<location>', location) )
+var nsgAppGwRules = loadJsonContent('./nsgAppGwRules.jsonc', 'securityRules')
 var namingRules = json(loadTextContent('../../../../shared/bicep/naming/naming-rules.jsonc'))
 
 var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-spoke-${environment}-${namingRules.regionAbbreviations[toLower(location)]}'
@@ -88,6 +89,9 @@ var spokeSubnets = !empty(spokeApplicationGatewaySubnetAddressPrefix) ? concat(d
       name: spokeApplicationGatewaySubnetName
       properties: {
         addressPrefix: spokeApplicationGatewaySubnetAddressPrefix
+        networkSecurityGroup: {
+          id: nsgAppGw.outputs.nsgId
+        }
       }
     }
   ]) : defaultSubnets
@@ -133,9 +137,21 @@ module nsgContainerAppsEnvironment '../../../../shared/bicep/nsg.bicep' = {
     name: naming.outputs.resourcesNames.containerAppsEnvironmentNsg
     location: location
     tags: tags
-    securityRules: nsgRules.securityRules
+    securityRules: nsgCaeRules.securityRules
   }
 }
+
+module nsgAppGw '../../../../shared/bicep/nsg.bicep' = if (!empty(spokeApplicationGatewaySubnetAddressPrefix)) {
+  name: take('nsgAppGw-${deployment().name}', 64)
+  scope: spokeResourceGroup
+  params: {
+    name: naming.outputs.resourcesNames.applicationGatewayNsg
+    location: location
+    tags: tags
+    securityRules: nsgAppGwRules
+  }
+}
+
 module peerSpokeToHub '../../../../shared/bicep/peering.bicep' = if (!empty(hubVNetId))  {
   name: take('${deployment().name}-peerSpokeToHubDeployment', 64)
   scope: spokeResourceGroup

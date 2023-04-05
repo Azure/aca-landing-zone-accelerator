@@ -29,3 +29,7 @@ variable "tags" {
 variable "bastionHostName" {
 
 }
+
+variable "location" {
+  
+}

@@ -14,6 +14,7 @@ variable "tags" {
 }
 
 variable "vnetName" {
+  type = string
 }
 
 variable "vnetResourceGroupName" {

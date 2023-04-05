@@ -1,5 +1,6 @@
 module "nsg" {
   source        = "../networking/nsg"
+  resourceGroupName = var.resourceGroupName
   nsgName       = var.nsgName
   location      = var.location
   tags          = var.tags
@@ -51,7 +52,7 @@ resource "azurerm_linux_virtual_machine" "linuxVm" {
   size           = var.size
 
   network_interface_ids = [
-    azurerm_network_interface.vmNic
+    azurerm_network_interface.vmNic.id
   ]
 
   os_disk {

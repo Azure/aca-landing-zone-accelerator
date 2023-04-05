@@ -1,14 +1,17 @@
 ## Virtual Network
 
 resource "azurerm_virtual_network" "vnet" {
-    name = var.network_name
+    name = var.networkName
     location = var.location
-    resource_group_name = var.resource_group_name
-    address_space = var.address_space
-    ddos_protection_plan  {
-        enable = var.ddos_protection_plan_id != ""? true: false
-        id = var.ddos_protection_plan_id != ""? var.ddos_protection_plan_id: null
-    }
+    resource_group_name = var.resourceGroupName
+    address_space = var.addressSpace
+
+
+    # var.ddosProtectionPlanId != "" ? ddos_protection_plan  {
+    #     enable = var.ddosProtectionPlanId != ""? true: false
+    #     id = var.ddosProtectionPlanId != ""? var.ddosProtectionPlanId: null
+    # }
+    
 
     tags = var.tags
 
@@ -26,8 +29,9 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_subnet" "subnets" {
-  for_each = var.subnets
+  for_each = { for subnet in var.subnets: subnet.name => subnet }
 
+  name = each.key
   virtual_network_name = azurerm_virtual_network.vnet.name
   resource_group_name = azurerm_virtual_network.vnet.resource_group_name
   

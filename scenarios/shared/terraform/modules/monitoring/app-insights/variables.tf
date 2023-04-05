@@ -44,7 +44,7 @@ variable "samplingPercentage" {
     default = 100
     type = number
     validation {
-      condition = var.samplingPercentage < 0 || var.samplingPercentage > 100
+      condition = var.samplingPercentage >= 0 && var.samplingPercentage <= 100
       error_message = "Value must be between 0 and 100."
     }
 }

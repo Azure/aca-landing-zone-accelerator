@@ -2,7 +2,7 @@ variable "appInsightsName" {
   default = ""
   type = string
   validation {
-      condition = length(var.appInsightsName) < 4 || length(var.appInsightsName) > 63
+      condition = length(var.appInsightsName) >= 4 && length(var.appInsightsName) <= 63
       error_message = "Name must be greater than 4 characters and not longer than 63 characters."
     }
 }

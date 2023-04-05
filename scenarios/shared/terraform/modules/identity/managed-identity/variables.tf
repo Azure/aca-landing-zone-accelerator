@@ -2,7 +2,7 @@ variable "managedIdentityName" {
   default = ""
   type = string
   validation {
-      condition = length(var.managedIdentityName) < 3 || length(var.managedIdentityName) > 128
+      condition = length(var.managedIdentityName) >= 3 || length(var.managedIdentityName) <= 128
       error_message = "Name must be greater than 3 characters and not longer than 128 characters."
     }
 }

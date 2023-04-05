@@ -1,8 +1,8 @@
-variable "network_name" {
+variable "endpointName" {
     default = ""
     type = string
     validation {
-      condition = length(var.network_name) >= 2 || length(var.network_name) > 32
+      condition = length(var.endpointName) >= 2 && length(var.endpointName) <= 32
       error_message = "Name must be at least 2 characters long and not longer than 32."
 
     }
@@ -13,24 +13,24 @@ variable "location" {
     type = string
 }
 
-variable "resource_group_name" {
+variable "resourceGroupName" {
     default = ""
     type = string
 }
 
-variable "address_space" {
-    default = []
-    type = list(string)
+variable "subnetId" {
+    default = ""
+    type = string
 }
 
 variable "tags" {
 }
 
-variable "ddos_protection_plan_id" {
+variable "privateLinkId" {
     default = ""
     type = string
 }
 
-variable "subnets" {
+variable "privateDnsZoneIds" {
     default = []
 }

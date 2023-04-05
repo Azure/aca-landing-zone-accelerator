@@ -2,7 +2,7 @@ variable "workspaceName" {
   default = ""
   type = string
   validation {
-      condition = length(var.workspaceName) < 4 || length(var.workspaceName) > 63
+      condition = length(var.workspaceName) >= 4 && length(var.workspaceName) <= 63
       error_message = "Name must be greater than 4 characters and not longer than 63 characters."
     }
 }

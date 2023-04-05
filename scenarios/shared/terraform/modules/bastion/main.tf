@@ -1,21 +1,16 @@
-data "azurerm_virtual_network" "vnet" {
-  name                = var.vnetName
-  resource_group_name = var.vnetResourceGroupName
-}
-
 module "nsg" {
   source            = "../networking/nsg"
   nsgName           = var.bastionNsgName
-  location          = data.azurerm_virtual_network.vnet.location
-  resourceGroupName = data.azurerm_virtual_network.vnet.resource_group_name
+  location          = var.location
+  resourceGroupName = var.vnetResourceGroupName
   securityRules     = var.securityRules
-  tags              = []
+  tags              = var.tags
 }
 
 resource "azurerm_subnet" "bastionSubnet" {
   name                 = "AzureBastionSubnet"
-  resource_group_name  = data.azurerm_virtual_network.vnet.resource_group_name
-  virtual_network_name = data.azurerm_virtual_network.vnet.name
+  resource_group_name  = var.vnetResourceGroupName
+  virtual_network_name = var.vnetName
   address_prefixes     = var.addressPrefixes
 }
 
@@ -30,8 +25,8 @@ resource "azurerm_subnet_network_security_group_association" "bastion" {
 
 resource "azurerm_public_ip" "bastionPip" {
   name                = var.bastionPipName
-  location            = data.azurerm_virtual_network.vnet.location
-  resource_group_name = data.azurerm_virtual_network.vnet.resource_group_name
+  location            = var.location
+  resource_group_name = var.vnetResourceGroupName
 
   sku      = "Standard"
   sku_tier = "Regional"
@@ -47,9 +42,8 @@ resource "azurerm_bastion_host" "bastionHost" {
     azurerm_subnet.bastionSubnet
   ]
   name                = var.bastionHostName
-  location            = data.azurerm_virtual_network.vnet.location
-  resource_group_name = data.azurerm_virtual_network.vnet.resource_group_name
-
+  location            = var.location
+  resource_group_name = var.vnetResourceGroupName
   ip_configuration {
     name                 = "ipconf"
     subnet_id            = azurerm_subnet.bastionSubnet.id

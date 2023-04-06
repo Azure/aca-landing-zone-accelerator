@@ -391,7 +391,7 @@ LOG_ANALYTICS_WORKSPACE_CUSTOMER_ID=$(az deployment sub show -n "$LZA_DEPLOYMENT
 For traffic control service:
 
 ```bash
-TRAFFIC_CONTROL_SERVICE_REVISION=$(az containerapp revision list -n "$TRAFFIC_CONTROL_SERVICE_CA_NAME" -g $SPOKE_RESOURCE_GROUP_NAME --query [0].name -o tsv)
+TRAFFIC_CONTROL_SERVICE_REVISION=$(az containerapp revision list -n "$TRAFFIC_CONTROL_SERVICE_CA_NAME" -g $SPOKE_RESOURCE_GROUP_NAME --query "[0].name" -o tsv)
 ```
 
 ```bash
@@ -404,7 +404,7 @@ az monitor log-analytics query \
 For fine collection service:
 
 ```bash
-FINE_COLLECTION_SERVICE_REVISION=$(az containerapp revision list -n "$FINE_COLLECTION_SERVICE_CA_NAME" -g $SPOKE_RESOURCE_GROUP_NAME --query [0].name -o tsv)
+FINE_COLLECTION_SERVICE_REVISION=$(az containerapp revision list -n "$FINE_COLLECTION_SERVICE_CA_NAME" -g $SPOKE_RESOURCE_GROUP_NAME --query "[0].name" -o tsv)
 ```
 
 ```bash

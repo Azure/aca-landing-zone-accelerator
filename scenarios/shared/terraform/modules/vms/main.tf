@@ -7,15 +7,10 @@ module "nsg" {
   securityRules = var.securityRules
 }
 
-data "azurerm_virtual_network" "vnet" {
-  name                = var.vnetName
-  resource_group_name = var.vnetResourceGroupName
-}
-
 resource "azurerm_subnet" "vmSubnet" {
   name                 = var.vmSubnetName
-  resource_group_name  = data.azurerm_virtual_network.vnet.resource_group_name
-  virtual_network_name = data.azurerm_virtual_network.vnet.name
+  resource_group_name  = var.vnetResourceGroupName
+  virtual_network_name = var.vnetName
   address_prefixes     = var.addressPrefixes
 }
 
@@ -30,8 +25,8 @@ resource "azurerm_subnet_network_security_group_association" "bastion" {
 
 resource "azurerm_network_interface" "vmNic" {
   name                = var.nicName
-  resource_group_name = data.azurerm_virtual_network.vnet.resource_group_name
-  location            = data.azurerm_virtual_network.vnet.location
+  resource_group_name = var.vnetResourceGroupName
+  location            = var.location
 
   ip_configuration {
     name                          = "ipconfig1"

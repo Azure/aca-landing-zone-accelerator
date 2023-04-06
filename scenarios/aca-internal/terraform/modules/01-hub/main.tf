@@ -35,7 +35,6 @@ module "bastion" {
   vnetResourceGroupName = azurerm_resource_group.hubResourceGroup.name
   location              = var.location
   bastionNsgName        = module.naming.resourceNames["bastionNsg"]
-  securityRules         = var.securityRules
   addressPrefixes       = var.bastionSubnetAddressPrefixes
   bastionPipName        = module.naming.resourceNames["bastionPip"]
   tags                  = var.tags

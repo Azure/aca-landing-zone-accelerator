@@ -8,7 +8,6 @@ variable "remoteVnetName" {
     type = string
 }
 
-variable "remoteRgName" {
-    default = ""
-    type = string
+variable "remoteVnetId" {
+  
 }

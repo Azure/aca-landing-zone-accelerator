@@ -1,5 +1,7 @@
 resource "random_string" "random" {
   length = 5
+  special = false
+  lower = true
 }
 
 module "naming" {
@@ -46,7 +48,7 @@ module "vm" {
   osType                = "Linux"
   nsgName               = module.naming.resourceNames["vmJumpBoxNsg"]
   location              = var.location
-  vnetName              = module.vnet.vnetId
+  vnetName              = module.vnet.vnetName
   tags                  = var.tags
   vnetResourceGroupName = azurerm_resource_group.hubResourceGroup.name
   addressPrefixes       = tolist([var.vmJumpBoxSubnetAddressPrefix])

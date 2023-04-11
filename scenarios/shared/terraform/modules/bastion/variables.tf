@@ -99,7 +99,6 @@ variable "securityRules" {
       "sourceAddressPrefix"      = "*"
       "destinationAddressPrefix" = "Internet"
   }]
-
 }
 
 variable "addressPrefixes" {

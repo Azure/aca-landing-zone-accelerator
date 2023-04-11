@@ -15,10 +15,6 @@ resource "azurerm_subnet" "bastionSubnet" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "bastion" {
-  depends_on = [
-    module.nsg,
-    azurerm_subnet.bastionSubnet
-  ]
   subnet_id                 = azurerm_subnet.bastionSubnet.id
   network_security_group_id = module.nsg.nsgId
 }
@@ -37,10 +33,6 @@ resource "azurerm_public_ip" "bastionPip" {
 }
 
 resource "azurerm_bastion_host" "bastionHost" {
-  depends_on = [
-    azurerm_public_ip.bastionPip,
-    azurerm_subnet.bastionSubnet
-  ]
   name                = var.bastionHostName
   location            = var.location
   resource_group_name = var.vnetResourceGroupName

@@ -14,11 +14,7 @@ resource "azurerm_subnet" "vmSubnet" {
   address_prefixes     = var.addressPrefixes
 }
 
-resource "azurerm_subnet_network_security_group_association" "bastion" {
-  depends_on = [
-    module.nsg,
-    azurerm_subnet.vmSubnet
-  ]
+resource "azurerm_subnet_network_security_group_association" "vmNsg" {
   subnet_id                 = azurerm_subnet.vmSubnet.id
   network_security_group_id = module.nsg.nsgId
 }
@@ -44,6 +40,7 @@ resource "azurerm_linux_virtual_machine" "linuxVm" {
 
   admin_username = var.adminUsername
   admin_password = var.adminPassword
+  disable_password_authentication = false
   size           = var.size
 
   network_interface_ids = [

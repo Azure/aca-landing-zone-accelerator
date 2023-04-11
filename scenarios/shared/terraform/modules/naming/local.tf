@@ -26,6 +26,7 @@ locals {
       keyVaultUserAssignedIdentity=  "${var.resourceTypeAbbreviations.managedIdentity}-${replace ( local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.keyVault )}-KeyVaultReader"
       logAnalyticsWorkspace= replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.logAnalyticsWorkspace)
       rgHubName = "${var.resourceTypeAbbreviations.resourceGroup}-${var.workloadName}-hub-${var.environment}-${var.regionAbbreviations[lower(var.location)]}"
+      rgSpokeName = "${var.resourceTypeAbbreviations.resourceGroup}-${var.workloadName}-spoke-${var.environment}-${var.regionAbbreviations[lower(var.location)]}"
       serviceBus= replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.serviceBus)
       serviceBusPep= "${var.resourceTypeAbbreviations.privateEndpoint}-${replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.serviceBus)}"
       vmJumpBox= replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.virtualMachine)

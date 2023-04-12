@@ -26,6 +26,7 @@ resource "azurerm_network_security_rule" "rules" {
     for_each = { for rule in var.securityRules: rule.name => rule }
     network_security_group_name = azurerm_network_security_group.securityGroup.name
     name = each.key
+    description = each.value.description
     resource_group_name = var.resourceGroupName
     protocol = each.value.protocol
     source_address_prefix = each.value.sourceAddressPrefix

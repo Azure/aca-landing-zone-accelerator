@@ -204,8 +204,10 @@ Where `<LZA_DEPLOYMENT_NAME>` is the name of the landing zone deployment and `DE
 To deploy the sample app using environment variables, run the following command in the `bicep` folder:
 
 ```bash
+LZA_DEPLOYMENT_SAMPLE_JAVA=bicepLzaDeploymentSampleJava  # or any other value that suits your needs
+
 az deployment group create -g "$SPOKE_RESOURCE_GROUP_NAME" -f main.bicep -p main.parameters.jsonc \
-  --name <DEPLOYMENT_NAME> \
+  --name $LZA_DEPLOYMENT_SAMPLE_JAVA \
   --parameters containerAppsEnvironmentName=$CONTAINER_APPS_ENVIRONMENT_NAME \
   --parameters hubVNetId=$HUB_VNET_ID \
   --parameters spokeVNetName=$SPOKE_VNET_NAME \

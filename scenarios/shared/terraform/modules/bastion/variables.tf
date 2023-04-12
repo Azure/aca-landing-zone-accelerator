@@ -13,9 +13,10 @@ variable "bastionNsgName" {
 variable "securityRules" {
   default = [{
     "name"                     = "AllowHttpsInbound"
+    "description"              = "AllowHttpsInbound"
     "priority"                 = 120
     "protocol"                 = "Tcp"
-    "destinationPortRanges"     = ["443"]
+    "destinationPortRanges"    = ["443"]
     "access"                   = "Allow"
     "direction"                = "Inbound"
     "sourcePortRange"          = "*"
@@ -23,10 +24,11 @@ variable "securityRules" {
     "destinationAddressPrefix" = "*"
     },
     {
-      "name"                     = "AllowGatewayManagerInbound"
+      "name"        = "AllowGatewayManagerInbound"
+      "description" = "AllowGatewayManagerInbound"
       "priority"                 = 130
       "protocol"                 = "Tcp"
-      "destinationPortRanges"     = ["443"]
+      "destinationPortRanges"    = ["443"]
       "access"                   = "Allow"
       "direction"                = "Inbound"
       "sourcePortRange"          = "*"
@@ -34,10 +36,11 @@ variable "securityRules" {
       "destinationAddressPrefix" = "*"
     },
     {
-      "name"                     = "AllowAzureLoadBalancerInbound"
+      "name"        = "AllowAzureLoadBalancerInbound"
+      "description" = "AllowAzureLoadBalancerInbound"
       "priority"                 = 140
       "protocol"                 = "Tcp"
-      "destinationPortRanges"     = ["443"]
+      "destinationPortRanges"    = ["443"]
       "access"                   = "Allow"
       "direction"                = "Inbound"
       "sourcePortRange"          = "*"
@@ -45,7 +48,8 @@ variable "securityRules" {
       "destinationAddressPrefix" = "*"
     },
     {
-      "name"                     = "AllowBastionHostCommunicationInbound"
+      "name"        = "AllowBastionHostCommunicationInbound"
+      "description" = "AllowBastionHostCommunicationInbound"
       "priority"                 = 150
       "protocol"                 = "*"
       "destinationPortRanges"    = ["8080", "5701"]
@@ -56,7 +60,8 @@ variable "securityRules" {
       "destinationAddressPrefix" = "VirtualNetwork"
     },
     {
-      "name"                     = "AllowSshRdpOutbound"
+      "name"        = "AllowSshRdpOutbound"
+      "description" = "AllowSshRdpOutbound"
       "priority"                 = 100
       "protocol"                 = "*"
       "destinationPortRanges"    = ["22", "3389"]
@@ -67,10 +72,11 @@ variable "securityRules" {
       "destinationAddressPrefix" = "VirtualNetwork"
     },
     {
-      "name"                     = "AllowAzureCloudOutbound"
+      "name"        = "AllowAzureCloudOutbound"
+      "description" = "AllowAzureCloudOutbound"
       "priority"                 = 110
       "protocol"                 = "Tcp"
-      "destinationPortRanges"     = ["443"]
+      "destinationPortRanges"    = ["443"]
       "access"                   = "Allow"
       "direction"                = "Outbound"
       "sourcePortRange"          = "*"
@@ -78,7 +84,8 @@ variable "securityRules" {
       "destinationAddressPrefix" = "AzureCloud"
     },
     {
-      "name"                     = "AllowBastionCommunication"
+      "name"        = "AllowBastionCommunication"
+      "description" = "AllowBastionCommunication"
       "priority"                 = 120
       "protocol"                 = "*"
       "destinationPortRanges"    = ["8080", "5701"]
@@ -89,10 +96,11 @@ variable "securityRules" {
       "destinationAddressPrefix" = "VirtualNetwork"
     },
     {
-      "name"                     = "AllowGetSessionInformation"
+      "name"        = "AllowGetSessionInformation"
+      "description" = "AllowGetSessionInformation"
       "priority"                 = 130
       "protocol"                 = "*"
-      "destinationPortRanges"     = ["80"]
+      "destinationPortRanges"    = ["80"]
       "access"                   = "Allow"
       "direction"                = "Outbound"
       "sourcePortRange"          = "*"

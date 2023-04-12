@@ -372,7 +372,8 @@ The logs can be viewed in the portal using `Log Stream` or in the console using 
 First you need the name of the container apps:
 
 ```bash
-SPOKE_RESOURCE_GROUP_NAME="rg-lzaaca-spoke-test-neu"
+SPOKE_RESOURCE_GROUP_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokeResourceGroupName.value -o tsv)
+
 VEHICLE_REGISTRATION_SERVICE_CA_NAME=$(az deployment group show -g $SPOKE_RESOURCE_GROUP_NAME -n $LZA_DEPLOYMENT_SAMPLE_JAVA --query properties.outputs.vehicleRegistrationServiceContainerAppName.value -o tsv)
 
 FINE_COLLECTION_SERVICE_CA_NAME=$(az deployment group show -g $SPOKE_RESOURCE_GROUP_NAME -n $LZA_DEPLOYMENT_SAMPLE_JAVA --query properties.outputs.fineCollectionServiceContainerAppName.value -o tsv)

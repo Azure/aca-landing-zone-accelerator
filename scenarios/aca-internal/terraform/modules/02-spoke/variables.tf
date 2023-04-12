@@ -20,11 +20,12 @@ variable "location" {
 }
 
 variable "hubVnetId" {
-
+  default = ""
 }
 
 variable "spokeResourceGroupName" {
-    
+  default = ""
+
 }
 
 variable "tags" {
@@ -32,15 +33,35 @@ variable "tags" {
 }
 
 variable "vnetAddressPrefixes" {
+  default = ""
 
 }
 
 variable "infraSubnetAddressPrefix" {
+  default = ""
 
 }
 
 variable "infraSubnetName" {
+  default = "snet-infra"
 
+}
+
+variable "privateEndpointsSubnetName" {
+  default = "snet-pep"
+}
+
+variable "privateEndpointsSubnetAddressPrefix" {
+  default = ""
+
+}
+
+variable "applicationGatewaySubnetName" {
+  default = "snet-agw"
+}
+
+variable "applicationGatewaySubnetAddressPrefix" {
+  default = ""
 }
 
 variable "securityRules" {

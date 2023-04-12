@@ -11,3 +11,7 @@ variable "remoteVnetName" {
 variable "remoteVnetId" {
   
 }
+
+variable "remoteRgName" {
+  
+}

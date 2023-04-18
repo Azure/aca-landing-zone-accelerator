@@ -12,7 +12,7 @@ resource "azurerm_container_registry" "acr" {
 }
 
 module "containerRegistryPrivateZones" {
-  source = "../../../../shared/terraform/modules/networking/private-zones"
+  source = "../networking/private-zones"
   resourceGroupName = var.resourceGroupName
   vnetLinks = var.vnetLinks
   zoneName = local.privateDnsZoneNames
@@ -21,7 +21,7 @@ module "containerRegistryPrivateZones" {
 }
 
 module "containerRegistryPrivateEndpoints" {
-  source = "../../../../shared/terraform/modules/networking/private-endpoints"
+  source = "../networking/private-endpoints"
     endpointName = var.containerRegistryPep
     resourceGroupName = var.resourceGroupName
     subnetId = var.subnetId

@@ -8,10 +8,9 @@ resource "azurerm_private_endpoint" "pe" {
 
     private_service_connection {
         name = "plc"
-        private_connection_resource_id = var.privateLinkId
         is_manual_connection = false
-
-        subresource_names = []
+        private_connection_resource_id = var.privateLinkId
+        subresource_names = var.subResourceNames
     }
 
     private_dns_zone_group {

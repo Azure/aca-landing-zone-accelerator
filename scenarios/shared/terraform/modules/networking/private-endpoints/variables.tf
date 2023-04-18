@@ -34,3 +34,7 @@ variable "privateLinkId" {
 variable "privateDnsZoneIds" {
     default = []
 }
+
+variable "subResourceNames" {
+  
+}

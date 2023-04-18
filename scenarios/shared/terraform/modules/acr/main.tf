@@ -11,6 +11,35 @@ resource "azurerm_container_registry" "acr" {
     network_rule_bypass_option = "AzureServices"
 }
 
-module "privateNetworking" {
-  
+module "containerRegistryPrivateZones" {
+  source = "../../../../shared/terraform/modules/networking/private-zones"
+  resourceGroupName = var.resourceGroupName
+  vnetLinks = var.vnetLinks
+  zoneName = local.privateDnsZoneNames
+  records = var.aRecords
+  tags = var.tags
+}
+
+module "containerRegistryPrivateEndpoints" {
+  source = "../../../../shared/terraform/modules/networking/private-endpoints"
+    endpointName = var.containerRegistryPep
+    resourceGroupName = var.resourceGroupName
+    subnetId = var.subnetId
+    privateLinkId = azurerm_container_registry.acr.id
+    privateDnsZoneIds = [module.containerRegistryPrivateZones.privateDnsZoneId]
+    subResourceNames = local.subResourceNames
+    tags = var.tags
+}
+
+resource "azurerm_user_assigned_identity" "containerRegistryUserAssignedIdentity" {
+  name = var.containerRegistryUserAssignedIdentityName
+  resource_group_name = var.resourceGroupName
+  location = var.location
+  tags = var.tags
+}
+
+resource "azurerm_role_assignment" "containerRegistryPullRoleAssignment" {
+  scope = azurerm_container_registry.acr.id
+  role_definition_name = "AcrPull"
+  principal_id = azurerm_user_assigned_identity.containerRegistryUserAssignedIdentity.principal_id
 }

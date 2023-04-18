@@ -9,3 +9,7 @@ output "acrId" {
 output "acrName" {
     value = azurerm_container_registry.acr.name
 }
+
+output "containerRegistryUserAssignedIdentityId" {
+    value = azurerm_user_assigned_identity.containerRegistryUserAssignedIdentity.id
+}

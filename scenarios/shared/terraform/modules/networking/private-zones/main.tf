@@ -4,48 +4,26 @@ resource "azurerm_private_dns_zone" "privDnsZone" {
     tags = var.tags
 }
 
-### Need logic here
 resource "azurerm_private_dns_zone_virtual_network_link" "link" {
-  name = "${var.vnetName}-link"
-  resource_group_name = var.resourceGroupName
+  for_each = { for vnet in var.vnetLinks: vnet.name => vnet }
+  name = "${each.key}-link"
+  resource_group_name = azurerm_private_dns_zone.privDnsZone.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.privDnsZone.name
-  virtual_network_id = var.virtualNetworkId
-  registration_enabled = var.registrationEnabled
+  virtual_network_id = each.value.vnetId
+  registration_enabled = each.value.registrationEnabled
 
   tags = var.tags
 }
 
 resource "azurerm_private_dns_a_record" "aRecords" {
-    for_each = var.aRecords
+    for_each = { for record in var.records: record.name => record }
     zone_name = azurerm_private_dns_zone.privDnsZone.name
     resource_group_name = var.resourceGroupName
 
-    name = each.value.name
+    name = each.key
     ttl = each.value.ttl
     records = each.value.records
 
     tags = var.tags
     
 }
-
-#### Logic needed here to create A records
-# for_each = 
-# dynamic "subnet" {
-#         for_each = [for subnet in var.subnets: {
-#             name = subnet.name
-#             address_prefix = subnet.address_prefix
-#         }]
-
-#         content {
-#           name = subnet.value.name
-#           address_prefix = subnet.value.prefix
-#         }
-#     }
-# dynamic "records" {
-#     for_each = [for a_record in var.records:
-#         resource "azurerm_dns_a_record" "dnsRecord" {
-    
-#     }
-#     ]
-# }
-

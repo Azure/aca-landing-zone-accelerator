@@ -21,8 +21,8 @@ resource "azurerm_private_dns_a_record" "aRecords" {
     resource_group_name = var.resourceGroupName
 
     name = each.key
-    ttl = each.value.ttl
-    records = each.value.records
+    ttl = 60
+    records = each.value.ipv4Address
 
     tags = var.tags
     

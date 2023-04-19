@@ -54,8 +54,8 @@ variable "applicationType" {
     type = string
     validation {
     condition = anytrue([
-      var.sku == "web",
-      var.sku == "other"
+      var.applicationType == "web",
+      var.applicationType == "other"
     ])
     error_message = "Application Type must be either web or other."
     }

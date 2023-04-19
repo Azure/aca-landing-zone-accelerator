@@ -29,7 +29,7 @@ variable "tags" {
 }
 
 variable "sku" {
-  default = ""
+  default = "PerGB2018"
   type = string
   validation {
     condition = anytrue([

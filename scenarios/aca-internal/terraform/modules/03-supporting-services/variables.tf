@@ -49,3 +49,7 @@ variable "tags" {
 variable "containerRegistryPullRoleAssignment" {
 
 }
+
+variable "keyVaultPullRoleAssignment" {
+
+}

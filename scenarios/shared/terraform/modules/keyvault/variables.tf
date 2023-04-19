@@ -10,10 +10,6 @@ variable "keyVaultName" {
 
 }
 
-variable "tenantId" {
-    
-}
-
 variable "keyVaultUserAssignedIdentityName" {
 
 }

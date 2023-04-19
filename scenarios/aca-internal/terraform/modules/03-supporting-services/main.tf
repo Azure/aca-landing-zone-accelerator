@@ -33,7 +33,17 @@ module "containerRegistry" {
 }
 
 
-# module "keyVault" {
-#   source = "../../../../shared/terraform/modules/keyvault"
-# }
+module "keyVault" {
+  source                           = "../../../../shared/terraform/modules/keyvault"
+  resourceGroupName                = azurerm_resource_group.supportingServices.name
+  keyVaultName                     = module.naming.resourceNames["keyVault"]
+  location                         = var.location
+  vnetLinks                        = local.vnetLinks
+  aRecords                         = var.aRecords
+  subnetId                         = var.spokePrivateEndpointSubnetId
+  keyVaultUserAssignedIdentityName = module.naming.resourceNames["keyVaultUserAssignedIdentity"]
+  keyVaultPullRoleAssignment       = var.keyVaultPullRoleAssignment
+  keyVaultPep                      = module.naming.resourceNames["keyVaultPep"]
+  tags                             = var.tags
+}
 

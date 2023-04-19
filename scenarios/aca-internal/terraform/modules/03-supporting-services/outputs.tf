@@ -10,14 +10,14 @@ output "containerRegistryUserAssignedIdentityId" {
   value = module.containerRegistry
 }
 
-# output "keyVaultId" {
+output "keyVaultId" {
+  value = module.keyVault.keyVaultId
+}
 
-# }
+output "keyVaultName" {
+  value = module.keyVault.keyVaultName
+}
 
-# output "keyVaultName" {
-
-# }
-
-# output "keyVaultUserAssignedIdentityId" {
-
-# }
+output "keyVaultUserAssignedIdentityId" {
+value = module.keyVault.keyVaultUserAssignedIdentityId
+}

@@ -24,17 +24,17 @@ keyVaultId=$(az deployment sub show -n "<SUPPORTING_SERVICES_DEPLOYMENT_NAME>" -
 Where `<SUPPORTING_SERVICES_DEPLOYMENT_NAME>` is the name of the deployment of the supporting services.
 
 ```azurecli
-az deployment group create -n <DEPLOYMENT_NAME> -l <LOCATION> -g <SPOKE_RESOURCE_GROUP> -f deploy.aca-environment.bicep -p deploy.aca-environment.parameters.jsonc -p containerRegistryId=$containerRegistryId -p keyVaultId=$keyVaultId
+az deployment group create -n <DEPLOYMENT_NAME> -g <SPOKE_RESOURCE_GROUP> -f deploy.aca-environment.bicep -p deploy.aca-environment.parameters.jsonc -p containerRegistryId=$containerRegistryId -p keyVaultId=$keyVaultId
 ```
 
-Where `<LOCATION>` is the location where you want to deploy the landing zone, `<DEPLOYMENT_NAME>` is the name of the deployment and `<SPOKE_RESOURCE_GROUP>` is the name of the spoke resource group.
+Where `<DEPLOYMENT_NAME>` is the name of the deployment and `<SPOKE_RESOURCE_GROUP>` is the name of the spoke resource group.
 
 ## [PowerShell](#tab/PowerShell)
 
 ```azurepowershell
-New-AzResourceGroupDeployment -ResourceGroupName "<SPOKE_RESOURCE_GROUP>" -TemplateFile deploy.aca-environment.bicep -TemplateParameterFile deploy.aca-environment.parameters.jsonc -Location "<LOCATION>" -Name <DEPLOYMENT_NAME>
+New-AzResourceGroupDeployment -ResourceGroupName "<SPOKE_RESOURCE_GROUP>" -TemplateFile deploy.aca-environment.bicep -TemplateParameterFile deploy.aca-environment.parameters.jsonc -Name <DEPLOYMENT_NAME>
 ```
 
-Where `<LOCATION>` is the location where you want to deploy the landing zone, `<DEPLOYMENT_NAME>` is the name of the deployment and `<SPOKE_RESOURCE_GROUP>` is the name of the spoke resource group.
+Where `<DEPLOYMENT_NAME>` is the name of the deployment and `<SPOKE_RESOURCE_GROUP>` is the name of the spoke resource group.
 
 :arrow_forward: [Hello World Sample Container App (Optional)](../05-hello-world-sample-app)

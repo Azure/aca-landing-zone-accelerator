@@ -7,17 +7,17 @@ Review `deploy.hello-world.parameters.jsonc` and update the values as required. 
 ## [CLI](#tab/CLI)
 
 ```azurecli
-az deployment group create -n <DEPLOYMENT_NAME> -l <LOCATION> -g <SPOKE_RESOURCE_GROUP> -f deploy.hello-world.bicep -p deploy.hello-world.parameters.jsonc
+az deployment group create -n <DEPLOYMENT_NAME> -g <SPOKE_RESOURCE_GROUP> -f deploy.hello-world.bicep -p deploy.hello-world.parameters.jsonc
 ```
 
-Where `<LOCATION>` is the location where you want to deploy the landing zone, `<DEPLOYMENT_NAME>` is the name of the deployment and `<SPOKE_RESOURCE_GROUP>` is the name of the spoke resource group.
+Where <DEPLOYMENT_NAME>` is the name of the deployment and `<SPOKE_RESOURCE_GROUP>` is the name of the spoke resource group.
 
 ## [PowerShell](#tab/PowerShell)
 
 ```azurepowershell
-New-AzResourceGroupDeployment -ResourceGroupName "<SPOKE_RESOURCE_GROUP>" -TemplateFile deploy.hello-world.bicep -TemplateParameterFile deploy.hello-world.parameters.jsonc -Location "<LOCATION>" -Name <DEPLOYMENT_NAME>
+New-AzResourceGroupDeployment -ResourceGroupName "<SPOKE_RESOURCE_GROUP>" -TemplateFile deploy.hello-world.bicep -TemplateParameterFile deploy.hello-world.parameters.jsonc -Name <DEPLOYMENT_NAME>
 ```
 
-Where `<LOCATION>` is the location where you want to deploy the landing zone, `<DEPLOYMENT_NAME>` is the name of the deployment and `<SPOKE_RESOURCE_GROUP>` is the name of the spoke resource group.
+Where `<DEPLOYMENT_NAME>` is the name of the deployment and `<SPOKE_RESOURCE_GROUP>` is the name of the spoke resource group.
 
 :arrow_forward: [Application Gateway](../06-application-gateway)

@@ -18,9 +18,9 @@ sudo apt-get update
 sudo apt-get install msopenjdk-17 -y
 
 # Install Maven
-wget https://dlcdn.apache.org/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz -P /tmp
+wget https://dlcdn.apache.org/maven/maven-3/3.8.7/binaries/apache-maven-3.9.1-bin.tar.gz -P /tmp
 sudo tar xf /tmp/apache-maven-*.tar.gz -C /opt
-sudo ln -s /opt/apache-maven-3.8.7 /opt/maven
+sudo ln -s /opt/apache-maven-3.9.1 /opt/maven -s
 
 echo "export JAVA_HOME=/usr/lib/jvm/msopenjdk-17-amd64" >> ~/.bashrc
 echo "export M2_HOME=/opt/maven" >> ~/.bashrc

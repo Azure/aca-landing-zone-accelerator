@@ -19,13 +19,13 @@ resource "azurerm_container_registry" "acr" {
   admin_enabled                 = false
 }
 
-resource "azurerm_private_endpoint" "acr-endpoint" {
+resource "azurerm_private_endpoint" "pe_acr" {
   name                = "pe-${var.acrname}"
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.snet_id
 
-  private_service_connection { # todo
+  private_service_connection {
     name                           = "${var.acrname}-privateserviceconnection"
     private_connection_resource_id = azurerm_container_registry.acr.id
     subresource_names              = ["registry"]
@@ -33,7 +33,7 @@ resource "azurerm_private_endpoint" "acr-endpoint" {
   }
 
   private_dns_zone_group {
-    name = "acr-endpoint-zone"
+    name                 = "acr-endpoint-zone"
     private_dns_zone_ids = [var.private_zone_id]
   }
 }
@@ -43,5 +43,5 @@ output "acr_id" {
 }
 
 output "custom_dns_configs" {
-    value = azurerm_private_endpoint.acr-endpoint.custom_dns_configs
+  value = azurerm_private_endpoint.pe_acr.custom_dns_configs
 }

@@ -3,5 +3,5 @@
 resource "azurerm_resource_group" "rg" {
   name     = "rg-hub"
   location = var.location
-  tags = var.tags
+  tags     = var.tags
 }

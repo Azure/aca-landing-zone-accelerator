@@ -12,7 +12,7 @@ variable "snet_id" {}
 
 variable "private_zone_id" {}
 
-resource "azurerm_key_vault" "key-vault" {
+resource "azurerm_key_vault" "keyvault" {
   name                          = var.name
   location                      = var.location
   resource_group_name           = var.resource_group_name
@@ -30,15 +30,15 @@ resource "azurerm_key_vault" "key-vault" {
   }
 }
 
-resource "azurerm_private_endpoint" "kv-endpoint" {
-  name                = "${var.name}-endpoint"
+resource "azurerm_private_endpoint" "pe_keyvault" {
+  name                = "pe-keyvault"
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.snet_id
 
   private_service_connection {
     name                           = "${var.name}-privateserviceconnection"
-    private_connection_resource_id = azurerm_key_vault.key-vault.id
+    private_connection_resource_id = azurerm_key_vault.keyvault.id
     subresource_names              = ["vault"]
     is_manual_connection           = false
   }
@@ -49,10 +49,6 @@ resource "azurerm_private_endpoint" "kv-endpoint" {
   }
 }
 
-output "kv_id" {
-  value = azurerm_key_vault.key-vault.id
-}
-
-output "key_vault_url" {
-  value = azurerm_key_vault.key-vault.vault_uri
+output "keyvault_id" {
+  value = azurerm_key_vault.keyvault.id
 }

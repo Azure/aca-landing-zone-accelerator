@@ -1,7 +1,7 @@
 # Deploy Azure Key Vault
 
-module "create_kv" {
-  source = "./modules/kv-private"
+module "keyvault_private" {
+  source = "./modules/keyvault_private"
 
   name                     = "kv${random_integer.deployment.result}"
   resource_group_name      = data.terraform_remote_state.spoke.outputs.rg.name
@@ -36,8 +36,8 @@ resource "azurerm_user_assigned_identity" "identity_keyvault" {
 # RBAC role assignment for key vault
 
 resource "azurerm_role_assignment" "role_assignment_keyvault" {
-  scope                = module.create_kv.kv_id
-  role_definition_name = "Key Vault Secrets Officer"
+  scope                = module.keyvault_private.keyvault_id
+  role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_user_assigned_identity.identity_keyvault.principal_id
 }
 

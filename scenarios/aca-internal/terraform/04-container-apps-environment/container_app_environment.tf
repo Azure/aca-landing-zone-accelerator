@@ -1,33 +1,10 @@
 resource "azurerm_container_app_environment" "aca_environment" {
-  name                       = "aca-environment"
-  location                   = data.terraform_remote_state.spoke.outputs.rg.location
-  resource_group_name        = data.terraform_remote_state.spoke.outputs.rg.name
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
-}
-
-resource "azurerm_container_app" "aca" {
-  name                         = "aca-app"
-  container_app_environment_id = azurerm_container_app_environment.aca_environment.id
-  resource_group_name          = azurerm_container_app_environment.aca_environment.resource_group_name
-  revision_mode                = "Single"
-
-  ingress {
-    external_enabled = true
-    target_port      = 80
-    traffic_weight {
-      label      = "examplecontainerapp"
-      percentage = 100
-    }
-  }
-
-  template {
-    container {
-      name   = "examplecontainerapp"
-      image  = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
-      cpu    = 0.25
-      memory = "0.5Gi"
-    }
-  }
+  name                           = "aca-environment"
+  location                       = data.terraform_remote_state.spoke.outputs.rg.location
+  resource_group_name            = data.terraform_remote_state.spoke.outputs.rg.name
+  log_analytics_workspace_id     = azurerm_log_analytics_workspace.workspace.id
+  infrastructure_subnet_id       = data.terraform_remote_state.spoke.outputs.snet_infra.id
+  internal_load_balancer_enabled = true
 }
 
 resource "azurerm_storage_account" "storage" {

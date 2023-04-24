@@ -5,8 +5,8 @@ resource "random_integer" "deployment" {
 
 # Deploy Azure Container Registry
 
-module "create_acr" {
-  source = "./modules/acr-private"
+module "acr_private" {
+  source = "./modules/acr_private"
 
   acrname             = "acr${random_integer.deployment.result}"
   resource_group_name = data.terraform_remote_state.spoke.outputs.rg.name
@@ -40,7 +40,7 @@ resource "azurerm_user_assigned_identity" "identity_acr" {
 # RBAC role assignment for ACR
 
 resource "azurerm_role_assignment" "role_assignment_acr" {
-  scope                = module.create_acr.acr_id
+  scope                = module.acr_private.acr_id
   role_definition_name = "AcrPull"
   principal_id         = azurerm_user_assigned_identity.identity_acr.principal_id
 }

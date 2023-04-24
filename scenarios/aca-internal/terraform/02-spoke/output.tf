@@ -17,3 +17,9 @@ output snet_pep {
     id   = azurerm_subnet.snet_pep.id
   }
 }
+
+output snet_infra {
+  value = {
+    id   = azurerm_subnet.snet_infra.id
+  }
+}

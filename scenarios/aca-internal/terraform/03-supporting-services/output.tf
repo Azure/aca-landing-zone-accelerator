@@ -1,11 +1,11 @@
 output "keyvault" {
   value = {
-    id = module.create_kv.kv_id
+    id = module.keyvault_private.keyvault_id
   }
 }
 
 output "acr" {
   value = {
-    id = module.create_acr.acr_id
+    id = module.acr_private.acr_id
   }
 }

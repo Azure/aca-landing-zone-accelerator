@@ -11,6 +11,9 @@ variable "appGatewayCertificateKeyName" {
 }
 
 variable "appGatewayCertificateData" {
-  
+  default = "configuration/acahello.demoapp.com.pfx"
 }
 
+variable "resourceGroupName" {
+  
+}

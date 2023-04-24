@@ -26,23 +26,7 @@ variable "appGatewaySubnetId" {
 
 }
 
-variable "sslCertificates" {
-
-}
-
-variable "frontendPorts" {
-
-}
-
 variable "appGatewayPrimaryBackendEndFQDN" {
-
-}
-
-variable "backendHttpSettings" {
-
-}
-
-variable "diagnosticSettingName" {
 
 }
 
@@ -56,4 +40,8 @@ variable "appGatewayFQDN" {
 
 variable "keyVaultSecretId" {
   sensitive = true
+}
+
+variable "diagnosticSettingName" {
+  
 }

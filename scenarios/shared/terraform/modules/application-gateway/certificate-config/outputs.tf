@@ -1,4 +1,3 @@
-//TODO: Should be Uri here. 
 output "SecretUri" {
-  value = azurerm_key_vault_secret.sslCertSecret.value
+  value = "https://${data.azurerm_key_vault.keyVault.name}.vault.azure.net/secrets/${azurerm_key_vault_secret.sslCertSecret.name}"
 }

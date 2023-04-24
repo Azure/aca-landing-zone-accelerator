@@ -1,10 +1,12 @@
 data "azurerm_key_vault" "keyVault" {
   name = var.keyVaultName
+  resource_group_name = var.resourceGroupName
 }
 
 resource "azurerm_key_vault_secret" "sslCertSecret" {
+  name = var.appGatewayCertificateKeyName
   key_vault_id = data.azurerm_key_vault.keyVault.id
-  value = var.appGatewayCertificateKeyName
+  value = var.appGatewayCertificateData
   content_type = "application/x-pkcs12"
 }
 

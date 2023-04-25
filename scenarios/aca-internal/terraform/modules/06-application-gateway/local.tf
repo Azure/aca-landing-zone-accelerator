@@ -1,3 +1,3 @@
 locals {
-  appGatewayCertificate = filebase64("configuration/acahello.demoapp.com.pfx")
+  appGatewayCertificate = filebase64(var.appGatewayCertificatePath)
 }

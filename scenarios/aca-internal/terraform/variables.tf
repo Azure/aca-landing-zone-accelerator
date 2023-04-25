@@ -20,14 +20,18 @@ variable "location" {
 }
 
 variable "hubResourceGroupName" {
+  default = ""
+}
 
+variable "spokeResourceGroupName" {
+  default = ""
 }
 
 variable "tags" {
 
 }
 
-variable "vnetAddressPrefixes" {
+variable "hubVnetAddressPrefixes" {
 
 }
 
@@ -83,4 +87,80 @@ variable "securityRules" {
 
 variable "vmJumpBoxSubnetAddressPrefix" {
 
+}
+
+variable "spokeVnetAddressPrefixes" {
+  default = ""
+
+}
+
+variable "infraSubnetAddressPrefix" {
+  default = ""
+
+}
+
+variable "infraSubnetName" {
+  default = "snet-infra"
+
+}
+
+variable "privateEndpointsSubnetName" {
+  default = "snet-pep"
+}
+
+variable "privateEndpointsSubnetAddressPrefix" {
+  default = ""
+
+}
+
+variable "applicationGatewaySubnetName" {
+  default = "snet-agw"
+}
+
+variable "applicationGatewaySubnetAddressPrefix" {
+  default = ""
+}
+
+variable "supportingResourceGroupName" {
+  
+}
+
+variable "aRecords" {
+  
+}
+
+variable "containerRegistryPullRoleAssignment" {
+  
+}
+
+variable "keyVaultPullRoleAssignment" {
+  
+}
+
+variable "appGatewayCertificatePath" {
+  default = "./06-application-gateway/configuration/acahello.demoapp.com.pfx"
+}
+
+variable "keyVaultName" {
+  
+}
+
+variable "appGatewayCertificateKeyName" {
+  
+}
+
+variable "appGatewayFQDN" {
+  
+}
+
+variable "appGatewayPrimaryBackendEndFQDN" {
+  
+}
+
+variable "appInsightsName" {
+  
+}
+
+variable "helloWorldContainerAppName" {
+  
 }

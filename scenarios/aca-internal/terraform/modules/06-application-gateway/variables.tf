@@ -45,3 +45,7 @@ variable "tags" {
 variable "keyVaultName" {
 
 }
+
+variable "appGatewayCertificatePath" {
+  
+}

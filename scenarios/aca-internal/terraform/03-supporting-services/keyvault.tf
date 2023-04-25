@@ -18,11 +18,18 @@ resource "azurerm_private_dns_zone" "dns_zone_keyvault" {
   resource_group_name = data.terraform_remote_state.spoke.outputs.rg.name
 }
 
-resource "azurerm_private_dns_zone_virtual_network_link" "link_spoke_dns_keyvault" {
-  name                  = "link-spoke-dns-keyvault"
-  resource_group_name   = data.terraform_remote_state.spoke.outputs.rg.name
+resource "azurerm_private_dns_zone_virtual_network_link" "link_dns_keyvault_spoke" {
+  name                  = "link-dns-keyvault-spoke"
   private_dns_zone_name = azurerm_private_dns_zone.dns_zone_keyvault.name
+  resource_group_name   = azurerm_private_dns_zone.dns_zone_keyvault.resource_group_name
   virtual_network_id    = data.terraform_remote_state.spoke.outputs.vnet.id
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "link_dns_keyvault_hub" {
+  name                  = "link-dns-keyvault-hub"
+  private_dns_zone_name = azurerm_private_dns_zone.dns_zone_keyvault.name
+  resource_group_name   = azurerm_private_dns_zone.dns_zone_keyvault.resource_group_name
+  virtual_network_id    = data.terraform_remote_state.hub.outputs.vnet.id
 }
 
 # user assigned identity for key vault

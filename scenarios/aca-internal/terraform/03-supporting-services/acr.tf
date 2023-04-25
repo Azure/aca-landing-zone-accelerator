@@ -22,11 +22,18 @@ resource "azurerm_private_dns_zone" "dns_zone_acr" {
   resource_group_name = data.terraform_remote_state.spoke.outputs.rg.name
 }
 
-resource "azurerm_private_dns_zone_virtual_network_link" "link_spoke_dns_acr" {
-  name                  = "link-spoke-dns-acr"
-  resource_group_name   = data.terraform_remote_state.spoke.outputs.rg.name
+resource "azurerm_private_dns_zone_virtual_network_link" "link_dns_acr_spoke" {
+  name                  = "link-dns-acr-spoke"
   private_dns_zone_name = azurerm_private_dns_zone.dns_zone_acr.name
+  resource_group_name   = azurerm_private_dns_zone.dns_zone_acr.resource_group_name
   virtual_network_id    = data.terraform_remote_state.spoke.outputs.vnet.id
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "link_dns_acr_hub" {
+  name                  = "link-dns-acr-hub"
+  private_dns_zone_name = azurerm_private_dns_zone.dns_zone_acr.name
+  resource_group_name   = azurerm_private_dns_zone.dns_zone_acr.resource_group_name
+  virtual_network_id    = data.terraform_remote_state.hub.outputs.vnet.id
 }
 
 # user assigned identity for ACR

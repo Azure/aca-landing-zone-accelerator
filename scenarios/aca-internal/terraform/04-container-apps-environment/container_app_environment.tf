@@ -5,6 +5,7 @@ resource "azurerm_container_app_environment" "aca_environment" {
   log_analytics_workspace_id     = azurerm_log_analytics_workspace.workspace.id
   infrastructure_subnet_id       = data.terraform_remote_state.spoke.outputs.snet_infra.id
   internal_load_balancer_enabled = true
+  tags                           = var.tags
 }
 
 resource "azurerm_storage_account" "storage" {
@@ -13,6 +14,7 @@ resource "azurerm_storage_account" "storage" {
   location                 = data.terraform_remote_state.spoke.outputs.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  tags                     = var.tags
 }
 
 resource "azurerm_storage_share" "file_share" {
@@ -43,6 +45,7 @@ resource "azurerm_user_assigned_identity" "identity_aca" {
   name                = "identity-aca"
   resource_group_name = data.terraform_remote_state.spoke.outputs.rg.name
   location            = data.terraform_remote_state.spoke.outputs.rg.location
+  tags                = var.tags
 }
 
 resource "azurerm_role_assignment" "role_acrpull_identity_aca" {

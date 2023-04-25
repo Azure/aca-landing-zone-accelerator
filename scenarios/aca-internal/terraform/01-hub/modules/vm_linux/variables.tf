@@ -46,13 +46,7 @@ variable "vm_size" {
   default = "Standard_B2ms"
 }
 
-variable "tags" {
-  type = map(string)
-
-  default = {
-    application = "compute"
-  }
-}
+variable "tags" {}
 
 variable "allocation_method" {
   default = "Static"

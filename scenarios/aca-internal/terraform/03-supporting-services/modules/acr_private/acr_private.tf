@@ -10,6 +10,8 @@ variable "snet_id" {}
 
 variable "private_zone_id" {}
 
+variable "tags" {}
+
 resource "azurerm_container_registry" "acr" {
   name                          = var.acrname
   resource_group_name           = var.resource_group_name
@@ -17,6 +19,7 @@ resource "azurerm_container_registry" "acr" {
   sku                           = "Premium"
   public_network_access_enabled = false
   admin_enabled                 = false
+  tags                          = var.tags
 }
 
 resource "azurerm_private_endpoint" "pe_acr" {
@@ -24,6 +27,7 @@ resource "azurerm_private_endpoint" "pe_acr" {
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.snet_id
+  tags                = var.tags
 
   private_service_connection {
     name                           = "${var.acrname}-privateserviceconnection"

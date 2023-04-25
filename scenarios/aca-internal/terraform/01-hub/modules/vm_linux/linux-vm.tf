@@ -1,5 +1,4 @@
-resource "azurerm_linux_virtual_machine" "compute" {
-  
+resource "azurerm_linux_virtual_machine" "vm" {
   name                            = var.server_name
   location                        = var.location
   resource_group_name             = var.resource_group_name
@@ -10,7 +9,7 @@ resource "azurerm_linux_virtual_machine" "compute" {
   tags                            = var.tags
 
   network_interface_ids = [
-    azurerm_network_interface.compute.id
+    azurerm_network_interface.nic.id
   ]
 
   os_disk {
@@ -31,14 +30,12 @@ resource "azurerm_linux_virtual_machine" "compute" {
   }
 }
 
-resource "azurerm_network_interface" "compute" {
-
+resource "azurerm_network_interface" "nic" {
   name                          = "${var.server_name}-nic"
   location                      = var.location
   resource_group_name           = var.resource_group_name
   enable_accelerated_networking = var.enable_accelerated_networking
-
-  tags = var.tags
+  tags                          = var.tags
 
   ip_configuration {
     name                          = "internal"

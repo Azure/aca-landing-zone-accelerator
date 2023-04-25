@@ -3,6 +3,7 @@
 resource "azurerm_private_dns_zone" "private_dns_zone_aca" {
   name                = azurerm_container_app_environment.aca_environment.default_domain
   resource_group_name = data.terraform_remote_state.spoke.outputs.rg.name
+  tags                = var.tags
 }
 
 # A record for ACA

@@ -3,6 +3,7 @@ resource "azurerm_container_app" "aca" {
   container_app_environment_id = data.terraform_remote_state.container_apps_environment.outputs.aca_environment.id
   resource_group_name          = data.terraform_remote_state.container_apps_environment.outputs.aca_environment.resource_group_name
   revision_mode                = "Single"
+  tags                         = var.tags
 
   identity {
     type = "UserAssigned"
@@ -18,7 +19,7 @@ resource "azurerm_container_app" "aca" {
     transport                  = "auto"
 
     # traffic_weight can only be specified when revision_mode is set to Multiple.
-    traffic_weight { 
+    traffic_weight {
       # label      = "examplecontainerapp"
       percentage = 100
     }

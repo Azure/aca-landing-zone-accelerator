@@ -1,23 +1,9 @@
-variable "log_analytics_workspace" {
-  default = "aca-internal-log-analytics"
-}
 
-variable "location" {
-  default = "northeurope"
-}
-
-variable "tags" {
-  type = map(string)
-
-  default = {
-    project = "aca-internal"
-  }
-}
 
 resource "azurerm_log_analytics_workspace" "workspace" {
   name                = var.log_analytics_workspace
   resource_group_name = data.terraform_remote_state.spoke.outputs.rg.name
-  location            = var.location
+  location            = data.terraform_remote_state.spoke.outputs.rg.location
   sku                 = "PerGB2018" # PerGB2018, Free, PerNode, Premium, Standard, Standalone, Unlimited, CapacityReservation
   retention_in_days   = 30          # possible values are either 7 (Free Tier only) or range between 30 and 730
   tags                = var.tags

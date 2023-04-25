@@ -12,6 +12,8 @@ variable "snet_id" {}
 
 variable "private_zone_id" {}
 
+variable "tags" {}
+
 resource "azurerm_key_vault" "keyvault" {
   name                          = var.name
   location                      = var.location
@@ -23,6 +25,7 @@ resource "azurerm_key_vault" "keyvault" {
   sku_name                      = "standard"
   public_network_access_enabled = false
   enable_rbac_authorization     = true
+  tags = var.tags
 
   network_acls {
     bypass         = "AzureServices"
@@ -35,6 +38,7 @@ resource "azurerm_private_endpoint" "pe_keyvault" {
   location            = var.location
   resource_group_name = var.resource_group_name
   subnet_id           = var.snet_id
+  tags = var.tags
 
   private_service_connection {
     name                           = "${var.name}-privateserviceconnection"

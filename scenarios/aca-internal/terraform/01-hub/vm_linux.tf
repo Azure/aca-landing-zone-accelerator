@@ -1,10 +1,3 @@
-####################################
-# These resources will create an addtional subnet for user connectivity
-# and a Linux Server to use with the Bastion Service.
-####################################
-
-# Dev Subnet
-# (Additional subnet for Developer Jumpbox)
 resource "azurerm_subnet" "snet_jumpbox" {
   name                                      = "snet-jumpbox"
   resource_group_name                       = azurerm_resource_group.rg.name
@@ -14,9 +7,10 @@ resource "azurerm_subnet" "snet_jumpbox" {
 }
 
 resource "azurerm_network_security_group" "nsg_vm" {
-  name                = "${azurerm_virtual_network.vnet.name}-${azurerm_subnet.snet_jumpbox.name}-nsg"
+  name                = "nsg-vm"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
+  tags                = var.tags
 }
 
 resource "azurerm_subnet_network_security_group_association" "subnet" {
@@ -26,14 +20,14 @@ resource "azurerm_subnet_network_security_group_association" "subnet" {
 
 # Linux Server VM
 
-module "create_linuxsserver" {
-  source = "./modules/linux-vm"
+module "linuxs_server" {
+  source = "./modules/vm_linux"
 
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   vnet_subnet_id      = azurerm_subnet.snet_jumpbox.id
-
-  server_name    = "server-dev-linux"
-  admin_username = var.admin_username
-  admin_password = var.admin_password
+  server_name         = "vm-linux-jumpbox"
+  admin_username      = var.admin_username
+  admin_password      = var.admin_password
+  tags                = var.tags
 }

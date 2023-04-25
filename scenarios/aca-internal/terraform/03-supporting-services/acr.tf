@@ -13,6 +13,7 @@ module "acr_private" {
   location            = data.terraform_remote_state.spoke.outputs.rg.location
   snet_id             = data.terraform_remote_state.spoke.outputs.snet_pep.id
   private_zone_id     = azurerm_private_dns_zone.dns_zone_acr.id
+  tags                = var.tags
 }
 
 # Deploy DNS Private Zone for ACR
@@ -20,6 +21,7 @@ module "acr_private" {
 resource "azurerm_private_dns_zone" "dns_zone_acr" {
   name                = "privatelink.azurecr.io"
   resource_group_name = data.terraform_remote_state.spoke.outputs.rg.name
+  tags                = var.tags
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "link_dns_acr_spoke" {
@@ -42,6 +44,7 @@ resource "azurerm_user_assigned_identity" "identity_acr" {
   name                = "identity-acr"
   resource_group_name = data.terraform_remote_state.spoke.outputs.rg.name
   location            = data.terraform_remote_state.spoke.outputs.rg.location
+  tags                = var.tags
 }
 
 # RBAC role assignment for ACR

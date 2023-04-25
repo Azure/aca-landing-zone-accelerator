@@ -16,8 +16,10 @@ resource "azurerm_container_app" "aca" {
     allow_insecure_connections = false
     target_port                = 80
     transport                  = "auto"
-    traffic_weight {
-      label      = "examplecontainerapp"
+
+    # traffic_weight can only be specified when revision_mode is set to Multiple.
+    traffic_weight { 
+      # label      = "examplecontainerapp"
       percentage = 100
     }
   }

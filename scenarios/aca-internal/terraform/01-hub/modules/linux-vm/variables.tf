@@ -43,7 +43,7 @@ variable "storage_account_type" {
 }
 
 variable "vm_size" {
-  default = "Standard_D2s_v3"
+  default = "Standard_B2ms"
 }
 
 variable "tags" {

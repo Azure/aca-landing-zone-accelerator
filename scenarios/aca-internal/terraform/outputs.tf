@@ -4,7 +4,7 @@ output "hubVnetId" {
 }
 
 output "hubResourceGroupName" {
-  value = module.hub.resourceGroupName
+  value = module.hub.hubResourceGroupName
 }
 
 // Spoke

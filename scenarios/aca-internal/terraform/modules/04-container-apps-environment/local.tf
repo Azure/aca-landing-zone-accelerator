@@ -11,7 +11,8 @@ locals {
 
 
   vnetLinks = [
-    { "name"                = local.spokeVnetName
+    { 
+      "name"                = local.spokeVnetName
       "vnetId"              = var.spokeVnetId
       "resourceGroupName"   = local.spokeVnetResourceGroup
       "registrationEnabled" = false

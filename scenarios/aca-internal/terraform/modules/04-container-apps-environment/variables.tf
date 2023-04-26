@@ -54,3 +54,7 @@ variable "enableTelemetry" {
   type    = bool
   default = true
 }
+
+variable "vnetLinks" {
+  
+}

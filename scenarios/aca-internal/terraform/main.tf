@@ -43,6 +43,19 @@ module "supportingServices" {
   spokePrivateEndpointSubnetId = module.spoke.spokePrivateEndpointsSubnetId
   containerRegistryPullRoleAssignment = var.containerRegistryPullRoleAssignment
   keyVaultPullRoleAssignment = var.keyVaultPullRoleAssignment
+  vnetLinks = [
+    { 
+      "name"                = module.spoke.spokeVNetName
+      "vnetId"              = module.spoke.spokeVNetId
+      "resourceGroupName"   = module.spoke.spokeResourceGroupName
+      "registrationEnabled" = false
+    },
+    {
+      "name"                = module.hub.hubVnetName
+      "vnetId"              = module.hub.hubVnetId
+      "resourceGroupName"   = module.hub.hubResourceGroupName
+      "registrationEnabled" = false
+    }]
   tags = var.tags
 }
 
@@ -56,13 +69,26 @@ module "containerAppsEnvironment" {
   hubVnetId = module.hub.hubVnetId
   spokeVnetId = module.spoke.spokeVNetId
   spokeInfraSubnetId = module.spoke.spokeInfraSubnetId
+  vnetLinks = [
+    { 
+      "name"                = module.spoke.spokeVNetName
+      "vnetId"              = module.spoke.spokeVNetId
+      "resourceGroupName"   = module.spoke.spokeResourceGroupName
+      "registrationEnabled" = false
+    },
+    {
+      "name"                = module.hub.hubVnetName
+      "vnetId"              = module.hub.hubVnetId
+      "resourceGroupName"   = module.hub.hubResourceGroupName
+      "registrationEnabled" = false
+    }]
   tags = var.tags
 }
 
 module "helloWorldApp" {
   source = "./modules/05-hello-world-sample-app"
   location = var.location
-  resourceGroupName = var.spokeResourceGroupName
+  resourceGroupName = module.spoke.spokeResourceGroupName
   helloWorldContainerAppName = var.helloWorldContainerAppName
   containerAppsEnvironmentId = module.containerAppsEnvironment.containerAppsEnvironmentId
   containerRegistryUserAssignedIdentityId = module.supportingServices.containerRegistryUserAssignedIdentityId
@@ -74,9 +100,9 @@ module "applicationGateway" {
   workloadName = var.workloadName
   environment = var.environment
   location = var.location
-  resourceGroupName = var.spokeResourceGroupName
+  resourceGroupName = module.spoke.spokeResourceGroupName
   supportResourceGroupName = var.supportingResourceGroupName
-  keyVaultName = var.keyVaultName
+  keyVaultName = module.supportingServices.keyVaultName
   appGatewayCertificateKeyName = var.appGatewayCertificateKeyName
   appGatewayFQDN = var.appGatewayFQDN
   appGatewayPrimaryBackendEndFQDN = var.appGatewayPrimaryBackendEndFQDN

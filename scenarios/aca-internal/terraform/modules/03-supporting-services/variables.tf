@@ -53,3 +53,7 @@ variable "containerRegistryPullRoleAssignment" {
 variable "keyVaultPullRoleAssignment" {
 
 }
+
+variable "vnetLinks" {
+  
+}

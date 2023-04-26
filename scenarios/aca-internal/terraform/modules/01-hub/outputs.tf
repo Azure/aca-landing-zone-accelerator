@@ -7,7 +7,11 @@ output "hubVnetId" {
   value       = module.vnet.vnetId
 }
 
-output "resourceGroupName" {
+output "hubVnetName" {
+  value = module.vnet.vnetName
+}
+
+output "hubResourceGroupName" {
   description = "The name of the Hub resource group."
   value       = azurerm_resource_group.hubResourceGroup.name
 }

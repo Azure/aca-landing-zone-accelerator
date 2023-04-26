@@ -138,11 +138,7 @@ variable "keyVaultPullRoleAssignment" {
 }
 
 variable "appGatewayCertificatePath" {
-  default = "./06-application-gateway/configuration/acahello.demoapp.com.pfx"
-}
-
-variable "keyVaultName" {
-  
+  default = "configuration/acahello.demoapp.com.pfx"
 }
 
 variable "appGatewayCertificateKeyName" {

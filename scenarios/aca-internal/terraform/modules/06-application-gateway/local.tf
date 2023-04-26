@@ -1,3 +1,3 @@
 locals {
-  appGatewayCertificate = filebase64(var.appGatewayCertificatePath)
+  appGatewayCertificate = filebase64("${path.module}/${var.appGatewayCertificatePath}")
 }

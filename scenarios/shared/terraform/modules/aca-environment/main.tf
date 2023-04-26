@@ -1,6 +1,6 @@
 resource "azurerm_container_app_environment" "environment" {
   name                           = var.environmentName
-  resource_group_name            = var.resourceGroupName
+  resource_group_name            = var.resourceGroupName 
   location                       = var.location
   log_analytics_workspace_id     = var.logAnalyticsWorkspaceId
   infrastructure_subnet_id       = var.subnetId

@@ -7,7 +7,7 @@ output "containerRegistryName" {
 }
 
 output "containerRegistryUserAssignedIdentityId" {
-  value = module.containerRegistry
+  value = module.containerRegistry.containerRegistryUserAssignedIdentityId
 }
 
 output "keyVaultId" {

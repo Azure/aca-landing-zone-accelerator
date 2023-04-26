@@ -79,7 +79,7 @@ output "containerAppsEnvironmentName" {
 }
 
 output "logAnalyticsWorkspaceId" {
-    value = module.containerAppsEnvironment.logAnalyticsWorkspaceId
+  value = module.containerAppsEnvironment.logAnalyticsWorkspaceId
 }
 
 output "logAnalyticsWorkspaceCustomerId" {

@@ -11,7 +11,7 @@ locals {
 
 
   vnetLinks = [
-    { 
+    {
       "name"                = local.spokeVnetName
       "vnetId"              = var.spokeVnetId
       "resourceGroupName"   = local.spokeVnetResourceGroup

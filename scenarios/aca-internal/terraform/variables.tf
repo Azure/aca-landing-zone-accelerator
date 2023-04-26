@@ -122,19 +122,19 @@ variable "applicationGatewaySubnetAddressPrefix" {
 }
 
 variable "supportingResourceGroupName" {
-  
+
 }
 
 variable "aRecords" {
-  
+
 }
 
 variable "containerRegistryPullRoleAssignment" {
-  
+
 }
 
 variable "keyVaultPullRoleAssignment" {
-  
+
 }
 
 variable "appGatewayCertificatePath" {
@@ -142,21 +142,26 @@ variable "appGatewayCertificatePath" {
 }
 
 variable "appGatewayCertificateKeyName" {
-  
+
 }
 
 variable "appGatewayFQDN" {
-  
+
 }
 
 variable "appGatewayPrimaryBackendEndFQDN" {
-  
+
 }
 
 variable "appInsightsName" {
-  
+
 }
 
 variable "helloWorldContainerAppName" {
-  
+
+}
+
+variable "enableTelemetry" {
+  type    = bool
+  default = true
 }

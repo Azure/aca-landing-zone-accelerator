@@ -56,5 +56,5 @@ variable "enableTelemetry" {
 }
 
 variable "vnetLinks" {
-  
+
 }

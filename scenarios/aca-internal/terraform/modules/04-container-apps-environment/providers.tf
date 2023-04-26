@@ -12,5 +12,6 @@ terraform {
   # }
 }
 provider "azurerm" {
+  partner_id = vars.enableTelemetry ? "9b4433d6-924a-4c07-b47c-7478619759c7-${vars.location}-acasb" : null
   features {}
 }

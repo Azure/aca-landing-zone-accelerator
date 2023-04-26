@@ -80,7 +80,7 @@ az deployment sub create \
     --template-file main.bicep \
     --location $LOCATION \
     --name $LZA_DEPLOYMENT_NAME \
-    --parameters ./main.parameters.local.jsonc
+    --parameters ./main.parameters.jsonc
 ```
 
 #### Powershell (windows based OS)
@@ -92,7 +92,7 @@ az deployment sub create `
     --template-file main.bicep `
     --location $LOCATION `
     --name $LZA_DEPLOYMENT_NAME `
-    --parameters ./main.parameters.local.jsonc
+    --parameters ./main.parameters.jsonc
 ```
 After your Hub, Spoke, supporting services and Azure Container Apps Environment are deployed (and if you selected `deployHelloWorldSample: false`) you may proceed to deploy Fine Collection Sample App
 :arrow_forward: [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md)

@@ -54,6 +54,7 @@ variable "vmAdminUsername" {
 
 variable "vmAdminPassword" {
   sensitive = true
+  default = null
 }
 
 variable "vmLinuxSshAuthorizedKeys" {

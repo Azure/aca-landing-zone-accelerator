@@ -31,6 +31,13 @@ resource "azurerm_network_interface" "vmNic" {
   }
 }
 
+resource "random_password" "password" {
+  count            = var.adminPassword == null ? 2 : 0
+  length           = 16
+  special          = true
+  override_special = "!#$%&*?"
+}
+
 resource "azurerm_linux_virtual_machine" "linuxVm" {
   count = var.osType == "Linux" ? 1 : 0
 
@@ -39,7 +46,7 @@ resource "azurerm_linux_virtual_machine" "linuxVm" {
   location            = var.location
 
   admin_username = var.adminUsername
-  admin_password = var.adminPassword
+  admin_password = var.adminPassword == null ? random_password.password.0.result : var.adminPassword
   disable_password_authentication = false
   size           = var.size
 

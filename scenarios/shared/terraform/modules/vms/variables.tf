@@ -36,6 +36,7 @@ variable "adminUsername" {
 }
 
 variable "adminPassword" {
+  default = null
 }
 
 variable "resourceGroupName" {

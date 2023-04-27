@@ -95,19 +95,21 @@ module "helloWorldApp" {
   tags                                    = var.tags
 }
 
-module "applicationGateway" {
-  source                          = "./modules/06-application-gateway"
-  workloadName                    = var.workloadName
-  environment                     = var.environment
-  location                        = var.location
-  resourceGroupName               = module.spoke.spokeResourceGroupName
-  supportResourceGroupName        = var.supportingResourceGroupName
-  keyVaultName                    = module.supportingServices.keyVaultName
-  appGatewayCertificateKeyName    = var.appGatewayCertificateKeyName
-  appGatewayFQDN                  = var.appGatewayFQDN
-  appGatewayPrimaryBackendEndFQDN = var.appGatewayPrimaryBackendEndFQDN
-  appGatewaySubnetId              = module.spoke.spokeApplicationGatewaySubnetId
-  appGatewayLogAnalyticsId        = module.containerAppsEnvironment.logAnalyticsWorkspaceId
-  appGatewayCertificatePath       = var.appGatewayCertificatePath
-  tags                            = var.tags
-}
+# Application Gateway must be deployed from the Jumpbox deployed in the Hub Network
+
+# module "applicationGateway" {
+#   source                          = "./modules/06-application-gateway"
+#   workloadName                    = var.workloadName
+#   environment                     = var.environment
+#   location                        = var.location
+#   resourceGroupName               = module.spoke.spokeResourceGroupName
+#   supportResourceGroupName        = var.supportingResourceGroupName
+#   keyVaultName                    = module.supportingServices.keyVaultName
+#   appGatewayCertificateKeyName    = var.appGatewayCertificateKeyName
+#   appGatewayFQDN                  = var.appGatewayFQDN
+#   appGatewayPrimaryBackendEndFQDN = var.appGatewayPrimaryBackendEndFQDN
+#   appGatewaySubnetId              = module.spoke.spokeApplicationGatewaySubnetId
+#   appGatewayLogAnalyticsId        = module.containerAppsEnvironment.logAnalyticsWorkspaceId
+#   appGatewayCertificatePath       = var.appGatewayCertificatePath
+#   tags                            = var.tags
+# }

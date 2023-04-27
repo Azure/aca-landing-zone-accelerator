@@ -98,7 +98,7 @@ To configure your Terraform deployment to use the newly provisioned storage acco
 As you configured the backend remote state with your live Azure infrastructure resource values, you must also provide them for your deployment.
 
 1. Review the available variables with their descriptions and default values in the [variables.tf](./variables.tf) file.
-2. Provide any custom values to the defined variables by creating a `terraform.tfvars` file in this direcotry (`reference-implementations/LOB-ILB-ASEv3/terraform/terraform.tfvars`)
+2. Provide any custom values to the defined variables by creating a `terraform.tfvars` file in this [directory](terraform.tfvars)
     * [TF Docs: Variable Definitions (.tfvars) Files](https://www.terraform.io/language/values/variables#variable-definitions-tfvars-files)
 
 The table below summurizes the avaialble parameters and the possible values that can be set. 
@@ -117,7 +117,7 @@ The table below summurizes the avaialble parameters and the possible values that
 | vmAdminUsername | The username to use for the virtual machine |  | 
 | vmAdminPassword | The password to use for the virtual machine |  | 
 | vmLinuxSshAuthorizedKeys | The SSH public key to use for the virtual machine (if VM is linux) |  | 
-| vmJumpboxOSType | The type of OS for the deployed jump box - Can be `linux` or `windows` |  | 
+| vmJumpboxOSType | The type of OS for the deployed jump box - Can be `Linux` or `Windows` |  | 
 | vmJumpBoxSubnetAddressPrefix | CIDR to use for the virtual machine subnet |  | 
 | spokeVNetAddressPrefixes | An array of string. The address prefixes to use for the spoke virtual network |  | 
 | spokeInfraSubnetAddressPrefix | CIDR of the Spoke Infrastructure Subnet |  | 
@@ -141,6 +141,36 @@ terraform apply --var-file=terraform.tfvars
 ```
 After your Hub, Spoke, supporting services and Azure Container Apps Environment are deployed (and if you selected `deployHelloWorldSample = false`) you may proceed to deploy Fine Collection Sample App
 :arrow_forward: [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md)
+
+#### Ingress
+
+The module will deploy everything except Application Gateway which needs to be deployed from the jumpbox deployed as a part of the Hub network. To configure the Application Gateway, we need to provide it an SSL certificate for validating the domain name. The module grabs the certificate data, creates a secret in a KeyVault with the information and the Application Gateway retrieves it from the KeyVault when needed. We will store the SSL certificate in the KeyVault which was deployed as part of the supporting services module. It is behind a private endpoint in the spoke network; therefore, we have to create the secret from a resource inside the network. 
+
+1. Login to your jumpbox using the Bastion service in the Azure Portal
+2. Install the Terraform CLI
+3. Install Git bash
+4. Clone the repository
+5. Navigate to the [Application Gateway module](../terraform/modules/06-application-gateway/).
+6. You will need to reuse your state storage account from before and create a new state file to manage your Application Gateway. Configure the backend in the [providers.tf](../terraform/modules/06-application-gateway/providers.tf) as was done [previously](#configure-terraform-remote-state)
+7. Update the following variables in the [terraform.tfvars](../terraform/modules/06-application-gateway/terraform.tfvars):
+   1. resourceGroupName
+   2. supportResourceGroupName
+   3. keyVaultName
+   4. appGatewayFQDN
+   5. appGatewayPrimaryBackendEndFQDN
+   6. appGatewaySubnetId
+   7. appGatewayLogAnalyticsId
+8. Run the following commands to deploy
+   #### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
+    ``` bash
+    terraform init
+    terraform apply --var-file=terraform.tfvars
+    ```
+    #### Powershell (windows based OS)
+    ``` powershell
+    terraform init
+    terraform apply --var-file=terraform.tfvars
+    ```
 
 #### Clean up resources
 

@@ -3,10 +3,11 @@ workloadName = "lzaaca"
 //The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.
 environment                         = "dev"
 location                            = "eastus"
-resourceGroupName                   = "supporting-services"
+supportingResourceGroupName         = "supporting-services"
 aRecords                            = []
-hubVnetId                           = "/subscriptions/abd9af80-a790-4ce5-aaf0-f8f61ad4dacb/resourceGroups/rg-lzaaca-hub-dev-eus/providers/Microsoft.Network/virtualNetworks/vnet-dev-eus-hub"
-spokeVnetId                         = "/subscriptions/abd9af80-a790-4ce5-aaf0-f8f61ad4dacb/resourceGroups/rg-lzaaca-spoke-dev-eus/providers/Microsoft.Network/virtualNetworks/vnet-lzaaca-dev-eus-spoke"
-spokePrivateEndpointSubnetId        = "/subscriptions/abd9af80-a790-4ce5-aaf0-f8f61ad4dacb/resourceGroups/rg-lzaaca-spoke-dev-eus/providers/Microsoft.Network/virtualNetworks/vnet-lzaaca-dev-eus-spoke/subnets/snet-pep"
+hubVnetId                           = "<Hub VNET ID>"
+spokeVnetId                         = "<Spoke VNET ID>"
+spokePrivateEndpointSubnetId        = "<Spoke Private Endpoint Subnet ID>"
 containerRegistryPullRoleAssignment = "acrRoleAssignment"
+keyVaultPullRoleAssignment          = "keyVaultRoleAssignment"
 tags                                = {}

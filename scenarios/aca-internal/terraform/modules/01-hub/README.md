@@ -24,6 +24,7 @@ Note: `terraform.tfvars` file contains the username and password for the virtual
 Username: azureuser
 Password: Password123
 ```
+If you want to use remote storage, uncomment the backend block in the `providers.tf` file and provide the information for your Azure Storage Account. 
 
 Once the files are updated, deploy using the Terraform CLI.
 

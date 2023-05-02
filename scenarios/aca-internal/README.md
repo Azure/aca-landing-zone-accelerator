@@ -21,8 +21,8 @@ By the end of this deployment guide, you would have deployed an "internal enviro
 
 ## Deploy the reference implementation
 
-This reference implementation is provided with the following infrastructure as code options. Select the one you are interested in. They both deploy the same implementation.
+This reference implementation is provided with the following infrastructure as code options. Select the deployment guide you are interested in. They both deploy the same implementation.
 
-:arrow_forward: [Bicep](./bicep)
+:arrow_forward: [Bicep-based deployment guide](./bicep)
 
-:arrow_forward: [Terraform](./Terraform) *(coming soon)*
+:arrow_forward: [Terraform-based deployment guide](./Terraform) *(coming soon)*

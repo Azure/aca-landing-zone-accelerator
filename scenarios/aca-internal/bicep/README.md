@@ -1,4 +1,4 @@
-# Enterprise Scale for ACA Internal  - Bicep Implementation
+# Azure Container Apps - Internal environment secure baseline [Bicep]
 
 A deployment of ACA-hosted workloads typically experiences a separation of duties and lifecycle management in the area of prerequisites, the host network, the cluster infrastructure, and finally the workload itself. This reference implementation  can be used with two different ways, as explained next. The primary purpose of this implementation is to illustrate the topology and decisions of a secure baseline Azure Container Apps environment. 
 

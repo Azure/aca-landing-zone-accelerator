@@ -21,9 +21,9 @@ The architecture is considered across four key design areas. Please review them 
 
 This repo contains the Azure landing zone accelerator's reference implementations, all with supporting *Infrastructure as Code* artifacts. The scenarios covered are:
 
-:arrow_forward: [Scenario 1: Secure baseline - Azure Container Apps internal](scenarios/aca-internal/README.md), implemented with [Bicep](scenarios/aca-internal/bicep/).
+:arrow_forward: [Scenario 1: Azure Container Apps - Internal environment secure baseline](scenarios/aca-internal/README.md).
 
-*More reference implementations will be added as they become available.*
+*More reference implementation scenarios will be added as they become available.*
 
 ## Provide feedback
 

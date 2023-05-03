@@ -143,13 +143,14 @@ resource "azurerm_application_gateway" "appGateway" {
     http_listener_name         = "httpListener"
     backend_address_pool_name  = "acaServiceBackend"
     backend_http_settings_name = "https"
+    priority                   = 10000 # value from 1 to 20000, required when sku.0.tier is set to *_v2
   }
 
   probe {
     name                                      = "webProbe"
     protocol                                  = "Https"
     host                                      = var.appGatewayPrimaryBackendEndFQDN
-    path                                      = ""
+    path                                      = "/"
     interval                                  = 30
     timeout                                   = 30
     unhealthy_threshold                       = 3

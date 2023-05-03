@@ -4,7 +4,7 @@ This is the Bicep-based deployment guide for [Scenario 1: Azure Container Apps -
 
 ## Prerequisites
 
-This is the starting point for the instructions on deploying this rference implementation. There is required access and tooling you'll need in order to accomplish this.
+This is the starting point for the instructions on deploying this reference implementation. There is required access and tooling you'll need in order to accomplish this.
 
 - An Azure subscription
 - The following resource providers [registered](https://learn.microsoft.com/azure/azure-resource-manager/management/resource-providers-and-types#register-resource-provider):
@@ -45,9 +45,9 @@ This is the starting point for the instructions on deploying this rference imple
 
    - Follow the "[**Standalone deployment guide with GitHub Actions**](#standalone-deployment-guide-with-github-actions)" if you'd like to simply configure a set of parameters and have GitHub Actions execute the deployment.
 
-     *This is a varient of the above. A **fork** of this repo is required for this option, and requires you to create a service principal with appropriate permissions in your Azure Subscription to perform the deployment.*
+     *This is a variant of the above. A **fork** of this repo is required for this option, and requires you to create a service principal with appropriate permissions in your Azure Subscription to perform the deployment.*
 
-   - Follow the "["**Step-by-step deployment guide**"](#end-to-end-deployment-with-sample-application) if you'd like to walk through the deployment at a slower, more deliberate pace.
+   - Follow the "[**Step-by-step deployment guide**](#step-by-step-deployment-guide)" if you'd like to walk through the deployment at a slower, more deliberate pace.
 
      *This will approach will allow you to see the deployment evolve over time, which might give you an insight into the various roles and people in your organization that you need to engage when bringing your workload in this architecture to Azure. This is optimized for "learning."*
 
@@ -82,8 +82,8 @@ This is the starting point for the instructions on deploying this rference imple
    | `bastionSubnetAddressPrefix` | CIDR to use for the Azure Bastion subnet. Must be a subset of the hub CIDR ranges. | **10.0.2.0/27** | **10.100.2.0/27** |
    | `vmSize` | The size of the virtual machine to create for the jump box. | `Standard_B2ms` | Any one of: [VM sizes](https://learn.microsoft.om/azure/virtual-machines/sizes) |
    | `vmAdminUsername` | The username to use for the jump box. | **azureuser** | `jumpboxadmin` |
-   | `vmAdminPassword` | The password to use for the jump box admin user. | **Password123**. You *should* change this. | Any cryptographically strong password of your choosing. |
-   | `vmLinuxSshAuthorizedKeys` | The SSH public key to use for the jump box (if VM is linux) | *unusable/garbage value* | Any SSH keys you wish n the form of **ssh-rsa AAAAB6NzC...P38/oqQv description**|
+   | `vmAdminPassword` | The password to use for the jump box admin user. | **Password123**. :stop_sign: You *should* change this. | Any cryptographically strong password of your choosing. |
+   | `vmLinuxSshAuthorizedKeys` | The SSH public key to use for the jump box (if VM is Linux) | *unusable/garbage value* | Any SSH keys you wish in the form of **ssh-rsa AAAAB6NzC...P38/oqQv description**|
    | `vmJumpboxOSType` | The type of OS for the deployed jump box. | **linux** | **windows** |
    | `vmJumpBoxSubnetAddressPrefix` | CIDR to use for the jump box subnet. must be a subset of the hub CIDR ranges. | **10.0.3.0/24** | **10.100.3./24** |
    | `spokeVNetAddressPrefixes` | An array of string. The address prefixes to use for the spoke virtual network. | `["10.1.0.0/22"]` | `["10.101.0./22"]` |
@@ -133,22 +133,22 @@ az group delete -n $SPOKE_RESOURCE_GROUP_NAME
 az group delete -n $HUB_RESOURCE_GROUP_NAME
 ```
 
-### Standalone Deployment Guide With GitHub Actions
+### Standalone deployment guide with GitHub Actions
 
-With this method, you can leverage the included [LZA Deployment GitHub action](../../../.github/workflows/lza-deployment.yml) to deploy the Azure Container Apps Infrastructure resources. 
-> NOTE: To use the GitHub action you need to [fork the repository](https://github.com/Azure/ACA-Landing-Zone-Accelerator/fork) to your organization. 
+1. Create a new [service principal](https://learn.microsoft.com/azure/developer/github/connect-from-azure#use-the-azure-login-action-with-a-service-principal-secret) with the **Contributor** role on the subscription.
 
-#### Setup authentication between Azure and GitHub.
-The easiest way to do that, is to use a [service principal](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#use-the-azure-login-action-with-a-service-principal-secret). 
- 1. Open [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) in the Azure Portal or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) locally
-2. Create a new service principal in the Azure portal for your app and assign it **Contributor** role. Replace {subscription-id}. The service principal will be created at the scope of the subscription as multiple resource groups will be created.
-   ```
-   az ad sp create-for-rbac --name "myApp" --role owner \
+   *Replace `{subscription-id}` below.*
+
+   ```bash
+   az ad sp create-for-rbac --name "myApp" --role contributor \
                        --scopes /subscriptions/{subscription-id} \
                        --sdk-auth
    ```
+
    > Note that this command will output the following warning `Option '--sdk-auth' has been deprecated and will be removed in a future release.`. Nevertheless, this method is still **strongly recommend** as documented by the [Azure\login team](https://github.com/azure/login#configure-a-service-principal-with-a-secret).
-3. Copy the JSON object for your service principal
+
+1. Copy the output from the prior command.
+
    ```json
    {
        "clientId": "<GUID>",
@@ -158,20 +158,28 @@ The easiest way to do that, is to use a [service principal](https://learn.micros
        (...)
    }
    ```
-4. Navigate to where you cloned the GitHub repository and go to **Settings** > **Secrets and variables** > **Actions** > **New repository secret**.
-5. Create a new secret called `AZURE_CREDENTIALS` with the JSON information in step 3 (in JSON format) and press *Add Secret*.
-6. On the same screen ( **Settings** > **Secrets and variables** > **Actions** ), we need to add two repository variables. Click on the Tab Page titled **Variables**, and then click on **New repository variable**
-   1. Add the first variable named `LOCATION` and enter as value, a valid Azure datacenter location (i.e. northeurope). This will be the region where all of your resources will be deployed.
-   2. Add the second variable named `ENABLE_TEARDOWN` typed as a boolean. If you wish the environment to be cleaned up after some manual approval, or after 120 minutes, then set this variable to `true`. If you don't want automatic clean up of the deployed resources, set this variable to `false`. You need also to update the `CODEOWNERS` file, whith the right GitHub handles.  
 
-### End-to-End Deployment with Sample Application
+1. Navigate to where you forked the GitHub repository and go to **Settings** > **Secrets and variables** > **Actions** > **New repository secret**.
 
-With this method of deployment, you can leverage the step-by-step process, where possibly different teams (devops, network, operations etc) with different levels of access, are required to co-ordinate and deploy all of the required resources. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment. Please read carefully the documentation of each step before deploying it.
+1. Create a new secret called `AZURE_CREDENTIALS` with the JSON information and press **Add Secret**.
 
-1. Preqs - Clone this repo, install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), install [Bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
-2. [Hub](modules/01-hub/README.md)
-3. [Spoke](modules/02-spoke/README.md)
-4. [Supporting Services](modules/03-supporting-services/README.md)
-5. [ACA Environment](modules/04-container-apps-environment/README.md)
-6. [Hello World Sample Container App (Optional)](modules/05-hello-world-sample-app/README.md)
-7. [Application Gateway](modules/06-application-gateway/README.md) or [Front Door](modules/06-front-door/README.md)  
+1. On the same screen ( **Settings** > **Secrets and variables** > **Actions** ), you need to add two repository variables. Click on the tab titled **Variables**, and then click on **New repository variable**.
+
+1. Add the first variable named `LOCATION` and enter as value, a valid Azure data center location (i.e. northeurope). This will be the region where all of your resources will be deployed.
+
+1. Add the second variable named `ENABLE_TEARDOWN` typed as a boolean. If you wish the environment to be cleaned up after some manual approval, or after 120 minutes, then set this variable to `true`. If you don't want automatic clean up of the deployed resources, set this variable to `false`. You need also to update the `CODEOWNERS` file, with the right GitHub handles.
+
+#### :broom: Clean up resources
+
+If you didn't select automatic clean up of the deployed resources, use the following commands to remove the resources you created.
+
+```bash
+az group delete -n <your-spoke-resource-group>
+az group delete -n <your-hub-resource-group>
+```
+
+### Step-by-step deployment guide
+
+These instructions are spread over a series of dedicated pages for each step along the way. With this method of deployment, you can leverage the step-by-step process considering where possibly different teams (devops, network, operations etc) with different levels of access, are required to coordinate and deploy all of the required resources.
+
+:arrow_forward: This starts with [Deploy the hub networking resources](./modules/01-hub/README.md).

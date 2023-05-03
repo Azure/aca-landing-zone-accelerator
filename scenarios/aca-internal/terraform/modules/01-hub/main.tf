@@ -1,7 +1,7 @@
 resource "random_string" "random" {
-  length = 5
+  length  = 5
   special = false
-  lower = true
+  lower   = true
 }
 
 module "naming" {
@@ -18,7 +18,6 @@ resource "azurerm_resource_group" "hubResourceGroup" {
   tags     = var.tags
 }
 
-
 module "vnet" {
   source               = "../../../../shared/terraform/modules/networking/vnet"
   networkName          = module.naming.resourceNames["vnetHub"]
@@ -27,8 +26,12 @@ module "vnet" {
   addressSpace         = var.vnetAddressPrefixes
   tags                 = var.tags
   ddosProtectionPlanId = var.ddosProtectionPlanId
-  subnets = [{ "addressPrefixes" = tolist([var.vmJumpBoxSubnetAddressPrefix])
-  "name" = var.vmSubnetName }]
+  subnets = [
+    {
+      "addressPrefixes" = tolist([var.vmJumpBoxSubnetAddressPrefix])
+      "name"            = var.vmSubnetName
+    }
+  ]
 }
 
 module "bastion" {

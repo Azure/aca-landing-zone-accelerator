@@ -27,9 +27,7 @@ variable "spokeResourceGroupName" {
   default = ""
 }
 
-variable "tags" {
-
-}
+variable "tags" {}
 
 variable "hubVnetAddressPrefixes" {
 
@@ -40,13 +38,9 @@ variable "enableBastion" {
   type    = bool
 }
 
-variable "bastionSubnetAddressPrefixes" {
+variable "bastionSubnetAddressPrefixes" {}
 
-}
-
-variable "vmSize" {
-
-}
+variable "vmSize" {}
 
 variable "vmAdminUsername" {
   default = "vmadmin"
@@ -57,9 +51,7 @@ variable "vmAdminPassword" {
   default = null
 }
 
-variable "vmLinuxSshAuthorizedKeys" {
-
-}
+variable "vmLinuxSshAuthorizedKeys" {}
 
 variable "vmJumpboxOSType" {
   default = "Linux"

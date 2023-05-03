@@ -1,51 +1,25 @@
-variable "appGatewayCertificateKeyName" {
+variable "appGatewayCertificateKeyName" {}
 
-}
+variable "location" {}
 
-variable "location" {
+variable "resourceGroupName" {}
 
-}
+variable "environment" {}
 
-variable "resourceGroupName" {
+variable "workloadName" {}
 
-}
+variable "appGatewayFQDN" {}
 
-variable "environment" {
+variable "appGatewayPrimaryBackendEndFQDN" {}
 
-}
+variable "appGatewaySubnetId" {}
 
-variable "workloadName" {
+variable "appGatewayLogAnalyticsId" {}
 
-}
+variable "supportResourceGroupName" {}
 
-variable "appGatewayFQDN" {
+variable "tags" {}
 
-}
+variable "keyVaultName" {}
 
-variable "appGatewayPrimaryBackendEndFQDN" {
-
-}
-
-variable "appGatewaySubnetId" {
-
-}
-
-variable "appGatewayLogAnalyticsId" {
-
-}
-
-variable "supportResourceGroupName" {
-
-}
-
-variable "tags" {
-
-}
-
-variable "keyVaultName" {
-
-}
-
-variable "appGatewayCertificatePath" {
-  
-}
+variable "appGatewayCertificatePath" {}

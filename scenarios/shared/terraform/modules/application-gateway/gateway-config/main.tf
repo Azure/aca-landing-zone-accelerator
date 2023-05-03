@@ -40,7 +40,7 @@ resource "azurerm_application_gateway" "appGateway" {
 
   // May need some new logic here
   ssl_certificate {
-    name = var.appGatewayFQDN
+    name                = var.appGatewayFQDN
     key_vault_secret_id = var.keyVaultSecretId
   }
 
@@ -88,23 +88,23 @@ resource "azurerm_application_gateway" "appGateway" {
   # }
 
   backend_http_settings {
-    name = "defaultHttpBackendHttpSetting"
-    port = 80
-    protocol = "Http"
-    cookie_based_affinity = "Disabled"
+    name                                = "defaultHttpBackendHttpSetting"
+    port                                = 80
+    protocol                            = "Http"
+    cookie_based_affinity               = "Disabled"
     pick_host_name_from_backend_address = true
-    affinity_cookie_name = "ApplicationGatewayAffinity"
-    request_timeout = 120
+    affinity_cookie_name                = "ApplicationGatewayAffinity"
+    request_timeout                     = 120
   }
 
   backend_http_settings {
-    name = "https"
-    port = 443
-    protocol = "Https"
-    cookie_based_affinity = "Disabled"
-    pick_host_name_from_backend_address = true 
-    request_timeout = 20
-    probe_name = "webProbe"
+    name                                = "https"
+    port                                = 443
+    protocol                            = "Https"
+    cookie_based_affinity               = "Disabled"
+    pick_host_name_from_backend_address = true
+    request_timeout                     = 20
+    probe_name                          = "webProbe"
   }
   # dynamic "http_listener" {
   #   for_each = var.httpListeners
@@ -119,12 +119,12 @@ resource "azurerm_application_gateway" "appGateway" {
 
   // may need some logic here
   http_listener {
-    name = "httpListener"
+    name                           = "httpListener"
     frontend_ip_configuration_name = "appGwPublicFrontendIp"
-    frontend_port_name = "port_443"
-    protocol = "Https"
-    ssl_certificate_name = var.appGatewayFQDN
-    require_sni = false
+    frontend_port_name             = "port_443"
+    protocol                       = "Https"
+    ssl_certificate_name           = var.appGatewayFQDN
+    require_sni                    = false
   }
 
   # dynamic "request_routing_rule" {
@@ -138,23 +138,23 @@ resource "azurerm_application_gateway" "appGateway" {
   #       }
   # }
   request_routing_rule {
-    name = "routingRules"
-    rule_type = "Basic"
-    http_listener_name = "httpListener"
-    backend_address_pool_name = "acaServiceBackend"
+    name                       = "routingRules"
+    rule_type                  = "Basic"
+    http_listener_name         = "httpListener"
+    backend_address_pool_name  = "acaServiceBackend"
     backend_http_settings_name = "https"
   }
 
   probe {
-    name = "webProbe"
-    protocol = "Https"
-    host = var.appGatewayPrimaryBackendEndFQDN
-    path = ""
-    interval = 30
-    timeout = 30
-    unhealthy_threshold = 3
+    name                                      = "webProbe"
+    protocol                                  = "Https"
+    host                                      = var.appGatewayPrimaryBackendEndFQDN
+    path                                      = ""
+    interval                                  = 30
+    timeout                                   = 30
+    unhealthy_threshold                       = 3
     pick_host_name_from_backend_http_settings = false
-    minimum_servers = 0
+    minimum_servers                           = 0
     match {
       status_code = ["200-499"]
     }

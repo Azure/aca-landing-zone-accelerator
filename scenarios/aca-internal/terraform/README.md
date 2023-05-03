@@ -55,34 +55,54 @@ If you haven't already done so, configure Terraform using one of the following o
 Before you use Azure Storage as a backend, you must create a storage account.
 Run the following commands or configuration to create an Azure storage account and container:
 
-Powershell
+Using Azure Powershell module
 
 ```powershell
 
-$RESOURCE_GROUP_NAME='tfstate'
+$LOCATION="eastus"
+$RESOURCE_GROUP_NAME="tfstate"
 $STORAGE_ACCOUNT_NAME="tfstate$(Get-Random)"
-$CONTAINER_NAME='tfstate'
+$CONTAINER_NAME="tfstate"
 
 # Create resource group
-New-AzResourceGroup -Name $RESOURCE_GROUP_NAME -Location eastus
+New-AzResourceGroup -Name $RESOURCE_GROUP_NAME -Location $LOCATION
 
 # Create storage account
-$storageAccount = New-AzStorageAccount -ResourceGroupName $RESOURCE_GROUP_NAME -Name $STORAGE_ACCOUNT_NAME -SkuName Standard_LRS -Location eastus -AllowBlobPublicAccess $true
+$storageAccount = New-AzStorageAccount -ResourceGroupName $RESOURCE_GROUP_NAME -Name $STORAGE_ACCOUNT_NAME -SkuName Standard_LRS -Location $LOCATION -AllowBlobPublicAccess $true
 
 # Create blob container
 New-AzStorageContainer -Name $CONTAINER_NAME -Context $storageAccount.context -Permission blob
 
 ```
-### Deploy the App Service Landing Zone
+
+Using Azure CLI
+
+```shell
+LOCATION="eastus"
+RESOURCE_GROUP_NAME="tfstate"
+STORAGE_ACCOUNT_NAME="<tfstate unique name>"
+CONTAINER_NAME="tfstate"
+
+# Create Resource Group
+az group create --name $RESOURCE_GROUP_NAME --location $LOCATION
+
+# Create Storage Account
+az storage account create -n $STORAGE_ACCOUNT_NAME -g $RESOURCE_GROUP_NAME -l $LOCATION --sku Standard_LRS
+
+# Create blob container
+az storage container-rm create --storage-account $STORAGE_ACCOUNT_NAME --name $CONTAINER_NAME
+```
+
+### Deploy the Container Apps Landing Zone
 
 #### Configure Terraform Remote State
 
-To configure your Terraform deployment to use the newly provisioned storage account and container, edit the [`./providers.tf`](./providers.tf) file at lines 8-12 as below:
+To configure your Terraform deployment to use the newly provisioned storage account and container, edit the [`./providers.tf`](./providers.tf) file at lines 11-13 as below:
 
 ```hcl
   backend "azurerm" {
-    resource_group_name  = "my-rg-name"
-    storage_account_name = "mystorageaccountname"
+    resource_group_name  = "<REPLACE with $RESOURCE_GROUP_NAME>"
+    storage_account_name = "<REPLACE with $STORAGE_ACCOUNT_NAME>"
     container_name       = "tfstate"
     key                  = "myapp/terraform.tfstate"
   }
@@ -132,13 +152,16 @@ The table below summurizes the avaialble parameters and the possible values that
 #### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
 ``` bash
 terraform init
-terraform apply --var-file=terraform.tfvars
+terraform plan --var-file terraform.tfvars -out tfplan
+terraform apply tfplan
 ```
 #### Powershell (windows based OS)
 ``` powershell
 terraform init
-terraform apply --var-file=terraform.tfvars
+terraform plan --var-file terraform.tfvars -out tfplan
+terraform apply tfplan
 ```
+
 After your Hub, Spoke, supporting services and Azure Container Apps Environment are deployed (and if you selected `deployHelloWorldSample = false`) you may proceed to deploy Fine Collection Sample App
 :arrow_forward: [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md)
 
@@ -160,17 +183,23 @@ The module will deploy everything except Application Gateway which needs to be d
    5. appGatewayPrimaryBackendEndFQDN
    6. appGatewaySubnetId
    7. appGatewayLogAnalyticsId
+
 8. Run the following commands to deploy
-   #### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
-    ``` bash
-    terraform init
-    terraform apply --var-file=terraform.tfvars
+
+#### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
+
+```bash
+terraform init
+terraform plan --var-file terraform.tfvars -out tfplan
+terraform apply tfplan
     ```
-    #### Powershell (windows based OS)
-    ``` powershell
-    terraform init
-    terraform apply --var-file=terraform.tfvars
-    ```
+#### Powershell (windows based OS)
+
+``` powershell
+terraform init
+terraform plan --var-file terraform.tfvars -out tfplan
+terraform apply tfplan
+```
 
 #### Clean up resources
 

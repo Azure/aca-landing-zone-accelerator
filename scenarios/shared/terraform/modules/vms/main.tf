@@ -1,10 +1,10 @@
 module "nsg" {
-  source        = "../networking/nsg"
+  source            = "../networking/nsg"
   resourceGroupName = var.resourceGroupName
-  nsgName       = var.nsgName
-  location      = var.location
-  tags          = var.tags
-  securityRules = var.securityRules
+  nsgName           = var.nsgName
+  location          = var.location
+  tags              = var.tags
+  securityRules     = var.securityRules
 }
 
 resource "azurerm_subnet" "vmSubnet" {
@@ -45,10 +45,10 @@ resource "azurerm_linux_virtual_machine" "linuxVm" {
   resource_group_name = var.resourceGroupName
   location            = var.location
 
-  admin_username = var.adminUsername
-  admin_password = var.adminPassword == null ? random_password.password.0.result : var.adminPassword
+  admin_username                  = var.adminUsername
+  admin_password                  = var.adminPassword == null ? random_password.password.0.result : var.adminPassword
   disable_password_authentication = false
-  size           = var.size
+  size                            = var.size
 
   network_interface_ids = [
     azurerm_network_interface.vmNic.id
@@ -94,5 +94,25 @@ resource "azurerm_windows_virtual_machine" "windowsVm" {
     sku       = "2016-Datacenter"
     version   = "latest"
   }
-
 }
+
+# resource "azurerm_virtual_machine_extension" "vm_extension_linux" {
+#   count                = var.osType == "Linux" ? 1 : 0
+#   name                 = "vm-extension-linux"
+#   virtual_machine_id   = azurerm_linux_virtual_machine.linuxVm.id
+#   publisher            = "Microsoft.Azure.Extensions"
+#   type                 = "CustomScript"
+#   type_handler_version = "2.1"
+#   settings             = <<SETTINGS
+#     {
+#       "fileUris": ["https://raw.githubusercontent.com/HoussemDellai/      jumpbox-setup-cli-tools.sh"],
+#       "commandToExecute": "./vm-install-cli-tools.sh"
+#     }
+# SETTINGS
+#   # settings = <<SETTINGS
+#   # {
+#   #   "fileUris": ["https://${azurerm_storage_account.storage.0.name}.blob.core.windows.net/${azurerm_storage_container.container.0.name}/vm-install-cli-tools.sh"],
+#   #   "commandToExecute": "./install-cli-tools.sh"
+#   # }
+#   # SETTINGS
+# }

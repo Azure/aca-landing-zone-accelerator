@@ -19,5 +19,9 @@ terraform {
 provider "azurerm" {
   disable_terraform_partner_id = !(var.enableTelemetry)
   partner_id                   = "9b4433d6-924a-4c07-b47c-7478619759c7"
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }

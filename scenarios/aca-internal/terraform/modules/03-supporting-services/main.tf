@@ -23,7 +23,7 @@ module "containerRegistry" {
   acrName                                   = module.naming.resourceNames["containerRegistry"]
   resourceGroupName                         = azurerm_resource_group.supportingServices.name
   location                                  = var.location
-  vnetLinks                                 = var.vnetLinks != [] ? var.vnetLinks:local.vnetLinks
+  vnetLinks                                 = var.vnetLinks != [] ? var.vnetLinks : local.vnetLinks
   aRecords                                  = var.aRecords
   subnetId                                  = var.spokePrivateEndpointSubnetId
   containerRegistryUserAssignedIdentityName = module.naming.resourceNames["containerRegistryUserAssignedIdentity"]
@@ -38,7 +38,7 @@ module "keyVault" {
   resourceGroupName                = azurerm_resource_group.supportingServices.name
   keyVaultName                     = module.naming.resourceNames["keyVault"]
   location                         = var.location
-  vnetLinks                        = var.vnetLinks != [] ? var.vnetLinks:local.vnetLinks
+  vnetLinks                        = var.vnetLinks != [] ? var.vnetLinks : local.vnetLinks
   aRecords                         = var.aRecords
   subnetId                         = var.spokePrivateEndpointSubnetId
   keyVaultUserAssignedIdentityName = module.naming.resourceNames["keyVaultUserAssignedIdentity"]

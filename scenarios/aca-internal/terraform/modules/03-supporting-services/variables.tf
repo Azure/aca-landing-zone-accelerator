@@ -55,5 +55,5 @@ variable "keyVaultPullRoleAssignment" {
 }
 
 variable "vnetLinks" {
-  
+
 }

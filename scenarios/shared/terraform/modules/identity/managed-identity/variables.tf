@@ -1,10 +1,10 @@
 variable "managedIdentityName" {
   default = ""
-  type = string
+  type    = string
   validation {
-      condition = length(var.managedIdentityName) >= 3 && length(var.managedIdentityName) <= 128
-      error_message = "Name must be greater than 3 characters and not longer than 128 characters."
-    }
+    condition     = length(var.managedIdentityName) >= 3 && length(var.managedIdentityName) <= 128
+    error_message = "Name must be greater than 3 characters and not longer than 128 characters."
+  }
 }
 
 variable "resourceGroupName" {
@@ -12,10 +12,10 @@ variable "resourceGroupName" {
 }
 
 variable "location" {
-    default = "eastus"
-    type = string
+  default = "eastus"
+  type    = string
 }
 
 variable "tags" {
-  
+
 }

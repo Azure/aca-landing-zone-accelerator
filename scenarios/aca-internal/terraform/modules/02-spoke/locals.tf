@@ -16,5 +16,4 @@ locals {
 
   subnets = var.applicationGatewaySubnetAddressPrefix != "" ? concat(local.defaultSubnets, [{ "name" = var.applicationGatewaySubnetName
   "addressPrefixes" = tolist([var.applicationGatewaySubnetAddressPrefix]) }]) : local.defaultSubnets
-
 }

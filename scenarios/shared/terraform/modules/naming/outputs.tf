@@ -1,3 +1,3 @@
 output "resourceNames" {
-    value = local.resourceNames
+  value = local.resourceNames
 }

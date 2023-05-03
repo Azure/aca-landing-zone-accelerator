@@ -19,7 +19,5 @@ variable "subnetId" {
   type = string
 }
 
-variable "resourceGroupName" {
-
-}
+variable "resourceGroupName" {}
 

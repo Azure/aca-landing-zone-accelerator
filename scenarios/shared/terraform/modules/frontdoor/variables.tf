@@ -1,46 +1,24 @@
-variable "containerAppsManagedResourceGroup" {
+variable "containerAppsManagedResourceGroup" {}
 
-}
+variable "privateLinkServiceName" {}
 
-variable "privateLinkServiceName" {
+variable "resourceGroupName" {}
 
-}
+variable "location" {}
 
-variable "resourceGroupName" {
+variable "privateLinkSubnetId" {}
 
-}
+variable "frontDoorProfileName" {}
 
-variable "location" {
+variable "frontDoorEndpointName" {}
 
-}
+variable "frontDoorOriginGroupName" {}
 
-variable "privateLinkSubnetId" {
+variable "frontDoorOriginName" {}
 
-}
+variable "frontDoorHostName" {}
 
-variable "frontDoorProfileName" {
-
-}
-
-variable "frontDoorEndpointName" {
-
-}
-
-variable "frontDoorOriginGroupName" {
-
-}
-
-variable "frontDoorOriginName" {
-
-}
-
-variable "frontDoorHostName" {
-
-}
-
-variable "frontDoorRouteName" {
-
-}
+variable "frontDoorRouteName" {}
 
 variable "tags" {
   default = {}

@@ -1,19 +1,11 @@
-variable "keyVaultName" {
-  
-}
+variable "keyVaultName" {}
 
-variable "appGatewayUserAssignedIdentityPrincipalId" {
-  
-}
+variable "appGatewayUserAssignedIdentityPrincipalId" {}
 
-variable "appGatewayCertificateKeyName" {
-  
-}
+variable "appGatewayCertificateKeyName" {}
 
 variable "appGatewayCertificateData" {
   default = "configuration/acahello.demoapp.com.pfx"
 }
 
-variable "resourceGroupName" {
-  
-}
+variable "resourceGroupName" {}

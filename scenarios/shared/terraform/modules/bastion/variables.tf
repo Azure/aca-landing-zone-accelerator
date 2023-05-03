@@ -24,8 +24,8 @@ variable "securityRules" {
     "destinationAddressPrefix" = "*"
     },
     {
-      "name"        = "AllowGatewayManagerInbound"
-      "description" = "AllowGatewayManagerInbound"
+      "name"                     = "AllowGatewayManagerInbound"
+      "description"              = "AllowGatewayManagerInbound"
       "priority"                 = 130
       "protocol"                 = "Tcp"
       "destinationPortRanges"    = ["443"]
@@ -36,8 +36,8 @@ variable "securityRules" {
       "destinationAddressPrefix" = "*"
     },
     {
-      "name"        = "AllowAzureLoadBalancerInbound"
-      "description" = "AllowAzureLoadBalancerInbound"
+      "name"                     = "AllowAzureLoadBalancerInbound"
+      "description"              = "AllowAzureLoadBalancerInbound"
       "priority"                 = 140
       "protocol"                 = "Tcp"
       "destinationPortRanges"    = ["443"]
@@ -48,8 +48,8 @@ variable "securityRules" {
       "destinationAddressPrefix" = "*"
     },
     {
-      "name"        = "AllowBastionHostCommunicationInbound"
-      "description" = "AllowBastionHostCommunicationInbound"
+      "name"                     = "AllowBastionHostCommunicationInbound"
+      "description"              = "AllowBastionHostCommunicationInbound"
       "priority"                 = 150
       "protocol"                 = "*"
       "destinationPortRanges"    = ["8080", "5701"]
@@ -60,8 +60,8 @@ variable "securityRules" {
       "destinationAddressPrefix" = "VirtualNetwork"
     },
     {
-      "name"        = "AllowSshRdpOutbound"
-      "description" = "AllowSshRdpOutbound"
+      "name"                     = "AllowSshRdpOutbound"
+      "description"              = "AllowSshRdpOutbound"
       "priority"                 = 100
       "protocol"                 = "*"
       "destinationPortRanges"    = ["22", "3389"]
@@ -72,8 +72,8 @@ variable "securityRules" {
       "destinationAddressPrefix" = "VirtualNetwork"
     },
     {
-      "name"        = "AllowAzureCloudOutbound"
-      "description" = "AllowAzureCloudOutbound"
+      "name"                     = "AllowAzureCloudOutbound"
+      "description"              = "AllowAzureCloudOutbound"
       "priority"                 = 110
       "protocol"                 = "Tcp"
       "destinationPortRanges"    = ["443"]
@@ -84,8 +84,8 @@ variable "securityRules" {
       "destinationAddressPrefix" = "AzureCloud"
     },
     {
-      "name"        = "AllowBastionCommunication"
-      "description" = "AllowBastionCommunication"
+      "name"                     = "AllowBastionCommunication"
+      "description"              = "AllowBastionCommunication"
       "priority"                 = 120
       "protocol"                 = "*"
       "destinationPortRanges"    = ["8080", "5701"]
@@ -96,8 +96,8 @@ variable "securityRules" {
       "destinationAddressPrefix" = "VirtualNetwork"
     },
     {
-      "name"        = "AllowGetSessionInformation"
-      "description" = "AllowGetSessionInformation"
+      "name"                     = "AllowGetSessionInformation"
+      "description"              = "AllowGetSessionInformation"
       "priority"                 = 130
       "protocol"                 = "*"
       "destinationPortRanges"    = ["80"]
@@ -109,22 +109,12 @@ variable "securityRules" {
   }]
 }
 
-variable "addressPrefixes" {
+variable "addressPrefixes" {}
 
-}
+variable "bastionPipName" {}
 
-variable "bastionPipName" {
+variable "tags" {}
 
-}
+variable "bastionHostName" {}
 
-variable "tags" {
-
-}
-
-variable "bastionHostName" {
-
-}
-
-variable "location" {
-
-}
+variable "location" {}

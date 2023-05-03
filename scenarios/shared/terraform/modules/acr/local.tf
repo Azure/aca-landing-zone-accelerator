@@ -1,4 +1,4 @@
 locals {
-    privateDnsZoneNames = "privatelink.azurecr.io"
-    subResourceNames = ["registry"]
+  privateDnsZoneNames = "privatelink.azurecr.io"
+  subResourceNames    = ["registry"]
 }

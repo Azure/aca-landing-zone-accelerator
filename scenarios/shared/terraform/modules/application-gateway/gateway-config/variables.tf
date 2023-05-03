@@ -1,41 +1,23 @@
-variable "appGatewayPublicIpName" {
+variable "appGatewayPublicIpName" {}
 
-}
+variable "location" {}
 
-variable "location" {
+variable "resourceGroupName" {}
 
-}
+variable "tags" {}
 
-variable "resourceGroupName" {
+variable "appGatewayName" {}
 
-}
+variable "appGatewayUserAssignedIdentityId" {}
 
-variable "tags" {
+variable "appGatewaySubnetId" {}
 
-}
+variable "appGatewayPrimaryBackendEndFQDN" {}
 
-variable "appGatewayName" {
-
-}
-
-variable "appGatewayUserAssignedIdentityId" {
-
-}
-
-variable "appGatewaySubnetId" {
-
-}
-
-variable "appGatewayPrimaryBackendEndFQDN" {
-
-}
-
-variable "appGatewayLogAnalyticsId" {
-
-}
+variable "appGatewayLogAnalyticsId" {}
 
 variable "appGatewayFQDN" {
-  
+
 }
 
 variable "keyVaultSecretId" {
@@ -43,5 +25,5 @@ variable "keyVaultSecretId" {
 }
 
 variable "diagnosticSettingName" {
-  
+
 }

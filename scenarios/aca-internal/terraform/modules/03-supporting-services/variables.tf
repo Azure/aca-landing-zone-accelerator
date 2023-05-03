@@ -34,26 +34,14 @@ variable "spokePrivateEndpointSubnetId" {
   type = string
 }
 
-variable "resourceGroupName" {
+variable "resourceGroupName" {}
 
-}
+variable "aRecords" {}
 
-variable "aRecords" {
+variable "tags" {}
 
-}
+variable "containerRegistryPullRoleAssignment" {}
 
-variable "tags" {
+variable "keyVaultPullRoleAssignment" {}
 
-}
-
-variable "containerRegistryPullRoleAssignment" {
-
-}
-
-variable "keyVaultPullRoleAssignment" {
-
-}
-
-variable "vnetLinks" {
-
-}
+variable "vnetLinks" {}

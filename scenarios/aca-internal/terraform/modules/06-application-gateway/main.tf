@@ -43,3 +43,5 @@ module "appGatewayConfiguration" {
   appGatewayLogAnalyticsId         = var.appGatewayLogAnalyticsId
   tags                             = var.tags
 }
+
+data "azurerm_client_config" "current" {}

@@ -22,29 +22,21 @@ variable "location" {
   default = "eastus"
 }
 
-variable "containerAppsEnvironmentId" {
+variable "containerAppsEnvironmentId" {}
 
-}
-
-variable "containerAppsDefaultDomainName" {
-
-}
+variable "containerAppsDefaultDomainName" {}
 
 variable "privateLinkSubnetId" {
   type = string
 }
 
-variable "resourceGroupName" {
-
-}
+variable "resourceGroupName" {}
 
 variable "frontDoorEndpointName" {
   default = "fde-containerapps"
 }
 
-variable "tags" {
-
-}
+variable "tags" {}
 
 variable "frontDoorOriginGroupName" {
   default = "containerapps-origin-group"
@@ -58,6 +50,4 @@ variable "frontDoorOriginRouteName" {
   default = "containerapps-route"
 }
 
-variable "frontDoorOriginHostName" {
-
-}
+variable "frontDoorOriginHostName" {}

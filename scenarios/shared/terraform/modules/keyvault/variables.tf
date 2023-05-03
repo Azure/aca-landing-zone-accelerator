@@ -1,39 +1,19 @@
-variable "resourceGroupName" {
+variable "resourceGroupName" {}
 
-}
+variable "location" {}
 
-variable "location" {
+variable "keyVaultName" {}
 
-}
+variable "keyVaultUserAssignedIdentityName" {}
 
-variable "keyVaultName" {
+variable "keyVaultPullRoleAssignment" {}
 
-}
+variable "aRecords" {}
 
-variable "keyVaultUserAssignedIdentityName" {
+variable "vnetLinks" {}
 
-}
+variable "subnetId" {}
 
-variable "keyVaultPullRoleAssignment" {
+variable "tags" {}
 
-}
-
-variable "aRecords" {
-
-}
-
-variable "vnetLinks" {
-
-}
-
-variable "subnetId" {
-
-}
-
-variable "tags" {
-
-}
-
-variable "keyVaultPep" {
-
-}
+variable "keyVaultPep" {}

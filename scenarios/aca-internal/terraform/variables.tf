@@ -29,9 +29,7 @@ variable "spokeResourceGroupName" {
 
 variable "tags" {}
 
-variable "hubVnetAddressPrefixes" {
-
-}
+variable "hubVnetAddressPrefixes" {}
 
 variable "enableBastion" {
   default = true
@@ -48,7 +46,7 @@ variable "vmAdminUsername" {
 
 variable "vmAdminPassword" {
   sensitive = true
-  default = null
+  default   = null
 }
 
 variable "vmLinuxSshAuthorizedKeys" {}
@@ -78,23 +76,18 @@ variable "securityRules" {
   default = []
 }
 
-variable "vmJumpBoxSubnetAddressPrefix" {
-
-}
+variable "vmJumpBoxSubnetAddressPrefix" {}
 
 variable "spokeVnetAddressPrefixes" {
   default = ""
-
 }
 
 variable "infraSubnetAddressPrefix" {
   default = ""
-
 }
 
 variable "infraSubnetName" {
   default = "snet-infra"
-
 }
 
 variable "privateEndpointsSubnetName" {
@@ -103,7 +96,6 @@ variable "privateEndpointsSubnetName" {
 
 variable "privateEndpointsSubnetAddressPrefix" {
   default = ""
-
 }
 
 variable "applicationGatewaySubnetName" {
@@ -114,45 +106,27 @@ variable "applicationGatewaySubnetAddressPrefix" {
   default = ""
 }
 
-variable "supportingResourceGroupName" {
+variable "supportingResourceGroupName" {}
 
-}
+variable "aRecords" {}
 
-variable "aRecords" {
+variable "containerRegistryPullRoleAssignment" {}
 
-}
-
-variable "containerRegistryPullRoleAssignment" {
-
-}
-
-variable "keyVaultPullRoleAssignment" {
-
-}
+variable "keyVaultPullRoleAssignment" {}
 
 variable "appGatewayCertificatePath" {
   default = "configuration/acahello.demoapp.com.pfx"
 }
 
-variable "appGatewayCertificateKeyName" {
+variable "appGatewayCertificateKeyName" {}
 
-}
+variable "appGatewayFQDN" {}
 
-variable "appGatewayFQDN" {
+variable "appGatewayPrimaryBackendEndFQDN" {}
 
-}
+variable "appInsightsName" {}
 
-variable "appGatewayPrimaryBackendEndFQDN" {
-
-}
-
-variable "appInsightsName" {
-
-}
-
-variable "helloWorldContainerAppName" {
-
-}
+variable "helloWorldContainerAppName" {}
 
 variable "enableTelemetry" {
   type    = bool

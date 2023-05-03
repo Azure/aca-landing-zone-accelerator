@@ -1,21 +1,19 @@
 variable "nsgName" {
-    default = ""
-    type = string
+  default = ""
+  type    = string
 }
 
 variable "resourceGroupName" {
   default = ""
-  type = string
+  type    = string
 }
 
 variable "location" {
-    default = ""
-    type = string
+  default = ""
+  type    = string
 }
 
-variable "tags" {
-
-}
+variable "tags" {}
 
 variable "securityRules" {
 }

@@ -19,30 +19,20 @@ variable "location" {
   default = "eastus"
 }
 
-variable "hubResourceGroupName" {
+variable "hubResourceGroupName" {}
 
-}
+variable "tags" {}
 
-variable "tags" {
-
-}
-
-variable "vnetAddressPrefixes" {
-
-}
+variable "vnetAddressPrefixes" {}
 
 variable "enableBastion" {
   default = true
   type    = bool
 }
 
-variable "bastionSubnetAddressPrefixes" {
+variable "bastionSubnetAddressPrefixes" {}
 
-}
-
-variable "vmSize" {
-
-}
+variable "vmSize" {}
 
 variable "vmAdminUsername" {
   default = "vmadmin"
@@ -52,9 +42,7 @@ variable "vmAdminPassword" {
   sensitive = true
 }
 
-variable "vmLinuxSshAuthorizedKeys" {
-
-}
+variable "vmLinuxSshAuthorizedKeys" {}
 
 variable "vmJumpboxOSType" {
   default = "Linux"
@@ -81,6 +69,4 @@ variable "securityRules" {
   default = []
 }
 
-variable "vmJumpBoxSubnetAddressPrefix" {
-
-}
+variable "vmJumpBoxSubnetAddressPrefix" {}

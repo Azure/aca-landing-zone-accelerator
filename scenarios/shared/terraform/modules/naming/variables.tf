@@ -103,9 +103,7 @@ variable "location" {
   default = "eastus"
 }
 
-variable "uniqueId" {
-
-}
+variable "uniqueId" {}
 
 variable "resourceTypeToken" {
   default = "RES_TYPE"

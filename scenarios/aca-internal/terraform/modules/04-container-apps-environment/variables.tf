@@ -34,13 +34,9 @@ variable "spokeInfraSubnetId" {
   type = string
 }
 
-variable "resourceGroupName" {
+variable "resourceGroupName" {}
 
-}
-
-variable "tags" {
-
-}
+variable "tags" {}
 
 variable "appInsightsName" {
   type = string
@@ -55,6 +51,4 @@ variable "enableTelemetry" {
   default = true
 }
 
-variable "vnetLinks" {
-
-}
+variable "vnetLinks" {}

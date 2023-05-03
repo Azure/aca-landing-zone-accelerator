@@ -1,23 +1,32 @@
 data "azurerm_client_config" "current" {}
 
-resource "azurerm_key_vault" "keyvault" {
-  name                = var.keyVaultName
-  resource_group_name = var.resourceGroupName
-  location            = var.location
-  sku_name            = "standard"
-  tenant_id           = "${data.azurerm_client_config.current.tenant_id}"
-  network_acls {
-    bypass         = "AzureServices"
-    default_action = "Deny"
-  }
+data "http" "machine_ip" {
+  url = "http://ifconfig.me"
 
+  request_headers = {
+    Accept = "application/json"
+  }
+}
+
+resource "azurerm_key_vault" "keyvault" {
+  name                            = var.keyVaultName
+  resource_group_name             = var.resourceGroupName
+  location                        = var.location
+  sku_name                        = "standard"
+  tenant_id                       = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days      = 7
   purge_protection_enabled        = false
-  public_network_access_enabled   = false
+  public_network_access_enabled   = true # todo false
   enable_rbac_authorization       = true
   enabled_for_template_deployment = true
+  tags                            = var.tags
 
-  tags = var.tags
+  network_acls {
+    default_action             = "Deny"
+    bypass                     = "AzureServices"
+    ip_rules                   = [data.http.machine_ip.response_body]
+    virtual_network_subnet_ids = null
+  }
 }
 
 module "keyVaultPrivateZones" {
@@ -51,4 +60,11 @@ resource "azurerm_role_assignment" "keyVaultPullRoleAssignment" {
   scope                = azurerm_key_vault.keyvault.id
   role_definition_name = "Key Vault Reader"
   principal_id         = azurerm_user_assigned_identity.keyVaultUserAssignedIdentity.principal_id
+}
+
+# enable user to read/write secrets
+resource "azurerm_role_assignment" "keyVaultSecretsOfficerRoleAssignment" {
+  scope                = azurerm_key_vault.keyvault.id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
 }

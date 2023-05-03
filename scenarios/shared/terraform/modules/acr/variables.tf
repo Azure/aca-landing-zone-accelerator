@@ -1,17 +1,17 @@
 variable "resourceGroupName" {
-  
+
 }
 
 variable "location" {
-  
+
 }
 
 variable "containerRegistryUserAssignedIdentityName" {
-  
+
 }
 
 variable "containerRegistryPullRoleAssignment" {
-  
+
 }
 
 variable "containerRegistryPullRoleGuid" {
@@ -19,25 +19,25 @@ variable "containerRegistryPullRoleGuid" {
 }
 
 variable "aRecords" {
-  
+
 }
 
 variable "vnetLinks" {
-    
+
 }
 
 variable "subnetId" {
-  
+
 }
 
 variable "tags" {
-  
+
 }
 
 variable "acrName" {
-  
+
 }
 
 variable "containerRegistryPep" {
-  
+
 }

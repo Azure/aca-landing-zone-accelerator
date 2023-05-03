@@ -32,14 +32,14 @@ resource "azurerm_cdn_frontdoor_profile" "frontDoorProfile" {
 }
 
 resource "azurerm_cdn_frontdoor_endpoint" "frontDoorEndpoint" {
-  name    = var.frontDoorEndpointName
+  name                     = var.frontDoorEndpointName
   cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.frontDoorProfile.id
-  enabled = true
-  tags    = var.tags
+  enabled                  = true
+  tags                     = var.tags
 }
 
 resource "azurerm_cdn_frontdoor_origin_group" "frontDoorOriginGroup" {
-  name = var.frontDoorOriginGroupName
+  name                     = var.frontDoorOriginGroupName
   cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.frontDoorProfile.id
   load_balancing {
     sample_size                        = 4
@@ -58,15 +58,15 @@ resource "azurerm_cdn_frontdoor_origin_group" "frontDoorOriginGroup" {
 }
 
 resource "azurerm_cdn_frontdoor_origin" "frontDoorOrigin" {
-  name               = var.frontDoorOriginName
+  name                          = var.frontDoorOriginName
   cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.frontDoorOriginGroup.id
-  host_name          = var.frontDoorHostName
-  http_port          = 80
-  https_port         = 443
-  origin_host_header = var.frontDoorHostName
-  priority           = 1
-  weight             = 100
-  enabled            = true
+  host_name                     = var.frontDoorHostName
+  http_port                     = 80
+  https_port                    = 443
+  origin_host_header            = var.frontDoorHostName
+  priority                      = 1
+  weight                        = 100
+  enabled                       = true
 
   private_link {
     request_message        = "frontdoor"

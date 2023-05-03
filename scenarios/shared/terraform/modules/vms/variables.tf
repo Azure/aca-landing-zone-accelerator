@@ -46,5 +46,5 @@ variable "size" {
 }
 
 variable "vmSubnetName" {
-    
+
 }

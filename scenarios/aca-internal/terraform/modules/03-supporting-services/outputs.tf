@@ -19,5 +19,5 @@ output "keyVaultName" {
 }
 
 output "keyVaultUserAssignedIdentityId" {
-value = module.keyVault.keyVaultUserAssignedIdentityId
+  value = module.keyVault.keyVaultUserAssignedIdentityId
 }

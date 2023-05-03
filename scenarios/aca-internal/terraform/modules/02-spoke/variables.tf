@@ -28,9 +28,7 @@ variable "spokeResourceGroupName" {
 
 }
 
-variable "tags" {
-
-}
+variable "tags" {}
 
 variable "vnetAddressPrefixes" {
   default = ""

@@ -1,20 +1,20 @@
 variable "vnetLinks" {
-    default = []
+  default = []
 }
 
 variable "records" {
-    default = []
+  default = []
 }
 
 variable "resourceGroupName" {
-    type = string
-    default = ""
+  type    = string
+  default = ""
 }
 
 variable "tags" {
-    
+
 }
 
 variable "zoneName" {
-    
+
 }

@@ -3,13 +3,13 @@
 // ------------------
 
 output "acrId" {
-    value = azurerm_container_registry.acr.id
+  value = azurerm_container_registry.acr.id
 }
 
 output "acrName" {
-    value = azurerm_container_registry.acr.name
+  value = azurerm_container_registry.acr.name
 }
 
 output "containerRegistryUserAssignedIdentityId" {
-    value = azurerm_user_assigned_identity.containerRegistryUserAssignedIdentity.id
+  value = azurerm_user_assigned_identity.containerRegistryUserAssignedIdentity.id
 }

@@ -1,13 +1,13 @@
 output "containerAppsEnvironmentName" {
-    value = azurerm_container_app_environment.environment.name
+  value = azurerm_container_app_environment.environment.name
 }
 
 output "containerAppsEnvironmentId" {
-    value = azurerm_container_app_environment.environment.id
+  value = azurerm_container_app_environment.environment.id
 }
 
 output "containerAppsEnvironmentDefaultDomain" {
-    value = azurerm_container_app_environment.environment.default_domain
+  value = azurerm_container_app_environment.environment.default_domain
 }
 
 output "containerAppsEnvironmentLoadBalancerIP" {

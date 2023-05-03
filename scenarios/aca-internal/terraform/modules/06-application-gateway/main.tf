@@ -25,7 +25,7 @@ module "appGatewayAddCertificates" {
   resourceGroupName                         = var.supportResourceGroupName
   appGatewayCertificateKeyName              = var.appGatewayCertificateKeyName
   appGatewayCertificateData                 = local.appGatewayCertificate
-  appGatewayUserAssignedIdentityPrincipalId = azurerm_user_assigned_identity.appGatewayUserIdentity.id
+  appGatewayUserAssignedIdentityPrincipalId = azurerm_user_assigned_identity.appGatewayUserIdentity.principal_id
 }
 
 module "appGatewayConfiguration" {
@@ -43,5 +43,3 @@ module "appGatewayConfiguration" {
   appGatewayLogAnalyticsId         = var.appGatewayLogAnalyticsId
   tags                             = var.tags
 }
-
-data "azurerm_client_config" "current" {}

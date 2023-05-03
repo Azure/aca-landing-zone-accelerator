@@ -11,7 +11,7 @@ resource "azurerm_key_vault_secret" "sslCertSecret" {
 }
 
 resource "azurerm_role_assignment" "keyvaultSecretUserRoleAssignment" {
-  scope                = azurerm_key_vault_secret.sslCertSecret.id
+  scope                = data.azurerm_key_vault.keyVault.id # "/subscriptions/${data.azurerm_client_config.current.subscription_id}/${azurerm_key_vault_secret.sslCertSecret.id}" 
   principal_id         = var.appGatewayUserAssignedIdentityPrincipalId
   role_definition_name = "Key Vault Secrets User"
 }

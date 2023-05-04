@@ -1,34 +1,53 @@
-# Container Apps Environment
+# Deploy the Azure Container Apps Environment
 
-The following will be created:
+With your [spoke virtual network](../02-spoke/README.md) in place and the [services that Azure Containers Apps needs](../03-supporting-services/README.md) in this architecture in place, you're ready to deploy the application platform.
 
-* Container Apps Environment Environment 
-* Log Analytics Workspace
-* Application Insights (Optional)
-* Dapr Telemetry with Application Insights (Optional)
-* Private DNS Zone for Container Apps Environment
+## Expected results
 
-![Container Apps Environment](./media/container-apps-environment.png)
+The application platform, Azure Containers Apps, and its logging sinks within Azure Monitor will now be deployed. The workload is not deployed as part of step. Non-mission critical workload lifecycles are usually not tied to the lifecycle of the application platform, and as such are deployed isolated from infrastructure deployments, such as this one. Some cross-cutting concerns and platform feature enablement is usually handled however at this stage.
 
-Review `deploy.aca-environment.parameters.jsonc` and update the values as required. Once the files are updated, deploy using az cli or Az PowerShell.
+![A picture of the resources of this architecture, now with the application platform.](./media/container-apps-environment.png)
 
-## [CLI](#tab/CLI)
+### Resources
 
-```azurecli
-az deployment group create -n <DEPLOYMENT_NAME> \
-    -g <SPOKE_RESOURCE_GROUP> \
-    -f deploy.aca-environment.bicep \
-    -p deploy.aca-environment.parameters.jsonc 
-```
+- Container Apps Environment Environment
+- Log Analytics Workspace
+- Application Insights (optional)
+- Dapr Telemetry with Application Insights (optional)
+- Private DNS Zone for Container Apps Environment
 
-Where `<DEPLOYMENT_NAME>` is the name of the deployment and `<SPOKE_RESOURCE_GROUP>` is the name of the spoke resource group.
+## Steps
 
-## [PowerShell](#tab/PowerShell)
+1. Create the Azure Container Apps application platform resources.
 
-```azurepowershell
-New-AzResourceGroupDeployment -ResourceGroupName "<SPOKE_RESOURCE_GROUP>" -TemplateFile deploy.aca-environment.bicep -TemplateParameterFile deploy.aca-environment.parameters.jsonc -Name <DEPLOYMENT_NAME>
-```
+   ```bash
+   RESOURCEID_VNET_HUB=$(az deployment sub show -n acalza01-hub --query properties.outputs.hubVNetId.value -o tsv)
+   RESOURCENAME_RESOURCEGROUP_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeResourceGroupName.value -o tsv)
+   RESOURCENAME_VNET_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeVNetName.value -o tsv)
+   echo RESOURCEID_VNET_HUB: $RESOURCEID_VNET_HUB && \
+   echo RESOURCENAME_RESOURCEGROUP_SPOKE: $RESOURCENAME_RESOURCEGROUP_SPOKE && \
+   echo RESOURCENAME_VNET_SPOKE: $RESOURCENAME_VNET_SPOKE
 
-Where `<DEPLOYMENT_NAME>` is the name of the deployment and `<SPOKE_RESOURCE_GROUP>` is the name of the spoke resource group.
+   # [This takes about 11 minutes to run.]
+   az deployment group create \
+      -n acalza01-appplat \
+      -g $RESOURCENAME_RESOURCEGROUP_SPOKE \
+      -f 04-container-apps-environment/deploy.aca-environment.bicep \
+      -p 04-container-apps-environment/deploy.aca-environment.parameters.jsonc \
+      -p hubVNetId=${RESOURCEID_VNET_HUB} spokeVNetName=${RESOURCENAME_VNET_SPOKE}
+   ```
 
-:arrow_forward: [Hello World Sample Container App (Optional)](../05-hello-world-sample-app)
+1. Explore your final infrastructure. *Optional.*
+
+   Now would be a good time to familiarize yourself with all core resources that are part of this architecture, as they are all deployed. This includes the networking layer, the application platform, and all supporting resources. It does not include any of the resources that are specific to a workload (such as public Internet ingress through an application gateway). Check out the following resource groups in the [Azure portal](https://portal.azure.com).
+
+   ```bash
+   RESOURCENAME_RESOURCEGROUP_HUB=$(az deployment sub show -n acalza01-hub --query properties.outputs.resourceGroupName.value -o tsv)
+
+   echo Hub Resource Group: $RESOURCENAME_RESOURCEGROUP_HUB && \
+   echo Spoke Resource Group: $RESOURCENAME_RESOURCEGROUP_SPOKE
+   ```
+
+## Next step
+
+:arrow_forward: [Deploy a sample application](../05-hello-world-sample-app/README.md)

@@ -30,7 +30,12 @@ By default, they are deployed to the spoke resource group.
    echo RESOURCEID_VNET_SPOKE: $RESOURCEID_VNET_SPOKE
 
    # [This takes about four minutes to run.]
-   az deployment group create -n acalza01-dependencies -g $RESOURCENAME_RESOURCEGROUP_SPOKE -f 03-supporting-services/deploy.supporting-services.bicep -p 03-supporting-services/deploy.supporting-services.parameters.jsonc -p hubVNetId=${RESOURCEID_VNET_HUB} spokeVNetId=${RESOURCEID_VNET_SPOKE}
+   az deployment group create \
+      -n acalza01-dependencies \
+      -g $RESOURCENAME_RESOURCEGROUP_SPOKE \
+      -f 03-supporting-services/deploy.supporting-services.bicep \
+      -p 03-supporting-services/deploy.supporting-services.parameters.jsonc \
+      -p hubVNetId=${RESOURCEID_VNET_HUB} spokeVNetId=${RESOURCEID_VNET_SPOKE}
    ```
 
 ## Private DNS Zones

@@ -27,7 +27,11 @@ After executing these steps you'll have the spoke resource group (`rg-lzaaca-spo
    echo RESOURCEID_VNET_HUB: $RESOURCEID_VNET_HUB
 
    # [This takes about two minutes to run.]
-   az deployment sub create -n acalza01-spokenetwork -l $LOCATION -f 02-spoke/deploy.spoke.bicep -p 02-spoke/deploy.spoke.parameters.jsonc -p hubVNetId=${RESOURCEID_VNET_HUB}
+   az deployment sub create \
+      -n acalza01-spokenetwork \
+      -l $LOCATION \
+      -f 02-spoke/deploy.spoke.bicep -p 02-spoke/deploy.spoke.parameters.jsonc \
+      -p hubVNetId=${RESOURCEID_VNET_HUB}
    ```
 
 1. Explore your networking resources. *Optional.*

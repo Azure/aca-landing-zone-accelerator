@@ -36,7 +36,7 @@ Since this walkthrough is expected to be deployed isolated from existing infrast
 
    ```bash
    # [This takes about seven minutes to run.]
-   az deployment sub create -n acalza-hub -l $LOCATION -f 01-hub/deploy.hub.bicep -p 01-hub/deploy.hub.parameters.jsonc
+   az deployment sub create -n acalza01-hub -l $LOCATION -f 01-hub/deploy.hub.bicep -p 01-hub/deploy.hub.parameters.jsonc
    ```
 
 ## Next step

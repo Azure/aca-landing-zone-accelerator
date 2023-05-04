@@ -36,7 +36,7 @@ param location string = resourceGroup().location
 // ------------------
 
 module privateDnsZone 'private-dns-zone.bicep' = {
-  name: 'privateDnsZoneDeployment-${uniqueString(azServiceId)}'
+  name: 'privateDnsZoneDeployment-${uniqueString(azServiceId, privateEndpointSubResourceName)}'
   params: {
     name: azServicePrivateDnsZoneName
     virtualNetworkLinks: virtualNetworkLinks
@@ -44,7 +44,7 @@ module privateDnsZone 'private-dns-zone.bicep' = {
 }
 
 module privateEndpoint 'private-endpoint.bicep' = {
-  name: 'privateEndpointDeployment-${uniqueString(azServiceId)}'
+  name: 'privateEndpointDeployment-${uniqueString(azServiceId, privateEndpointSubResourceName)}'
   params: {
     name: privateEndpointName
     location: location

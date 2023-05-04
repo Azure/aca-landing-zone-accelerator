@@ -12,6 +12,13 @@ After executing these steps you'll have the hub resource group (`rg-lzaaca-hub-d
 
 ![A picture of the components in the hub resource group.](./media/hub.png)
 
+### Resources
+
+- Hub resource group
+- Hub virtual network
+- Azure Bastion (optional)
+- Jump box virtual machine (optional)
+
 ### IP addressing
 
 Since this walkthrough is expected to be deployed isolated from existing infrastructure and not joined to any of your existing networks; the IP addresses should not come in conflict with any existing networking you have, even if those IP addresses overlap with ones you already have in your enterprise. However, if you need to join existing networks, even for the purposes this walkthrough, you'll need to adjust the IP space before deploying. See [Review and update deployment parameters](../../README.md#steps).

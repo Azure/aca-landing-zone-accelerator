@@ -12,12 +12,18 @@ After executing these steps you'll have the spoke resource group (`rg-lzaaca-spo
 
 ![A picture of the networking components in the spoke resource group.](./media/spoke.png)
 
+### Resources
+
+- Spoke resource group
+- Spoke virtual network
+- Peering to and from the hub
+
 ## Steps
 
 1. Create the regional spoke network.
 
    ```bash
-   RESOURCEID_VNET_HUB=$(az deployment sub show -n acalza01-hub --query properties.outputs.hubVNetId.value -o tsv)
+   RESOURCEID_VNET_HUB=$(az deployment sub show -n acalza-hub --query properties.outputs.hubVNetId.value -o tsv)
    echo RESOURCEID_VNET_HUB: $RESOURCEID_VNET_HUB
 
    # [This takes about two minutes to run.]
@@ -32,12 +38,13 @@ After executing these steps you'll have the spoke resource group (`rg-lzaaca-spo
    RESOURCENAME_RESOURCEGROUP_HUB=$(az deployment sub show -n acalza01-hub --query properties.outputs.resourceGroupName.value -o tsv)
    RESOURCENAME_RESOURCEGROUP_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeResourceGroupName.value -o tsv)
 
-   echo -e "Hub Resource Group: ${RESOURCENAME_RESOURCEGROUP_HUB}\nSpoke Resource Group: ${RESOURCENAME_RESOURCEGROUP_SPOKE}"
+   echo Hub Resource Group: $RESOURCENAME_RESOURCEGROUP_HUB && \
+   echo Spoke Resource Group: $RESOURCENAME_RESOURCEGROUP_SPOKE
    ```
 
-## Azure landing zone alignment
+## Azure landing zone platform alignment
 
-The creation of the hub resources, spoke virtual network, and routing configuration are usually the responsibility of the connectivity platform team. While the creation of subnets, NSGs, and the workload resources are delegated to the workload team. The deployment steps so far have been a mix of both roles. Be sure to understand your organization's separation of duties in landing zone deployments. From this point on in the walkthrough, the steps are indeed all responsibilities of the workload team.
+The creation of the hub resources, spoke virtual network, and routing configuration are usually the responsibility of the connectivity platform team. While the creation of subnets, NSGs, and the workload resources are delegated to the workload team. The deployment steps so far have been a mix of both roles. Be sure to understand your organization's separation of duties in landing zone deployments, and use your organization's subscription vending solution to . From this point on in the walkthrough, the steps are indeed all responsibilities of the workload team.
 
 ## Next step
 

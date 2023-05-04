@@ -34,7 +34,7 @@ The application platform, Azure Containers Apps, and its logging sinks within Az
       -g $RESOURCENAME_RESOURCEGROUP_SPOKE \
       -f 04-container-apps-environment/deploy.aca-environment.bicep \
       -p 04-container-apps-environment/deploy.aca-environment.parameters.jsonc \
-      -p hubVNetId=${RESOURCEID_VNET_HUB} spokeVNetName=${RESOURCENAME_VNET_SPOKE}
+      -p hubVNetId=${RESOURCEID_VNET_HUB} spokeVNetName=${RESOURCENAME_VNET_SPOKE} enableApplicationInsights=true
    ```
 
 1. Explore your final infrastructure. *Optional.*

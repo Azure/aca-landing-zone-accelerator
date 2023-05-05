@@ -12,16 +12,10 @@ module "naming" {
   location     = var.location
 }
 
-resource "azurerm_resource_group" "supportingServices" {
-  name     = var.resourceGroupName
-  location = var.location
-  tags     = var.tags
-}
-
 module "containerRegistry" {
   source                                    = "../../../../shared/terraform/modules/acr"
   acrName                                   = module.naming.resourceNames["containerRegistry"]
-  resourceGroupName                         = azurerm_resource_group.supportingServices.name
+  resourceGroupName                         = var.resourceGroupName
   location                                  = var.location
   vnetLinks                                 = var.vnetLinks != [] ? var.vnetLinks : local.vnetLinks
   aRecords                                  = var.aRecords
@@ -35,7 +29,7 @@ module "containerRegistry" {
 
 module "keyVault" {
   source                           = "../../../../shared/terraform/modules/keyvault"
-  resourceGroupName                = azurerm_resource_group.supportingServices.name
+  resourceGroupName                = var.resourceGroupName
   keyVaultName                     = module.naming.resourceNames["keyVault"]
   location                         = var.location
   vnetLinks                        = var.vnetLinks != [] ? var.vnetLinks : local.vnetLinks
@@ -46,4 +40,3 @@ module "keyVault" {
   keyVaultPep                      = module.naming.resourceNames["keyVaultPep"]
   tags                             = var.tags
 }
-

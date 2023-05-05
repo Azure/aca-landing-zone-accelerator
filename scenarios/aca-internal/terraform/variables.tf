@@ -122,8 +122,6 @@ variable "appGatewayCertificateKeyName" {}
 
 variable "appGatewayFQDN" {}
 
-variable "appGatewayPrimaryBackendEndFQDN" {}
-
 variable "appInsightsName" {}
 
 variable "helloWorldContainerAppName" {}

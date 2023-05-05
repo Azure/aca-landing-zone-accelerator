@@ -7,81 +7,81 @@ output "hubResourceGroupName" {
   value = module.hub.hubResourceGroupName
 }
 
-// Spoke
-output "spokeVnetId" {
-  value = module.spoke.spokeVNetId
-}
+# // Spoke
+# output "spokeVnetId" {
+#   value = module.spoke.spokeVNetId
+# }
 
-output "spokeResourceGroupName" {
-  value = module.spoke.spokeResourceGroupName
-}
+# output "spokeResourceGroupName" {
+#   value = module.spoke.spokeResourceGroupName
+# }
 
-output "spokeVnetName" {
-  value = module.spoke.spokeVNetName
-}
+# output "spokeVnetName" {
+#   value = module.spoke.spokeVNetName
+# }
 
-output "spokeInfraSubnetId" {
-  value = module.spoke.spokeInfraSubnetId
-}
+# output "spokeInfraSubnetId" {
+#   value = module.spoke.spokeInfraSubnetId
+# }
 
-output "spokeInfraSubnetName" {
-  value = module.spoke.spokeInfraSubnetName
-}
+# output "spokeInfraSubnetName" {
+#   value = module.spoke.spokeInfraSubnetName
+# }
 
-output "spokePrivateEndpointsSubnetId" {
-  value = module.spoke.spokePrivateEndpointsSubnetId
-}
+# output "spokePrivateEndpointsSubnetId" {
+#   value = module.spoke.spokePrivateEndpointsSubnetId
+# }
 
-output "spokePrivateEndpointsSubnetName" {
-  value = module.spoke.spokePrivateEndpointsSubnetName
-}
+# output "spokePrivateEndpointsSubnetName" {
+#   value = module.spoke.spokePrivateEndpointsSubnetName
+# }
 
-output "spokeApplicationGatewaySubnetId" {
-  value = module.spoke.spokeApplicationGatewaySubnetId
-}
+# output "spokeApplicationGatewaySubnetId" {
+#   value = module.spoke.spokeApplicationGatewaySubnetId
+# }
 
-output "spokeApplicationGatewaySubnetName" {
-  value = module.spoke.spokeApplicationGatewaySubnetName
-}
+# output "spokeApplicationGatewaySubnetName" {
+#   value = module.spoke.spokeApplicationGatewaySubnetName
+# }
 
-// Supporting Services
-output "containerRegistryId" {
-  value = module.supportingServices.containerRegistryId
-}
+# // Supporting Services
+# output "containerRegistryId" {
+#   value = module.supportingServices.containerRegistryId
+# }
 
-output "containerRegistryName" {
-  value = module.supportingServices.containerRegistryName
-}
+# output "containerRegistryName" {
+#   value = module.supportingServices.containerRegistryName
+# }
 
-output "containerRegistryUserAssignedIdentityId" {
-  value = module.supportingServices.containerRegistryUserAssignedIdentityId
-}
+# output "containerRegistryUserAssignedIdentityId" {
+#   value = module.supportingServices.containerRegistryUserAssignedIdentityId
+# }
 
-output "keyVaultId" {
-  value = module.supportingServices.keyVaultId
-}
+# output "keyVaultId" {
+#   value = module.supportingServices.keyVaultId
+# }
 
-output "keyVaultName" {
-  value = module.supportingServices.keyVaultName
-}
+# output "keyVaultName" {
+#   value = module.supportingServices.keyVaultName
+# }
 
-output "keyVaultUserAssignedIdentityId" {
-  value = module.supportingServices.keyVaultUserAssignedIdentityId
-}
+# output "keyVaultUserAssignedIdentityId" {
+#   value = module.supportingServices.keyVaultUserAssignedIdentityId
+# }
 
-// Container Apps Environment
-output "containerAppsEnvironmentId" {
-  value = module.containerAppsEnvironment.containerAppsEnvironmentId
-}
+# // Container Apps Environment
+# output "containerAppsEnvironmentId" {
+#   value = module.containerAppsEnvironment.containerAppsEnvironmentId
+# }
 
-output "containerAppsEnvironmentName" {
-  value = module.containerAppsEnvironment.containerAppsEnvironmentName
-}
+# output "containerAppsEnvironmentName" {
+#   value = module.containerAppsEnvironment.containerAppsEnvironmentName
+# }
 
-output "logAnalyticsWorkspaceId" {
-  value = module.containerAppsEnvironment.logAnalyticsWorkspaceId
-}
+# output "logAnalyticsWorkspaceId" {
+#   value = module.containerAppsEnvironment.logAnalyticsWorkspaceId
+# }
 
-output "logAnalyticsWorkspaceCustomerId" {
-  value = module.containerAppsEnvironment.logAnalyticsWorkspaceId
-}
+# output "logAnalyticsWorkspaceCustomerId" {
+#   value = module.containerAppsEnvironment.logAnalyticsWorkspaceId
+# }

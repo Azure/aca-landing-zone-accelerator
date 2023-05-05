@@ -29,6 +29,8 @@ module "spoke" {
   hubVnetId                             = module.hub.hubVnetId
   securityRules                         = var.securityRules
   tags                                  = var.tags
+
+  # depends_on = [module.module.hub]
 }
 
 module "supportingServices" {
@@ -36,7 +38,7 @@ module "supportingServices" {
   workloadName                        = var.workloadName
   environment                         = var.environment
   location                            = var.location
-  resourceGroupName                   = var.supportingResourceGroupName
+  resourceGroupName                   = module.spoke.spokeResourceGroupName
   aRecords                            = var.aRecords
   hubVnetId                           = module.hub.hubVnetId
   spokeVnetId                         = module.spoke.spokeVNetId
@@ -57,6 +59,8 @@ module "supportingServices" {
       "registrationEnabled" = false
   }]
   tags = var.tags
+
+  # depends_on = [module.spoke]
 }
 
 module "containerAppsEnvironment" {
@@ -64,7 +68,7 @@ module "containerAppsEnvironment" {
   workloadName       = var.workloadName
   environment        = var.environment
   location           = var.location
-  resourceGroupName  = var.spokeResourceGroupName
+  resourceGroupName  = module.spoke.spokeResourceGroupName
   appInsightsName    = var.appInsightsName
   hubVnetId          = module.hub.hubVnetId
   spokeVnetId        = module.spoke.spokeVNetId
@@ -83,6 +87,8 @@ module "containerAppsEnvironment" {
       "registrationEnabled" = false
   }]
   tags = var.tags
+
+  # depends_on = [module.supportingServices]
 }
 
 module "helloWorldApp" {
@@ -93,23 +99,25 @@ module "helloWorldApp" {
   containerAppsEnvironmentId              = module.containerAppsEnvironment.containerAppsEnvironmentId
   containerRegistryUserAssignedIdentityId = module.supportingServices.containerRegistryUserAssignedIdentityId
   tags                                    = var.tags
+
+  # depends_on = [module.containerAppsEnvironment]
 }
 
-# Application Gateway must be deployed from the Jumpbox deployed in the Hub Network
-
 module "applicationGateway" {
-  source                          = "./modules/06-application-gateway"
-  workloadName                    = var.workloadName
-  environment                     = var.environment
-  location                        = var.location
-  resourceGroupName               = module.spoke.spokeResourceGroupName
-  supportResourceGroupName        = var.supportingResourceGroupName
+  source            = "./modules/06-application-gateway"
+  workloadName      = var.workloadName
+  environment       = var.environment
+  location          = var.location
+  resourceGroupName = module.spoke.spokeResourceGroupName
+  # supportResourceGroupName        = module.spoke.spokeResourceGroupName
   keyVaultName                    = module.supportingServices.keyVaultName
   appGatewayCertificateKeyName    = var.appGatewayCertificateKeyName
   appGatewayFQDN                  = var.appGatewayFQDN
-  appGatewayPrimaryBackendEndFQDN = var.appGatewayPrimaryBackendEndFQDN
+  appGatewayPrimaryBackendEndFQDN = module.helloWorldApp.helloWorldAppFQDN
   appGatewaySubnetId              = module.spoke.spokeApplicationGatewaySubnetId
   appGatewayLogAnalyticsId        = module.containerAppsEnvironment.logAnalyticsWorkspaceId
   appGatewayCertificatePath       = var.appGatewayCertificatePath
   tags                            = var.tags
+
+  # depends_on = [module.helloWorldApp]
 }

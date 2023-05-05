@@ -102,4 +102,4 @@ appInsightsName                     = "appInsightsAca"
 helloWorldContainerAppName          = "ca-hello-world"
 appGatewayCertificateKeyName        = "agwcert"
 appGatewayFQDN                      = "acahello.demoapp.com"
-appGatewayPrimaryBackendEndFQDN     = "ca-hello-world.politecoast-62b8bed6.eastus.azurecontainerapps.io" # todo : this should be output of ACA app
+# appGatewayPrimaryBackendEndFQDN     = "ca-hello-world.politecoast-62b8bed6.eastus.azurecontainerapps.io" # todo : this should be output of ACA app

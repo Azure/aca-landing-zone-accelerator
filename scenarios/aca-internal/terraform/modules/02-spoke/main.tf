@@ -18,7 +18,6 @@ resource "azurerm_resource_group" "spokeResourceGroup" {
   tags     = var.tags
 }
 
-
 module "vnet" {
   source            = "../../../../shared/terraform/modules/networking/vnet"
   networkName       = module.naming.resourceNames["vnetSpoke"]
@@ -75,7 +74,6 @@ data "azurerm_subnet" "privateEndpointsSubnet" {
   name                 = var.privateEndpointsSubnetName
   resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
   virtual_network_name = module.vnet.vnetName
-
 }
 
 data "azurerm_subnet" "appGatewaySubnet" {
@@ -86,5 +84,4 @@ data "azurerm_subnet" "appGatewaySubnet" {
   name                 = var.applicationGatewaySubnetName
   resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
   virtual_network_name = module.vnet.vnetName
-
 }

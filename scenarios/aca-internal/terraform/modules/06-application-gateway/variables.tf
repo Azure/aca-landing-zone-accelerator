@@ -16,7 +16,7 @@ variable "appGatewaySubnetId" {}
 
 variable "appGatewayLogAnalyticsId" {}
 
-variable "supportResourceGroupName" {}
+# variable "supportResourceGroupName" {}
 
 variable "tags" {}
 

@@ -48,13 +48,11 @@ The "Hello World" container app is exposed through Application Gateway, includin
 
    Application gateway was configured to use a TLS certificate on it's listener.  For the best experience we recommend you add a host file entry to facilitate a more realistic experience.
 
-   ```hostfile
-   <IP_APPGW from prior step>    acahello.demoapp.com
-   ```
+   `<IP_APPGW from prior step>    acahello.demoapp.com`
 
 1. Access the "Hello World" application running in Azure Container Apps.
 
-   Using your browser either navigate to **https://\<value of IP_APPGW>** from above, or if you added the host file entry, to the domain <https://acahello.demoapp.com>. Because the cert is self-signed for this walkthrough, you will need to accept the security warnings.
+   Using your browser either navigate to **https://\<IP_APPGW from prior step>** from above, or if you added the host file entry, to **<https://acahello.demoapp.com>**. *Because the cert is self-signed for this walkthrough, you will need to accept the security warnings presented by your browser.*
 
    **Never use this certificate in production.**
 

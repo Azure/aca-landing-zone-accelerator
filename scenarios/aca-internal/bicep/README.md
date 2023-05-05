@@ -1,105 +1,124 @@
-# Enterprise Scale for ACA Internal  - Bicep Implementation
+# Azure Container Apps - Internal environment secure baseline [Bicep]
 
-A deployment of ACA-hosted workloads typically experiences a separation of duties and lifecycle management in the area of prerequisites, the host network, the cluster infrastructure, and finally the workload itself. This reference implementation  can be used with two different ways, as explained next. The primary purpose of this implementation is to illustrate the topology and decisions of a secure baseline Azure Container Apps environment. 
+This is the Bicep-based deployment guide for [Scenario 1: Azure Container Apps - Internal environment secure baseline](../README.md).
 
-## Prerequisites 
-- Clone this repo (you may need to fork it, if you wish to utilize the [LZA Deployment GitHub Action](../../../.github/workflows/lza-deployment.yml))
-- Install [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
-- Install [bicep tools](https://docs.microsoft.com/azure/azure-resource-manager/bicep/install)
-- Register the following Azure Resource Providers (if not already registered)
-  -  Microsoft.App
-       
-        ```bash
-        # check if provider is already registered
-        az provider list --query "[?namespace=='Microsoft.App'].{Provider:namespace, Status:registrationState}" --output table
+## Prerequisites
 
-        # if provider is not registered, register it
-        az provider register --namespace 'Microsoft.App'
+This is the starting point for the instructions on deploying this reference implementation. There is required access and tooling you'll need in order to accomplish this.
 
-        ```
-  -  Microsoft.ContainerService
-        
-        ```bash
-        # check if provider is already registered
-        az provider list --query "[?namespace=='Microsoft.ContainerService'].{Provider:namespace, Status:registrationState}" --output table
+- An Azure subscription
+- The following resource providers [registered](https://learn.microsoft.com/azure/azure-resource-manager/management/resource-providers-and-types#register-resource-provider):
+  - `Microsoft.App`
+  - `Microsoft.ContainerRegistry`
+  - `Microsoft.ContainerService`
+  - `Microsoft.KeyVault`
+- The user or service principal initiating the deployment process must have the [owner role](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner) at the subscription level to have the ability to create resource groups and to delegate access to others (Azure Managed Identities created from the IaC deployment).
+- Latest [Azure CLI installed](https://learn.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest) (must be at least 2.40), or you can perform this from Azure Cloud Shell by clicking below.
 
-        # if provider is not registered, register it
-        az provider register --namespace 'Microsoft.ContainerService'
+  [![Launch Azure Cloud Shell](https://learn.microsoft.com/azure/includes/media/cloud-shell-try-it/launchcloudshell.png)](https://shell.azure.com)
 
-        ```
+## Steps
 
-### Resource Naming Convention
-An effective naming convention consists of resource names from important information about each resource. A good name helps you quickly identify the resource's type, associated workload, environment, and the Azure region hosting it. The naming of the resources in this implementation follow [Azure Best Practices](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming). Your organization might has already a naming strategy in place, which possibly deviates from the current implementation. The naming of the resources, is automated and centralized, so that in most of the cases can be easily modified or even overridden. The naming module consists of two files
--  [naming-rules.jsonc](../../shared/bicep/naming/naming-rules.jsonc). In this file you can override: 
-   -  the abbreviation of the resources (`resourceTypeAbbreviations`), which currently follows Azure [recommended abreviations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations). 
-   -  the list of azure regions and their abbreviation (`regionAbbreviations`) (NOTE: the list may not be complete - check if the region you plan to deploy is included)
--  [naming.module.bicep](../../shared/bicep/naming/naming.module.bicep). In this file you can change the way the names are generated, by swapping or removing tokens, adding string identifiers etc. 
+1. Clone/download this repo locally, or even better fork this repository.
 
-### Standalone Deployment Guide
+   > :twisted_rightwards_arrows: If you have forked this reference implementation repo, you can configure the provided GitHub workflow. Ensure references to this git repository mentioned throughout the walk-through are updated to use your own fork.
 
-You can deploy the complete landing zone in a single subscription, by using the [main.bicep](main.bicep) template file and the accompanying [main.parameters.jsonc](main.parameters.jsonc) parameter file. You need first to check and customize the parameter file (parameters are described below) and then decide whether you intend to deploy the simple [Hello World App](modules/05-hello-world-sample-app/README.md) or the more comprehensive, Dapr-enabled [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md). If you intend to deploy the [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md), we reccomend that you set the parameter `deployHelloWorldSample` to `false`. 
+   ```bash
+   git clone https://github.com/Azure/aca-landing-zone-accelerator.git
+   cd aca-landing-zone-accelerator/scenarios/aca-internal/bicep
+   ```
 
+1. Update naming convention. *Optional.*
 
-#### Deployment Parameters
-The table below summurizes the avaialble parameters and the possible values that can be set. 
+   The naming of the resources in this implementation follows the Cloud Adoption Framework's resource [naming convention](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming). Your organization might have a naming strategy in place, which possibly deviates from this implementation. In most cases you can modified what is deployed by modifying the following two files:
 
-| Name | Description | Example | 
-|------|-------------|---------|
-|workloadName|A suffix that will be used to name the resources in a pattern similar to ` <resourceAbbreviation>-<applicationName> ` . Must be up to 10 characters long, alphanumeric with dashes|app-svc-01|
-|environment|Required. The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.||
-|tags|Resource tags that we might need to add to all resources (i.e. Environment, Cost center, application name etc)|"tags": {<br>         "value": { <br>               "deployment": "bicep", <br>  "key1": "value1" <br>           } <br>         } |
-| enableTelemetry | boolean, Telemetry collection is on by default `true` | | 
-| hubResourceGroupName | Optional default value `""`, The name of the hub resource group to create the resources in. If set, it overrides the name generated by the template | | 
-| spokeResourceGroupName | Optional default value `""`, The name of the spoke resource group to create the resources in. If set, it overrides the name generated by the template | | 
-| vnetAddressPrefixes | An array of string. The address prefixes to use for the hub virtual network. | | 
-| bastionSubnetAddressPrefix | CIDR to use for the Azure Bastion subnet |  | 
-| vmSize | The size of the virtual machine to create. | [VM Sizes](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes)  | 
-| vmAdminUsername | The username to use for the virtual machine |  | 
-| vmAdminPassword | The password to use for the virtual machine |  | 
-| vmLinuxSshAuthorizedKeys | The SSH public key to use for the virtual machine (if VM is linux) |  | 
-| vmJumpboxOSType | The type of OS for the deployed jump box - Can be `linux` or `windows` |  | 
-| vmJumpBoxSubnetAddressPrefix | CIDR to use for the virtual machine subnet |  | 
-| spokeVNetAddressPrefixes | An array of string. The address prefixes to use for the spoke virtual network |  | 
-| spokeInfraSubnetAddressPrefix | CIDR of the Spoke Infrastructure Subnet |  | 
-| spokePrivateEndpointsSubnetAddressPrefix | CIDR of the Spoke Private Endpoints Subnet |  | 
-| spokeApplicationGatewaySubnetAddressPrefix | CIDR of the Spoke Application Gateway Subnet |  | 
-| enableApplicationInsights | If you want to deploy Application Insights, set this to `true` |  |
-| enableDaprInstrumentation | If you use Dapr, you can setup Dapr telemetry by setting this to true and enableApplicationInsights to `true` |  |
-| deployHelloWorldSample | Set this to `true` if you want to deploy the sample application and the application gateway |NOTE: if you prefer to deploy the more comprehensive, Dapr-enabled [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md) set this parameter to `false` |
+   - [**naming.module.bicep**](../../shared/bicep/naming/naming.module.bicep) contains the nameing convention.
+   - [**naming-rules.jsonc**](../../shared/bicep/naming/naming-rules.jsonc) contains the [abbreviations](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations) for resources (`resourceTypeAbbreviations`) and Azure regions (`regionAbbreviations`) used in the naming convention.
 
+1. :world_map: Choose your deployment experience.
 
-After the parameters have been initialized, you can deploy the Landing Zone Accelerator resources with the following `az cli` command:
+   This reference implementation comes with *three* implementation deployment options. They all result in the same resources and architecture, they simply differ in their user experience; specifically how much is abstracted from your involvement.
 
+   - Follow the "[**Standalone deployment guide**](#standalone-deployment-guide)" if you'd like to simply configure a set of parameters and execute a single CLI command to deploy.
 
-#### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
-``` bash
-LOCATION=northeurope # or any location that suits your needs
-LZA_DEPLOYMENT_NAME=bicepAcaLzaDeployment  # or any other value that suits your needs
+     *This will be your simplest deployment approach, but also the most opaque. This is optimized for "cut to the end."*
 
-az deployment sub create \
-    --template-file main.bicep \
-    --location $LOCATION \
-    --name $LZA_DEPLOYMENT_NAME \
-    --parameters ./main.parameters.jsonc
-```
+   - Follow the "[**Standalone deployment guide with GitHub Actions**](#standalone-deployment-guide-with-github-actions)" if you'd like to simply configure a set of parameters and have GitHub Actions execute the deployment.
 
-#### Powershell (windows based OS)
-``` powershell
-$LOCATION=northeurope # or any location that suits your needs
-$LZA_DEPLOYMENT_NAME=bicepAcaLzaDeployment  # or any other value that suits your needs
+     *This is a variant of the above. A **fork** of this repo is required for this option, and requires you to create a service principal with appropriate permissions in your Azure Subscription to perform the deployment.*
 
-az deployment sub create `
-    --template-file main.bicep `
-    --location $LOCATION `
-    --name $LZA_DEPLOYMENT_NAME `
-    --parameters ./main.parameters.jsonc
-```
-After your Hub, Spoke, supporting services and Azure Container Apps Environment are deployed (and if you selected `deployHelloWorldSample: false`) you may proceed to deploy Fine Collection Sample App
-:arrow_forward: [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md)
+   - Follow the "[**Step-by-step deployment guide**](#step-by-step-deployment-guide)" if you'd like to walk through the deployment at a slower, more deliberate pace.
 
-#### Clean up resources
+     *This will approach will allow you to see the deployment evolve over time, which might give you an insight into the various roles and people in your organization that you need to engage when bringing your workload in this architecture to Azure. This is optimized for "learning."*
 
-To remove the resources created by this landing zone, you can use the following command:
+   All of these options allow you to deploy to a single subscription, to experience the full architecture in isolation. Adapting this deployment to your Azure landing zone implementation is not required to complete the deployments.
+
+## Deployment experiences
+
+### Standalone deployment guide
+
+1. Log into Azure from the AZ CLI and select your subscription.
+
+   ```bash
+   az login
+   ```
+
+1. Review and update deployment parameters.
+
+   The [**main.parameters.jsonc**](./main.parameters.jsonc) parameter file is where you can customize your deployment. The defaults are a suitable starting point, but feel free to adjust any to fit your requirements.
+
+   **Deployment parameters**
+
+   | Name  | Description | Default | Example(s) |
+   | :---- | :---------- | :------ | :--------- |
+   | `workloadName` |A suffix that will be used to name resources in a pattern similar to `<resourceAbbreviation>-<applicationName>`. Must be less than 11 characters long, alphanumeric with dashes. | **lzaaca** | **app-svc-01** |
+   | `environment` | The short name of the environment. Up to eight characters long. | **dev** | **qa**, **uat**, **prod** |
+   | `tags` | Resource tags that you wish to add to all resources. | *none* | `"value": {`<br>`"Environment": "qa",`<br>`"CostCenter": CS004"`<br>`}` |
+   | `enableTelemetry` | Enables or disabled telemetry collection | **true** | **false** |
+   | `hubResourceGroupName` | The name of the hub resource group to create the hub resources in. | *none*. This results in a new resource group being created. | **rg-byo-hub-academo**. This results in `rg-byo-hub-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
+   | `spokeResourceGroupName` | The name of the spoke resource group to create the spoke resources in. | *none*. This results in a new resource group being created. | **rg-byo-spoke-academo**. This results in `rg-byo-spoke-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
+   | `vnetAddressPrefixes` | An array of string. The address prefixes to use for the hub virtual network. | `["10.0.0.0/16"]` | `["10.100.0.0/16"]` |
+   | `enableBastion` | Controls if Azure Bastion is deployed. | `true` | false` |
+   | `bastionSubnetAddressPrefix` | CIDR to use for the Azure Bastion subnet. Must be a subset of the hub CIDR ranges. | **10.0.2.0/27** | **10.100.2.0/27** |
+   | `vmSize` | The size of the virtual machine to create for the jump box. | `Standard_B2ms` | Any one of: [VM sizes](https://learn.microsoft.om/azure/virtual-machines/sizes) |
+   | `vmAdminUsername` | The username to use for the jump box. | **azureuser** | `jumpboxadmin` |
+   | `vmAdminPassword` | The password to use for the jump box admin user. | **Password123**. :stop_sign: You *should* change this. | Any cryptographically strong password of your choosing. |
+   | `vmLinuxSshAuthorizedKeys` | The SSH public key to use for the jump box (if VM is Linux) | *unusable/garbage value* | Any SSH keys you wish in the form of **ssh-rsa AAAAB6NzC...P38/oqQv description**|
+   | `vmJumpboxOSType` | The type of OS for the deployed jump box. | **linux** | **windows** |
+   | `vmJumpBoxSubnetAddressPrefix` | CIDR to use for the jump box subnet. must be a subset of the hub CIDR ranges. | **10.0.3.0/24** | **10.100.3./24** |
+   | `spokeVNetAddressPrefixes` | An array of string. The address prefixes to use for the spoke virtual network. | `["10.1.0.0/22"]` | `["10.101.0./22"]` |
+   | `spokeInfraSubnetAddressPrefix` | CIDR of the spoke infrastructure subnet. Must be a subset of the spoke CIDR ranges. | **10.1.0.0/23** | **10.101.0.0/23** |
+   | `spokePrivateEndpointsSubnetAddressPrefix` | CIDR of the spoke private endpoint subnet. Must be a subset of the spoke CIDR ranges. | **10.1.2.0/4** | **10.101.2.0/24** |
+   | `spokeApplicationGatewaySubnetAddressPrefix` | CIDR of the spoke Application Gateway subnet. Must be a subset of the spoke CIDR ranges. | **10.1.3.0/24** | **10.101.3.0/24** |
+   | `enableApplicationInsights` | Controls if Application Insights is deployed and configured. | **true** | **false** |
+   | `enableDaprInstrumentation` | Enable Dapr's telemetry. enableApplicationInsights` must also be set to **true** for this to work. | **true** | **false** |
+   | `deployHelloWorldSample` | Deploy a simple, sample application to the infrastructure. If you prefer to deploy the more comprehensive, Dapr-enabled sample app, this needs to be disabled | **true** | **false**, because you plan on deploying the Dapr-enabled application instead. |
+
+1. Deploy the reference implementation.
+
+   This will deploy all of the infrastructure to your selected subscription. This will take over 10 minutes to execute.
+
+   ``` bash
+   LOCATION=northeurope # or any location that suits your needs
+   LZA_DEPLOYMENT_NAME=bicepAcaLzaDeployment  # or any other value that suits your needs
+
+   ```bash
+   az deployment sub create \
+       --template-file main.bicep \
+       --location $LOCATION \
+       --name $LZA_DEPLOYMENT_NAME \
+       --parameters ./main.parameters.jsonc
+   ```
+
+1. Deploy the Dapr-based workload. *Optional.*
+
+   If you chose to set `deployHelloWorldSample` to **false**, then proceed to deploy the Dapr-based workload by following the instructions at:
+
+   :arrow_forward: [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md)
+
+#### :broom: Clean up resources
+
+When you are done exploring the resources created by the Standalone deployment guide, use the following command to remove the resources you created.
 
 ```bash
 $LZA_DEPLOYMENT_NAME=bicepAcaLzaDeployment  # The name of the deployment you used in the previous step
@@ -110,25 +129,26 @@ SPOKE_RESOURCE_GROUP_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --q
 # get the name of the Hub Resource Group that has been created previously
 HUB_RESOURCE_GROUP_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.hubResourceGroupName.value -o tsv)
 
-az group delete -n $SPOKE_RESOURCE_GROUP_NAME --yes
-az group delete -n $HUB_RESOURCE_GROUP_NAME --yes
+az group delete -n $SPOKE_RESOURCE_GROUP_NAME
+az group delete -n $HUB_RESOURCE_GROUP_NAME
 ```
 
-### Standalone Deployment Guide With GitHub Action
-With this method, you can leverage the included [LZA Deployment GitHub action](../../../.github/workflows/lza-deployment.yml) to deploy the Azure Container Apps Infrastructure resources. 
-> NOTE: To use the GitHub action you need to [fork the repository](https://github.com/Azure/ACA-Landing-Zone-Accelerator/fork) to your organization. 
+### Standalone deployment guide with GitHub Actions
 
-#### Setup authentication between Azure and GitHub.
-The easiest way to do that, is to use a [service principal](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#use-the-azure-login-action-with-a-service-principal-secret). 
- 1. Open [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) in the Azure Portal or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) locally
-2. Create a new service principal in the Azure portal for your app and assign it **Contributor** role. Replace {subscription-id}. The service principal will be created at the scope of the subscription as multiple resource groups will be created.
-   ```
+1. Create a new [service principal](https://learn.microsoft.com/azure/developer/github/connect-from-azure#use-the-azure-login-action-with-a-service-principal-secret) with the **owner** role on the subscription.
+
+   *Replace `{subscription-id}` below.*
+
+   ```bash
    az ad sp create-for-rbac --name "myApp" --role owner \
                        --scopes /subscriptions/{subscription-id} \
                        --sdk-auth
    ```
+
    > Note that this command will output the following warning `Option '--sdk-auth' has been deprecated and will be removed in a future release.`. Nevertheless, this method is still **strongly recommend** as documented by the [Azure\login team](https://github.com/azure/login#configure-a-service-principal-with-a-secret).
-3. Copy the JSON object for your service principal
+
+1. Copy the output from the prior command.
+
    ```json
    {
        "clientId": "<GUID>",
@@ -138,20 +158,28 @@ The easiest way to do that, is to use a [service principal](https://learn.micros
        (...)
    }
    ```
-4. Navigate to where you cloned the GitHub repository and go to **Settings** > **Secrets and variables** > **Actions** > **New repository secret**.
-5. Create a new secret called `AZURE_CREDENTIALS` with the JSON information in step 3 (in JSON format) and press *Add Secret*.
-6. On the same screen ( **Settings** > **Secrets and variables** > **Actions** ), we need to add two repository variables. Click on the Tab Page titled **Variables**, and then click on **New repository variable**
-   1. Add the first variable named `LOCATION` and enter as value, a valid Azure datacenter location (i.e. northeurope). This will be the region where all of your resources will be deployed.
-   2. Add the second variable named `ENABLE_TEARDOWN` typed as a boolean. If you wish the environment to be cleaned up after some manual approval, or after 120 minutes, then set this variable to `true`. If you don't want automatic clean up of the deployed resources, set this variable to `false`. You need also to update the `CODEOWNERS` file, whith the right GitHub handles.  
 
-### End-to-End Deployment with Sample Application
+1. Navigate to where you forked the GitHub repository and go to **Settings** > **Secrets and variables** > **Actions** > **New repository secret**.
 
-With this method of deployment, you can leverage the step-by-step process, where possibly different teams (devops, network, operations etc) with different levels of access, are required to co-ordinate and deploy all of the required resources. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment. Please read carefully the documentation of each step before deploying it.
+1. Create a new secret called `AZURE_CREDENTIALS` with the JSON information and press **Add Secret**.
 
-1. Preqs - Clone this repo, install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), install [Bicep tools](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
-2. [Hub](modules/01-hub/README.md)
-3. [Spoke](modules/02-spoke/README.md)
-4. [Supporting Services](modules/03-supporting-services/README.md)
-5. [ACA Environment](modules/04-container-apps-environment/README.md)
-6. [Hello World Sample Container App (Optional)](modules/05-hello-world-sample-app/README.md)
-7. [Application Gateway](modules/06-application-gateway/README.md) or [Front Door](modules/06-front-door/README.md)  
+1. On the same screen ( **Settings** > **Secrets and variables** > **Actions** ), you need to add two repository variables. Click on the tab titled **Variables**, and then click on **New repository variable**.
+
+1. Add the first variable named `LOCATION` and enter as value, a valid Azure data center location (i.e. northeurope). This will be the region where all of your resources will be deployed.
+
+1. Add the second variable named `ENABLE_TEARDOWN` typed as a boolean. If you wish the environment to be cleaned up after some manual approval, or after 120 minutes, then set this variable to `true`. If you don't want automatic clean up of the deployed resources, set this variable to `false`. You need also to update the `CODEOWNERS` file, with the right GitHub handles.
+
+#### :broom: Clean up resources
+
+If you didn't select automatic clean up of the deployed resources, use the following commands to remove the resources you created.
+
+```bash
+az group delete -n <your-spoke-resource-group>
+az group delete -n <your-hub-resource-group>
+```
+
+### Step-by-step deployment guide
+
+These instructions are spread over a series of dedicated pages for each step along the way. With this method of deployment, you can leverage the step-by-step process considering where possibly different teams (devops, network, operations etc) with different levels of access, are required to coordinate and deploy all of the required resources.
+
+:arrow_forward: This starts with [Deploy the hub networking resources](./modules/01-hub/README.md).

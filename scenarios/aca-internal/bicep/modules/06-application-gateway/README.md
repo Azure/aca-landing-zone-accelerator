@@ -58,6 +58,8 @@ The "Hello World" container app is exposed through Application Gateway, includin
 
    **Never use this certificate in production.**
 
+   ![A screenshot of the "Hello World" application in a browser.](./media/app.png)
+
 ## Next step
 
 :broom: When you are done exploring the reference implementation, be sure to [clean up your resources](../../README.md#broom-clean-up-resources) to ensure you don't spend more than necessary.

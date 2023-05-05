@@ -6,6 +6,8 @@ At this point, you have a [spoke virtual network](../02-spoke/README.md) ready t
 
 Workloads often have resources that exist on different lifecycles. Some are singletons, and not tied to the deployment stamp of the application platform. Others come and go with the application platform and are part of the application's stamp. Yet others might even be tied to the deployment of code within the application platform. In this deployment, you'll be deploying resources that are not expected to be tied to the same lifecycle as the instance of the Azure Container App, and are in fact dependencies for any given instance and could be used by multiple instances if you had multiple stamps.
 
+![A picture of the long-lived resources that are part of this architecture.](./media/supporting-services.png)
+
 ### Resources
 
 - Azure Container Registry
@@ -14,8 +16,6 @@ Workloads often have resources that exist on different lifecycles. Some are sing
 - User managed identities for the workload
 
 By default, they are deployed to the spoke resource group.
-
-![A picture of the long-lived resources that are part of this architecture.](./media/supporting-services.png)
 
 ## Steps
 

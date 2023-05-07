@@ -18,6 +18,6 @@ output "keyVaultName" {
   value = module.keyVault.keyVaultName
 }
 
-output "keyVaultUserAssignedIdentityId" {
-  value = module.keyVault.keyVaultUserAssignedIdentityId
-}
+# output "keyVaultSecretsOfficerRoleAssignmentId" {
+#   value = module.keyVault.keyVaultSecretsOfficerRoleAssignmentId
+# }

@@ -29,8 +29,6 @@ module "spoke" {
   hubVnetId                             = module.hub.hubVnetId
   securityRules                         = var.securityRules
   tags                                  = var.tags
-
-  # depends_on = [module.module.hub]
 }
 
 module "supportingServices" {
@@ -59,8 +57,6 @@ module "supportingServices" {
       "registrationEnabled" = false
   }]
   tags = var.tags
-
-  # depends_on = [module.spoke]
 }
 
 module "containerAppsEnvironment" {
@@ -87,8 +83,6 @@ module "containerAppsEnvironment" {
       "registrationEnabled" = false
   }]
   tags = var.tags
-
-  # depends_on = [module.supportingServices]
 }
 
 module "helloWorldApp" {
@@ -99,17 +93,14 @@ module "helloWorldApp" {
   containerAppsEnvironmentId              = module.containerAppsEnvironment.containerAppsEnvironmentId
   containerRegistryUserAssignedIdentityId = module.supportingServices.containerRegistryUserAssignedIdentityId
   tags                                    = var.tags
-
-  # depends_on = [module.containerAppsEnvironment]
 }
 
 module "applicationGateway" {
-  source            = "./modules/06-application-gateway"
-  workloadName      = var.workloadName
-  environment       = var.environment
-  location          = var.location
-  resourceGroupName = module.spoke.spokeResourceGroupName
-  # supportResourceGroupName        = module.spoke.spokeResourceGroupName
+  source                          = "./modules/06-application-gateway"
+  workloadName                    = var.workloadName
+  environment                     = var.environment
+  location                        = var.location
+  resourceGroupName               = module.spoke.spokeResourceGroupName
   keyVaultName                    = module.supportingServices.keyVaultName
   appGatewayCertificateKeyName    = var.appGatewayCertificateKeyName
   appGatewayFQDN                  = var.appGatewayFQDN
@@ -119,5 +110,8 @@ module "applicationGateway" {
   appGatewayCertificatePath       = var.appGatewayCertificatePath
   tags                            = var.tags
 
-  # depends_on = [module.helloWorldApp]
+  # RBAC role should be assigned before creating a new secret (certificate appgw)
+  # moduleDependencies = [
+  #   module.supportingServices.keyVaultSecretsOfficerRoleAssignmentId
+  # ]
 }

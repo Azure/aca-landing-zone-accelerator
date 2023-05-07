@@ -26,12 +26,12 @@ module "vnet" {
   addressSpace         = var.vnetAddressPrefixes
   tags                 = var.tags
   ddosProtectionPlanId = var.ddosProtectionPlanId
-  subnets = [
-    {
-      "addressPrefixes" = tolist([var.vmJumpBoxSubnetAddressPrefix])
-      "name"            = var.vmSubnetName
-    }
-  ]
+  subnets = []
+  #   {
+  #     "addressPrefixes" = tolist([var.vmJumpBoxSubnetAddressPrefix])
+  #     "name"            = var.vmSubnetName
+  #   }
+  # ]
 }
 
 module "bastion" {
@@ -51,10 +51,7 @@ module "vm" {
   osType                = "Linux"
   nsgName               = module.naming.resourceNames["vmJumpBoxNsg"]
   location              = var.location
-  vnetName              = module.vnet.vnetName
   tags                  = var.tags
-  vnetResourceGroupName = azurerm_resource_group.hubResourceGroup.name
-  addressPrefixes       = tolist([var.vmJumpBoxSubnetAddressPrefix])
   securityRules         = var.securityRules
   nicName               = module.naming.resourceNames["vmJumpBoxNic"]
   vmName                = module.naming.resourceNames["vmJumpBox"]
@@ -62,5 +59,9 @@ module "vm" {
   adminPassword         = var.vmAdminPassword
   resourceGroupName     = azurerm_resource_group.hubResourceGroup.name
   size                  = var.vmSize
+  
+  vnetResourceGroupName = azurerm_resource_group.hubResourceGroup.name
+  vnetName              = module.vnet.vnetName
   vmSubnetName          = var.vmSubnetName
+  addressPrefixes       = tolist([var.vmJumpBoxSubnetAddressPrefix])
 }

@@ -16,10 +16,10 @@ variable "appGatewaySubnetId" {}
 
 variable "appGatewayLogAnalyticsId" {}
 
-# variable "supportResourceGroupName" {}
-
 variable "tags" {}
 
 variable "keyVaultName" {}
 
 variable "appGatewayCertificatePath" {}
+
+# variable "moduleDependencies" {}

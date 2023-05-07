@@ -13,11 +13,3 @@ output "containerRegistryUserAssignedIdentityId" {
 output "keyVaultId" {
   value = module.keyVault.keyVaultId
 }
-
-output "keyVaultName" {
-  value = module.keyVault.keyVaultName
-}
-
-# output "keyVaultSecretsOfficerRoleAssignmentId" {
-#   value = module.keyVault.keyVaultSecretsOfficerRoleAssignmentId
-# }

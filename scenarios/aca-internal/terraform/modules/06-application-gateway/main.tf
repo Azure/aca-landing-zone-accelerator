@@ -21,7 +21,7 @@ resource "azurerm_user_assigned_identity" "appGatewayUserIdentity" {
 
 module "appGatewayAddCertificates" {
   source                                    = "../../../../shared/terraform/modules/application-gateway/certificate-config"
-  keyVaultName                              = var.keyVaultName
+  keyVaultId                                = var.keyVaultId
   resourceGroupName                         = var.resourceGroupName
   appGatewayCertificateKeyName              = var.appGatewayCertificateKeyName
   appGatewayCertificateData                 = local.appGatewayCertificate

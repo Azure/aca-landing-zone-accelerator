@@ -101,7 +101,7 @@ module "applicationGateway" {
   environment                     = var.environment
   location                        = var.location
   resourceGroupName               = module.spoke.spokeResourceGroupName
-  keyVaultName                    = module.supportingServices.keyVaultName
+  keyVaultId                      = module.supportingServices.keyVaultId
   appGatewayCertificateKeyName    = var.appGatewayCertificateKeyName
   appGatewayFQDN                  = var.appGatewayFQDN
   appGatewayPrimaryBackendEndFQDN = module.helloWorldApp.helloWorldAppFQDN

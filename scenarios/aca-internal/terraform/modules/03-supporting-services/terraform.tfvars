@@ -2,7 +2,6 @@
 workloadName = "lzaaca"
 //The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.
 environment                         = "dev"
-location                            = "eastus"
 supportingResourceGroupName         = "supporting-services"
 aRecords                            = []
 hubVnetId                           = "<Hub VNET ID>"

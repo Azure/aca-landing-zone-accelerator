@@ -37,7 +37,7 @@ module "appGatewayConfiguration" {
   appGatewayName                   = module.naming.resourceNames["applicationGateway"]
   resourceGroupName                = var.resourceGroupName # module.naming.resourceNames["rgSpokeName"]
   location                         = var.location
-  diagnosticSettingName            = "agw-diagnostics-${random_string.random.result}"
+  diagnosticSettingName            = "agw-diagnostics"
   appGatewayFQDN                   = var.appGatewayFQDN
   appGatewayPrimaryBackendEndFQDN  = var.appGatewayPrimaryBackendEndFQDN
   appGatewayPublicIpName           = module.naming.resourceNames["applicationGatewayPip"]

@@ -1,9 +1,9 @@
-
 module "hub" {
   source                       = "./modules/01-hub"
   workloadName                 = var.workloadName
   environment                  = var.environment
   hubResourceGroupName         = var.hubResourceGroupName
+  location                     = var.location
   vnetAddressPrefixes          = var.hubVnetAddressPrefixes
   enableBastion                = var.enableBastion
   bastionSubnetAddressPrefixes = var.bastionSubnetAddressPrefixes
@@ -21,6 +21,7 @@ module "spoke" {
   workloadName                          = var.workloadName
   environment                           = var.environment
   spokeResourceGroupName                = var.spokeResourceGroupName
+  location                              = var.location
   vnetAddressPrefixes                   = var.spokeVnetAddressPrefixes
   infraSubnetAddressPrefix              = var.infraSubnetAddressPrefix
   infraSubnetName                       = var.infraSubnetName

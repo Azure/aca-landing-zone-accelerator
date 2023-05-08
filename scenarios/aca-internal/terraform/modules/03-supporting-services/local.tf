@@ -9,7 +9,6 @@ locals {
   spokeVnetResourceGroup = local.spokeTokens[4]
   spokeVnetName          = local.spokeTokens[8]
 
-
   vnetLinks = [
     { "name"                = local.spokeVnetName
       "vnetId"              = var.spokeVnetId
@@ -23,5 +22,4 @@ locals {
       "registrationEnabled" = false
     }
   ]
-
 }

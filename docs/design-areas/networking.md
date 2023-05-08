@@ -22,14 +22,15 @@
 ## Design Area Recommendations
   
 * Deploy container apps in your own custom virtual network to have more control over the network configuration.
-* When publishing internet-facing services, use a service such as Azure Application Gateway to secure inbound connectivity.
-* When using a load-balancing or security service such as Azure Application Gateway or Azure Front Door, use an internal network configuration so that traffic from the load-balancer to the Azure Container Apps Environment uses an internal connection. 
+* When publishing internet-facing services, use a service such as Azure Application Gateway (WAF_v2 SKU) or Azure Front Door (with Web Application Firewall) to secure inbound connectivity.
+* When using a load-balancing or security service such as Azure Application Gateway (WAF_v2 SKU) or Azure Front Door (with Web Application Firewall), use an internal network configuration so that traffic from the load-balancer to the Azure Container Apps Environment uses an internal connection. 
 * Enable ingress to expose your application over HTTPs or TCP port.
-* Secure your network by using Network Security Groups (NSG) and blocking inbound and outbound traffic other than is required.
+* Secure your network by using Network Security Groups (NSG) and blocking inbound and outbound traffic other than is required. [Securing a custom VNET in Azure Container Apps with Network Security Groups](https://learn.microsoft.com/azure/container-apps/firewall-integration)
 * Use Azure DDoS Protection Standard to protect the virtual network used for the Azure Container Apps Environment.
 * Use Private Link to secure network connections and use private IP-based connectivity to other managed Azure services used that support Private Link, such as Azure Storage, Azure Container Registry, Azure SQL Database, and Azure Key Vault.
 * All endpoints for the solution (internal and external) should only accept TLS encrypted connections (HTTPS).
 * For internet-facing and security-critical, internal-facing web applications, use a web application firewall with the HTTPS/TCP ingress. Azure Application Gateway and Azure Front Door both integrate the Azure Web Application Firewall to protect web-based applications.
+* In some scenarios, you might need to expose an Azure Container App web application directly to the internet (with external ingress), and protect it with third-party CDN/WAF services. Azure Container Apps provide the ability to set up [IP ingress restrictions in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/ip-restrictions), and you can use that ability to create allow/deny IP lists (i.e. allow access only to IP/IP range from third party CDN/WAF service), and secure network access to your environment. 
 * For internal DNS resolution, create a Private DNS Zone for the Azure Container Apps Environment and link it to all virtual networks that need to resolve the name. For Azure Landing Zone environments, this may also mean linking this zone to the Hub network.
    
 ## References
@@ -37,4 +38,5 @@
 - [Networking architecture in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/networking)
 - [Securing a custom VNET in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/firewall-integration)
 - [Network proxying in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/network-proxy)
+- [IP ingress restrictions in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/ip-restrictions)
   

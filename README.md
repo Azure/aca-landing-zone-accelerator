@@ -6,7 +6,7 @@ This Azure Container Apps landing zone accelerator represents the strategic desi
 
 This repository provides packaged guidance for customer scenarios, reference architecture, reference implementation, tooling, design area guidance, sample application deployed after provisioning the infrastructure using the accelerator. The architectural approach can be used as design guidance for greenfield implementation and as an assessment for brownfield customers already using containerized apps.
 
-![An architecture diagram representing a typical Azure Container Apps architecture.](./docs/media/acaInternal/aca-internal.png)
+![An architecture diagram representing a typical Azure Container Apps architecture.](./docs/media/acaInternal/aca-internal.png.jpg)
 
 ## :mag: Design areas
 

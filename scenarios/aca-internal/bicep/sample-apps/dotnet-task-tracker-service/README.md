@@ -16,4 +16,4 @@ The app consists of three microservices. You can read more about the scenario an
 The deployment of the sample app is done in 2 steps:
 
 1. :arrow_forward: [Deploy the landing zone](./docs/01-landing-zone.md)
-2. :arrow_forward: [Deploy the container apps and their dependencies](./docs/02-container-apps.md)
+2. :arrow_forward: [Deploy the Azure Container Apps and their dependencies](./docs/02-container-apps.md)

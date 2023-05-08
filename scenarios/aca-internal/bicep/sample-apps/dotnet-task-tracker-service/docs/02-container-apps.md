@@ -56,7 +56,7 @@ You can set the Bicep parameters for the image in the `main.parameters.jsonc` or
 
 > **NOTE**
 >
-> To be able to import the images from the public repository, you need to be logged in to the private container registry. To do so you'll need to install docker in the jump box VM or workstation. The script [jumpbox-setup.sh](../../../../../shared/scripts/jumpbox-setup.sh) can be used as an example on how to install docker.
+> To be able to import the images from the public repository, you need to be logged in to the private Container Registry. To do so you'll need to install Docker in the jump box VM or workstation. The script [jumpbox-setup.sh](../../../../../shared/scripts/jumpbox-setup.sh) can be used as an example on how to install Docker.
 >
 
 :arrow_down: [Deploy the sample app](#deploy-the-sample-app)
@@ -155,5 +155,3 @@ APP_GATEWAY_IP=$(az deployment group show -g "$SPOKE_RESOURCE_GROUP_NAME" -n "$L
 
 curl -k https://$APP_GATEWAY_IP # or open https://$APP_GATEWAY_IP in a browser
 ```
-
-

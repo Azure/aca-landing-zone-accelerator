@@ -12,7 +12,7 @@ This is the starting point for the instructions on deploying this reference impl
   - `Microsoft.ContainerRegistry`
   - `Microsoft.ContainerService`
   - `Microsoft.KeyVault`
-- The user or service principal initiating the deployment process must have the [Contributor role](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#contributor) at the subscription level to have the ability to create resource groups.
+- The user or service principal initiating the deployment process must have the [owner role](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner) at the subscription level to have the ability to create resource groups and to delegate access to others (Azure Managed Identities created from the IaC deployment).
 - Latest [Azure CLI installed](https://learn.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest) (must be at least 2.40), or you can perform this from Azure Cloud Shell by clicking below.
 
   [![Launch Azure Cloud Shell](https://learn.microsoft.com/azure/includes/media/cloud-shell-try-it/launchcloudshell.png)](https://shell.azure.com)
@@ -135,12 +135,12 @@ az group delete -n $HUB_RESOURCE_GROUP_NAME
 
 ### Standalone deployment guide with GitHub Actions
 
-1. Create a new [service principal](https://learn.microsoft.com/azure/developer/github/connect-from-azure#use-the-azure-login-action-with-a-service-principal-secret) with the **Contributor** role on the subscription.
+1. Create a new [service principal](https://learn.microsoft.com/azure/developer/github/connect-from-azure#use-the-azure-login-action-with-a-service-principal-secret) with the **owner** role on the subscription.
 
    *Replace `{subscription-id}` below.*
 
    ```bash
-   az ad sp create-for-rbac --name "myApp" --role contributor \
+   az ad sp create-for-rbac --name "myApp" --role owner \
                        --scopes /subscriptions/{subscription-id} \
                        --sdk-auth
    ```

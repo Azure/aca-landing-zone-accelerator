@@ -1,4 +1,4 @@
-# Azure Container Apps landing zone accelerator - Networking
+# Azure Container Apps Landing Zone Accelerator - Networking
 
 ---
 ## Design Area Considerations

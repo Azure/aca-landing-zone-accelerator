@@ -5,9 +5,9 @@ Security is a one of the foundational design principles and also a key design ar
 ---
 ### Design Area Considerations
 
-- Cloud application security in enterprise environments is built in a layered approach. Microsoft provides recommendations for securing your application, as does the enterprise security organization governing cloud solutions. Finally, the solution developer has a responsibility to implement the appropriate security measures for the solution. 
-    - The [Container Apps security profile](https://learn.microsoft.com/security/benchmark/azure/baselines/azure-container-apps-security-baseline) from the Microsoft [Cloud Security Benchmark](https://learn.microsoft.com/en-us/security/benchmark/azure/overview) provides a good starting point
-    - The [Azure Landing Zone security documentation](https://learn.microsoft.com/azure/cloud-adoption-framework/secure/), part of the Cloud Adoption Framework, provides an additional security view on Landing Zones. 
+- Cloud application security in enterprise environments is built in a layered approach. Microsoft provides recommendations for securing your application, as does the enterprise security organization governing cloud solutions. Finally, the solution developer has a responsibility to implement the appropriate security measures for the solution.
+    - The [Container Apps security profile](https://learn.microsoft.com/security/benchmark/azure/baselines/azure-container-apps-security-baseline) from the Microsoft [Cloud Security Benchmark](https://learn.microsoft.com/security/benchmark/azure/overview) provides a good starting point
+    - The [Azure Landing Zone security documentation](https://learn.microsoft.com/azure/cloud-adoption-framework/secure/), part of the Cloud Adoption Framework, provides an additional security view on Landing Zones.
 
 - Azure Container Apps allows for _internal_ and _external_ connectivity models. This allows for connecting the Container Apps to the outside world directly or not at all. In this Landing Zone Accelerator, we recommend the _internal_ model and assume that the application will be either fully internal facing or will be published externally through a service that adds the appropriate security controls, such as Azure Application Gateway. The security architecture would then look as follows (the box with Application Gateway being optional in internal-facing scenarios):
 ![ACA Hub and Spoke architecture](../media/acaInternal/aca-internal.png)
@@ -26,8 +26,8 @@ Security is a one of the foundational design principles and also a key design ar
 
 ## References
 
-- [Container Apps security profile](https://learn.microsoft.com/security/benchmark/azure/baselines/azure-container-apps-security-baseline) 
-- [Cloud Security Benchmark](https://learn.microsoft.com/en-us/security/benchmark/azure/overview)
-- [Securing a custom VNET in Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/firewall-integration)
+- [Container Apps security profile](https://learn.microsoft.com/security/benchmark/azure/baselines/azure-container-apps-security-baseline)
+- [Cloud Security Benchmark](https://learn.microsoft.com/security/benchmark/azure/overview)
+- [Securing a custom VNET in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/firewall-integration)
 - [Azure Landing Zone security documentation](https://learn.microsoft.com/azure/cloud-adoption-framework/secure/)
   

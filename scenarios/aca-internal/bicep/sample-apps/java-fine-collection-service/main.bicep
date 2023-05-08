@@ -107,7 +107,7 @@ param simulationImage string = ''
 
 // Application Gateway
 @description('The FQDN of the Application Gateawy.Must match the TLS Certificate.')
-param applicationGatewayFQDN string
+param applicationGatewayFqdn string
 
 @description('The subnet name to use for Application Gateway.')
 param spokeApplicationGatewaySubnetName string
@@ -238,9 +238,9 @@ module applicationGateway '../../modules/06-application-gateway/deploy.app-gatew
     tags: tags
     environment: environment
     workloadName: workloadName
-    applicationGatewayFQDN: applicationGatewayFQDN
+    applicationGatewayFqdn: applicationGatewayFqdn
     applicationGatewaySubnetId: spokeApplicationGatewaySubnet.id
-    applicationGatewayPrimaryBackendEndFQDN: containerApps.outputs.trafficControlServiceFQDN
+    applicationGatewayPrimaryBackendEndFqdn: containerApps.outputs.trafficControlServiceFqdn
     appGatewayBackendHealthProbePath: appGatewayBackendHealthProbePath
     enableApplicationGatewayCertificate: enableApplicationGatewayCertificate
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName

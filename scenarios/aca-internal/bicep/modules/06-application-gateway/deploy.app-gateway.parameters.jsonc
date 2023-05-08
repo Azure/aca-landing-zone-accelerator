@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // The name of the workloard that is being deployed. Up to 10 characters long. This wil be used as part of the naming convention (i.e. as defined here: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) 
+    // The name of the workloard that is being deployed. Up to 10 characters long. This wil be used as part of the naming convention (i.e. as defined here: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) 
     "workloadName": {
       "value": "lzaaca"
     },
@@ -13,16 +13,16 @@
     "tags": {
         "value": {}
     },
-    // The FQDN of the Application Gateawy. Must match the TLS Certificate.
-    "applicationGatewayFQDN": {
+    // The FQDN of the Application Gateway. Must match the TLS Certificate.
+    "applicationGatewayFqdn": {
         "value": "acahello.demoapp.com"
     },
-    // Replace with the resource ID of the application gateway subenet of the spoke virtual network
+    // Replace with the resource ID of the application gateway subnet of the spoke virtual network
     "applicationGatewaySubnetId": {
       "value": "<APPLICATION_GATEWAY_SUBNET_RESOURCE_ID>"
     },
     // Replace with the FQDN of the hello world sample app
-    "applicationGatewayPrimaryBackendEndFQDN": {
+    "applicationGatewayPrimaryBackendEndFqdn": {
       "value": "<HELLO_WORLD_SAMPLE_APP_FQDN>"
     },
     "enableApplicationGatewayCertificate": {
@@ -31,7 +31,7 @@
     "applicationGatewayCertificateKeyName": {
       "value": "agwcert"
     },
-    // Replace with the resource ID of the key vault
+    // Replace with the resource ID of the Key Vault
     "keyVaultId": {
       "value": "<KEY_VAULT_RESOURCE_ID>"
     }

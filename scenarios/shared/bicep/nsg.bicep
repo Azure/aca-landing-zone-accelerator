@@ -25,7 +25,7 @@ param securityRules array
 // RESOURCES
 // ------------------
 
-// TODO: do we need flowlogs? https://learn.microsoft.com/en-us/azure/network-watcher/quickstart-configure-network-security-group-flow-logs-from-bicep?tabs=CLI
+// TODO: do we need flowlogs? https://learn.microsoft.com/azure/network-watcher/quickstart-configure-network-security-group-flow-logs-from-bicep?tabs=CLI
 
 resource nsg 'Microsoft.Network/networkSecurityGroups@2022-09-01' = {
   name: name

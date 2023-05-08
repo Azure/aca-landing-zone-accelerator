@@ -33,7 +33,7 @@ param enableBastion bool
 param bastionSubnetAddressPrefix string
 
 // Hub Virtual Machine
-@description('The size of the virtual machine to create. See https://docs.microsoft.com/en-us/azure/virtual-machines/sizes for more information.')
+@description('The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.')
 param vmSize string
 
 @description('The username to use for the virtual machine.')
@@ -78,8 +78,8 @@ param enableDaprInstrumentation bool
 @description('Enable or disable the deployment of the Hello World Sample App. If disabled, the Application Gateway will not be deployed.')
 param deployHelloWorldSample bool
 
-@description('The FQDN of the Application Gateawy. Must match the TLS Certificate.')
-param applicationGatewayFQDN string
+@description('The FQDN of the Application Gateway. Must match the TLS Certificate.')
+param applicationGatewayFqdn string
 
 @description('Enable or disable Application Gateway Certificate (PFX).')
 param enableApplicationGatewayCertificate bool
@@ -197,8 +197,8 @@ module applicationGateway 'modules/06-application-gateway/deploy.app-gateway.bic
     environment: environment
     workloadName: workloadName
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
-    applicationGatewayFQDN: applicationGatewayFQDN
-    applicationGatewayPrimaryBackendEndFQDN: (deployHelloWorldSample) ? helloWorlSampleApp.outputs.helloWorldAppFQDN : '' // To fix issue when hello world is not deployed
+    applicationGatewayFqdn: applicationGatewayFqdn
+    applicationGatewayPrimaryBackendEndFqdn: (deployHelloWorldSample) ? helloWorlSampleApp.outputs.helloWorldAppFqdn : '' // To fix issue when hello world is not deployed
     applicationGatewaySubnetId: spoke.outputs.spokeApplicationGatewaySubnetId
     enableApplicationGatewayCertificate: enableApplicationGatewayCertificate
     keyVaultId: supportingServices.outputs.keyVaultId

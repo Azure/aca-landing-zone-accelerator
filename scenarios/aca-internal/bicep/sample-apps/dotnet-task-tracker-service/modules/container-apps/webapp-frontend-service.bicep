@@ -26,8 +26,8 @@ param containerRegistryUserAssignedIdentityId string
 @description('The image for the frontend web app service.')
 param frontendWebAppServiceImage string
 
-@secure()
 @description('The Application Insights Instrumentation.')
+@secure()
 param appInsightsInstrumentationKey string
 
 @description('The target and dapr port for the frontend web app service.')

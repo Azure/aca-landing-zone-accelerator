@@ -13,15 +13,15 @@ param keyVaultName string
 @description('The name of the secret containing the SendGrid API key value for the Backend Background Processor Service.')
 param sendGridKeySecretName string
 
-@secure()
 @description('The SendGrid API key for for Backend Background Processor Service.')
+@secure()
 param sendGridKeySecretValue string
 
 @description('The name of the secret containing the External Azure Sorage Access key for the Backend Background Processor Service.')
 param externalAzureStorageKeySecretName string
 
-@secure()
 @description('The External Azure Stroage Access key for the Backend Background Processor Service.')
+@secure()
 param externalAzureStorageKeySecretValue string
 
 @description('The principal ID of the Backend Processor Service.')
@@ -72,4 +72,3 @@ resource keyVaultSecretUserRoleAssignment 'Microsoft.Authorization/roleAssignmen
     principalType: 'ServicePrincipal'
   }
 }
-

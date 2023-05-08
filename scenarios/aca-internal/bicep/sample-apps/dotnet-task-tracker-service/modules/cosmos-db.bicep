@@ -139,7 +139,9 @@ module cosmosDbNetworking '../../../../../shared/bicep/private-networking.bicep'
 
 @description('The name of Cosmos DB resource.')
 output cosmosDbName string = cosmosDbAccount.name
+
 @description('The name of Cosmos DB\'s database.')
 output cosmosDbDatabaseName string = cosmosDbDatabase.name
+
 @description('The name of Cosmos DB\'s collection.')
 output cosmosDbCollectionName string = cosmosDbDatabaseCollection.name

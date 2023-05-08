@@ -50,8 +50,8 @@ param keyVaultId string
 @description('The name of the secret containing the SendGrid API key value for the Backend Background Processor Service.')
 param sendGridKeySecretName string
 
-@secure()
 @description('The SendGrid API key for for Backend Background Processor Service.')
+@secure()
 param sendGridKeySecretValue string
 
 @description('The name of the secret containing the External Azure Storage Access key for the Backend Background Processor Service.')

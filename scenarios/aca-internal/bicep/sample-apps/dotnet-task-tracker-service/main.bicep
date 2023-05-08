@@ -4,9 +4,9 @@ targetScope = 'resourceGroup'
 //    PARAMETERS
 // ------------------
 
+@description('The name of the workloard that is being deployed. Up to 10 characters long.')
 @minLength(2)
 @maxLength(10)
-@description('The name of the workloard that is being deployed. Up to 10 characters long.')
 param workloadName string
 
 @description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa") Up to 8 characters long.')
@@ -77,8 +77,8 @@ param sendGridEmailFrom string
 @description('The name of the SendGrid Email From Name.')
 param sendGridEmailFromName string
 
-@secure()
 @description('The SendGrid API key for the backend processor service. If not provided, SendGrid integration will be disabled.')
+@secure()
 param sendGridKeySecretValue string
 
 // Key Vault
@@ -137,6 +137,10 @@ var secretStoreComponentName = 'secretstoreakv'
 
 var appGatewayBackendHealthProbePath = '/'
 
+
+// ------------------
+// RESOURCES
+// ------------------
 
 module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
   name: take('dotnettasktracker-shared-${uniqueString(resourceGroup().id)}', 64)
@@ -278,6 +282,11 @@ module applicationGateway '../../modules/06-application-gateway/deploy.app-gatew
   }
 }
 
+// ------------------
+// OUTPUTS
+// ------------------
+@description('The FQDN of the application gateway.')
 output applicationGatewayFQDN string = applicationGateway.outputs.applicationGatewayFqdn
-output applicationGatewayPublicIp string = applicationGateway.outputs.applicationGatewayPublicIp
 
+@description('The public IP address of the application gateway.')
+output applicationGatewayPublicIp string = applicationGateway.outputs.applicationGatewayPublicIp

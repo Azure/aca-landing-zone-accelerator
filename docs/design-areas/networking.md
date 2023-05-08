@@ -31,7 +31,7 @@
 * All endpoints for the solution (internal and external) should only accept TLS encrypted connections (HTTPS).
 * For internet-facing and security-critical, internal-facing web applications, use a web application firewall with the HTTPS/TCP ingress. Azure Application Gateway and Azure Front Door both integrate the Azure Web Application Firewall to protect web-based applications.
 * In some scenarios, you might need to expose an Azure Container App web application directly to the internet (with external ingress), and protect it with third-party CDN/WAF services. Azure Container Apps provide the ability to set up [IP ingress restrictions in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/ip-restrictions), and you can use that ability to create allow/deny IP lists (i.e. allow access only to IP/IP range from third party CDN/WAF service), and secure network access to your environment. 
-* For internal DNS resolution, create a Private DNS Zone for the Azure Container Apps Environment and link it to all virtual networks that need to resolve the name. For Azure Landing Zone environments, this may also mean linking this zone to the Hub network.
+* For internal DNS resolution, create a Private DNS Zone for the Azure Container Apps Environment, add an asterisk (*) A record pointing to the static IP of the Container Apps Environment and link it to all virtual networks that need to resolve the name. 
    
 ## References
 

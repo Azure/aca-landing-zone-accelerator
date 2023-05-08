@@ -5,10 +5,10 @@ targetScope = 'subscription'
 // ------------------
 @minLength(2)
 @maxLength(10)
-@description('The name of the workloard that is being deployed. Up to 10 characters long.')
+@description('The name of the workload that is being deployed. Up to 10 characters long.')
 param workloadName string = 'aca-lza'
 
-@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa") Up to 8 characters long.')
+@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
 @maxLength(8)
 param environment string = 'test'
 

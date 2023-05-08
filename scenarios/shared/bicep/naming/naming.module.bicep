@@ -61,6 +61,8 @@ var resourceNames = {
   logAnalyticsWorkspace: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.logAnalyticsWorkspace)
   serviceBus: replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.serviceBus)
   serviceBusPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.serviceBus)}'
+  storageAccount: toLower(take( replace ( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.storageAccount), '-', ''), 24))
+  storageAccountPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${toLower( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.storageAccount))}'
   vmJumpBox: replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)
   vmJumpBoxNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'
   vmJumpBoxNic: '${naming.resourceTypeAbbreviations.networkInterface}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'

@@ -191,7 +191,7 @@ az group delete -n <your-hub-resource-group>
 3. Click *New Pipeline* in the upper right hand corner of the window or the *create pipeline* button in the middle if this is your first pipeline.
 4. Select *GitHub* as the source for your YAML. 
 5. Select your repository in GitHub. If you don't already have the Azure Pipeline app installed in your GitHub repository, it will prompt you to enable that and redirect you back to this creation screen.
-6. Select *Existing Azure Pipelines YAML file*, select the main branch and the file *lza-deployment-bicep.yaml*.
+6. Select *Existing Azure Pipelines YAML file*, select the main branch and the file [lza-deployment-bicep.yaml](../../../.ado/lza-deployment_bicep.yaml).
 7.  Once you select the file, hit next and then click *Run* in the upper right hand corner of the *Review* tab. If you don't want to run it immediately, you can click the dropdown on the *Run* button and choose to save it. 
 
 > **Note**

@@ -1,25 +1,44 @@
-# Container Apps Environment
+# Deploy the Azure Container Apps Environment
 
-The following will be created:
+With your [spoke virtual network](../02-spoke/README.md) in place and the [services that Azure Containers Apps needs](../03-supporting-services/README.md) in this architecture in place, you're ready to deploy the application platform.
 
-* Container Apps Environment Environment 
-* Log Analytics Workspace
-* Application Insights (Optional)
-* Dapr Telemetry with Application Insights (Optional)
-* Private DNS Zone for Container Apps Environment
+## Expected results
 
-![Container Apps Environment](./media/container-apps-environment.png)
+The application platform, Azure Containers Apps, and its logging sinks within Azure Monitor will now be deployed. The workload is not deployed as part of step. Non-mission critical workload lifecycles are usually not tied to the lifecycle of the application platform, and as such are deployed isolated from infrastructure deployments, such as this one. Some cross-cutting concerns and platform feature enablement is usually handled however at this stage.
 
-Review `terraform.tfvars` and update the values as required. Once the files are updated, deploy using the Terraform CLI. 
+![A picture of the resources of this architecture, now with the application platform.](./media/container-apps-environment.png)
+
+### Resources
+
+- Container Apps Environment Environment
+- Log Analytics Workspace
+- Application Insights (optional)
+- Dapr Telemetry with Application Insights (optional)
+- Private DNS Zone for Container Apps Environment
+
+## Steps
 
 If you want to use remote storage, uncomment the backend block in the `providers.tf` file and provide the information for your Azure Storage Account. 
 
-Once the files are updated, deploy using the Terraform CLI.
+1. Create the Azure Container Apps application platform resources.
 
-```PowerShell
+```bash
 terraform init
 terraform plan -out tfplan
 terraform apply tfplan 
 ```
 
-:arrow_forward: [Hello World Sample Container App (Optional)](../05-hello-world-sample-app)
+1. Explore your final infrastructure. *Optional.*
+
+   Now would be a good time to familiarize yourself with all core resources that are part of this architecture, as they are all deployed. This includes the networking layer, the application platform, and all supporting resources. It does not include any of the resources that are specific to a workload (such as public Internet ingress through an application gateway). Check out the following resource groups in the [Azure portal](https://portal.azure.com).
+
+   ```bash
+   RESOURCENAME_RESOURCEGROUP_HUB=$(az deployment sub show -n acalza01-hub --query properties.outputs.resourceGroupName.value -o tsv)
+
+   echo Hub Resource Group: $RESOURCENAME_RESOURCEGROUP_HUB && \
+   echo Spoke Resource Group: $RESOURCENAME_RESOURCEGROUP_SPOKE
+   ```
+
+## Next step
+
+:arrow_forward: [Deploy a sample application](../05-hello-world-sample-app/README.md)

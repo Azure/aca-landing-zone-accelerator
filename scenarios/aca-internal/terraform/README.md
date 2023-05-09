@@ -1,39 +1,53 @@
-# Enterprise Scale for ACA Internal  - Terraform Implementation
+# Azure Container Apps - Internal environment secure baseline [Terraform]
 
-A deployment of ACA-hosted workloads typically experiences a separation of duties and lifecycle management in the area of prerequisites, the host network, the cluster infrastructure, and finally the workload itself. This reference implementation  can be used with two different ways, as explained next. The primary purpose of this implementation is to illustrate the topology and decisions of a secure baseline Azure Container Apps environment. 
+This is the Terraform-based deployment guide for [Scenario 1: Azure Container Apps - Internal environment secure baseline]().
 
 ## Prerequisites 
-- Clone this repo (you may need to fork it)
-- Install [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
-- Install [Terraform tools](https://developer.hashicorp.com/terraform/tutorials/azure-get-started/install-cli)
-- Register the following Azure Resource Providers (if not already registered)
-  -  Microsoft.App
-       
-        ```bash
-        # check if provider is already registered
-        az provider list --query "[?namespace=='Microsoft.App'].{Provider:namespace, Status:registrationState}" --output table
+This is the starting point for the instructions on deploying this reference implementation. There is required access and tooling you'll need in order to accomplish this.
 
-        # if provider is not registered, register it
-        az provider register --namespace 'Microsoft.App'
+- An Azure subscription
+- The following resource providers [registered](https://learn.microsoft.com/azure/azure-resource-manager/management/resource-providers-and-types#register-resource-provider):
+  - `Microsoft.App`
+  - `Microsoft.ContainerRegistry`
+  - `Microsoft.ContainerService`
+  - `Microsoft.KeyVault`
+- The user or service principal initiating the deployment process must have the [owner role](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner) at the subscription level to have the ability to create resource groups and to delegate access to others (Azure Managed Identities created from the IaC deployment).
+- Latest [Azure CLI installed](https://learn.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest) (must be at least 2.40), or you can perform this from Azure Cloud Shell by clicking below.
 
-        ```
-  -  Microsoft.ContainerService
-        
-        ```bash
-        # check if provider is already registered
-        az provider list --query "[?namespace=='Microsoft.ContainerService'].{Provider:namespace, Status:registrationState}" --output table
+  [![Launch Azure Cloud Shell](https://learn.microsoft.com/azure/includes/media/cloud-shell-try-it/launchcloudshell.png)](https://shell.azure.com)
+- Latest [Terraform tools](https://developer.hashicorp.com/terraform/tutorials/azure-get-started/install-cli)
 
-        # if provider is not registered, register it
-        az provider register --namespace 'Microsoft.ContainerService'
+## Steps 
 
-        ```
+1. Clone/download this repo locally, or even better fork this repository.
 
-### Resource Naming Convention
-An effective naming convention consists of resource names from important information about each resource. A good name helps you quickly identify the resource's type, associated workload, environment, and the Azure region hosting it. The naming of the resources in this implementation follow [Azure Best Practices](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming). Your organization might has already a naming strategy in place, which possibly deviates from the current implementation. The naming of the resources, is automated and centralized, so that in most of the cases can be easily modified or even overridden. The naming module consists of two files
--  [variables.tf](../../shared/terraform/modules/naming/variables.tf). In this file you can override: 
-   -  the abbreviation of the resources (`resourceTypeAbbreviations`), which currently follows Azure [recommended abreviations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations). 
-   -  the list of azure regions and their abbreviation (`regionAbbreviations`) (NOTE: the list may not be complete - check if the region you plan to deploy is included)
--  [local.tf](../../shared/terraform/modules/naming/local.tf). In this file you can change the way the names are generated, by swapping or removing tokens, adding string identifiers etc. 
+   > :twisted_rightwards_arrows: If you have forked this reference implementation repo, you can configure the provided GitHub workflow. Ensure references to this git repository mentioned throughout the walk-through are updated to use your own fork.
+
+   ```bash
+   git clone https://github.com/Azure/aca-landing-zone-accelerator.git
+   cd aca-landing-zone-accelerator/scenarios/aca-internal/terraform
+   ```
+1. Update naming convention. *Optional.*
+
+   The naming of the resources in this implementation follows the Cloud Adoption Framework's resource [naming convention](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming). Your organization might have a naming strategy in place, which possibly deviates from this implementation. In most cases you can modified what is deployed by modifying the following two files:
+
+   - [**variables.tf**](../../shared/terraform/modules/naming/variables.tf) contains the nameing convention.
+   - [**local.tf**](../../shared/terraform/modules/naming/local.tf) contains the [abbreviations](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations) for resources (`resourceTypeAbbreviations`) and Azure regions (`regionAbbreviations`) used in the naming convention.
+2. :world_map: Choose your deployment experience.
+
+   This reference implementation comes with *three* implementation deployment options. They all result in the same resources and architecture, they simply differ in their user experience; specifically how much is abstracted from your involvement.
+
+   - Follow the "[**Standalone deployment guide**](#standalone-deployment-guide)" if you'd like to simply configure a set of parameters and execute a single CLI command to deploy.
+
+     *This will be your simplest deployment approach, but also the most opaque. This is optimized for "cut to the end."*
+
+   - Follow the "[**Step-by-step deployment guide**](#step-by-step-deployment-guide)" if you'd like to walk through the deployment at a slower, more deliberate pace.
+
+     *This will approach will allow you to see the deployment evolve over time, which might give you an insight into the various roles and people in your organization that you need to engage when bringing your workload in this architecture to Azure. This is optimized for "learning."*
+
+   All of these options allow you to deploy to a single subscription, to experience the full architecture in isolation. Adapting this deployment to your Azure landing zone implementation is not required to complete the deployments.
+
+## Deployment experiences
 
 ### Standalone Deployment Guide
 
@@ -45,10 +59,10 @@ You can deploy the complete landing zone in a single subscription, by using the 
 
 If you haven't already done so, configure Terraform using one of the following options:
 
-* [Configure Terraform in Azure Cloud Shell with Bash](https://docs.microsoft.com/en-us/azure/developer/terraform/get-started-cloud-shell-bash)
-* [Configure Terraform in Azure Cloud Shell with PowerShell](https://docs.microsoft.com/en-us/azure/developer/terraform/get-started-cloud-shell-powershell)
-* [Configure Terraform in Windows with Bash](https://docs.microsoft.com/en-us/azure/developer/terraform/get-started-windows-bash)
-* [Configure Terraform in Windows with PowerShell](https://docs.microsoft.com/en-us/azure/developer/terraform/get-started-windows-powershell)
+* [Configure Terraform in Azure Cloud Shell with Bash](https://learn.microsoft.com/azure/developer/terraform/get-started-cloud-shell-bash)
+* [Configure Terraform in Azure Cloud Shell with PowerShell](https://learn.microsoft.com/azure/developer/terraform/get-started-cloud-shell-powershell)
+* [Configure Terraform in Windows with Bash](https://learn.microsoft.com/azure/developer/terraform/get-started-windows-bash)
+* [Configure Terraform in Windows with PowerShell](https://learn.microsoft.com/azure/developer/terraform/get-started-windows-powershell)
 
 #### Configure Remote Storage Account
 
@@ -57,7 +71,7 @@ Run the following commands or configuration to create an Azure storage account a
 
 Using Azure Powershell module
 
-```powershell
+```Powershell
 
 $LOCATION="eastus"
 $RESOURCE_GROUP_NAME="tfstate"
@@ -77,7 +91,7 @@ New-AzStorageContainer -Name $CONTAINER_NAME -Context $storageAccount.context -P
 
 Using Azure CLI
 
-```shell
+```bash
 LOCATION="eastus"
 RESOURCE_GROUP_NAME="tfstate"
 STORAGE_ACCOUNT_NAME="<tfstate unique name>"
@@ -93,7 +107,7 @@ az storage account create -n $STORAGE_ACCOUNT_NAME -g $RESOURCE_GROUP_NAME -l $L
 az storage container-rm create --storage-account $STORAGE_ACCOUNT_NAME --name $CONTAINER_NAME
 ```
 
-### Deploy the Container Apps Landing Zone
+### Deploy the reference implementation
 
 #### Configure Terraform Remote State
 
@@ -133,7 +147,7 @@ The table below summurizes the avaialble parameters and the possible values that
 | spokeResourceGroupName | Optional default value `""`, The name of the spoke resource group to create the resources in. If set, it overrides the name generated by the template | | 
 | vnetAddressPrefixes | An array of string. The address prefixes to use for the hub virtual network. | | 
 | bastionSubnetAddressPrefix | CIDR to use for the Azure Bastion subnet |  | 
-| vmSize | The size of the virtual machine to create. | [VM Sizes](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes)  | 
+| vmSize | The size of the virtual machine to create. | [VM Sizes](https://learn.microsoft.com/azure/virtual-machines/sizes)  | 
 | vmAdminUsername | The username to use for the virtual machine |  | 
 | vmAdminPassword | The password to use for the virtual machine |  | 
 | vmLinuxSshAuthorizedKeys | The SSH public key to use for the virtual machine (if VM is linux) |  | 
@@ -162,67 +176,23 @@ terraform plan --var-file terraform.tfvars -out tfplan
 terraform apply tfplan
 ```
 
-After your Hub, Spoke, supporting services and Azure Container Apps Environment are deployed (and if you selected `deployHelloWorldSample = false`) you may proceed to deploy Fine Collection Sample App
-:arrow_forward: [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md)
+1. Deploy the Dapr-based workload. *Optional.*
 
-#### Ingress
+   If you chose to set `deployHelloWorldSample` to **false**, then proceed to deploy the Dapr-based workload by following the instructions at:
 
-The module will deploy everything except Application Gateway which needs to be deployed from the jumpbox deployed as a part of the Hub network. To configure the Application Gateway, we need to provide it an SSL certificate for validating the domain name. The module grabs the certificate data, creates a secret in a KeyVault with the information and the Application Gateway retrieves it from the KeyVault when needed. We will store the SSL certificate in the KeyVault which was deployed as part of the supporting services module. It is behind a private endpoint in the spoke network; therefore, we have to create the secret from a resource inside the network. 
+   :arrow_forward: [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md)
 
-1. Login to your jumpbox using the Bastion service in the Azure Portal
-2. Install the Terraform CLI
-3. Install Git bash
-4. Clone the repository
-5. Navigate to the [Application Gateway module](../terraform/modules/06-application-gateway/).
-6. You will need to reuse your state storage account from before and create a new state file to manage your Application Gateway. Configure the backend in the [providers.tf](../terraform/modules/06-application-gateway/providers.tf) as was done [previously](#configure-terraform-remote-state)
-7. Update the following variables in the [terraform.tfvars](../terraform/modules/06-application-gateway/terraform.tfvars):
-   1. resourceGroupName
-   2. supportResourceGroupName
-   3. keyVaultName
-   4. appGatewayFQDN
-   5. appGatewayPrimaryBackendEndFQDN
-   6. appGatewaySubnetId
-   7. appGatewayLogAnalyticsId
 
-8. Run the following commands to deploy
+#### :broom: Clean up resources
 
-#### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
-
-```bash
-terraform init
-terraform plan --var-file terraform.tfvars -out tfplan
-terraform apply tfplan
-    ```
-#### Powershell (windows based OS)
-
-``` powershell
-terraform init
-terraform plan --var-file terraform.tfvars -out tfplan
-terraform apply tfplan
-```
-
-#### Clean up resources
-
-To remove the resources created by this landing zone, you can use the following command:
+When you are done exploring the resources created by the Standalone deployment guide, use the following command to remove the resources you created.
 
 ```bash
 terraform destroy --var-file=terraform.tfvars
 ```
 
-### Standalone Deployment Guide With GitHub Action
-WIP
+### Step-by-step deployment guide
 
-#### Setup authentication between Azure and GitHub.
-WIP
+These instructions are spread over a series of dedicated pages for each step along the way. With this method of deployment, you can leverage the step-by-step process considering where possibly different teams (devops, network, operations etc) with different levels of access, are required to coordinate and deploy all of the required resources.
 
-### End-to-End Deployment with Sample Application
-
-With this method of deployment, you can leverage the step-by-step process, where possibly different teams (devops, network, operations etc) with different levels of access, are required to co-ordinate and deploy all of the required resources. Make any necessary adjustments to the variables and settings within that folder to match the needs of your deployment. Please read carefully the documentation of each step before deploying it.
-
-1. Preqs - Clone this repo, install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), install [Terraform tools](https://developer.hashicorp.com/terraform/tutorials/azure-get-started/install-cli)
-2. [Hub](modules/01-hub/README.md)
-3. [Spoke](modules/02-spoke/README.md)
-4. [Supporting Services](modules/03-supporting-services/README.md)
-5. [ACA Environment](modules/04-container-apps-environment/README.md)
-6. [Hello World Sample Container App (Optional)](modules/05-hello-world-sample-app/README.md)
-7. [Application Gateway](modules/06-application-gateway/README.md) or [Front Door](modules/06-front-door/README.md)  
+:arrow_forward: This starts with [Deploy the hub networking resources](./modules/01-hub/README.md).

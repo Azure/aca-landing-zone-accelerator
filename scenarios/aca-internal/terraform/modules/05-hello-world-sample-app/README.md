@@ -1,17 +1,35 @@
-# Hello World Sample Container App (Optional)
+# Deploy the Hello World sample container app
 
-Create a container app using Hello World sample app. The image is the public image `mcr.microsoft.com/azuredocs/containerapps-helloworld:latest`.
+Your [application platform](../04-container-apps-environment/README.md) is now ready to accept workloads. You can deploy a sample "hello world"-style application to see the application platform perform its hosting duties.
 
-Review `terraform.tfvars` and update the values as required. Once the files are updated, deploy using the Terraform CLI. 
+## Expected results
+
+A container app using the Hello World sample app is deployed to the Container Apps Environment.
+
+### Public content warning
+
+Public container registries are subject to faults such as outages or request throttling. Interruptions like these can be crippling for a system that needs to pull an image right now. To minimize the risks of using public registries, store all applicable container images in a registry that you control, such as the SLA-backed Azure Container Registry that is deployed with this architecture. For simplicity in this walkthrough, the following deployment will be pulling directly from `mcr.microsoft.com/azuredocs/containerapps-helloworld:latest`.
+
+### Resources
+
+- A container app based on the Hello World sample
+
+## Steps
 
 If you want to use remote storage, uncomment the backend block in the `providers.tf` file and provide the information for your Azure Storage Account. 
 
-Once the files are updated, deploy using the Terraform CLI.
+1. Decide if you want to deploy this sample workload.
 
-```PowerShell
+   You can stop at this point if you're interested only in the infrastructure components. If you'd like to skip workload deployment please remember to [:broom: clean up](../../README.md#broom-clean-up-resources) your resources when you are done.
+
+1. Deploy the Hello World container app.
+
+```bash
 terraform init
 terraform plan -out tfplan
 terraform apply tfplan 
 ```
 
-:arrow_forward: [Application Gateway](../06-application-gateway)
+## Next step
+
+:arrow_forward: [Expose the workload through Application Gateway](../06-application-gateway/README.md)

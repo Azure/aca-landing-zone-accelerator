@@ -184,15 +184,20 @@ az group delete -n <your-hub-resource-group>
 ### Standalone deployment guide with Azure Pipelines
 
 1. Navigate into your Azure DevOps projects, click on *Project Settings*, and then on the left sidebar, under the *Pipelines* section, click on the [Service Connections](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml), and then click *New service connection* button and create a new *Azure Resource Manager* service connection. 
+   
 1. Into your Azure DevOps projects, click on Pipelines on the left sidebar, and then click on **Library**, and then click on *+Variable Group*. Name the new Variable Group "ACA-LZA" and then add the following variables:
    - *location*: The location of where you want the Azure resources deployed
    - *azureServiceConnection*: the name of the service connection you created in the previous step
-2. Navigate into your Azure DevOps projects and click on Pipelines on the left sidebar.  
-3. Click *New Pipeline* in the upper right hand corner of the window or the *create pipeline* button in the middle if this is your first pipeline.
-4. Select *GitHub* as the source for your YAML. 
-5. Select your repository in GitHub. If you don't already have the Azure Pipeline app installed in your GitHub repository, it will prompt you to enable that and redirect you back to this creation screen.
-6. Select *Existing Azure Pipelines YAML file*, select the main branch and the file [lza-deployment-bicep.yaml](../../../.ado/lza-deployment_bicep.yaml).
-7.  Once you select the file, hit next and then click *Run* in the upper right hand corner of the *Review* tab. If you don't want to run it immediately, you can click the dropdown on the *Run* button and choose to save it. 
+
+1. Navigate into your Azure DevOps projects and click on Pipelines on the left sidebar.  
+
+1. Click *New Pipeline* in the upper right hand corner of the window or the *create pipeline* button in the middle if this is your first pipeline. Select *GitHub* as the source for your YAML. 
+
+1. Select your repository in GitHub. If you don't already have the Azure Pipeline app installed in your GitHub repository, it will prompt you to enable that and redirect you back to this creation screen.
+
+1. Select *Existing Azure Pipelines YAML file*, select the main branch and the file [lza-deployment-bicep.yaml](../../../.ado/lza-deployment_bicep.yaml).
+
+1.  Once you select the file, hit next and then click *Run* in the upper right hand corner of the *Review* tab. If you don't want to run it immediately, you can click the dropdown on the *Run* button and choose to save it. 
 
 > **Note**
    When you first run your pipeline, you may need to give the pipeline permission to access the service connection and the variable group. This will only occur the first time you run the pipeline. 

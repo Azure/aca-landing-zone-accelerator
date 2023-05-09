@@ -12,7 +12,7 @@
     },
     // optional. If empty automatic name will be generated. To override, please give name of spoke resource group name
     "spokeResourceGroupName": {
-      "value": "rg-aca-test-spoke"
+      "value": ""
     },
     "tags": {
         "value": {}

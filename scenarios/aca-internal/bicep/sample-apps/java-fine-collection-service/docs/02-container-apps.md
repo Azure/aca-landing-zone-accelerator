@@ -204,8 +204,10 @@ Where `<LZA_DEPLOYMENT_NAME>` is the name of the landing zone deployment and `DE
 To deploy the sample app using environment variables, run the following command in the `bicep` folder:
 
 ```bash
+LZA_DEPLOYMENT_SAMPLE_JAVA=bicepLzaDeploymentSampleJava  # or any other value that suits your needs
+
 az deployment group create -g "$SPOKE_RESOURCE_GROUP_NAME" -f main.bicep -p main.parameters.jsonc \
-  --name <DEPLOYMENT_NAME> \
+  --name $LZA_DEPLOYMENT_SAMPLE_JAVA \
   --parameters containerAppsEnvironmentName=$CONTAINER_APPS_ENVIRONMENT_NAME \
   --parameters hubVNetId=$HUB_VNET_ID \
   --parameters spokeVNetName=$SPOKE_VNET_NAME \
@@ -235,7 +237,7 @@ There are 3 ways to run the camera simulation service:
 
 To run the camera simulation in a container app, you need to set the bicep parameter `deployCameraSimulation` to `true` when deploying the sample app. The camera simulation service will be deployed as a container app in the environment. If it was set to `false`, you can still run the camera simulation in the environment by updating its value to `true` and [redeploying the sample app](#deploy-the-sample-app). Only the modification will be applied.
 
-When deploying with the Bicep templates, the environment variable [`TRAFFIC_CONTROL_SERVICE_BASE_URL`](https://github.com/Azure/java-aks-aca-dapr-workshop/blob/e2e-flow/Simulation/src/main/resources/application.yml#L25) is set to the FQDN of the traffic control service. It is passed in the [container-apps.bicep](../bicep/modules/container-apps.bicep) file to the simulation container app template: [simulation.bicep](../bicep/modules/container-apps/simulation.bicep).
+When deploying with the Bicep templates, the environment variable [`TRAFFIC_CONTROL_SERVICE_BASE_URL`](https://github.com/Azure/java-aks-aca-dapr-workshop/blob/e2e-flow/Simulation/src/main/resources/application.yml#L25) is set to the FQDN of the traffic control service. It is passed in the [container-apps.bicep](../modules/container-apps.bicep) file to the simulation container app template: [simulation.bicep](../modules/container-apps/simulation.bicep).
 
 :arrow_down: [Test the sample app](#test-the-sample-app)
 
@@ -372,7 +374,8 @@ The logs can be viewed in the portal using `Log Stream` or in the console using 
 First you need the name of the container apps:
 
 ```bash
-SPOKE_RESOURCE_GROUP_NAME="rg-lzaaca-spoke-test-neu"
+SPOKE_RESOURCE_GROUP_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokeResourceGroupName.value -o tsv)
+
 VEHICLE_REGISTRATION_SERVICE_CA_NAME=$(az deployment group show -g $SPOKE_RESOURCE_GROUP_NAME -n $LZA_DEPLOYMENT_SAMPLE_JAVA --query properties.outputs.vehicleRegistrationServiceContainerAppName.value -o tsv)
 
 FINE_COLLECTION_SERVICE_CA_NAME=$(az deployment group show -g $SPOKE_RESOURCE_GROUP_NAME -n $LZA_DEPLOYMENT_SAMPLE_JAVA --query properties.outputs.fineCollectionServiceContainerAppName.value -o tsv)
@@ -391,7 +394,7 @@ LOG_ANALYTICS_WORKSPACE_CUSTOMER_ID=$(az deployment sub show -n "$LZA_DEPLOYMENT
 For traffic control service:
 
 ```bash
-TRAFFIC_CONTROL_SERVICE_REVISION=$(az containerapp revision list -n "$TRAFFIC_CONTROL_SERVICE_CA_NAME" -g $SPOKE_RESOURCE_GROUP_NAME --query [0].name -o tsv)
+TRAFFIC_CONTROL_SERVICE_REVISION=$(az containerapp revision list -n "$TRAFFIC_CONTROL_SERVICE_CA_NAME" -g $SPOKE_RESOURCE_GROUP_NAME --query "[0].name" -o tsv)
 ```
 
 ```bash
@@ -404,7 +407,7 @@ az monitor log-analytics query \
 For fine collection service:
 
 ```bash
-FINE_COLLECTION_SERVICE_REVISION=$(az containerapp revision list -n "$FINE_COLLECTION_SERVICE_CA_NAME" -g $SPOKE_RESOURCE_GROUP_NAME --query [0].name -o tsv)
+FINE_COLLECTION_SERVICE_REVISION=$(az containerapp revision list -n "$FINE_COLLECTION_SERVICE_CA_NAME" -g $SPOKE_RESOURCE_GROUP_NAME --query "[0].name" -o tsv)
 ```
 
 ```bash

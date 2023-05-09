@@ -194,10 +194,17 @@ az group delete -n <your-hub-resource-group>
 6. Select *Existing Azure Pipelines YAML file*, select the main branch and the file *lza-deployment-bicep.yaml*.
 7.  Once you select the file, hit next and then click *Run* in the upper right hand corner of the *Review* tab. If you don't want to run it immediately, you can click the dropdown on the *Run* button and choose to save it. 
 
-#### Note
+> **Note**
+   When you first run your pipeline, you may need to give the pipeline permission to access the service connection and the variable group. This will only occur the first time you run the pipeline. 
 
-When you first run your pipeline, you may need to give the pipeline permission to access the service connection and the variable group. This will only occur the first time you run the pipeline. 
+#### :broom: Clean up resources
 
+Use the following commands to remove the resources you created.
+
+```bash
+az group delete -n <your-spoke-resource-group>
+az group delete -n <your-hub-resource-group>
+```
 
 ### Step-by-step deployment guide
 

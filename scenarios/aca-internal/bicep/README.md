@@ -47,6 +47,10 @@ This is the starting point for the instructions on deploying this reference impl
 
      *This is a variant of the above. A **fork** of this repo is required for this option, and requires you to create a service principal with appropriate permissions in your Azure Subscription to perform the deployment.*
 
+   - Follow the "[**Standalone deployment guide with Azure Pipelines**](#standalone-deployment-guide-with-Azure-Pipelines)" if you'd like to simply configure a set of parameters and have Azure Pipelines execute the deployment.
+
+     *This is a variant of the first deployment experience. A **fork** of this repo is required for this option, and requires you to create an appropriate [service connection](https://learn.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml) for the pipeline to connect to your Azure subscription.*
+
    - Follow the "[**Step-by-step deployment guide**](#step-by-step-deployment-guide)" if you'd like to walk through the deployment at a slower, more deliberate pace.
 
      *This will approach will allow you to see the deployment evolve over time, which might give you an insight into the various roles and people in your organization that you need to engage when bringing your workload in this architecture to Azure. This is optimized for "learning."*

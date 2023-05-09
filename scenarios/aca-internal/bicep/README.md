@@ -180,7 +180,6 @@ If you didn't select automatic clean up of the deployed resources, use the follo
 ```bash
 az group delete -n <your-spoke-resource-group>
 az group delete -n <your-hub-resource-group>
-
 ```
 ### Standalone deployment guide with Azure Pipelines
 
@@ -196,6 +195,7 @@ az group delete -n <your-hub-resource-group>
 7.  Once you select the file, hit next and then click *Run* in the upper right hand corner of the *Review* tab. If you don't want to run it immediately, you can click the dropdown on the *Run* button and choose to save it. 
 
 #### Note
+
 When you first run your pipeline, you may need to give the pipeline permission to access the service connection and the variable group. This will only occur the first time you run the pipeline. 
 
 

@@ -22,6 +22,12 @@ If you want to use remote storage, uncomment the backend block in the `providers
 
    You can stop at this point if you're interested only in the infrastructure components. If you'd like to skip workload deployment please remember to [:broom: clean up](../../README.md#broom-clean-up-resources) your resources when you are done.
 
+1. Navigate to the Terraform module for the hub. 
+   
+   ```bash
+   cd modules/05-hello-world-sample-app
+   ```
+
 1. Deploy the Hello World container app.
 
 ```bash

@@ -16,9 +16,31 @@ The application platform, Azure Containers Apps, and its logging sinks within Az
 - Dapr Telemetry with Application Insights (optional)
 - Private DNS Zone for Container Apps Environment
 
+#### Configure Terraform remote state
+
+To configure your Terraform deployment to use the newly provisioned storage account and container, edit the [`./providers.tf`](./providers.tf) file at lines 11-13 as below:
+
+```hcl
+  backend "azurerm" {
+    resource_group_name  = "<REPLACE with $RESOURCE_GROUP_NAME>"
+    storage_account_name = "<REPLACE with $STORAGE_ACCOUNT_NAME>"
+    container_name       = "tfstate"
+    key                  = "myapp/container-apps-environment.tfstate"
+  }
+```
+
+* `resource_group_name`: Name of the Azure Resource Group that the storage account resides in.
+* `storage_account_name`: Name of the Azure Storage Account to be used to hold remote state.
+* `container_name`: Name of the Azure Storage Account Blob Container to store remote state.
+* `key`: Path and filename for the remote state file to be placed in the Storage Account Container. If the state file does not exist in this path, Terraform will automatically generate one for you.
+
 ## Steps
 
-If you want to use remote storage, uncomment the backend block in the `providers.tf` file and provide the information for your Azure Storage Account. 
+1. Navigate to the Terraform module for the hub. 
+   
+   ```bash
+   cd modules/04-container-apps-environment
+   ```
 
 1. Create the Azure Container Apps application platform resources.
 

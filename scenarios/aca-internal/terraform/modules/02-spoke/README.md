@@ -1,4 +1,5 @@
 # Deploy the spoke network 
+
 In the prior step, you deployed the [regional hub](../01-hub/README.md), now you'll lay out the spoke that will contain the Azure Container Apps instance and related resources.
 
 ## Networking in this architecture
@@ -16,30 +17,43 @@ After executing these steps you'll have the spoke resource group (`rg-lzaaca-spo
 - Spoke resource group
 - Spoke virtual network
 - Peering to and from the hub
+  
+#### Configure Terraform remote state
+
+To configure your Terraform deployment to use the newly provisioned storage account and container, edit the [`./providers.tf`](./providers.tf) file at lines 11-13 as below:
+
+```hcl
+  backend "azurerm" {
+    resource_group_name  = "<REPLACE with $RESOURCE_GROUP_NAME>"
+    storage_account_name = "<REPLACE with $STORAGE_ACCOUNT_NAME>"
+    container_name       = "tfstate"
+    key                  = "myapp/spoke.tfstate"
+  }
+```
+
+* `resource_group_name`: Name of the Azure Resource Group that the storage account resides in.
+* `storage_account_name`: Name of the Azure Storage Account to be used to hold remote state.
+* `container_name`: Name of the Azure Storage Account Blob Container to store remote state.
+* `key`: Path and filename for the remote state file to be placed in the Storage Account Container. If the state file does not exist in this path, Terraform will automatically generate one for you.
 
 ## Steps
-
-If you want to use remote storage, uncomment the backend block in the `providers.tf` file and provide the information for your Azure Storage Account. 
+1. Navigate to the Terraform module for the hub. 
+   
+   ```bash
+   cd modules/02-spoke
+   ```
 
 1. Create the regional spoke network.
-    Once the files are updated, deploy using the Terraform CLI.
 
     ```bash
     terraform init
     terraform plan -out tfplan
     terraform apply tfplan 
     ```
-1. Explore your networking resources. *Optional.*
 
-   You may wish to take this moment to familiarize yourself with the resources that have been deployed so far to Azure. They have all been networking resources, establishing the network and access boundaries from within which your application platform will be executing. Check out the following resource groups in the [Azure portal](https://portal.azure.com).
+2. Explore your networking resources. *Optional.*
 
-   ```bash
-   RESOURCENAME_RESOURCEGROUP_HUB=$(az deployment sub show -n acalza01-hub --query properties.outputs.resourceGroupName.value -o tsv)
-   RESOURCENAME_RESOURCEGROUP_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeResourceGroupName.value -o tsv)
-
-   echo Hub Resource Group: $RESOURCENAME_RESOURCEGROUP_HUB && \
-   echo Spoke Resource Group: $RESOURCENAME_RESOURCEGROUP_SPOKE
-   ```
+   You may wish to take this moment to familiarize yourself with the resources that have been deployed so far to Azure. They have all been networking resources, establishing the network and access boundaries from within which your application platform will be executing. Check out the resource groups in the [Azure portal](https://portal.azure.com) by looking at the resource group name outputs from the Hub and Spoke modules (spokeResourceGroupName & hubResourceGroupName) in the terminal. 
 
 ## Azure landing zone platform alignment
 

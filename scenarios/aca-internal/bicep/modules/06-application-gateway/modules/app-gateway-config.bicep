@@ -6,10 +6,10 @@ targetScope = 'resourceGroup'
 param appGatewayName string
 
 @description('The FQDN of the Application Gateawy.Must match the TLS Certificate.')
-param appGatewayFQDN string
+param appGatewayFqdn string
 @description('The subnet resource id to use for Application Gateway.')
 param appGatewaySubnetId string
-param appGatewayPrimaryBackendEndFQDN string
+param appGatewayPrimaryBackendEndFqdn string
 param appGatewayBackendHealthProbePath string
 
 param appGatewayUserAssignedIdentityId string
@@ -75,7 +75,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2019-09-01' = {
     ]
     sslCertificates: (!empty(keyVaultSecretId)) ? [
       {
-        name: appGatewayFQDN
+        name: appGatewayFqdn
         properties: {
           keyVaultSecretId: keyVaultSecretId
         }
@@ -120,7 +120,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2019-09-01' = {
         properties: {
           backendAddresses: [
             {
-              fqdn: appGatewayPrimaryBackendEndFQDN
+              fqdn: appGatewayPrimaryBackendEndFqdn
             }
           ]
         }
@@ -187,7 +187,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2019-09-01' = {
           protocol: 'Https'
           sslCertificate: {
             #disable-next-line use-resource-id-functions
-            id: '${resourceId('Microsoft.Network/applicationGateways', appGatewayName)}/sslCertificates/${appGatewayFQDN}'
+            id: '${resourceId('Microsoft.Network/applicationGateways', appGatewayName)}/sslCertificates/${appGatewayFqdn}'
           }
           hostnames: []
           requireServerNameIndication: false
@@ -220,7 +220,7 @@ resource appGateway 'Microsoft.Network/applicationGateways@2019-09-01' = {
         name: 'webProbe'
         properties: {
           protocol: 'Https'
-          host: appGatewayPrimaryBackendEndFQDN
+          host: appGatewayPrimaryBackendEndFqdn
           path: appGatewayBackendHealthProbePath
           interval: 30
           timeout: 30
@@ -288,7 +288,7 @@ resource agwDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-previe
 // ------------------
 
 @description('The FQDN of the application gateway.')
-output applicationGatewayFqdn string = appGatewayFQDN
+output applicationGatewayFqdn string = appGatewayFqdn
 
 @description('The public IP address of the application gateway.')
 output applicationGatewayPublicIp string = appGatewayPip.properties.ipAddress

@@ -26,7 +26,7 @@ var naming = json(loadTextContent('./naming-rules.jsonc'))
 var uniqueIdShort = substring(uniqueId, 0, 5)
 var resourceTypeToken = 'RES_TYPE'
 
-// Define and adhere to a naming convention, such as: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming
+// Define and adhere to a naming convention, such as: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming
 var namingBase = '${resourceTypeToken}-${workloadName}-${environment}-${naming.regionAbbreviations[toLower(location)]}'
 var namingBaseUnique = '${resourceTypeToken}-${workloadName}-${uniqueIdShort}-${environment}-${naming.regionAbbreviations[toLower(location)]}'
 

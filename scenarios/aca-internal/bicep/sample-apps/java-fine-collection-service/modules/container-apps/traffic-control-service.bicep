@@ -144,7 +144,7 @@ resource trafficControlServiceSbRoleAssignment 'Microsoft.Authorization/roleAssi
 }
 
 // Assign cosmosdb account read/write access to aca user assigned identity
-// To know more: https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac
+// To know more: https://learn.microsoft.com/azure/cosmos-db/how-to-setup-rbac
 resource cosmosDbCollectionDataContributorRoleAssignment  'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2022-08-15' = {
   name: guid(subscription().id, trafficControlService.name, '00000000-0000-0000-0000-000000000002')
   parent: cosmosDbAccount
@@ -163,4 +163,4 @@ resource cosmosDbCollectionDataContributorRoleAssignment  'Microsoft.DocumentDB/
 output trafficControlServiceContainerAppName string = trafficControlService.name
 
 @description('The FQDN of the traffic control service.')
-output trafficControlServiceFQDN string = trafficControlService.properties.configuration.ingress.fqdn
+output trafficControlServiceFqdn string = trafficControlService.properties.configuration.ingress.fqdn

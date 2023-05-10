@@ -1,4 +1,4 @@
-@description('Required. Name of the Private DNS Zone Service. For az private endpoints you might find info here: https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns#azure-services-dns-zone-configuration')
+@description('Required. Name of the Private DNS Zone Service. For az private endpoints you might find info here: https://learn.microsoft.com/azure/private-link/private-endpoint-dns#azure-services-dns-zone-configuration')
 param name string
 
 @description('Optional. Tags of the resource.')

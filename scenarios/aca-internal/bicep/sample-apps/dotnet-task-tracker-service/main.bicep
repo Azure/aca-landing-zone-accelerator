@@ -4,12 +4,12 @@ targetScope = 'resourceGroup'
 //    PARAMETERS
 // ------------------
 
-@description('The name of the workloard that is being deployed. Up to 10 characters long.')
+@description('The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
 @maxLength(10)
 param workloadName string
 
-@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa") Up to 8 characters long.')
+@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
 @maxLength(8)
 param environment string
 

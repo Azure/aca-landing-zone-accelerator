@@ -21,7 +21,7 @@ The "Hello World" container app is exposed through Application Gateway, includin
    ```bash
    RESOURCENAME_RESOURCEGROUP_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeResourceGroupName.value -o tsv)
    RESOURCEID_SUBNET_APPGW=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeApplicationGatewaySubnetId.value -o tsv)
-   FQDN_HELLOWORLD_ACA=$(az deployment group show -g rg-lzaaca-spoke-dev-eus2 -n acalza01-helloworld --query properties.outputs.helloWorldAppFQDN.value -o tsv)
+   FQDN_HELLOWORLD_ACA=$(az deployment group show -g rg-lzaaca-spoke-dev-eus2 -n acalza01-helloworld --query properties.outputs.helloWorldAppFqdn.value -o tsv)
    RESOURCEID_KEYVAULT=$(az deployment group show -g rg-lzaaca-spoke-dev-eus2 -n acalza01-dependencies --query properties.outputs.keyVaultId.value -o tsv)
    echo RESOURCENAME_RESOURCEGROUP_SPOKE: $RESOURCENAME_RESOURCEGROUP_SPOKE && \
    echo RESOURCEID_SUBNET_APPGW: $RESOURCEID_SUBNET_APPGW && \
@@ -34,7 +34,7 @@ The "Hello World" container app is exposed through Application Gateway, includin
       -g $RESOURCENAME_RESOURCEGROUP_SPOKE \
       -f 06-application-gateway/deploy.app-gateway.bicep \
       -p 06-application-gateway/deploy.app-gateway.parameters.jsonc \
-      -p applicationGatewaySubnetId=${RESOURCEID_SUBNET_APPGW} applicationGatewayPrimaryBackendEndFQDN=${FQDN_HELLOWORLD_ACA} keyVaultId=${RESOURCEID_KEYVAULT}
+      -p applicationGatewaySubnetId=${RESOURCEID_SUBNET_APPGW} applicationGatewayPrimaryBackendEndFqdn=${FQDN_HELLOWORLD_ACA} keyVaultId=${RESOURCEID_KEYVAULT}
    ```
 
 1. Get the public IP of Application Gateway.

@@ -14,7 +14,7 @@ param tags object = {}
 param containerAppsEnvironmentId string
 
 @description('The FQDN of the traffic control service.')
-param trafficControlServiceFQDN string
+param trafficControlServiceFqdn string
 
 @description('The name of the the simulation.')
 param simulationName string
@@ -74,7 +74,7 @@ resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
           env: [
             {
               name: 'TRAFFIC_CONTROL_SERVICE_BASE_URL'
-              value: 'https://${trafficControlServiceFQDN}'
+              value: 'https://${trafficControlServiceFqdn}'
             }
           ]
         }

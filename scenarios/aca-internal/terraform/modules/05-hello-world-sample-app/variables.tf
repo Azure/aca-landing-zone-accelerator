@@ -16,3 +16,5 @@ variable "containerRegistryUserAssignedIdentityId" {}
 variable "containerAppsEnvironmentId" {}
 
 variable "resourceGroupName" {}
+
+variable "deployApp" {}

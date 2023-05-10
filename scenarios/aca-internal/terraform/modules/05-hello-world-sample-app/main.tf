@@ -1,4 +1,5 @@
 resource "azurerm_container_app" "helloWorld" {
+  count = var.deployApp ? 1:0
   name                         = var.helloWorldContainerAppName
   resource_group_name          = var.resourceGroupName
   container_app_environment_id = var.containerAppsEnvironmentId

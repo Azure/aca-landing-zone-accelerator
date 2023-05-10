@@ -47,6 +47,10 @@ This is the starting point for the instructions on deploying this reference impl
 
      *This is a variant of the above. A **fork** of this repo is required for this option, and requires you to create a service principal with appropriate permissions in your Azure Subscription to perform the deployment.*
 
+   - Follow the "[**Standalone deployment guide with Azure Pipelines**](#standalone-deployment-guide-with-azure-pipelines)" if you'd like to simply configure a set of parameters and have Azure Pipelines execute the deployment.
+
+     *This is a variant of the first deployment experience. A **fork** of this repo is required for this option, and requires you to create an appropriate [service connection](https://learn.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml) for the pipeline to connect to your Azure subscription.*
+
    - Follow the "[**Step-by-step deployment guide**](#step-by-step-deployment-guide)" if you'd like to walk through the deployment at a slower, more deliberate pace.
 
      *This will approach will allow you to see the deployment evolve over time, which might give you an insight into the various roles and people in your organization that you need to engage when bringing your workload in this architecture to Azure. This is optimized for "learning."*
@@ -172,6 +176,35 @@ az group delete -n $HUB_RESOURCE_GROUP_NAME
 #### :broom: Clean up resources
 
 If you didn't select automatic clean up of the deployed resources, use the following commands to remove the resources you created.
+
+```bash
+az group delete -n <your-spoke-resource-group>
+az group delete -n <your-hub-resource-group>
+```
+### Standalone deployment guide with Azure Pipelines
+
+1. Navigate into your Azure DevOps projects, click on *Project Settings*, and then on the left sidebar, under the *Pipelines* section, click on the [Service Connections](https://learn.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml), and then click *New service connection* button and create a new *Azure Resource Manager* service connection. 
+   
+1. Into your Azure DevOps projects, click on Pipelines on the left sidebar, and then click on **Library**, and then click on *+Variable Group*. Name the new Variable Group "ACA-LZA" and then add the following variables:
+   - *location*: The location of where you want the Azure resources deployed
+   - *azureServiceConnection*: the name of the service connection you created in the previous step
+
+1. Navigate into your Azure DevOps projects and click on Pipelines on the left sidebar.
+
+1. Click *New Pipeline* in the upper right-hand corner of the window or the *create pipeline* button in the middle if this is your first pipeline. Select *GitHub* as the source for your YAML.
+
+1. Select your repository in GitHub. If you don't already have the Azure Pipeline app installed in your GitHub repository, it will prompt you to enable that and redirect you back to this creation screen.
+
+1. Select *Existing Azure Pipelines YAML file*, select the main branch and the file [lza-deployment-bicep.yaml](../../../.ado/lza-deployment_bicep.yaml).
+
+1.  Once you select the file, click *Next* and then click *Run* in the upper right-hand corner of the *Review* tab. If you don't want to run it immediately, you can click the dropdown on the *Run* button and choose to save it.
+
+> **Note**
+   When you first run your pipeline, you may need to give the pipeline permission to access the service connection and the variable group. This will only occur the first time you run the pipeline.
+
+#### :broom: Clean up resources
+
+Use the following commands to remove the resources you created.
 
 ```bash
 az group delete -n <your-spoke-resource-group>

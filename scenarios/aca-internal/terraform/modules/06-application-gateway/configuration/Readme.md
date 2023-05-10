@@ -19,6 +19,7 @@ openssl x509 -signkey acahello.demoapp.com.key -in acahello.demoapp.com.csr -req
 ```
 
 - Convert PEM to PKCS12. PKCS12 files, also known as PFX files, are usually used for importing and exporting certificate chains in Microsoft IIS. We'll use the following command to take our private key and certificate, and then combine them into a PKCS12 file
+
 ```
-    openssl pkcs12 -inkey acahello.demoapp.com.key -in acahello.demoapp.com.crt -export -out acahello.demoapp.com.pfx
+openssl pkcs12 -inkey acahello.demoapp.com.key -in acahello.demoapp.com.crt -export -out acahello.demoapp.com.pfx
 ```

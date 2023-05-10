@@ -130,3 +130,8 @@ variable "enableTelemetry" {
   type    = bool
   default = true
 }
+
+variable "deployHelloWorldSample" {
+  default = true
+  type = bool
+}

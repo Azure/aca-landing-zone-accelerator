@@ -88,6 +88,7 @@ module "containerAppsEnvironment" {
 
 module "helloWorldApp" {
   source                                  = "./modules/05-hello-world-sample-app"
+  deployApp                               = var.deployHelloWorldSample
   location                                = var.location
   resourceGroupName                       = module.spoke.spokeResourceGroupName
   helloWorldContainerAppName              = var.helloWorldContainerAppName

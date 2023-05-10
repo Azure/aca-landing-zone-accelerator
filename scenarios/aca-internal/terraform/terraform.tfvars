@@ -20,6 +20,7 @@ infraSubnetAddressPrefix              = "10.1.0.0/23"
 infraSubnetName                       = "snet-infra"
 privateEndpointsSubnetAddressPrefix   = "10.1.2.0/24"
 applicationGatewaySubnetAddressPrefix = "10.1.3.0/24"
+deployHelloWorldSample                = true
 securityRules = [
   {
     "name" : "Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP",

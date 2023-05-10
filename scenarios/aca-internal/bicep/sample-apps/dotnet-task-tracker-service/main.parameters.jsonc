@@ -1,0 +1,107 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workloadName": {
+      "value": "samapp"
+    },
+    "environment": {
+      "value": "dev"
+    },
+    "containerAppsEnvironmentName": {
+      "value": "<CONTAINER_APPS_ENVIRONMENT_NAME>"
+    },
+    "applicationInsightsName" : {
+      "value": "<APPLICATION_INSIGHTS_NAME>"
+    },
+    "backendProcessorServiceName": {
+      "value": "tasksmanager-backend-processor"
+    },
+    "backendApiServiceName": {
+      "value": "tasksmanager-backend-api"
+    },
+    "frontendWebAppServiceName": {
+      "value": "tasksmanager-frontend-webapp"
+    },
+     /* SPOKE PRIVATE ENDPOINTS SUBNET */
+    // Replace with the name of spoke virtual network
+    "spokeVNetName": {
+      "value": "<SPOKE_VNET_NAME>"
+    },
+   // Replace with the name of the spoke private endpoints subnet name
+    "spokePrivateEndpointsSubnetName": {
+      "value": "<SPOKE_PRIVATE_ENDPOINTS_SUBNET_NAME>"
+    },
+    // Replace with the resource ID of the hub virtual network - required to link the privateDNS zone to the Hub network as well 
+    "hubVNetId": {
+      "value": "<HUB_VNET_ID>"
+    },
+    "serviceBusTopicName": {
+      "value": "tasksavedtopic"
+    },
+    "serviceBusTopicAuthorizationRuleName": {
+      "value": "tasksavedtopic-manage-policy"
+    },
+    "cosmosDbDatabaseName": {
+      "value": "tasksmanagerdb"
+    },
+    "cosmosDbCollectionName": {
+      "value": "taskscollection"
+    },
+    "externalTasksQueueName": {
+      "value": "external-tasks-queue"
+    },
+    "sendGridEmailFrom": {
+      "value": "<SEND_GRID_FROM_EMAIL>"
+    },
+    "sendGridEmailFromName": {
+      "value": "Tasks Tracker Notification"
+    },
+    "sendGridKeySecretValue": {
+      "value": ""
+    },
+    /* KEY VAULT */
+    // Replace with the resource ID of the key vault
+    "keyVaultId": {
+      "value": "<KEY_VAULT_ID>"
+    },
+    "scheduledJobCron": {
+      "value": "5 0 * * *"
+    },
+    "externalTasksContainerBlobName": {
+      "value": "externaltasksblob"
+    },
+    "externalStorageKeySecretName": {
+      "value": "external-azure-storage-key"
+    },
+   /* CONTAINER REGISTRY & IMAGES */
+    // Replace with the name of the container registry
+    "containerRegistryName": {
+      "value": "<CONTAINER_REGISTRY_NAME>"
+    },
+    "backendProcessorServiceImage": {
+      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/tasksmanager/tasksmanager-backend-processor:latest"
+    },
+    "backendApiServiceImage": {
+      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/tasksmanager/tasksmanager-backend-api:latest"
+    },
+    "frontendWebAppServiceImage": {
+      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/tasksmanager/tasksmanager-frontend-webapp:latest"
+    },
+    /* APPLICATION GATEWAY */
+    // The FQDN of the Application Gateawy. Must match the TLS Certificate.
+    "applicationGatewayFQDN": {
+      "value": "acahello.demoapp.com"
+    },
+    // Replace with the name of the spoke application gateway subnet name
+    "spokeApplicationGatewaySubnetName": {
+      "value": "<SPOKE_APPLICATION_GATEWAY_SUBNET_NAME>"
+    },
+    "enableApplicationGatewayCertificate": {
+      "value": true
+    },
+    "applicationGatewayCertificateKeyName": {
+      "value": "agwcert"
+    }
+  }
+}

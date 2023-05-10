@@ -10,8 +10,8 @@ param location string = resourceGroup().location
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
-@description('Reference to the naming monudle deployed')
-param naming object
+@description('The name of the redis cache to be created.')
+param redisName string
 
 @description('The name of the deployed key vault')
 param keyVaultName string
@@ -26,7 +26,7 @@ param redisVNetId string
 param redisSubnetName string
 
 @description('The name of the private endpoint to be created for Redis Cache.')
-param redisCachePrivateEndpointName string = 'pe-${naming.outputs.resourcesNames.redisCache}'
+param redisCachePrivateEndpointName string = 'pe-${redisName}'
 
 var privateDnsZoneNames = 'privatelink.redis.cache.windows.net'
 var vNetIdTokens = split(redisVNetId, '/')
@@ -45,7 +45,7 @@ resource redisSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' exis
 module redis '../../../../../shared/bicep/redis.bicep' = {
   name: 'redis-${uniqueString(resourceGroup().id)}'
   params: {
-    name: naming.outputs.resourcesNames.redisCache
+    name: redisName
     location: location
     tags: tags
     keyvaultName: keyVaultName

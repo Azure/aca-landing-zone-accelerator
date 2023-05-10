@@ -93,7 +93,7 @@ module redisCache 'modules/redisCache.bicep' = if (deployRedisCache) {
   name: 'redisCache-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
-    naming: naming
+    redisName: naming.outputs.resourcesNames.redisCache
     logAnalyticsWsId: logAnalyticsWorkspace.outputs.logAnalyticsWsId
     keyVaultName: keyVault.outputs.keyVaultName
     redisVNetId: spokeVNetId

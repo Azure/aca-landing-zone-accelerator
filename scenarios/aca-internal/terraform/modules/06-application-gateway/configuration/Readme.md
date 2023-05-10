@@ -1,6 +1,7 @@
 # Create a self signed pfx certificate 
 
 - If we want our certificate signed, we need a certificate signing request (CSR). The CSR includes the public key and some additional information (such as organization and country). Pay attention to the **Common Name (e.g. server FQDN or YOUR name)**, this must much your domain name, i.e. www.microsoft.com
+
 ```
 openssl \
     req \

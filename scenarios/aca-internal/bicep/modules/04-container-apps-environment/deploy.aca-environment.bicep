@@ -42,6 +42,9 @@ param enableDaprInstrumentation bool
 @description('Enable sending usage and telemetry feedback to Microsoft.')
 param enableTelemetry bool = true
 
+@description('The resource id of an existing Azure Log Analytics Workspace.')
+param logAnalyticsWorkspaceId string
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -93,15 +96,6 @@ module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
   }
 }
 
-@description('The log sink for Azure Diagnostics for workload resources and also for Application Insights.')
-module logAnalyticsWorkspace '../../../../shared/bicep/log-analytics-ws.bicep' = {
-  name: take('logAnalyticsWs-${uniqueString(resourceGroup().id)}', 64)
-  params: {
-    location: location
-    name: naming.outputs.resourcesNames.logAnalyticsWorkspace
-  }
-}
-
 @description('Azure Application Insights, the workload\' log & metric sink and APM tool')
 module applicationInsights '../../../../shared/bicep/app-insights.bicep' = if (enableApplicationInsights) {
   name: take('applicationInsights-${uniqueString(resourceGroup().id)}', 64)
@@ -109,7 +103,7 @@ module applicationInsights '../../../../shared/bicep/app-insights.bicep' = if (e
     name: naming.outputs.resourcesNames.applicationInsights
     location: location
     tags: tags
-    workspaceResourceId: logAnalyticsWorkspace.outputs.logAnalyticsWsId
+    workspaceResourceId: logAnalyticsWorkspaceId
   }
 }
 
@@ -120,7 +114,7 @@ module containerAppsEnvironment '../../../../shared/bicep/aca-environment.bicep'
     name: naming.outputs.resourcesNames.containerAppsEnvironment
     location: location
     tags: tags
-    logAnalyticsWsResourceId: logAnalyticsWorkspace.outputs.logAnalyticsWsId
+    logAnalyticsWsResourceId: logAnalyticsWorkspaceId
     subnetId: spokeVNet::infraSubnet.id
     vnetEndpointInternal: true
     appInsightsInstrumentationKey: (enableApplicationInsights && enableDaprInstrumentation) ? applicationInsights.outputs.appInsInstrumentationKey : ''
@@ -176,6 +170,3 @@ output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.cont
 
 @description('The name of the Container Apps environment.')
 output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.containerAppsEnvironmentName
-
-@description('The customer ID of the Azure Log Analytics Workspace.')
-output logAnalyticsWorkspaceCustomerId string = logAnalyticsWorkspace.outputs.customerId

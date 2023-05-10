@@ -32,6 +32,9 @@ param spokeVNetId string
 @description('The name of the existing subnet in the spoke virtual to which the private endpoint will be connected.')
 param spokePrivateEndpointSubnetName string
 
+@description('Deploy Redis cache premium SKU')
+param deployRedisCache bool = true
+
 // ------------------
 // RESOURCES
 // ------------------
@@ -77,6 +80,28 @@ module keyVault 'modules/key-vault.bicep' = {
   }
 }
 
+@description('The log sink for Azure Diagnostics')
+module logAnalyticsWorkspace '../../../../shared/bicep/log-analytics-ws.bicep' = {
+  name: take('logAnalyticsWs-${uniqueString(resourceGroup().id)}', 64)
+  params: {
+    location: location
+    name: naming.outputs.resourcesNames.logAnalyticsWorkspace
+  }
+}
+
+module redisCache 'modules/redisCache.bicep' = if (deployRedisCache) {
+  name: 'redisCache-${uniqueString(resourceGroup().id)}'
+  params: {
+    location: location
+    naming: naming
+    logAnalyticsWsId: logAnalyticsWorkspace.outputs.logAnalyticsWsId
+    keyVaultName: keyVault.outputs.keyVaultName
+    redisVNetId: spokeVNetId
+    redisSubnetName: spokePrivateEndpointSubnetName
+    redisCachePrivateEndpointName: naming.outputs.resourcesNames.redisCachePep
+  }
+}
+
 // ------------------
 // OUTPUTS
 // ------------------
@@ -98,3 +123,10 @@ output keyVaultName string = keyVault.outputs.keyVaultName
 
 @description('The resource ID of the user-assigned managed identity to read from Azure Key Vault.')
 output keyVaultUserAssignedIdentityId string = keyVault.outputs.keyVaultUserAssignedIdentityId
+
+@description('The resource ID of the Azure Log Analytics Workspace.')
+output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.outputs.logAnalyticsWsId
+
+@description('The secret name to retrieve the connection string from KeyVault')
+output redisCacheSecretKey string = redisCache.outputs.redisCacheSecretKey
+

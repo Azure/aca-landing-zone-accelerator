@@ -85,8 +85,9 @@
     "applicationGatewayCertificateKeyName": {
       "value": "agwcert"
     },
+    // if true Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed
     "deployRedisCache": {
-      "value": true
+      "value": false
     }
   }
 }

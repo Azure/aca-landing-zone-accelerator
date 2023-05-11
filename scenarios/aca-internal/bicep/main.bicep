@@ -90,8 +90,8 @@ param applicationGatewayCertificateKeyName string
 @description('Enable usage and telemetry feedback to Microsoft.')
 param enableTelemetry bool = true
 
-@description('Deploy Redis cache premium SKU')
-param deployRedisCache bool = true
+@description('Optional, default value is false. If true, Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed')
+param deployRedisCache bool = false
 
 // ------------------
 // VARIABLES
@@ -273,4 +273,3 @@ output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.cont
 
 @description('The name of the container apps environment.')
 output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.containerAppsEnvironmentName
-

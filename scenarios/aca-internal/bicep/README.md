@@ -92,13 +92,14 @@ This is the starting point for the instructions on deploying this reference impl
    | `vmJumpBoxSubnetAddressPrefix` | CIDR to use for the jump box subnet. must be a subset of the hub CIDR ranges. | **10.0.3.0/24** | **10.100.3./24** |
    | `spokeVNetAddressPrefixes` | An array of string. The address prefixes to use for the spoke virtual network. | `["10.1.0.0/22"]` | `["10.101.0./22"]` |
    | `spokeInfraSubnetAddressPrefix` | CIDR of the spoke infrastructure subnet. Must be a subset of the spoke CIDR ranges. | **10.1.0.0/23** | **10.101.0.0/23** |
-   | `spokePrivateEndpointsSubnetAddressPrefix` | CIDR of the spoke private endpoint subnet. Must be a subset of the spoke CIDR ranges. | **10.1.2.0/4** | **10.101.2.0/24** |
+   | `spokePrivateEndpointsSubnetAddressPrefix` | CIDR of the spoke private endpoint subnet. Must be a subset of the spoke CIDR ranges. | **10.1.2.0/24** | **10.101.2.0/24** |
    | `spokeApplicationGatewaySubnetAddressPrefix` | CIDR of the spoke Application Gateway subnet. Must be a subset of the spoke CIDR ranges. | **10.1.3.0/24** | **10.101.3.0/24** |
    | `enableApplicationInsights` | Controls if Application Insights is deployed and configured. | **true** | **false** |
    | `enableDaprInstrumentation` | Enable Dapr's telemetry. enableApplicationInsights` must also be set to **true** for this to work. | **true** | **false** |
    | `deployHelloWorldSample` | Deploy a simple, sample application to the infrastructure. If you prefer to deploy the more comprehensive, Dapr-enabled sample app, this needs to be disabled | **true** | **false**, because you plan on deploying the Dapr-enabled application instead. |
+   | `deployRedisCache` | Feature flag, if true Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed | **false** | **true** |
 
-1. Deploy the reference implementation.
+2. Deploy the reference implementation.
 
    This will deploy all of the infrastructure to your selected subscription. This will take over 10 minutes to execute.
 
@@ -114,7 +115,7 @@ This is the starting point for the instructions on deploying this reference impl
        --parameters ./main.parameters.jsonc
    ```
 
-1. Deploy the Dapr-based workload. *Optional.*
+3. Deploy the Dapr-based workload. *Optional.*
 
    If you chose to set `deployHelloWorldSample` to **false**, then proceed to deploy the Dapr-based workload by following the instructions at:
 

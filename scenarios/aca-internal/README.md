@@ -16,8 +16,10 @@ By the end of this deployment guide, you would have deployed an "internal enviro
 - Azure Bastion
 - Azure Application Gateway (Web Application Firewall)
 - Azure Key Vault
+- Azure Private Endpoint
 - Azure Private DNS Zones
 - Log Analytics Workspace
+- Azure Cache for Redis (optional deployment, see [Deployment parameters](./bicep/README.md#standalone-deployment-guide), default is false)
 
 ## Deploy the reference implementation
 

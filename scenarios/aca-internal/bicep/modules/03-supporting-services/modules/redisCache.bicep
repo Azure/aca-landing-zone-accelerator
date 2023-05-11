@@ -7,11 +7,24 @@ targetScope = 'resourceGroup'
 @description('The location where the resources will be created. This needs to be the same region as the spoke.')
 param location string = resourceGroup().location
 
+@description('The name of the redis cache to be created.')
+param redisName string
+
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
-@description('The name of the redis cache to be created.')
-param redisName string
+@description('The resource ID of the Hub Virtual Network.')
+param hubVNetId string
+
+@description('The resource ID of the VNet to which the private endpoint will be connected.')
+param spokeVNetId string
+
+@description('The name of the subnet in the VNet to which the private endpoint will be connected.')
+param spokePrivateEndpointSubnetName string
+
+@description('The name of the private endpoint to be created for Redis Cache.')
+param redisCachePrivateEndpointName string 
+
 
 @description('The name of the deployed key vault')
 param keyVaultName string
@@ -19,26 +32,55 @@ param keyVaultName string
 @description('Log Analytics Workspace Id')
 param logAnalyticsWsId string
 
-@description('The vnet id where the resources will be deployed')
-param redisVNetId string
 
-@description('The vnet subnet name where the resources will be deployed')
-param redisSubnetName string
-
-@description('The name of the private endpoint to be created for Redis Cache.')
-param redisCachePrivateEndpointName string = 'pe-${redisName}'
+// ------------------
+// VARIABLES
+// ------------------
 
 var privateDnsZoneNames = 'privatelink.redis.cache.windows.net'
-var vNetIdTokens = split(redisVNetId, '/')
-var vNetName = vNetIdTokens[8]
+var redisResourceName = 'redisCache'
 
-resource vnet 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
-  name: vNetName
+var hubVNetIdTokens = split(hubVNetId, '/')
+var hubSubscriptionId = hubVNetIdTokens[2]
+var hubResourceGroupName = hubVNetIdTokens[4]
+var hubVNetName = hubVNetIdTokens[8]
+
+var spokeVNetIdTokens = split(spokeVNetId, '/')
+var spokeSubscriptionId = spokeVNetIdTokens[2]
+var spokeResourceGroupName = spokeVNetIdTokens[4]
+var spokeVNetName = spokeVNetIdTokens[8]
+
+var spokeVNetLinks = [
+  {
+    vnetName: spokeVNetName
+    vnetId: vnetSpoke.id
+    registrationEnabled: false
+  }
+  {
+    vnetName: vnetHub.name
+    vnetId: vnetHub.id
+    registrationEnabled: false
+  }
+]
+
+
+// ------------------
+// RESOURCES
+// ------------------
+
+resource vnetHub  'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
+  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
+  name: hubVNetName
 }
 
-resource redisSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
-  parent: vnet
-  name: redisSubnetName
+resource vnetSpoke 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
+  scope: resourceGroup(spokeSubscriptionId, spokeResourceGroupName)  
+  name: spokeVNetName
+}
+
+resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
+  parent: vnetSpoke
+  name: spokePrivateEndpointSubnetName
 }
 
 @description('Azure Redis Cache used for your workload.')
@@ -63,11 +105,9 @@ module redisPrivateNetworking '../../../../../shared/bicep/private-networking.bi
     azServiceId: redis.outputs.resourceId
     azServicePrivateDnsZoneName: privateDnsZoneNames
     privateEndpointName: redisCachePrivateEndpointName
-    privateEndpointSubResourceName: 'redisCache'
-    virtualNetworkLinks: [
-      vnet.id
-    ]
-    subnetId: redisSubnet.id
+    privateEndpointSubResourceName: redisResourceName
+    virtualNetworkLinks: spokeVNetLinks
+    subnetId: spokePrivateEndpointSubnet.id
   }
 }
 

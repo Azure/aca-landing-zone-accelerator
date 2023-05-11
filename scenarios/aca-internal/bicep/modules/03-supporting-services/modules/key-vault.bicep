@@ -13,11 +13,11 @@ param keyVaultName string
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
-@description('The resource ID of the VNet to which the private endpoint will be connected.')
-param spokeVNetId string
-
 @description('The resource ID of the Hub Virtual Network.')
 param hubVNetId string
+
+@description('The resource ID of the VNet to which the private endpoint will be connected.')
+param spokeVNetId string
 
 @description('The name of the subnet in the VNet to which the private endpoint will be connected.')
 param spokePrivateEndpointSubnetName string
@@ -27,19 +27,6 @@ param keyVaultPrivateEndpointName string
 
 @description('The name of the user assigned identity with Key Vault reader role.')
 param keyVaultUserAssignedIdentityName string
-
-var spokeVNetLinks = [
-  {
-    vnetName: spokeVNetName
-    vnetId: vnetSpoke.id
-    registrationEnabled: false
-  }
-  {
-    vnetName: vnetHub.name
-    vnetId: vnetHub.id
-    registrationEnabled: false
-  }
-]
 
 // ------------------
 // VARIABLES
@@ -59,6 +46,20 @@ var spokeResourceGroupName = spokeVNetIdTokens[4]
 var spokeVNetName = spokeVNetIdTokens[8]
 
 var keyvaultReaderRoleGuid = '21090545-7ca7-4776-b22c-e363652d74d2'
+
+var spokeVNetLinks = [
+  {
+    vnetName: spokeVNetName
+    vnetId: vnetSpoke.id
+    registrationEnabled: false
+  }
+  {
+    vnetName: vnetHub.name
+    vnetId: vnetHub.id
+    registrationEnabled: false
+  }
+]
+
 
 // ------------------
 // RESOURCES

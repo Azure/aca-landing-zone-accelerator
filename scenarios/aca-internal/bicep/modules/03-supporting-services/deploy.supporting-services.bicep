@@ -94,8 +94,9 @@ module redisCache 'modules/redisCache.bicep' = if (deployRedisCache) {
     redisName: naming.outputs.resourcesNames.redisCache
     logAnalyticsWsId: logAnalyticsWorkspace.outputs.logAnalyticsWsId
     keyVaultName: keyVault.outputs.keyVaultName
-    redisVNetId: spokeVNetId
-    redisSubnetName: spokePrivateEndpointSubnetName
+    spokeVNetId: spokeVNetId
+    hubVNetId: hubVNetId
+    spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
     redisCachePrivateEndpointName: naming.outputs.resourcesNames.redisCachePep
   }
 }
@@ -127,4 +128,3 @@ output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.outputs.logAnalyti
 
 @description('The secret name to retrieve the connection string from KeyVault')
 output redisCacheSecretKey string = redisCache.outputs.redisCacheSecretKey
-

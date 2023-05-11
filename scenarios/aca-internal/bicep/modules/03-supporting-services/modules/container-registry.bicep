@@ -28,8 +28,6 @@ param containerRegistryPrivateEndpointName string
 @description('The name of the user assigned identity to be created to pull image from Azure Container Registry.')
 param containerRegistryUserAssignedIdentityName string
 
-
-
 // ------------------
 // VARIABLES
 // ------------------

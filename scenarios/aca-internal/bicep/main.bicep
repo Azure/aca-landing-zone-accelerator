@@ -3,9 +3,9 @@ targetScope = 'subscription'
 // ------------------
 //    PARAMETERS
 // ------------------
+@description('The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
 @maxLength(10)
-@description('The name of the workload that is being deployed. Up to 10 characters long.')
 param workloadName string = 'aca-lza'
 
 @description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
@@ -39,12 +39,12 @@ param vmSize string
 @description('The username to use for the virtual machine.')
 param vmAdminUsername string
 
-@secure()
 @description('The password to use for the virtual machine.')
+@secure()
 param vmAdminPassword string
 
-@secure()
 @description('The SSH public key to use for the virtual machine.')
+@secure()
 param vmLinuxSshAuthorizedKeys string
 
 @allowed(['linux', 'windows', 'none'])

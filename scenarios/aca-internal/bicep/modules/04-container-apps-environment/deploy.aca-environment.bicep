@@ -3,9 +3,9 @@ targetScope = 'resourceGroup'
 // ------------------
 //    PARAMETERS
 // ------------------
+@description('The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
 @maxLength(10)
-@description('The name of the workload that is being deployed. Up to 10 characters long.')
 param workloadName string
 
 @description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
@@ -19,12 +19,10 @@ param location string = resourceGroup().location
 param tags object = {}
 
 // Hub
-
 @description('The resource ID of the existing hub virtual network.')
 param hubVNetId string
 
 // Spoke
-
 @description('The name of the existing spoke virtual network.')
 param spokeVNetName string
 
@@ -32,7 +30,6 @@ param spokeVNetName string
 param spokeInfraSubnetName string
 
 // Telemetry
-
 @description('Enable or disable the createion of Application Insights.')
 param enableApplicationInsights bool
 

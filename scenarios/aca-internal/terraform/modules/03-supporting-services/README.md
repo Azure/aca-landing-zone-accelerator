@@ -38,7 +38,7 @@ backend "azurerm" {
 
 ## Steps 
 
-1. Navigate to the Terraform module for the hub. 
+1. Navigate to the Terraform module for the supporting services resources.
    
    ```bash
    cd ../03-supporting-services

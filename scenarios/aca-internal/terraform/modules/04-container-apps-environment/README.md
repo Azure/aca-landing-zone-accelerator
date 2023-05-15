@@ -36,7 +36,7 @@ backend "azurerm" {
 
 ## Steps
 
-1. Navigate to the Terraform module for the hub. 
+1. Navigate to the Terraform module for the ACA resources.
    
    ```bash
    cd ../04-container-apps-environment

@@ -44,7 +44,7 @@ backend "azurerm" {
    cd modules/03-supporting-services
    ```
 
-2. Create the regional resources that the Azure Container Apps platform and its applications will be dependant on.
+1. Create the regional resources that the Azure Container Apps platform and its applications will be dependent on.
 
 ```bash
 terraform init

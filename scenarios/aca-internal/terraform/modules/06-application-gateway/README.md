@@ -37,7 +37,7 @@ To configure your Terraform deployment to use the newly provisioned storage acco
 1. Navigate to the Terraform module for the Application Gateway configuration.
    
    ```bash
-   cd modules/06-application-gateway
+   cd ../06-application-gateway
    ```
 
 1. Deploy and configure Application Gateway with TLS

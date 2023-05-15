@@ -41,7 +41,7 @@ backend "azurerm" {
 1. Navigate to the Terraform module for the hub. 
    
    ```bash
-   cd modules/03-supporting-services
+   cd ../03-supporting-services
    ```
 
 1. Create the regional resources that the Azure Container Apps platform and its applications will be dependent on.

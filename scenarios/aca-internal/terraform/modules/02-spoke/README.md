@@ -37,7 +37,8 @@ backend "azurerm" {
 * `key`: Path and filename for the remote state file to be placed in the Storage Account Container. If the state file does not exist in this path, Terraform will automatically generate one for you.
 
 ## Steps
-1. Navigate to the Terraform module for the hub. 
+
+1. Navigate to the Terraform module for the spoke.
    
    ```bash
    cd modules/02-spoke

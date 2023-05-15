@@ -23,12 +23,12 @@ After executing these steps you'll have the spoke resource group (`rg-lzaaca-spo
 To configure your Terraform deployment to use the newly provisioned storage account and container, edit the [`./providers.tf`](./providers.tf) file at lines 11-13 as below:
 
 ```hcl
-  backend "azurerm" {
-    resource_group_name  = "<REPLACE with $RESOURCE_GROUP_NAME>"
-    storage_account_name = "<REPLACE with $STORAGE_ACCOUNT_NAME>"
-    container_name       = "tfstate"
-    key                  = "myapp/spoke.tfstate"
-  }
+backend "azurerm" {
+  resource_group_name  = "<REPLACE with $RESOURCE_GROUP_NAME>"
+  storage_account_name = "<REPLACE with $STORAGE_ACCOUNT_NAME>"
+  container_name       = "tfstate"
+  key                  = "myapp/spoke.tfstate"
+}
 ```
 
 * `resource_group_name`: Name of the Azure Resource Group that the storage account resides in.

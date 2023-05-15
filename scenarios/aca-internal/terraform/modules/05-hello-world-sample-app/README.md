@@ -25,7 +25,7 @@ If you want to use remote storage, uncomment the backend block in the `providers
 1. Navigate to the Terraform module for the hub. 
    
    ```bash
-   cd modules/05-hello-world-sample-app
+   cd ../05-hello-world-sample-app
    ```
 
 1. Deploy the Hello World container app.

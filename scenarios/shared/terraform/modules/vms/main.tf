@@ -20,6 +20,7 @@ resource "azurerm_subnet_network_security_group_association" "vmNsg" {
 }
 
 resource "azurerm_network_interface" "vmNic" {
+  depends_on = [ azurerm_subnet.vmSubnet ]
   name                = var.nicName
   resource_group_name = var.vnetResourceGroupName
   location            = var.location
@@ -104,8 +105,23 @@ resource "azurerm_virtual_machine_extension" "vm_extension_linux" {
   type_handler_version = "2.1"
   settings             = <<SETTINGS
     {
-      "fileUris": ["https://raw.githubusercontent.com/HoussemDellai/aca-landing-zone-accelerator/feature/terraform-implementation-fix/scenarios/shared/scripts/jumpbox-setup-cli-tools.sh"],
+      "script": "${filebase64("${path.module}/scripts/jumpbox-setup-cli-tools.sh")}",
       "commandToExecute": "./jumpbox-setup-cli-tools.sh"
+    }
+SETTINGS
+}
+
+resource "azurerm_virtual_machine_extension" "vm_extension_windows" {
+  count                = var.osType == "Windows" ? 1 : 0
+  name                 = "vm-extension-windows"
+  virtual_machine_id   = azurerm_windows_virtual_machine.windowsVm.0.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.1"
+  settings              = <<SETTINGS
+    {
+      "script": "${filebase64("${path.module}/scripts/jumpbox-setup-cli-tools.ps1")}",
+      "commandToExecute": "./jumpbox-setup-cli-tools.ps1"
     }
 SETTINGS
 }

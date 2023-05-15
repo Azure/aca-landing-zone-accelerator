@@ -41,7 +41,7 @@ backend "azurerm" {
 1. Navigate to the Terraform module for the spoke.
    
    ```bash
-   cd modules/02-spoke
+   cd ../02-spoke
    ```
 
 1. Create the regional spoke network.

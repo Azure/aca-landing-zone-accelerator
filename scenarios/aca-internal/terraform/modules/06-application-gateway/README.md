@@ -34,7 +34,7 @@ To configure your Terraform deployment to use the newly provisioned storage acco
   
 ## Steps
 
-1. Navigate to the Terraform module for the hub. 
+1. Navigate to the Terraform module for the Application Gateway configuration.
    
    ```bash
    cd modules/06-application-gateway

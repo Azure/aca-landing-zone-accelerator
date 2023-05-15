@@ -116,7 +116,7 @@ To configure your Terraform deployment to use the newly provisioned storage acco
     resource_group_name  = "<REPLACE with $RESOURCE_GROUP_NAME>"
     storage_account_name = "<REPLACE with $STORAGE_ACCOUNT_NAME>"
     container_name       = "tfstate"
-    key                  = "myapp/terraform.tfstate"
+    key                  = "acalza/terraform.tfstate"
   }
 ```
 

@@ -39,7 +39,7 @@ backend "azurerm" {
 1. Navigate to the Terraform module for the hub. 
    
    ```bash
-   cd modules/04-container-apps-environment
+   cd ../04-container-apps-environment
    ```
 
 1. Create the Azure Container Apps application platform resources.

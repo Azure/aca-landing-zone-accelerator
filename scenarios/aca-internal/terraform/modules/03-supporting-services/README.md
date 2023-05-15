@@ -22,12 +22,12 @@ By default, they are deployed to the spoke resource group.
 To configure your Terraform deployment to use the newly provisioned storage account and container, edit the [`./providers.tf`](./providers.tf) file at lines 11-13 as below:
 
 ```hcl
-  backend "azurerm" {
-    resource_group_name  = "<REPLACE with $RESOURCE_GROUP_NAME>"
-    storage_account_name = "<REPLACE with $STORAGE_ACCOUNT_NAME>"
-    container_name       = "tfstate"
-    key                  = "myapp/supporting-services.tfstate"
-  }
+backend "azurerm" {
+  resource_group_name  = "<REPLACE with $RESOURCE_GROUP_NAME>"
+  storage_account_name = "<REPLACE with $STORAGE_ACCOUNT_NAME>"
+  container_name       = "tfstate"
+  key                  = "myapp/supporting-services.tfstate"
+}
 ```
 
 * `resource_group_name`: Name of the Azure Resource Group that the storage account resides in.

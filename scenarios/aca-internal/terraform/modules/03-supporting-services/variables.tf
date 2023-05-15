@@ -18,7 +18,7 @@ variable "environment" {
 }
 
 variable "location" {
-  type    = string
+  type = string
 }
 
 variable "spokeVnetId" {
@@ -44,3 +44,5 @@ variable "containerRegistryPullRoleAssignment" {}
 variable "keyVaultPullRoleAssignment" {}
 
 variable "vnetLinks" {}
+
+variable "clientIP" {}

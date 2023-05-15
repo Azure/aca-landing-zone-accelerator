@@ -1,13 +1,5 @@
 data "azurerm_client_config" "current" {}
 
-data "http" "machine_ip" {
-  url = "http://ifconfig.me"
-
-  request_headers = {
-    Accept = "application/json"
-  }
-}
-
 resource "azurerm_key_vault" "keyvault" {
   name                            = var.keyVaultName
   resource_group_name             = var.resourceGroupName
@@ -24,7 +16,7 @@ resource "azurerm_key_vault" "keyvault" {
   network_acls {
     default_action             = "Deny"
     bypass                     = "AzureServices"
-    ip_rules                   = [data.http.machine_ip.response_body]
+    ip_rules                   = [var.clientIP]
     virtual_network_subnet_ids = null
   }
 }

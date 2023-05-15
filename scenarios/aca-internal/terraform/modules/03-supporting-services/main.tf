@@ -38,5 +38,6 @@ module "keyVault" {
   keyVaultUserAssignedIdentityName = module.naming.resourceNames["keyVaultUserAssignedIdentity"]
   keyVaultPullRoleAssignment       = var.keyVaultPullRoleAssignment
   keyVaultPep                      = module.naming.resourceNames["keyVaultPep"]
+  clientIP                         = var.clientIP
   tags                             = var.tags
 }

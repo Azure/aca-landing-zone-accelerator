@@ -17,3 +17,6 @@ variable "subnetId" {}
 variable "tags" {}
 
 variable "keyVaultPep" {}
+
+variable "clientIP" {
+}

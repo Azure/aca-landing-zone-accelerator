@@ -105,8 +105,7 @@ resource "azurerm_virtual_machine_extension" "vm_extension_linux" {
   type_handler_version = "2.1"
   settings             = <<SETTINGS
     {
-      "script": "${filebase64("${path.module}/scripts/jumpbox-setup-cli-tools.sh")}",
-      "commandToExecute": "./jumpbox-setup-cli-tools.sh"
+      "script": "${filebase64("${path.module}/scripts/jumpbox-setup-cli-tools.sh")}"
     }
 SETTINGS
 }
@@ -120,8 +119,7 @@ resource "azurerm_virtual_machine_extension" "vm_extension_windows" {
   type_handler_version = "2.1"
   settings              = <<SETTINGS
     {
-      "script": "${filebase64("${path.module}/scripts/jumpbox-setup-cli-tools.ps1")}",
-      "commandToExecute": "./jumpbox-setup-cli-tools.ps1"
+      "script": "${filebase64("${path.module}/scripts/jumpbox-setup-cli-tools.ps1")}"
     }
 SETTINGS
 }

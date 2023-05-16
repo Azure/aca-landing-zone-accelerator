@@ -69,24 +69,6 @@ If you haven't already done so, configure Terraform using one of the following o
 Before you use Azure Storage as a backend for the state file, you must create a storage account.
 Run the following commands or configuration to create an Azure storage account and container:
 
-Using Azure Powershell module
-
-```Powershell
-$LOCATION="northeurope"
-$RESOURCE_GROUP_NAME="tfstate"
-$STORAGE_ACCOUNT_NAME="tfstate$(Get-Random)"
-$CONTAINER_NAME="tfstate"
-
-# Create resource group
-New-AzResourceGroup -Name $RESOURCE_GROUP_NAME -Location $LOCATION
-
-# Create storage account
-$storageAccount = New-AzStorageAccount -ResourceGroupName $RESOURCE_GROUP_NAME -Name $STORAGE_ACCOUNT_NAME -SkuName Standard_LRS -Location $LOCATION -AllowBlobPublicAccess $true
-
-# Create blob container
-New-AzStorageContainer -Name $CONTAINER_NAME -Context $storageAccount.context -Permission blob
-```
-
 Using Azure CLI
 
 ```bash

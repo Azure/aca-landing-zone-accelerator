@@ -1,0 +1,172 @@
+# Azure Container Apps - Internal environment secure baseline [Terraform]
+
+This is the Terraform-based deployment guide for [Scenario 1: Azure Container Apps - Internal environment secure baseline](../README.md).
+
+## Prerequisites 
+
+This is the starting point for the instructions on deploying this reference implementation. There is required access and tooling you'll need in order to accomplish this.
+
+- An Azure subscription
+- The following resource providers [registered](https://learn.microsoft.com/azure/azure-resource-manager/management/resource-providers-and-types#register-resource-provider):
+  - `Microsoft.App`
+  - `Microsoft.ContainerRegistry`
+  - `Microsoft.ContainerService`
+  - `Microsoft.KeyVault`
+- The user or service principal initiating the deployment process must have the [owner role](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner) at the subscription level to have the ability to create resource groups and to delegate access to others (Azure Managed Identities created from the IaC deployment).
+- Latest [Azure CLI installed](https://learn.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest) (must be at least 2.40), or you can perform this from Azure Cloud Shell by clicking below.
+
+  [![Launch Azure Cloud Shell](https://learn.microsoft.com/azure/includes/media/cloud-shell-try-it/launchcloudshell.png)](https://shell.azure.com)
+- Latest [Terraform tools](https://developer.hashicorp.com/terraform/tutorials/azure-get-started/install-cli)
+- PowerShell 7.0, if you would like to use PowerShell to do your Azure Storage Account for Terraform Remote State 
+
+## Steps 
+
+1. Clone/download this repo locally, or even better fork this repository.
+
+   ```bash
+   git clone https://github.com/Azure/aca-landing-zone-accelerator.git
+   cd aca-landing-zone-accelerator/scenarios/aca-internal/terraform
+   ```
+2. Update naming convention. *Optional.*
+
+   The naming of the resources in this implementation follows the Cloud Adoption Framework's resource [naming convention](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming). Your organization might have a naming strategy in place, which possibly deviates from this implementation. In most cases you can modified what is deployed by modifying the following two files:
+
+   - [**variables.tf**](../../shared/terraform/modules/naming/variables.tf) contains the naming convention.
+   - [**local.tf**](../../shared/terraform/modules/naming/local.tf) contains the [abbreviations](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations) for resources (`resourceTypeAbbreviations`) and Azure regions (`regionAbbreviations`) used in the naming convention.
+3. :world_map: Choose your deployment experience.
+
+   This reference implementation comes with *two* implementation deployment options. They all result in the same resources and architecture, they simply differ in their user experience; specifically how much is abstracted from your involvement.
+
+   - Follow the "[**Standalone deployment guide**](#standalone-deployment-guide)" if you'd like to simply configure a set of parameters and execute a single CLI command to deploy.
+
+     *This will be your simplest deployment approach, but also the most opaque. This is optimized for "cut to the end."*
+
+   - Follow the "[**Step-by-step deployment guide**](#step-by-step-deployment-guide)" if you'd like to walk through the deployment at a slower, more deliberate pace.
+
+     *This will approach will allow you to see the deployment evolve over time, which might give you an insight into the various roles and people in your organization that you need to engage when bringing your workload in this architecture to Azure. This is optimized for "learning."*
+
+   All of these options allow you to deploy to a single subscription, to experience the full architecture in isolation. Adapting this deployment to your Azure landing zone implementation is not required to complete the deployments.
+
+## Deployment experiences
+
+### Standalone deployment guide
+
+You can deploy the complete landing zone in a single subscription, by using the [main.tf](main.tf) template file and the accompanying [terraform.tfvars](terraform.tfvars) parameter file. You need first to check and customize the parameter file (parameters are described below) and then decide whether you intend to deploy the simple [Hello World App](modules/05-hello-world-sample-app/README.md) or the more comprehensive, Dapr-enabled [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md). If you intend to deploy the [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md), we reccomend that you set the variable `deployHelloWorldSample` to `false`. 
+
+### Setting up your environment
+
+#### Configure Terraform
+
+If you haven't already done so, configure Terraform using one of the following options:
+
+* [Configure Terraform in Azure Cloud Shell with Bash](https://learn.microsoft.com/azure/developer/terraform/get-started-cloud-shell-bash)
+* [Configure Terraform in Azure Cloud Shell with PowerShell](https://learn.microsoft.com/azure/developer/terraform/get-started-cloud-shell-powershell)
+* [Configure Terraform in Windows with Bash](https://learn.microsoft.com/azure/developer/terraform/get-started-windows-bash)
+* [Configure Terraform in Windows with PowerShell](https://learn.microsoft.com/azure/developer/terraform/get-started-windows-powershell)
+
+#### Configure remote state storage account
+
+Before you use Azure Storage as a backend for the state file, you must create a storage account.
+Run the following commands or configuration to create an Azure storage account and container:
+
+Using Azure CLI
+
+```bash
+LOCATION="eastus"
+RESOURCE_GROUP_NAME="tfstate"
+STORAGE_ACCOUNT_NAME="<tfstate unique name>"
+CONTAINER_NAME="tfstate"
+
+# Create Resource Group
+az group create --name $RESOURCE_GROUP_NAME --location $LOCATION
+
+# Create Storage Account
+az storage account create -n $STORAGE_ACCOUNT_NAME -g $RESOURCE_GROUP_NAME -l $LOCATION --sku Standard_LRS
+
+# Create blob container
+az storage container-rm create --storage-account $STORAGE_ACCOUNT_NAME --name $CONTAINER_NAME
+```
+
+### Deploy the reference implementation
+
+#### Configure Terraform remote state
+
+To configure your Terraform deployment to use the newly provisioned storage account and container, edit the [`./providers.tf`](./providers.tf) file at lines 11-13 as below:
+
+```hcl
+  backend "azurerm" {
+    resource_group_name  = "<REPLACE with $RESOURCE_GROUP_NAME>"
+    storage_account_name = "<REPLACE with $STORAGE_ACCOUNT_NAME>"
+    container_name       = "tfstate"
+    key                  = "acalza/terraform.tfstate"
+  }
+```
+
+* `resource_group_name`: Name of the Azure Resource Group that the storage account resides in.
+* `storage_account_name`: Name of the Azure Storage Account to be used to hold remote state.
+* `container_name`: Name of the Azure Storage Account Blob Container to store remote state.
+* `key`: Path and filename for the remote state file to be placed in the Storage Account Container. If the state file does not exist in this path, Terraform will automatically generate one for you.
+
+#### Provide parameters required for deployment
+
+As you configured the backend remote state with your live Azure infrastructure resource values, you must also provide them for your deployment.
+
+1. Review the available variables with their descriptions and default values in the [variables.tf](./variables.tf) file.
+2. Provide any custom values to the defined variables by creating a `terraform.tfvars` file in this [directory](terraform.tfvars)
+    * [TF Docs: Variable Definitions (.tfvars) Files](https://www.terraform.io/language/values/variables#variable-definitions-tfvars-files)
+
+The table below summurizes the avaialble parameters and the possible values that can be set. 
+
+   | Name  | Description | Default | Example(s) |
+   | :---- | :---------- | :------ | :--------- |
+   | `workloadName` |A suffix that will be used to name resources in a pattern similar to `<resourceAbbreviation>-<applicationName>`. Must be less than 11 characters long, alphanumeric with dashes. | **lzaaca** | **app-svc-01** |
+   | `environment` | The short name of the environment. Up to eight characters long. | **dev** | **qa**, **uat**, **prod** |
+   | `tags` | Resource tags that you wish to add to all resources. | *none* | `"value": {`<br>`"Environment": "qa",`<br>`"CostCenter": CS004"`<br>`}` |
+   | `enableTelemetry` | Enables or disabled telemetry collection | **true** | **false** |
+   | `hubResourceGroupName` | The name of the hub resource group to create the hub resources in. | *none*. This results in a new resource group being created. | **rg-byo-hub-academo**. This results in `rg-byo-hub-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
+   | `spokeResourceGroupName` | The name of the spoke resource group to create the spoke resources in. | *none*. This results in a new resource group being created. | **rg-byo-spoke-academo**. This results in `rg-byo-spoke-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
+   | `vnetAddressPrefixes` | An array of string. The address prefixes to use for the hub virtual network. | `["10.0.0.0/16"]` | `["10.100.0.0/16"]` |
+   | `enableBastion` | Controls if Azure Bastion is deployed. | `true` | false` |
+   | `bastionSubnetAddressPrefix` | CIDR to use for the Azure Bastion subnet. Must be a subset of the hub CIDR ranges. | **10.0.2.0/27** | **10.100.2.0/27** |
+   | `vmSize` | The size of the virtual machine to create for the jump box. | `Standard_B2ms` | Any one of: [VM sizes](https://learn.microsoft.om/azure/virtual-machines/sizes) |
+   | `vmAdminUsername` | The username to use for the jump box. | **azureuser** | `jumpboxadmin` |
+   | `vmAdminPassword` | The password to use for the jump box admin user. | **Password123** :stop_sign: You *should* change this. | Any cryptographically strong password of your choosing. |
+   | `vmLinuxSshAuthorizedKeys` | The SSH public key to use for the jump box (if VM is Linux) | *unusable/garbage value* | Any SSH keys you wish in the form of **ssh-rsa AAAAB6NzC...P38/oqQv description**|
+   | `vmJumpboxOSType` | The type of OS for the deployed jump box. | **linux** | **windows** |
+   | `vmJumpBoxSubnetAddressPrefix` | CIDR to use for the jump box subnet. must be a subset of the hub CIDR ranges. | **10.0.3.0/24** | **10.100.3./24** |
+   | `spokeVNetAddressPrefixes` | An array of string. The address prefixes to use for the spoke virtual network. | `["10.1.0.0/22"]` | `["10.101.0./22"]` |
+   | `spokeInfraSubnetAddressPrefix` | CIDR of the spoke infrastructure subnet. Must be a subset of the spoke CIDR ranges. | **10.1.0.0/23** | **10.101.0.0/23** |
+   | `spokePrivateEndpointsSubnetAddressPrefix` | CIDR of the spoke private endpoint subnet. Must be a subset of the spoke CIDR ranges. | **10.1.2.0/4** | **10.101.2.0/24** |
+   | `spokeApplicationGatewaySubnetAddressPrefix` | CIDR of the spoke Application Gateway subnet. Must be a subset of the spoke CIDR ranges. | **10.1.3.0/24** | **10.101.3.0/24** |
+   | `enableApplicationInsights` | Controls if Application Insights is deployed and configured. | **true** | **false** |
+   | `deployHelloWorldSample` | Deploy a simple, sample application to the infrastructure. If you prefer to deploy the more comprehensive, Dapr-enabled sample app, this needs to be disabled | **true** | **false**, because you plan on deploying the Dapr-enabled application instead. |
+
+
+#### Deploy
+
+#### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
+``` bash
+terraform init
+terraform plan --var-file terraform.tfvars -out tfplan
+terraform apply tfplan
+```
+1. Deploy the Dapr-based workload. *Optional.*
+
+   If you chose to set `deployHelloWorldSample` to **false**, then proceed to deploy the Dapr-based workload by following the instructions at:
+
+   :arrow_forward: [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md)
+
+
+#### :broom: Clean up resources
+
+When you are done exploring the resources created by the Standalone deployment guide, use the following command to remove the resources you created.
+
+```bash
+terraform destroy --var-file=terraform.tfvars
+```
+
+### Step-by-step deployment guide
+
+These instructions are spread over a series of dedicated pages for each step along the way. With this method of deployment, you can leverage the step-by-step process considering where possibly different teams (devops, network, operations etc) with different levels of access, are required to coordinate and deploy all of the required resources.
+
+:arrow_forward: This starts with [Deploy the hub networking resources](./modules/01-hub/README.md).

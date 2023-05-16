@@ -4,12 +4,12 @@ targetScope = 'resourceGroup'
 //    PARAMETERS
 // ------------------
 
+@description('The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
 @maxLength(10)
-@description('The name of the workloard that is being deployed. Up to 10 characters long.')
 param workloadName string
 
-@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa") Up to 8 characters long.')
+@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
 @maxLength(8)
 param environment string
 
@@ -107,7 +107,7 @@ param simulationImage string = ''
 
 // Application Gateway
 @description('The FQDN of the Application Gateawy.Must match the TLS Certificate.')
-param applicationGatewayFQDN string
+param applicationGatewayFqdn string
 
 @description('The subnet name to use for Application Gateway.')
 param spokeApplicationGatewaySubnetName string
@@ -238,9 +238,9 @@ module applicationGateway '../../modules/06-application-gateway/deploy.app-gatew
     tags: tags
     environment: environment
     workloadName: workloadName
-    applicationGatewayFQDN: applicationGatewayFQDN
+    applicationGatewayFqdn: applicationGatewayFqdn
     applicationGatewaySubnetId: spokeApplicationGatewaySubnet.id
-    applicationGatewayPrimaryBackendEndFQDN: containerApps.outputs.trafficControlServiceFQDN
+    applicationGatewayPrimaryBackendEndFqdn: containerApps.outputs.trafficControlServiceFqdn
     appGatewayBackendHealthProbePath: appGatewayBackendHealthProbePath
     enableApplicationGatewayCertificate: enableApplicationGatewayCertificate
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName

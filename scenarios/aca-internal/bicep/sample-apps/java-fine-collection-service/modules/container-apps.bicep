@@ -150,7 +150,7 @@ module simulation 'container-apps/simulation.bicep' = if (deploySimulationInAcaE
     location: location
     tags: tags
     containerAppsEnvironmentId: containerAppsEnvironment.id
-    trafficControlServiceFQDN: trafficControlService.outputs.trafficControlServiceFQDN
+    trafficControlServiceFqdn: trafficControlService.outputs.trafficControlServiceFqdn
     containerRegistryName: containerRegistryName
     containerRegistryUserAssignedIdentityId: containerRegistryUserAssignedIdentityId
     simulationImage: simulationImage
@@ -174,4 +174,4 @@ output trafficControlServiceContainerAppName string = trafficControlService.outp
 output simulationContainerAppName string = (deploySimulationInAcaEnvironment) ? simulation.outputs.simulationContainerAppName : ''
 
 @description('The FQDN of the traffic control service.')
-output trafficControlServiceFQDN string = trafficControlService.outputs.trafficControlServiceFQDN
+output trafficControlServiceFqdn string = trafficControlService.outputs.trafficControlServiceFqdn

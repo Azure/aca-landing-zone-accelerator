@@ -63,7 +63,7 @@ output vnetId string = vnet.id
 output vnetName string = vnet.name
 
 
-// INFO: based on second example of https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/loops#array-and-index
+// INFO: based on second example of https://learn.microsoft.com/azure/azure-resource-manager/bicep/loops#array-and-index
 @description('Outputs the array of the subnets, printing: index, subnetResourceId, subnerName. ')
 output vnetSubnets array = [ for (item, i) in subnets: {
   subnetIndex: i

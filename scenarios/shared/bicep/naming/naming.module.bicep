@@ -26,7 +26,7 @@ var naming = json(loadTextContent('./naming-rules.jsonc'))
 var uniqueIdShort = substring(uniqueId, 0, 5)
 var resourceTypeToken = 'RES_TYPE'
 
-// Define and adhere to a naming convention, such as: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming
+// Define and adhere to a naming convention, such as: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming
 var namingBase = '${resourceTypeToken}-${workloadName}-${environment}-${naming.regionAbbreviations[toLower(location)]}'
 var namingBaseUnique = '${resourceTypeToken}-${workloadName}-${uniqueIdShort}-${environment}-${naming.regionAbbreviations[toLower(location)]}'
 
@@ -34,6 +34,8 @@ var namingBaseUnique = '${resourceTypeToken}-${workloadName}-${uniqueIdShort}-${
 var namingBaseNoWorkloadName = '${resourceTypeToken}-${environment}-${naming.regionAbbreviations[toLower(location)]}'
 
 var resourceTypeAbbreviations = naming.resourceTypeAbbreviations
+
+var keyVaultName = take( replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.keyVault ), 24 )
 
 var resourceNames = {
   vnetSpoke: '${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.virtualNetwork)}-spoke'
@@ -54,12 +56,14 @@ var resourceNames = {
   cosmosDbNoSql: toLower( take(replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.cosmosDbNoSql), 44) )
   cosmosDbNoSqlPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${toLower( take(replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.cosmosDbNoSql), 44) )}'
   frontDoorProfile:  replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.frontDoor)
-  keyVault: take ( replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.keyVault ), 24 )
+  keyVault: endsWith( keyVaultName, '-') ? take( keyVaultName, 23 ) : keyVaultName
   keyVaultPep:  '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.keyVault )}'
   keyVaultUserAssignedIdentity:  '${naming.resourceTypeAbbreviations.managedIdentity}-${replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.keyVault )}-KeyVaultReader'
   logAnalyticsWorkspace: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.logAnalyticsWorkspace)
   serviceBus: replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.serviceBus)
   serviceBusPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.serviceBus)}'
+  storageAccount: toLower(take( replace ( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.storageAccount), '-', ''), 24))
+  storageAccountPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${toLower( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.storageAccount))}'
   vmJumpBox: replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)
   vmJumpBoxNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'
   vmJumpBoxNic: '${naming.resourceTypeAbbreviations.networkInterface}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'

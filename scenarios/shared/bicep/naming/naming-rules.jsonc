@@ -1,5 +1,5 @@
 {
-    // Recommended abreviations: https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations
+    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations
     "resourceTypeAbbreviations" : {
         "applicationGateway": "agw",
         "applicationInsights": "appi",

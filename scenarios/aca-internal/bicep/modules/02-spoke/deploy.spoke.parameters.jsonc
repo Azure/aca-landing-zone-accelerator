@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // The name of the workloard that is being deployed. Up to 10 characters long. This wil be used as part of the naming convention (i.e. as defined here: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) 
+    // The name of the workload that is being deployed. Up to 10 characters long. This wil be used as part of the naming convention (i.e. as defined here: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) 
     "workloadName": {
       "value": "lzaaca"
     },
@@ -12,7 +12,7 @@
     },
     // optional. If empty automatic name will be generated. To override, please give name of spoke resource group name
     "spokeResourceGroupName": {
-      "value": "rg-aca-test-spoke"
+      "value": ""
     },
     "tags": {
         "value": {}

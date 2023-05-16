@@ -4,34 +4,37 @@ targetScope = 'resourceGroup'
 //    PARAMETERS
 // ------------------
 
+@description('The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
 @maxLength(10)
-@description('The name of the workloard that is being deployed. Up to 10 characters long.')
 param workloadName string
 
-@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa") Up to 8 characters long.')
+@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
 @maxLength(8)
 param environment string
 
-@description('The location where the resources will be created.')
+@description('The location where the resources will be created. This needs to be the same region as the spoke.')
 param location string = resourceGroup().location
 
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
-@description('The resource ID of the VNet to which the private endpoint will be connected.')
-param spokeVNetId string
-
-@description('The resource ID of the Hub Virtual Network.')
+// Hub
+@description('The resource ID of the existing hub virtual network.')
 param hubVNetId string
 
-@description('The name of the subnet in the VNet to which the private endpoint will be connected.')
+// Spoke
+@description('The resource ID of the existing spoke virtual network to which the private endpoint will be connected.')
+param spokeVNetId string
+
+@description('The name of the existing subnet in the spoke virtual to which the private endpoint will be connected.')
 param spokePrivateEndpointSubnetName string
 
 // ------------------
 // RESOURCES
 // ------------------
 
+@description('User-configured naming rules')
 module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
   name: take('03-sharedNamingDeployment-${deployment().name}', 64)
   params: {
@@ -42,6 +45,7 @@ module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
   }
 }
 
+@description('Azure Container Registry, where all workload images should be pulled from.')
 module containerRegistry 'modules/container-registry.bicep' = {
   name: 'containerRegistry-${uniqueString(resourceGroup().id)}'
   params: {
@@ -52,10 +56,11 @@ module containerRegistry 'modules/container-registry.bicep' = {
     hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
     containerRegistryPrivateEndpointName: naming.outputs.resourcesNames.containerRegistryPep
-    containerRegistryUserAssignedIdentityName: naming.outputs.resourcesNames.containerRegistryUserAssignedIdentity 
+    containerRegistryUserAssignedIdentityName: naming.outputs.resourcesNames.containerRegistryUserAssignedIdentity
   }
 }
 
+@description('Azure Key Vault used to hold items like TLS certs and application secrets that your workload will need.')
 module keyVault 'modules/key-vault.bicep' = {
   name: 'keyVault-${uniqueString(resourceGroup().id)}'
   params: {
@@ -74,20 +79,20 @@ module keyVault 'modules/key-vault.bicep' = {
 // OUTPUTS
 // ------------------
 
-@description('The resource ID of the container registry.')
+@description('The resource ID of the Azure Container Registry.')
 output containerRegistryId string = containerRegistry.outputs.containerRegistryId
 
-@description('The name of the container registry.')
+@description('The name of the Azure Container Registry.')
 output containerRegistryName string = containerRegistry.outputs.containerRegistryName
 
-@description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
+@description('The resource ID of the user-assigned managed identity for the Azure Container Registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = containerRegistry.outputs.containerRegistryUserAssignedIdentityId
 
-@description('The resource ID of the key vault.')
+@description('The resource ID of the Azure Key Vault.')
 output keyVaultId string = keyVault.outputs.keyVaultId
 
-@description('The name of the key vault.')
+@description('The name of the Azure Key Vault.')
 output keyVaultName string = keyVault.outputs.keyVaultName
 
-@description('The resource ID of the user assigned managed identity to access the key vault.')
+@description('The resource ID of the user-assigned managed identity to read from Azure Key Vault.')
 output keyVaultUserAssignedIdentityId string = keyVault.outputs.keyVaultUserAssignedIdentityId

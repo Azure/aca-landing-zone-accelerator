@@ -1,4 +1,4 @@
-@description('Required. Name of your pruvate endpoint. Must begin with a letter or number, end with a letter, number or underscore, and may contain only letters, numbers, underscores, periods, or hyphens.')
+@description('Required. Name of your Private Endpoint. Must begin with a letter or number, end with a letter, number or underscore, and may contain only letters, numbers, underscores, periods, or hyphens.')
 @minLength(2)
 @maxLength(64)
 param name string
@@ -15,7 +15,7 @@ param snetId string
 @description('The resource id of private link service. The resource ID of the Az Resource that we need to attach the pe to.')
 param privateLinkServiceId string
 
-@description('The resource that the private endpoint will be attached to, as shown in https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview#private-link-resource')
+@description('The resource that the Private Endpoint will be attached to, as shown in https://learn.microsoft.com/azure/private-link/private-endpoint-overview#private-link-resource')
 param subresource string
 
 @description('Id of the relevant private DNS Zone, so that the PE can create an A record for the implicitly created nic')

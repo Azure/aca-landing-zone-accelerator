@@ -18,6 +18,6 @@
 
 - Use system-assigned managed identities unless there is a strong requirement for using user-managed identities
 
-- Use Azure [built-in roles](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#web-plan-contributor) to assign least privilege permissions to resources and users. 
+- Use Azure [built-in roles](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#web-plan-contributor) to assign least privilege permissions to resources and users.
 
-- Ensure that access to production environments is limited. Ideally, no one has standing access to production environment, instead relying on automation to handle deployments and [Privileged Identity Management](https://learn.microsoft.com/azure/active-directory/privileged-identity-management/pim-configure) for emergency access. 
+- Ensure that access to production environments is limited. Ideally, no one has standing access to production environment, instead relying on automation to handle deployments and [Privileged Identity Management](https://learn.microsoft.com/azure/active-directory/privileged-identity-management/pim-configure) for emergency access.

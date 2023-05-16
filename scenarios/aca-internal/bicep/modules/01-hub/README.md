@@ -1,46 +1,55 @@
-# Hub
+# Deploy the regional hub
 
-If you haven't yet, clone the repo and cd to the appropriate folder
-``` bash
-git clone https://github.com/Azure/ACA-Landing-Zone-Accelerator
-```
+This is the first step in the step-by-step deployment guide for the [Azure Container Apps - Internal environment secure baseline](../../README.md). This hub will be the egress point for all traffic in connected spokes.
 
-The following will be created:
+## Networking in this architecture
 
-* Resource Group for Hub Networking
-* Hub VNET
-* Azure Bastion Host (Optional)
-* Windows or Linux Virtual Machine (Optional)
+Egressing your spoke traffic through a hub network (following the hub-spoke model), is a critical component of this architecture. Your organization's networking team will likely have a specific strategy already in place for this; such as a Connectivity subscription already configured for regional egress. In this walkthrough, we are going to implement this recommended strategy in an illustrative manner, however you will need to adjust based on your specific situation when you implement this cluster for production. Hubs are usually a centrally-managed and governed resource in an organization, and not typically workload specific. The steps that follow create the hub (and spokes) as a stand-in for the work that you'd coordinate with your networking team.
 
-![Hub](./media/hub.png)
+## Expected results
 
-Review the `deploy.hub.parameters.jsonc` file and update the parameter values if required according to your needs. Pay attentions to VNET address prefixes and subnets so it doesn't overlap Spoke VNET in further steps. Also, please pay attention to update Subnet prefix for ACA environment in Spoke VNET in the further steps to be planned and update in this file.
+After executing these steps you'll have the hub resource group (`rg-lzaaca-hub-dev-reg`, by default) populated with a regional virtual network, Azure Bastion, and jump box virtual machines. Based on how you [configured the naming and deployment parameters](../../README.md#steps), your result may be slightly different. No spokes will have been created yet.
 
-> TODO: Add VM AAD joined (needs bastion Standard)
+![A picture of the components in the hub resource group.](./media/hub.png)
 
-Note: `deploy.hub.parameters.jsonc` file contains the username and password for the virtual machine. These can be changed in the parameters file for the VM, however these are the default values:
+### Resources
 
-```
-Username: azureuser
-Password: Password123
-```
+- Hub resource group
+- Hub virtual network
+- Azure Bastion (optional)
+- Jump box virtual machine (optional)
 
-Once the files are updated, deploy using az cli or Az PowerShell.
+### IP addressing
 
-## [CLI](#tab/CLI)
+Since this walkthrough is expected to be deployed isolated from existing infrastructure and not joined to any of your existing networks; the IP addresses should not come in conflict with any existing networking you have, even if those IP addresses overlap with ones you already have in your enterprise. However, if you need to join existing networks, even for the purposes this walkthrough, you'll need to adjust the IP space before deploying. See [Review and update deployment parameters](../../README.md#steps).
 
-```azurecli
-az deployment sub create -n <DEPLOYMENT_NAME> -l <LOCATION> -f deploy.hub.bicep -p deploy.hub.parameters.jsonc
-```
+## Steps
 
- Where `<LOCATION>` is the location where you want to deploy the landing zone and `<DEPLOYMENT_NAME>` is the name of the deployment.
+1. Navigate to the Bicep modules.
 
-## [PowerShell](#tab/PowerShell)
+   ```bash
+   cd modules
+   ```
 
-```azurepowershell
-New-AzSubscriptionDeployment -TemplateFile deploy.hub.bicep -TemplateParameterFile deploy.hub.parameters.jsonc -Location "<LOCATION>" -Name <DEPLOYMENT_NAME>
-```
+1. Set the desired region for the whole reference implementation.
 
-Where `<LOCATION>` is the location where you want to deploy the landing zone and `<DEPLOYMENT_NAME>` is the name of the deployment.
+   :stop_sign: Update this to your desired region.
 
-:arrow_forward: [Spoke](../02-spoke)
+   ```bash
+   LOCATION=northeurope # or any location that suits your needs
+   ```
+
+1. Create the regional network hub.
+
+   ```bash
+   # [This takes about seven minutes to run.]
+   az deployment sub create \
+      -n acalza01-hub \
+      -l $LOCATION \
+      -f 01-hub/deploy.hub.bicep \
+      -p 01-hub/deploy.hub.parameters.jsonc
+   ```
+
+## Next step
+
+:arrow_forward: [Create the spoke network](../02-spoke/README.md)

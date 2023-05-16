@@ -4,12 +4,12 @@ targetScope = 'resourceGroup'
 //    PARAMETERS
 // ------------------
 
+@description('The name of the workload that is being deployed. Up to 10 characters long.')
 @minLength(2)
 @maxLength(10)
-@description('The name of the workloard that is being deployed. Up to 10 characters long.')
 param workloadName string
 
-@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa") Up to 8 characters long.')
+@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
 @maxLength(8)
 param environment string
 
@@ -24,7 +24,6 @@ param tags object = {}
 param containerAppsEnvironmentId string
 
 // Private Link Service
-
 @description('The resource ID of the subnet to be used for the private link service. (e.g. /subscriptions/XXX/resourceGroups/XXX/providers/Microsoft.Network/virtualNetworks/XXX/subnets/XXX)')
 param privateLinkSubnetId string
 

@@ -90,6 +90,8 @@ param applicationGatewayCertificateKeyName string
 @description('Enable usage and telemetry feedback to Microsoft.')
 param enableTelemetry bool = true
 
+@description('Optional, default value is false. If true, Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed')
+param deployRedisCache bool = false
 
 // ------------------
 // VARIABLES
@@ -157,6 +159,7 @@ module supportingServices 'modules/03-supporting-services/deploy.supporting-serv
     workloadName: workloadName
     spokeVNetId: spoke.outputs.spokeVNetId
     hubVNetId: hub.outputs.hubVNetId
+    deployRedisCache: deployRedisCache
   }
 }
 
@@ -174,6 +177,7 @@ module containerAppsEnvironment 'modules/04-container-apps-environment/deploy.ac
     enableApplicationInsights: enableApplicationInsights
     enableDaprInstrumentation: enableDaprInstrumentation
     enableTelemetry: enableTelemetry
+    logAnalyticsWorkspaceId: supportingServices.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -269,6 +273,3 @@ output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.cont
 
 @description('The name of the container apps environment.')
 output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.containerAppsEnvironmentName
-
-@description('The customer id of the log analytics workspace.')
-output logAnalyticsWorkspaceCustomerId string = containerAppsEnvironment.outputs.logAnalyticsWorkspaceCustomerId

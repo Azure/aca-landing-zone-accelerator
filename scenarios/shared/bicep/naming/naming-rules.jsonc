@@ -25,7 +25,8 @@
         "serviceBusTopic": "sbt",
         "storageAccount": "st",
         "virtualMachine": "vm",
-        "virtualNetwork": "vnet"
+        "virtualNetwork": "vnet",
+        "redisCache": "redis"
     },
 
     //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json

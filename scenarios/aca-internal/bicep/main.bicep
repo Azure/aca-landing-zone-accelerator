@@ -145,6 +145,7 @@ module spoke 'modules/02-spoke/deploy.spoke.bicep' = {
     spokeInfraSubnetAddressPrefix: spokeInfraSubnetAddressPrefix
     spokePrivateEndpointsSubnetAddressPrefix: spokePrivateEndpointsSubnetAddressPrefix
     spokeVNetAddressPrefixes: spokeVNetAddressPrefixes
+    networkApplianceIpAddress: hub.outputs.networkApplianceIpAddress
   }
 }
 

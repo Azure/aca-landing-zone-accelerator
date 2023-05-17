@@ -213,3 +213,6 @@ output hubVNetId string = vnetHub.outputs.vnetId
 
 @description('The name of the hub resource group.')
 output resourceGroupName string = hubResourceGroup.name
+
+@description('The private IP address of the Azure Firewall.')
+output networkApplianceIpAddress string = firewall.outputs.afwPrivateIp

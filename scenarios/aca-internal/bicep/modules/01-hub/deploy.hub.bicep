@@ -100,6 +100,16 @@ resource hubResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
+@description('The log sink for Azure Diagnostics')
+module hubLogAnalyticsWorkspace '../../../../shared/bicep/log-analytics-ws.bicep' = {
+  scope: hubResourceGroup
+  name: take('hubLogWs-${uniqueString(hubResourceGroup.id)}', 64)
+  params: {
+    location: location
+    name: naming.outputs.resourcesNames.logAnalyticsWorkspace
+  }
+}
+
 @description('User-configured naming rules')
 module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
   scope: hubResourceGroup
@@ -122,6 +132,20 @@ module vnetHub '../../../../shared/bicep/vnet.bicep' = {
     subnets: vnetSubnets
     vnetAddressPrefixes: vnetAddressPrefixes
     tags: tags
+  }
+}
+
+@description('The Azure Firewall deployment. This would normally be already provisioned by your platform team.')
+module firewall 'modules/azureFirewall.bicep' = {
+  scope: hubResourceGroup
+  name: take('afw-${deployment().name}', 64)
+  params: {
+    location: location
+    tags: tags
+    afwVNetId: vnetHub.outputs.vnetId
+    logAnalyticsWorkspaceId: hubLogAnalyticsWorkspace.outputs.logAnalyticsWsId
+    firewallName: naming.outputs.resourcesNames.firewall
+    publicIpName: naming.outputs.resourcesNames.firewallPip
   }
 }
 

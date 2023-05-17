@@ -63,7 +63,14 @@ param vmJumpBoxSubnetAddressPrefix string
 // ------------------
 
 //Subnet definition taking in consideration feature flags
-var defaultSubnets = []
+var defaultSubnets = [
+  {
+    name: 'AzureFirewallSubnet'
+    properties: {
+      addressPrefix: azfwAddressPrefix
+    }
+  }
+]
 
 // This cannot be another value
 var bastionSubnetName = 'AzureBastionSubnet'
@@ -146,7 +153,6 @@ module azfw './modules/azureFirewall.bicep' = {
     location: location
     tags: tags
     afwVNetName: vnetHub.outputs.vnetName
-    addressPrefix: azfwAddressPrefix
     logAnalyticsWorkspaceId: hubLogAnalyticsWorkspace.outputs.logAnalyticsWsId
     firewallName: naming.outputs.resourcesNames.azureFirewall
     publicIpName: naming.outputs.resourcesNames.azureFirewallPip

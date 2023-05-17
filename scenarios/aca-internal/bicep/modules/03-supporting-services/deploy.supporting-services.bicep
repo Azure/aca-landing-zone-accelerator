@@ -31,7 +31,7 @@ param spokeVNetId string
 param spokePrivateEndpointSubnetName string
 
 @description('Deploy Redis cache premium SKU')
-param deployRedisCache bool = true
+param deployRedisCache bool = false
 
 // ------------------
 // RESOURCES
@@ -87,7 +87,7 @@ module logAnalyticsWorkspace '../../../../shared/bicep/log-analytics-ws.bicep' =
   }
 }
 
-module redisCache 'modules/redisCache.bicep' = if (deployRedisCache) {
+module redisCache './modules/redisCache.bicep' = if (deployRedisCache) {
   name: 'redisCache-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
@@ -127,4 +127,4 @@ output keyVaultUserAssignedIdentityId string = keyVault.outputs.keyVaultUserAssi
 output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.outputs.logAnalyticsWsId
 
 @description('The secret name to retrieve the connection string from KeyVault')
-output redisCacheSecretKey string = redisCache.outputs.redisCacheSecretKey
+output redisCacheSecretKey string = (deployRedisCache)? redisCache.outputs.redisCacheSecretKey : ''

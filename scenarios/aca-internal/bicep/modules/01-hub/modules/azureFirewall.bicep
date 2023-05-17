@@ -11,8 +11,6 @@ param firewallName string
 param publicIpName string
 @description('The Name of the virtual network in which afw is created.')
 param afwVNetName string
-@description('The address prefix of the subnet in which the azure firewall will be created.')
-param addressPrefix string
 @description('The log analytics workspace id to which the azure firewall will send logs.')
 param logAnalyticsWorkspaceId string
 
@@ -56,14 +54,6 @@ var applicationRuleCollections = [
 
 resource hubVnet 'Microsoft.Network/virtualNetworks@2022-11-01' existing = {
   name: afwVNetName
-}
-
-resource azFWSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
-  name: 'AzureFirewallSubnet'
-  parent: hubVnet
-  properties: {
-    addressPrefix: addressPrefix
-  }
 }
 
 @description('The azure firewall deployment.')

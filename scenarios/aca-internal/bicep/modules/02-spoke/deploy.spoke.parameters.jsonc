@@ -32,6 +32,9 @@
     },
     "spokeApplicationGatewaySubnetAddressPrefix": {
       "value":  "10.1.3.0/24"
+    },
+    "networkApplianceIpAddress": {
+      "value": "[IP OF THE NETWORK APPLIANCE]"
     }
   }
 }

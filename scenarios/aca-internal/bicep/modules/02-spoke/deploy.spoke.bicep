@@ -48,6 +48,9 @@ param spokeApplicationGatewaySubnetName string = 'snet-agw'
 @description('CIDR of the spoke Application Gateway subnet. If the value is empty, this subnet will not be created.')
 param spokeApplicationGatewaySubnetAddressPrefix string
 
+@description('The IP address of the network appliance (e.g. firewall) that will be used to route traffic to the internet.')
+param networkApplianceIpAddress string
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -78,6 +81,9 @@ var defaultSubnets = [
       networkSecurityGroup: {
         id: nsgContainerAppsEnvironment.outputs.nsgId
       }
+      routeTable: {
+        id: routeTable.outputs.resourceId
+      }      
     }
   }
   {
@@ -104,6 +110,7 @@ var spokeSubnets = !empty(spokeApplicationGatewaySubnetAddressPrefix) ? concat(d
 // ------------------
 // RESOURCES
 // ------------------
+
 
 @description('The spoke resource group. This would normally be already provisioned by your subscription vending process.')
 resource spokeResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -182,6 +189,27 @@ module peerHubToSpoke '../../../../shared/bicep/peering.bicep' = if (!empty(hubV
     remoteSubscriptionId: last(split(subscription().id, '/'))!
     remoteRgName: spokeResourceGroup.name
     remoteVnetName: vnetSpoke.outputs.vnetName
+  }
+}
+
+@description('The Route Table deployment')
+module routeTable '../../../../shared/bicep/routeTables/main.bicep' = {
+  name: take('routeTable-${uniqueString(spokeResourceGroup.id)}', 64)
+  scope: spokeResourceGroup
+  params: {
+    name: naming.outputs.resourcesNames.routeTable
+    location: location
+    tags: tags
+    routes: [
+      {
+        name: 'internetToFirewall'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: networkApplianceIpAddress
+        }
+      }
+    ]
   }
 }
 

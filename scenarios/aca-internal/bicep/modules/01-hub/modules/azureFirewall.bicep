@@ -9,8 +9,10 @@ param location string
 param firewallName string
 @description('The name for the public ip address of the azure firewall.')
 param publicIpName string
-@description('The resource id of the virtual network in which afw is created.')
-param afwVNetId string
+@description('The Name of the virtual network in which afw is created.')
+param afwVNetName string
+@description('The address prefix of the subnet in which the azure firewall will be created.')
+param addressPrefix string
 @description('The log analytics workspace id to which the azure firewall will send logs.')
 param logAnalyticsWorkspaceId string
 
@@ -52,6 +54,18 @@ var applicationRuleCollections = [
   }
 ]
 
+resource hubVnet 'Microsoft.Network/virtualNetworks@2022-11-01' existing = {
+  name: afwVNetName
+}
+
+resource azFWSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
+  name: 'AzureFirewallSubnet'
+  parent: hubVnet
+  properties: {
+    addressPrefix: addressPrefix
+  }
+}
+
 @description('The azure firewall deployment.')
 module afw '../../../../../shared/bicep/azureFirewalls/main.bicep' = {
   name: 'afw-deployment'
@@ -61,7 +75,7 @@ module afw '../../../../../shared/bicep/azureFirewalls/main.bicep' = {
     name: firewallName
     publicIpName: publicIpName
     azureSkuTier: 'Standard'
-    vNetId: afwVNetId
+    vNetId: hubVnet.id
     publicIPResourceID: '' //Required only if you want to use an existing public ip address
     additionalPublicIpConfigurations: []
     applicationRuleCollections: applicationRuleCollections

@@ -32,6 +32,9 @@ param enableBastion bool
 @description('CIDR to use for the Azure Bastion subnet.')
 param bastionSubnetAddressPrefix string
 
+@description('CIDR to use for the Azure Firewall subnet.')
+param azfwAddressPrefix string
+
 // Hub Virtual Machine
 @description('The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.')
 param vmSize string
@@ -117,6 +120,7 @@ module hub 'modules/01-hub/deploy.hub.bicep' = {
     vnetAddressPrefixes: vnetAddressPrefixes
     enableBastion: enableBastion
     bastionSubnetAddressPrefix: bastionSubnetAddressPrefix
+    azfwAddressPrefix: azfwAddressPrefix
     vmSize: vmSize
     vmAdminUsername: vmAdminUsername
     vmAdminPassword: vmAdminPassword

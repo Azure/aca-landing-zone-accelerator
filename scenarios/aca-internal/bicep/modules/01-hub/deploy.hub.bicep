@@ -31,6 +31,9 @@ param enableBastion bool
 @description('CIDR to use for the Azure Bastion subnet.')
 param bastionSubnetAddressPrefix string
 
+@description('CIDR to use for the Azure Firewall subnet.')
+param azfwAddressPrefix string
+
 @description('The size of the jump box virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.')
 param vmSize string
 
@@ -136,16 +139,17 @@ module vnetHub '../../../../shared/bicep/vnet.bicep' = {
 }
 
 @description('The Azure Firewall deployment. This would normally be already provisioned by your platform team.')
-module firewall 'modules/azureFirewall.bicep' = {
+module azfw './modules/azureFirewall.bicep' = {
   scope: hubResourceGroup
   name: take('afw-${deployment().name}', 64)
   params: {
     location: location
     tags: tags
-    afwVNetId: vnetHub.outputs.vnetId
+    afwVNetName: vnetHub.outputs.vnetName
+    addressPrefix: azfwAddressPrefix
     logAnalyticsWorkspaceId: hubLogAnalyticsWorkspace.outputs.logAnalyticsWsId
-    firewallName: naming.outputs.resourcesNames.firewall
-    publicIpName: naming.outputs.resourcesNames.firewallPip
+    firewallName: naming.outputs.resourcesNames.azureFirewall
+    publicIpName: naming.outputs.resourcesNames.azureFirewallPip
   }
 }
 
@@ -215,4 +219,4 @@ output hubVNetId string = vnetHub.outputs.vnetId
 output resourceGroupName string = hubResourceGroup.name
 
 @description('The private IP address of the Azure Firewall.')
-output networkApplianceIpAddress string = firewall.outputs.afwPrivateIp
+output networkApplianceIpAddress string = azfw.outputs.afwPrivateIp

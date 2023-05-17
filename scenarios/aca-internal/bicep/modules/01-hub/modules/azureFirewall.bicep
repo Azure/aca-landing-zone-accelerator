@@ -17,6 +17,41 @@ param logAnalyticsWorkspaceId string
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+var applicationRuleCollections = [
+  {
+    name: 'allow-aca-rules'
+    properties: {
+      action: {
+        type: 'allow'
+      }
+      priority: 110
+      rules: [
+        {
+          name: 'allow-aca-controlplane'
+          protocols: [
+            {
+              port: '80'
+              protocolType: 'HTTP'
+            }
+            {
+              port: '443'
+              protocolType: 'HTTPS'
+            }
+          ]
+          sourceAddresses: [
+            '*'
+          ]
+          targetFqdns: [
+            'mcr.microsoft.com'
+            '*.data.mcr.microsoft.com'
+            '*.blob.core.windows.net' //NOTE: If you use ACR the endpoint must be added as well.
+          ]
+        }
+      ]
+    }
+  }
+]
+
 @description('The azure firewall deployment.')
 module afw '../../../../../shared/bicep/azureFirewalls/main.bicep' = {
   name: 'afw-deployment'
@@ -29,7 +64,7 @@ module afw '../../../../../shared/bicep/azureFirewalls/main.bicep' = {
     vNetId: afwVNetId
     publicIPResourceID: '' //Required only if you want to use an existing public ip address
     additionalPublicIpConfigurations: []
-    applicationRuleCollections: []
+    applicationRuleCollections: applicationRuleCollections
     networkRuleCollections: []
     natRuleCollections: []
     threatIntelMode: 'Deny'
@@ -37,3 +72,6 @@ module afw '../../../../../shared/bicep/azureFirewalls/main.bicep' = {
     lock: ''
   }
 }
+
+output afwPrivateIp string = afw.outputs.privateIp
+output afwId string = afw.outputs.resourceId

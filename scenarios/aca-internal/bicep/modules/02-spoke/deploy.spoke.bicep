@@ -83,7 +83,15 @@ var defaultSubnets = [
       }
       routeTable: {
         id: routeTable.outputs.resourceId
-      }      
+      }
+      delegations: [
+        {
+          name: 'envdelegation'
+          properties: {
+            serviceName: 'Microsoft.App/environments'
+          }
+        }
+      ]
     }
   }
   {

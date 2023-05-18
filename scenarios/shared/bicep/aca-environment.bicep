@@ -15,11 +15,12 @@ param tags object = {}
 param zoneRedundant bool = false
 
 @description('Mandatory, default is Consumption')
-@allowed([
-  'Consumption'
-  'Premium'
-])
-param sku string= 'Consumption'
+param workloadProfiles array = [
+  {
+    name: 'Consumption'
+    workloadProfileType: 'Consumption'
+  }
+]
 
 @description('If true, the endpoint is an internal load balancer. If false the hosted apps are exposed on an internet-accessible IP address ')
 param vnetEndpointInternal bool
@@ -49,12 +50,9 @@ resource laws 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = i
   name: lawsSplitTokens[8]
 }
 
-resource acaEnvironment 'Microsoft.App/managedEnvironments@2022-10-01' = {
+resource acaEnvironment 'Microsoft.App/managedEnvironments@2022-11-01-preview' = {
   name: name
   location: location
-  sku: {
-    name: sku
-  }
   tags: tags
   properties: {
     zoneRedundant: zoneRedundant
@@ -66,7 +64,7 @@ resource acaEnvironment 'Microsoft.App/managedEnvironments@2022-10-01' = {
       //   outBoundType: 'LoadBalancer'
       // }
     }
-
+    workloadProfiles: workloadProfiles
     appLogsConfiguration:  {
       destination: 'log-analytics'
       logAnalyticsConfiguration: {

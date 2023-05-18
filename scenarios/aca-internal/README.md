@@ -27,4 +27,4 @@ This reference implementation is provided with the following infrastructure as c
 
 :arrow_forward: [Bicep-based deployment guide](./bicep)
 
-:arrow_forward: [Terraform-based deployment guide](./Terraform) *(coming soon)*
+:arrow_forward: [Terraform-based deployment guide](./terraform)

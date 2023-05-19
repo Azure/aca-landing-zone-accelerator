@@ -127,4 +127,4 @@ output keyVaultUserAssignedIdentityId string = keyVault.outputs.keyVaultUserAssi
 output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.outputs.logAnalyticsWsId
 
 @description('The secret name to retrieve the connection string from KeyVault')
-output redisCacheSecretKey string = redisCache.outputs.redisCacheSecretKey
+output redisCacheSecretKey string = (deployRedisCache)? redisCache.outputs.redisCacheSecretKey : ''

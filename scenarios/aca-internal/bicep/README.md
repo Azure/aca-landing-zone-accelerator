@@ -2,6 +2,20 @@
 
 This is the Bicep-based deployment guide for [Scenario 1: Azure Container Apps - Internal environment secure baseline](../README.md).
 
+## Quick deployment to Azure
+You can deploy the current LZA directly in your azure subscription using Azure Dev CLI. 
+
+### Using Codespaces via Azure Dev CLI 
+
+- Visit [github.com/Azure/aca-landing-zone-accelerator](https://github.com/Azure/aca-landing-zone-accelerator)
+- Click on the `Green Code` button.
+- Navigate to the `CodeSpaces` tab and create a new code space.
+- Open the terminal by pressing <code>Ctrl + `</code>.
+- Navigate to the scenario folder using the command `cd /workspaces/aca-landing-zone-accelerator/scenarios/aca-internal`.
+- Login to Azure using the command `azd auth login`.
+- Use the command `azd up` to deploy, provide environment name and subscription to deploy to.
+- Finally, use the command `azd down` to clean up resources deployed.
+
 ## Prerequisites
 
 This is the starting point for the instructions on deploying this reference implementation. There is required access and tooling you'll need in order to accomplish this.

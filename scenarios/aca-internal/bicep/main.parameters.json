@@ -71,6 +71,9 @@
     "applicationGatewayFqdn": {
       "value": "acahello.demoapp.com"
     },
+    "deployRedisCache": {
+      "value": false
+    },
     "enableApplicationGatewayCertificate": {
       "value": true
     },

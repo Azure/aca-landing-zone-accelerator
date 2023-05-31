@@ -59,7 +59,7 @@ resource frontDoorOriginGroup 'Microsoft.Cdn/profiles/origingroups@2022-05-01-pr
       additionalLatencyInMilliseconds: 50
     }
     healthProbeSettings: {
-      probePath: '/health'
+      probePath: '/'
       probeRequestType: 'HEAD'
       probeProtocol: 'Https'
       probeIntervalInSeconds: 100

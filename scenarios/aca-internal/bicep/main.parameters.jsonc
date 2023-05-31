@@ -75,6 +75,10 @@
     "deployHelloWorldSample": {
       "value": false
     },
+    // if true Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed
+    "deployRedisCache": {
+      "value": false
+    },
     // The FQDN of the Application Gateway. Must match the TLS Certificate. 
     "applicationGatewayFqdn": {
       "value": "acahello.demoapp.com"
@@ -84,10 +88,6 @@
     },
     "applicationGatewayCertificateKeyName": {
       "value": "agwcert"
-    },
-    // if true Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed
-    "deployRedisCache": {
-      "value": false
-    }
+    }    
   }
 }

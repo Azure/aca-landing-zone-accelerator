@@ -136,7 +136,6 @@ Traffic Control Service endpoints are exposed using Azure Application Gateway. T
 
 The landing zone provides a self-signed certificate for the FQDN `acahello.demoapp.com`. The certificate is used to secure the endpoints exposed by the Application Gateway. The certificate is stored in the key vault in the bicep template [app-gateway-cert.bicep](../../../modules/06-application-gateway/modules/app-gateway-cert.bicep).
 
-## Dapr Telemetry
 > **Important**
 > The certificate is self-signed and is not trusted. It is used for demo purposes only. In a production environment and for real workload, you should use a trusted certificate.
 >
@@ -157,7 +156,6 @@ The application gateway is communicating with the backend pool (i.e. traffic con
 To know more about networking, see [Networking considerations for Azure Container Apps](../../../../../../docs/design-areas/networking.md).
 
 ## Dapr Observability
-
 
 By setting `daprAIInstrumentationKey` to `true`, Dapr will automatically send telemetry to Application Insights. The screenshot below shows the telemetry sent by Dapr to Application Insights.
 

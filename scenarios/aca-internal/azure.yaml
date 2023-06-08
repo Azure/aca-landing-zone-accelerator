@@ -2,7 +2,7 @@
 
 name: acainternal-secure-baseline
 metadata:
-  template: LZA-contianerapps-internal-secure-baseline@0.0.1-beta
+  template: LZA-containerapps-internal-secure-baseline@0.0.1-beta
 infra:
     provider: "bicep"
     path: "bicep"

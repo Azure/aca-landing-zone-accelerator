@@ -664,7 +664,7 @@
                 "enableDaprInstrumentation": "[steps('flags').enableDaprInstrumentation]",
                 "deployHelloWorldSample": "[steps('flags').deployHelloWorldSample]",
                 "applicationGatewayFqdn": "acahello.demoapp.com",
-                "enableApplicationGatewayCertificate": "[steps('flags').enableApplicationGatewayCertificate]",
+                "enableApplicationGatewayCertificate": "true",
                 "applicationGatewayCertificateKeyName": "agwcert",
                 "enableTelemetry": "[steps('flags').enableTelemetry]",
                 "deployRedisCache": "[steps('flags').deployRedisCache]"

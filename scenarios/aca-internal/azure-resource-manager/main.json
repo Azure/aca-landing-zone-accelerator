@@ -161,6 +161,7 @@
     },
     "enableApplicationGatewayCertificate": {
       "type": "bool",
+      "defaultValue": true,
       "metadata": {
         "description": "Enable or disable Application Gateway Certificate (PFX)."
       }

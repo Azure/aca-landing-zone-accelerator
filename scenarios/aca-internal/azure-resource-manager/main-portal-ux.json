@@ -249,8 +249,8 @@
                             "type": "Microsoft.Common.TextBox",
                             "label": "Spoke Virtual Network Address Space",
                             "subLabel": "",
-                            "defaultValue": "[[\"10.0.3.0/24\"]",
-                            "placeholder": "[[\"10.0.3.0/24\"]",
+                            "defaultValue": "[[\"10.1.0.0/22\"]",
+                            "placeholder": "[[\"10.1.0.0/22\"]",
                             "toolTip": "CIDR of the Spoke Virtual Network.",
                             "constraints": {
                                 "required": true,

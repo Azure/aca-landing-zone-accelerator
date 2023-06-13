@@ -664,9 +664,9 @@
                 "enableApplicationInsights": "[steps('flags').enableApplicationInsights]",
                 "enableDaprInstrumentation": "[steps('flags').enableDaprInstrumentation]",
                 "deployHelloWorldSample": "[steps('flags').deployHelloWorldSample]",
-                "applicationGatewayFqdn": "[steps('flags').applicationGatewayFqdn]",
+                "applicationGatewayFqdn": "acahello.demoapp.com",
                 "enableApplicationGatewayCertificate": "[steps('flags').enableApplicationGatewayCertificate]",
-                "applicationGatewayCertificateKeyName": "[steps('flags').applicationGatewayCertificateKeyName]",
+                "applicationGatewayCertificateKeyName": "agwcert",
                 "enableTelemetry": "[steps('flags').enableTelemetry]",
                 "deployRedisCache": "[steps('flags').deployRedisCache]"
             },

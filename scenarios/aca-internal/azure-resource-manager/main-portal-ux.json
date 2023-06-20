@@ -560,7 +560,7 @@
                                 "validations": []
                             },
                             "infoMessages": [],
-                            "visible": "[equals(steps('flags').enableApplicationInsights, true)]"
+                            "visible": true
                         },                       
 
 
@@ -669,7 +669,7 @@
                 "vmJumpboxOSType": "[steps('vmsettings').vmJumpboxOSType]",
                 "enableBastion": "[steps('flags').enableBastion]",   
                 "enableApplicationInsights": "[steps('flags').enableApplicationInsights]",
-                "enableDaprInstrumentation": "[if( equals( empty( steps('flags').enableDaprInstrumentation ), true, false, steps('flags').enableDaprInstrumentation ) ]",
+                "enableDaprInstrumentation": "[steps('flags').enableDaprInstrumentation]",
                 "deployHelloWorldSample": "[steps('flags').deployHelloWorldSample]",
                 "applicationGatewayFqdn": "acahello.demoapp.com",
                 "enableApplicationGatewayCertificate": "true",

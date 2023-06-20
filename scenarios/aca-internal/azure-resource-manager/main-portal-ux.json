@@ -355,23 +355,6 @@
                                 }
                             }
                         },
-                        // {
-                        //     "name": "vmSize",
-                        //     "type": "Microsoft.Common.TextBox",
-                        //     "label": "Vm Size",
-                        //     "subLabel": "",
-                        //     "defaultValue": "Standard_B2ms",
-                        //     "placeholder": "Standard_B2ms",
-                        //     "toolTip": "The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.",
-                        //     "constraints": {
-                        //         "required": true,
-                        //         "regex": "",
-                        //         "validationMessage": "",
-                        //         "validations": []
-                        //     },
-                        //     "infoMessages": [],
-                        //     "visible": "[not(equals(steps('vmsettings').vmJumpboxOSType, 'none'))]"
-                        // },
                         {
                             "name": "vmSize",
                             "type": "Microsoft.Compute.SizeSelector",
@@ -397,7 +380,6 @@
                                 "location": "[steps('basics').resourceScope.location.name]"
                             }
                         },
-                        /////////////////
                         {
                             "name": "vmAdminUsername",
                             "type": "Microsoft.Compute.UserNameTextBox",

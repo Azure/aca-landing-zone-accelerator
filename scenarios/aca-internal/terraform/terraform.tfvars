@@ -3,7 +3,6 @@ workloadName = "lzaaca"
 //The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.
 environment                           = "dev"
 tags                                  = {}
-hubResourceGroupName                  = ""
 location                              = "northeurope"
 hubVnetAddressPrefixes                = ["10.0.0.0/16"]
 enableBastion                         = true
@@ -14,13 +13,13 @@ vmAdminPassword                       = "@Aa123456789" # change this to a strong
 vmLinuxSshAuthorizedKeys              = ""
 vmJumpboxOSType                       = "Linux"
 vmJumpBoxSubnetAddressPrefix          = "10.0.3.0/24"
-# spokeResourceGroupName                = "rg-lzaaca-spoke-dev-eus"
 spokeVnetAddressPrefixes              = ["10.1.0.0/22"]
 infraSubnetAddressPrefix              = "10.1.0.0/23"
 infraSubnetName                       = "snet-infra"
 privateEndpointsSubnetAddressPrefix   = "10.1.2.0/24"
 applicationGatewaySubnetAddressPrefix = "10.1.3.0/24"
 deployHelloWorldSample                = true
+clientIP                              = ""
 securityRules = [
   {
     "name" : "Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP",
@@ -104,4 +103,3 @@ appInsightsName                     = "appInsightsAca"
 helloWorldContainerAppName          = "ca-hello-world"
 appGatewayCertificateKeyName        = "agwcert"
 appGatewayFQDN                      = "acahello.demoapp.com"
-# appGatewayPrimaryBackendEndFQDN     = "ca-hello-world.politecoast-62b8bed6.eastus.azurecontainerapps.io" # todo : this should be output of ACA app

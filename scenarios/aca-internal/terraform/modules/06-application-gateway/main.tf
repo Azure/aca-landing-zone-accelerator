@@ -21,21 +21,17 @@ resource "azurerm_user_assigned_identity" "appGatewayUserIdentity" {
 
 module "appGatewayAddCertificates" {
   source                                    = "../../../../shared/terraform/modules/application-gateway/certificate-config"
-  keyVaultId                                = var.keyVaultId
+  keyVaultName                              = var.keyVaultName
   resourceGroupName                         = var.resourceGroupName
   appGatewayCertificateKeyName              = var.appGatewayCertificateKeyName
   appGatewayCertificateData                 = local.appGatewayCertificate
   appGatewayUserAssignedIdentityPrincipalId = azurerm_user_assigned_identity.appGatewayUserIdentity.principal_id
-
-  # moduleDependencies = [
-  #   var.moduleDependencies
-  # ]
 }
 
 module "appGatewayConfiguration" {
   source                           = "../../../../shared/terraform/modules/application-gateway/gateway-config"
   appGatewayName                   = module.naming.resourceNames["applicationGateway"]
-  resourceGroupName                = var.resourceGroupName # module.naming.resourceNames["rgSpokeName"]
+  resourceGroupName                = var.resourceGroupName
   location                         = var.location
   diagnosticSettingName            = "agw-diagnostics"
   appGatewayFQDN                   = var.appGatewayFQDN

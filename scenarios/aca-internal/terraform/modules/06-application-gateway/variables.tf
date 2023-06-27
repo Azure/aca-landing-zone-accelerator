@@ -18,6 +18,6 @@ variable "appGatewayLogAnalyticsId" {}
 
 variable "tags" {}
 
-variable "keyVaultId" {}
+variable "keyVaultName" {}
 
 variable "appGatewayCertificatePath" {}

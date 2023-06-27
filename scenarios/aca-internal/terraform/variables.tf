@@ -135,3 +135,7 @@ variable "deployHelloWorldSample" {
   default = true
   type = bool
 }
+
+variable "clientIP" {
+  default = ""
+}

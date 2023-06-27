@@ -7,7 +7,7 @@ variable "nsgName" {
 }
 
 variable "location" {
-  default = "eastus"
+  default = "northeurope"
 }
 
 variable "tags" {

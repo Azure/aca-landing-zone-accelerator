@@ -9,7 +9,7 @@ variable "networkName" {
 }
 
 variable "location" {
-  default = "eastus"
+  default = "northeurope"
   type    = string
 }
 

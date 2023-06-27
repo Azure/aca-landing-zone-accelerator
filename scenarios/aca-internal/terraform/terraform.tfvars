@@ -19,7 +19,7 @@ infraSubnetName                       = "snet-infra"
 privateEndpointsSubnetAddressPrefix   = "10.1.2.0/24"
 applicationGatewaySubnetAddressPrefix = "10.1.3.0/24"
 deployHelloWorldSample                = true
-clientIP                              = ""
+clientIP                              = "<Add your client IP here for use in KeyVault access permissions>"
 securityRules = [
   {
     "name" : "Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP",

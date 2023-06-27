@@ -140,6 +140,7 @@ The table below summurizes the avaialble parameters and the possible values that
    | `spokeApplicationGatewaySubnetAddressPrefix` | CIDR of the spoke Application Gateway subnet. Must be a subset of the spoke CIDR ranges. | **10.1.3.0/24** | **10.101.3.0/24** |
    | `enableApplicationInsights` | Controls if Application Insights is deployed and configured. | **true** | **false** |
    | `deployHelloWorldSample` | Deploy a simple, sample application to the infrastructure. If you prefer to deploy the more comprehensive, Dapr-enabled sample app, this needs to be disabled | **true** | **false**, because you plan on deploying the Dapr-enabled application instead. |
+   | `clientIP` | If you'd like to deploy the architecture with Application Gateway without having to deploy Application Gateway separately, this should be set to the Public IP address of the machine executing the deployment | "" | 192.168.1.1 |
 
 
 #### Deploy

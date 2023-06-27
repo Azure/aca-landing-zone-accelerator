@@ -145,6 +145,10 @@ The table below summurizes the avaialble parameters and the possible values that
 
 #### Deploy
 
+Before deploying, you need to decide how you would like to deploy the solution with Application Gateway. You have two options:
+- If you provide your client IP address, the Public IP address of the machine executing the Terraform deployment, it will be added to the Network ACL for the KeyVault used to house the Application Gateway certificate and it will allow you to proceed through the entire deployment. 
+- If you would like to keep the KeyVault fully private, you will need to comment out the Application Gateway module in the [main.tf](main.tf) and leave the clientIP value blank in your tfvars file. Follow the [instructions for deploying Application Gateway separately on your jump box](../terraform/modules/06-application-gateway/main.tf). 
+  
 #### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
 ``` bash
 terraform init

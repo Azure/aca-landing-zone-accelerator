@@ -108,6 +108,9 @@ var defaultSubnets = [
     name: spokePrivateEndpointsSubnetName
     properties: {
       addressPrefix: spokePrivateEndpointsSubnetAddressPrefix
+      networkSecurityGroup: {
+        id: nsgPep.outputs.nsgId
+      }
     }
   }
 ]
@@ -192,6 +195,18 @@ module nsgAppGw '../../../../shared/bicep/nsg.bicep' = if (!empty(spokeApplicati
     location: location
     tags: tags
     securityRules: nsgAppGwRules
+  }
+}
+
+@description('NSG Rules for the Application Gateway.')
+module nsgPep '../../../../shared/bicep/nsg.bicep' = {
+  name: take('nsgPep-${deployment().name}', 64)
+  scope: spokeResourceGroup
+  params: {
+    name: naming.outputs.resourcesNames.pepNsg
+    location: location
+    tags: tags
+    securityRules: []
   }
 }
 

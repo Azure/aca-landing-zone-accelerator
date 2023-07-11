@@ -24,7 +24,7 @@ After executing these steps you'll have the spoke resource group (`rg-lzaaca-spo
 1. Create the regional spoke network.
 
    ```bash
-   RESOURCEID_VNET_HUB=$(az deployment sub show -n acalza-hub --query properties.outputs.hubVNetId.value -o tsv)
+   RESOURCEID_VNET_HUB=$(az deployment sub show -n acalza01-hub --query properties.outputs.hubVNetId.value -o tsv)
    echo RESOURCEID_VNET_HUB: $RESOURCEID_VNET_HUB
 
    # [This takes about two minutes to run.]

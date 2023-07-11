@@ -129,6 +129,7 @@ module cosmosDbNetworking '../../../../../shared/bicep/private-networking.bicep'
     privateEndpointSubResourceName: cosmosDbAccountResourceName
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
+    vnetHubResourceId: hubVNetId
   }
 }
 

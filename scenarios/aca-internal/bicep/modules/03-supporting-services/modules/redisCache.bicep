@@ -108,6 +108,7 @@ module redisPrivateNetworking '../../../../../shared/bicep/private-networking.bi
     privateEndpointSubResourceName: redisResourceName
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
+    vnetHubResourceId: hubVNetId
   }
 }
 

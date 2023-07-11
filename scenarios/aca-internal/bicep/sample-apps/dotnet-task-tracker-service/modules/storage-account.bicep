@@ -109,6 +109,7 @@ module storageAccountBlobNetworking '../../../../../shared/bicep/private-network
     privateEndpointSubResourceName: 'blob'
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
+    vnetHubResourceId: hubVNetId
   }
 }
 
@@ -122,6 +123,7 @@ module storageAccountQueueNetworking '../../../../../shared/bicep/private-networ
     privateEndpointSubResourceName: 'queue'
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
+    vnetHubResourceId: hubVNetId
   }
 }
 

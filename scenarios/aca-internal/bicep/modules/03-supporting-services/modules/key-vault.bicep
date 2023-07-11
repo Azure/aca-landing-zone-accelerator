@@ -113,6 +113,7 @@ module keyVaultNetwork '../../../../../shared/bicep/private-networking.bicep' = 
     privateEndpointSubResourceName: keyVaultResourceName
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
+    vnetHubResourceId: hubVNetId
   }
 }
 

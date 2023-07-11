@@ -123,6 +123,7 @@ module serviceBusNetworking '../../../../../shared/bicep/private-networking.bice
     privateEndpointSubResourceName: serviceBusNamespaceResourceName
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
+    vnetHubResourceId: hubVNetId
   }
 }
 

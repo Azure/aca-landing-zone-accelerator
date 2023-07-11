@@ -101,6 +101,7 @@ module containerRegistryNetwork '../../../../../shared/bicep/private-networking.
     privateEndpointSubResourceName: containerRegistryResourceName
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
+    vnetHubResourceId: hubVNetId
   }
 }
 

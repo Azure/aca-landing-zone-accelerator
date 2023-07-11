@@ -272,9 +272,9 @@ module applicationGateway '../../modules/06-application-gateway/deploy.app-gatew
     tags: tags
     environment: environment
     workloadName: workloadName
-    applicationGatewayFQDN: applicationGatewayFQDN
+    applicationGatewayFqdn: applicationGatewayFQDN
     applicationGatewaySubnetId: spokeApplicationGatewaySubnet.id
-    applicationGatewayPrimaryBackendEndFQDN: containerApps.outputs.frontendWebAppServiceFQDN
+    applicationGatewayPrimaryBackendEndFqdn: containerApps.outputs.frontendWebAppServiceFQDN
     appGatewayBackendHealthProbePath: appGatewayBackendHealthProbePath
     enableApplicationGatewayCertificate: enableApplicationGatewayCertificate
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName

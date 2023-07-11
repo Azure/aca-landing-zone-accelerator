@@ -31,7 +31,7 @@
         "value": true
     },
     "bastionSubnetAddressPrefix": {
-        "value":  "10.0.2.0/27"
+        "value":  "10.0.2.0/26"
     },
     "vmSize": {
         "value": "Standard_B2ms"

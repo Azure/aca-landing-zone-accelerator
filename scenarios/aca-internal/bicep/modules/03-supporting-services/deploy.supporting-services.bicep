@@ -31,7 +31,7 @@ param spokeVNetId string
 param spokePrivateEndpointSubnetName string
 
 @description('Deploy Redis cache premium SKU')
-param deployRedisCache bool = true
+param deployRedisCache bool
 
 // ------------------
 // RESOURCES

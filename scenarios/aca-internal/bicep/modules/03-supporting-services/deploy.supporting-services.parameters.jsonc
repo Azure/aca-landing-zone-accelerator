@@ -13,6 +13,10 @@
     "tags": {
         "value": {}
     },
+    // if true Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed
+    "deployRedisCache": {
+      "value": false
+    },
     // Replace with the resource ID of the spoke virtual network 
     "spokeVNetId": {
         "value": "<SPOKE_VNET_RESOURCE_ID>"

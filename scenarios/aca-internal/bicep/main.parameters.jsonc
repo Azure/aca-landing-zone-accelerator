@@ -25,13 +25,19 @@
       "value": ""
     },
     "vnetAddressPrefixes": {
-        "value":  ["10.0.0.0/16"]
+        "value":  ["10.0.0.0/24"]
     },
     "enableBastion": {
         "value": true
     },
+    "gatewaySubnetAddressPrefix": {
+      "value": "10.0.0.0/27"
+    },
+    "azureFirewallSubnetAddressPrefix": {
+      "value": "10.0.0.64/26"
+    },
     "bastionSubnetAddressPrefix": {
-        "value":  "10.0.2.0/26"
+      "value": "10.0.0.128/26"
     },
     "vmSize": {
         "value": "Standard_B2ms"
@@ -49,7 +55,7 @@
         "value": "linux"
     },
     "vmJumpBoxSubnetAddressPrefix": {
-        "value":  "10.0.3.0/24"
+        "value":  "10.1.2.32/27"
     },
     "spokeVNetAddressPrefixes": {
       "value":  ["10.1.0.0/22"]
@@ -58,7 +64,7 @@
       "value":  "10.1.0.0/23"
     },
     "spokePrivateEndpointsSubnetAddressPrefix": {
-      "value":  "10.1.2.0/24"
+      "value":  "10.1.2.0/27"
     },
     "spokeApplicationGatewaySubnetAddressPrefix": {
       "value":  "10.1.3.0/24"

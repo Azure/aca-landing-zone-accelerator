@@ -17,6 +17,7 @@ After executing these steps you'll have the spoke resource group (`rg-lzaaca-spo
 - Spoke resource group
 - Spoke virtual network
 - Peering to and from the hub
+- Jump box virtual machine (optional)
 
 ## Steps
 

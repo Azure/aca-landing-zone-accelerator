@@ -17,7 +17,6 @@ After executing these steps you'll have the hub resource group (`rg-lzaaca-hub-d
 - Hub resource group
 - Hub virtual network
 - Azure Bastion (optional)
-- Jump box virtual machine (optional)
 
 ### IP addressing
 

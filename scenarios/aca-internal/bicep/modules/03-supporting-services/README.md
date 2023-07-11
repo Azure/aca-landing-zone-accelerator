@@ -29,7 +29,7 @@ By default, they are deployed to the spoke resource group.
    echo RESOURCENAME_RESOURCEGROUP_SPOKE: $RESOURCENAME_RESOURCEGROUP_SPOKE && \
    echo RESOURCEID_VNET_SPOKE: $RESOURCEID_VNET_SPOKE
 
-   # [This takes about four minutes to run.]
+   # [This takes about four minutes to run (if you select deployRedis=false).]
    az deployment group create \
       -n acalza01-dependencies \
       -g $RESOURCENAME_RESOURCEGROUP_SPOKE \
@@ -40,7 +40,7 @@ By default, they are deployed to the spoke resource group.
 
 ## Private DNS Zones
 
-Private DNS zones in this reference implementation are implemented directly at the spoke level, meaning the workload team creates the private link DNS zones & records for the resources needed; furthermore, the workload is directly using Azure DNS for resolution. Your networking topology might support this decentralized model or instead DNS & DNS zones for Private Link might be handed at the regional hub or in a [VWAN virtual hub extension](https://learn.microsoft.com/azure/architecture/guide/networking/private-link-vwan-dns-virtual-hub-extension-pattern) by your networking team.
+Private DNS zones in this reference implementation are implemented directly at the regional hub; furthermore, the workload is directly using Azure DNS for resolution. Your networking topology might support this model or instead DNS & DNS zones for Private Link might be handed at the regional hub or in a [VWAN virtual hub extension](https://learn.microsoft.com/azure/architecture/guide/networking/private-link-vwan-dns-virtual-hub-extension-pattern) by your networking team.
 
 If your organization operate a centralized DNS model, you'll need to adapt how DNS zones records are managed this implementation into your existing enterprise networking DNS zone strategy. Since this reference implementation is expected to be deployed isolated from existing infrastructure; this is not something you need to address now; but will be something to understand and address when taking your solution to production.
 

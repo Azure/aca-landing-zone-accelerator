@@ -33,3 +33,7 @@ output "spokeApplicationGatewaySubnetId" {
 output "spokeApplicationGatewaySubnetName" {
   value = var.applicationGatewaySubnetAddressPrefix != "" ? data.azurerm_subnet.appGatewaySubnet[0].name : null
 }
+
+output "logAnalyticsWorkspaceId" {
+  value = module.logAnalyticsWorkspace.workspaceId
+}

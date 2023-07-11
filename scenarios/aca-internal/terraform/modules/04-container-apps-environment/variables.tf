@@ -54,3 +54,5 @@ variable "enableTelemetry" {
 }
 
 variable "vnetLinks" {}
+
+variable "logAnalyticsWorkspaceId" {}

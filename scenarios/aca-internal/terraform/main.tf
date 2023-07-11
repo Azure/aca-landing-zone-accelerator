@@ -74,6 +74,8 @@ module "containerAppsEnvironment" {
   hubVnetId              = module.hub.hubVnetId
   spokeVnetId            = module.spoke.spokeVNetId
   spokeInfraSubnetId     = module.spoke.spokeInfraSubnetId
+  resourceGroupName       = module.spoke.spokeResourceGroupName
+  logAnalyticsWorkspaceId = module.spoke.logAnalyticsWorkspaceId
   vnetLinks = [
     {
       "name"                = module.spoke.spokeVNetName
@@ -115,7 +117,7 @@ module "applicationGateway" {
   appGatewayFQDN                  = var.appGatewayFQDN
   appGatewayPrimaryBackendEndFQDN = module.helloWorldApp.helloWorldAppFQDN
   appGatewaySubnetId              = module.spoke.spokeApplicationGatewaySubnetId
-  appGatewayLogAnalyticsId        = module.containerAppsEnvironment.logAnalyticsWorkspaceId
+  appGatewayLogAnalyticsId        = module.spoke.logAnalyticsWorkspaceId
   appGatewayCertificatePath       = var.appGatewayCertificatePath
   tags                            = var.tags
 }

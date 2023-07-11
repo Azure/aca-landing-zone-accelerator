@@ -25,7 +25,7 @@ module "applicationInsights" {
   appInsightsName   = var.appInsightsName
   resourceGroupName = var.spokeResourceGroupName
   location          = var.location
-  workspaceId       = module.logAnalyticsWorkspace.workspaceId
+  workspaceId       = var.logAnalyticsWorkspaceId
   tags              = var.tags
 }
 
@@ -34,7 +34,7 @@ module "containerAppsEnvironment" {
   environmentName         = module.naming.resourceNames["containerAppsEnvironment"]
   resourceGroupName       = var.spokeResourceGroupName
   location                = var.location
-  logAnalyticsWorkspaceId = module.logAnalyticsWorkspace.workspaceId
+  logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
   subnetId                = var.spokeInfraSubnetId
 }
 

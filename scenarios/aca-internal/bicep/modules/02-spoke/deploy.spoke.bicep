@@ -162,7 +162,7 @@ module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
 }
 
 @description('The spoke virtual network in which the workload will run from. This virtual network would normally already be provisioned by your subscription vending process, and only the subnets would need to be configured.')
-module vnetSpoke '../../../../shared/bicep/vnet.bicep' = {
+module vnetSpoke '../../../../shared/bicep/network/vnet.bicep' = {
   name: take('vnetSpoke-${deployment().name}', 64)
   scope: spokeResourceGroup
   params: {
@@ -185,7 +185,7 @@ module logAnalyticsWorkspace '../../../../shared/bicep/log-analytics-ws.bicep' =
 }
 
 @description('Network security group rules for the Container Apps cluster.')
-module nsgContainerAppsEnvironment '../../../../shared/bicep/nsg.bicep' = {
+module nsgContainerAppsEnvironment '../../../../shared/bicep/network/nsg.bicep' = {
   name: take('nsgContainerAppsEnvironment-${deployment().name}', 64)
   scope: spokeResourceGroup
   params: {
@@ -198,7 +198,7 @@ module nsgContainerAppsEnvironment '../../../../shared/bicep/nsg.bicep' = {
 }
 
 @description('NSG Rules for the Application Gateway.')
-module nsgAppGw '../../../../shared/bicep/nsg.bicep' = if (!empty(spokeApplicationGatewaySubnetAddressPrefix)) {
+module nsgAppGw '../../../../shared/bicep/network/nsg.bicep' = if (!empty(spokeApplicationGatewaySubnetAddressPrefix)) {
   name: take('nsgAppGw-${deployment().name}', 64)
   scope: spokeResourceGroup
   params: {
@@ -211,7 +211,7 @@ module nsgAppGw '../../../../shared/bicep/nsg.bicep' = if (!empty(spokeApplicati
 }
 
 @description('NSG Rules for the private enpoint subnet.')
-module nsgPep '../../../../shared/bicep/nsg.bicep' = {
+module nsgPep '../../../../shared/bicep/network/nsg.bicep' = {
   name: take('nsgPep-${deployment().name}', 64)
   scope: spokeResourceGroup
   params: {
@@ -224,7 +224,7 @@ module nsgPep '../../../../shared/bicep/nsg.bicep' = {
 }
 
 @description('Spoke peering to regional hub network. This peering would normally already be provisioned by your subscription vending process.')
-module peerSpokeToHub '../../../../shared/bicep/peering.bicep' = if (!empty(hubVNetId))  {
+module peerSpokeToHub '../../../../shared/bicep/network/peering.bicep' = if (!empty(hubVNetId))  {
   name: take('${deployment().name}-peerSpokeToHubDeployment', 64)
   scope: spokeResourceGroup
   params: {
@@ -236,7 +236,7 @@ module peerSpokeToHub '../../../../shared/bicep/peering.bicep' = if (!empty(hubV
 }
 
 @description('Regional hub peering to this spoke network. This peering would normally already be provisioned by your subscription vending process.')
-module peerHubToSpoke '../../../../shared/bicep/peering.bicep' = if (!empty(hubVNetId)) {
+module peerHubToSpoke '../../../../shared/bicep/network/peering.bicep' = if (!empty(hubVNetId)) {
   name: take('${deployment().name}-peerHubToSpokeDeployment', 64)
   scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
   params: {

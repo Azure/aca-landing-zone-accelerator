@@ -96,7 +96,7 @@ module containerRegistry '../../../../../shared/bicep/container-registry.bicep' 
   }
 }
 
-module containerRegistryNetwork '../../../../../shared/bicep/private-networking.bicep' = {
+module containerRegistryNetwork '../../../../../shared/bicep/network/private-networking.bicep' = {
   name:take('containerRegistryNetworkDeployment-${deployment().name}', 64)
   params: {
     location: location

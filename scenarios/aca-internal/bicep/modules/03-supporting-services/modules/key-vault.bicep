@@ -186,7 +186,7 @@ resource keyVault_diagnosticSettings 'Microsoft.Insights/diagnosticsettings@2021
 }
 
 
-module keyVaultNetwork '../../../../../shared/bicep/private-networking.bicep' = {
+module keyVaultNetwork '../../../../../shared/bicep/network/private-networking.bicep' = {
   name: 'keyVaultNetwork-${uniqueString(keyVault.id)}'
   params: {
     location: location

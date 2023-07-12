@@ -105,7 +105,7 @@ module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
 }
 
 @description('The virtual network used as the stand-in for the regional hub. This would normally be already provisioned by your platform team.')
-module vnetHub '../../../../shared/bicep/vnet.bicep' = {
+module vnetHub '../../../../shared/bicep/network/vnet.bicep' = {
   name: take('vnetHub-${deployment().name}', 64)
   scope: hubResourceGroup
   params: {

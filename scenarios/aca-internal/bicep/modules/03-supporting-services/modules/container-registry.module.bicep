@@ -28,6 +28,9 @@ param containerRegistryPrivateEndpointName string
 @description('The name of the user assigned identity to be created to pull image from Azure Container Registry.')
 param containerRegistryUserAssignedIdentityName string
 
+@description('Optional. Resource ID of the diagnostic log analytics workspace.')
+param diagnosticWorkspaceId string = ''
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -79,24 +82,26 @@ resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2
   name: spokePrivateEndpointSubnetName
 }
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2022-12-01' = {
-  name: containerRegistryName
-  location: location
-  tags: tags
-  sku: { name: 'Premium' }
-  properties: {    
-    adminUserEnabled: false
+module containerRegistry '../../../../../shared/bicep/container-registry.bicep' = {
+  name: take('containerRegistryNameDeployment-${deployment().name}', 64)
+  params: {
+    location: location
+    tags: tags    
+    name: containerRegistryName
+    acrSku: 'Premium'
+    acrAdminUserEnabled: false
     publicNetworkAccess: 'Disabled'
     networkRuleBypassOptions: 'AzureServices'
+    diagnosticWorkspaceId: diagnosticWorkspaceId
   }
 }
 
 module containerRegistryNetwork '../../../../../shared/bicep/private-networking.bicep' = {
-  name: 'containerRegistryNetwork-${uniqueString(containerRegistry.id)}'
+  name:take('containerRegistryNetworkDeployment-${deployment().name}', 64)
   params: {
     location: location
     azServicePrivateDnsZoneName: privateDnsZoneNames
-    azServiceId: containerRegistry.id
+    azServiceId: containerRegistry.outputs.resourceId
     privateEndpointName: containerRegistryPrivateEndpointName
     privateEndpointSubResourceName: containerRegistryResourceName
     virtualNetworkLinks: spokeVNetLinks
@@ -111,13 +116,23 @@ resource containerRegistryUserAssignedIdentity 'Microsoft.ManagedIdentity/userAs
   tags: tags
 }
 
-resource containerRegistryPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscription().id, containerRegistry.id, containerRegistryUserAssignedIdentity.id) 
-  scope: containerRegistry
-  properties: {
+// resource containerRegistryPullRoleAssignment2 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+//   name: guid(subscription().id, containerRegistryExisting.id, containerRegistryUserAssignedIdentity.id) 
+//   scope: containerRegistryExisting
+//   properties: {
+//     principalId: containerRegistryUserAssignedIdentity.properties.principalId
+//     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', containerRegistryPullRoleGuid)
+//     principalType: 'ServicePrincipal'
+//   }
+// }
+
+module containerRegistryPullRoleAssignment '../../../../../shared/bicep/role-assignments/role-assignment.bicep' = {
+  name: take('containerRegistryPullRoleAssignmentDeployment-${deployment().name}', 64)
+  params: {
+    name: 'ra-containerRegistryPullRoleAssignment'
     principalId: containerRegistryUserAssignedIdentity.properties.principalId
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', containerRegistryPullRoleGuid)
-    principalType: 'ServicePrincipal'
+    resourceId: containerRegistry.outputs.resourceId
+    roleDefinitionId: containerRegistryPullRoleGuid
   }
 }
 
@@ -126,10 +141,10 @@ resource containerRegistryPullRoleAssignment 'Microsoft.Authorization/roleAssign
 // ------------------
 
 @description('The resource ID of the container registry.')
-output containerRegistryId string = containerRegistry.id
+output containerRegistryId string = containerRegistry.outputs.resourceId
 
 @description('The name of the container registry.')
-output containerRegistryName string = containerRegistry.name
+output containerRegistryName string = containerRegistry.outputs.name
 
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = containerRegistryUserAssignedIdentity.id

@@ -32,6 +32,12 @@ param enableBastion bool
 @description('CIDR to use for the Azure Bastion subnet.')
 param bastionSubnetAddressPrefix string
 
+@description('CIDR to use for the gatewaySubnet.')
+param gatewaySubnetAddressPrefix string
+
+@description('CIDR to use for the azureFirewallSubnet.')
+param azureFirewallSubnetAddressPrefix string
+
 // Hub Virtual Machine
 @description('The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.')
 param vmSize string
@@ -116,13 +122,9 @@ module hub 'modules/01-hub/deploy.hub.bicep' = {
     workloadName: workloadName
     vnetAddressPrefixes: vnetAddressPrefixes
     enableBastion: enableBastion
-    bastionSubnetAddressPrefix: bastionSubnetAddressPrefix
-    vmSize: vmSize
-    vmAdminUsername: vmAdminUsername
-    vmAdminPassword: vmAdminPassword
-    vmLinuxSshAuthorizedKeys: vmLinuxSshAuthorizedKeys
-    vmJumpboxOSType: vmJumpboxOSType
-    vmJumpBoxSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
+    bastionSubnetAddressPrefix: bastionSubnetAddressPrefix    
+    azureFirewallSubnetAddressPrefix: azureFirewallSubnetAddressPrefix
+    gatewaySubnetAddressPrefix: gatewaySubnetAddressPrefix
   }
 }
 
@@ -145,6 +147,12 @@ module spoke 'modules/02-spoke/deploy.spoke.bicep' = {
     spokeInfraSubnetAddressPrefix: spokeInfraSubnetAddressPrefix
     spokePrivateEndpointsSubnetAddressPrefix: spokePrivateEndpointsSubnetAddressPrefix
     spokeVNetAddressPrefixes: spokeVNetAddressPrefixes
+    vmSize: vmSize
+    vmAdminUsername: vmAdminUsername
+    vmAdminPassword: vmAdminPassword
+    vmLinuxSshAuthorizedKeys: vmLinuxSshAuthorizedKeys
+    vmJumpboxOSType: vmJumpboxOSType
+    vmJumpBoxSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
   }
 }
 
@@ -177,7 +185,7 @@ module containerAppsEnvironment 'modules/04-container-apps-environment/deploy.ac
     enableApplicationInsights: enableApplicationInsights
     enableDaprInstrumentation: enableDaprInstrumentation
     enableTelemetry: enableTelemetry
-    logAnalyticsWorkspaceId: supportingServices.outputs.logAnalyticsWorkspaceId
+    logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
   }
 }
 

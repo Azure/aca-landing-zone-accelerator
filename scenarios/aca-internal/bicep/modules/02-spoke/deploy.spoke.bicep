@@ -174,6 +174,16 @@ module vnetSpoke '../../../../shared/bicep/vnet.bicep' = {
   }
 }
 
+@description('The log sink for Azure Diagnostics')
+module logAnalyticsWorkspace '../../../../shared/bicep/log-analytics-ws.bicep' = {
+  name: take('logAnalyticsWs-${uniqueString(spokeResourceGroup.id)}', 64)
+  scope: spokeResourceGroup
+  params: {
+    location: location
+    name: naming.outputs.resourcesNames.logAnalyticsWorkspace
+  }
+}
+
 @description('Network security group rules for the Container Apps cluster.')
 module nsgContainerAppsEnvironment '../../../../shared/bicep/nsg.bicep' = {
   name: take('nsgContainerAppsEnvironment-${deployment().name}', 64)
@@ -183,6 +193,7 @@ module nsgContainerAppsEnvironment '../../../../shared/bicep/nsg.bicep' = {
     location: location
     tags: tags
     securityRules: nsgCaeRules.securityRules
+    diagnosticWorkspaceId: logAnalyticsWorkspace.outputs.logAnalyticsWsId
   }
 }
 
@@ -195,10 +206,11 @@ module nsgAppGw '../../../../shared/bicep/nsg.bicep' = if (!empty(spokeApplicati
     location: location
     tags: tags
     securityRules: nsgAppGwRules
+    diagnosticWorkspaceId: logAnalyticsWorkspace.outputs.logAnalyticsWsId
   }
 }
 
-@description('NSG Rules for the Application Gateway.')
+@description('NSG Rules for the private enpoint subnet.')
 module nsgPep '../../../../shared/bicep/nsg.bicep' = {
   name: take('nsgPep-${deployment().name}', 64)
   scope: spokeResourceGroup
@@ -207,6 +219,7 @@ module nsgPep '../../../../shared/bicep/nsg.bicep' = {
     location: location
     tags: tags
     securityRules: []
+    diagnosticWorkspaceId: logAnalyticsWorkspace.outputs.logAnalyticsWsId
   }
 }
 
@@ -321,3 +334,6 @@ output spokeApplicationGatewaySubnetId string = (!empty(spokeApplicationGatewayS
 
 @description('The name of the spoke Application Gateway subnet.  This is \'\' if the subnet was not created.')
 output spokeApplicationGatewaySubnetName string = (!empty(spokeApplicationGatewaySubnetAddressPrefix)) ? vnetSpokeCreated::spokeApplicationGatewaySubnet.name : ''
+
+@description('The resource ID of the Azure Log Analytics Workspace.')
+output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.outputs.logAnalyticsWsId

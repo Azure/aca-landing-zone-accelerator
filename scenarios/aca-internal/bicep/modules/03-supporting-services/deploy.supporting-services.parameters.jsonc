@@ -21,6 +21,10 @@
     "spokeVNetId": {
         "value": "<SPOKE_VNET_RESOURCE_ID>"
     },
+    // Optional. Resource ID of the diagnostic log analytics workspace. If left empty, no diagnostics settings will be defined. 
+    "logAnalyticsWorkspaceId": {
+      "value": ""
+    },
     // Replace with the resource ID of the hub virtual network - required to link the privateDNS zone to the Hub network as well 
     "hubVNetId": {
       "value": "<HUB_VNET_RESOURCE_ID>"

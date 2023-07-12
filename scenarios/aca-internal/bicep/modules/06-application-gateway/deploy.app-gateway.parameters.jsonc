@@ -21,6 +21,10 @@
     "applicationGatewaySubnetId": {
       "value": "<APPLICATION_GATEWAY_SUBNET_RESOURCE_ID>"
     },
+    // The resource ID of the exsiting Log Analytics workload for diagnostic settngs, or nothing if you don\'t need any
+    "applicationGatewayLogAnalyticsId": {
+      "value": ""
+    },
     // Replace with the FQDN of the hello world sample app
     "applicationGatewayPrimaryBackendEndFqdn": {
       "value": "<HELLO_WORLD_SAMPLE_APP_FQDN>"

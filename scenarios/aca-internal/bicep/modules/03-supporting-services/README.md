@@ -25,9 +25,12 @@ By default, they are deployed to the spoke resource group.
    RESOURCEID_VNET_HUB=$(az deployment sub show -n acalza01-hub --query properties.outputs.hubVNetId.value -o tsv)
    RESOURCENAME_RESOURCEGROUP_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeResourceGroupName.value -o tsv)
    RESOURCEID_VNET_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeVNetId.value -o tsv)
+   LOG_ANALYTICS_WS_ID=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.logAnalyticsWorkspaceId.value -o tsv)
+
    echo RESOURCEID_VNET_HUB: $RESOURCEID_VNET_HUB && \
    echo RESOURCENAME_RESOURCEGROUP_SPOKE: $RESOURCENAME_RESOURCEGROUP_SPOKE && \
-   echo RESOURCEID_VNET_SPOKE: $RESOURCEID_VNET_SPOKE
+   echo RESOURCEID_VNET_SPOKE: $RESOURCEID_VNET_SPOKE  && \
+   echo LOG_ANALYTICS_WS_ID: $LOG_ANALYTICS_WS_ID
 
    # [This takes about four minutes to run (if you select deployRedis=false).]
    az deployment group create \
@@ -35,7 +38,8 @@ By default, they are deployed to the spoke resource group.
       -g $RESOURCENAME_RESOURCEGROUP_SPOKE \
       -f 03-supporting-services/deploy.supporting-services.bicep \
       -p 03-supporting-services/deploy.supporting-services.parameters.jsonc \
-      -p hubVNetId=${RESOURCEID_VNET_HUB} spokeVNetId=${RESOURCEID_VNET_SPOKE}
+      -p hubVNetId=${RESOURCEID_VNET_HUB} spokeVNetId=${RESOURCEID_VNET_SPOKE} \
+      -p logAnalyticsWorkspaceId=${LOG_ANALYTICS_WS_ID}
    ```
 
 ## Private DNS Zones

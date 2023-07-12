@@ -39,8 +39,9 @@ module "supportingServices" {
   workloadName                        = var.workloadName
   environment                         = var.environment
   location                            = var.location
-  resourceGroupName                   = module.spoke.spokeResourceGroupName
+  spokeResourceGroupName              = module.spoke.spokeResourceGroupName
   aRecords                            = var.aRecords
+  hubResourceGroupName                = module.hub.hubResourceGroupName
   hubVnetId                           = module.hub.hubVnetId
   spokeVnetId                         = module.spoke.spokeVNetId
   spokePrivateEndpointSubnetId        = module.spoke.spokePrivateEndpointsSubnetId

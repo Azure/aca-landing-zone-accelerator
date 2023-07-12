@@ -1,4 +1,6 @@
-variable "resourceGroupName" {}
+variable "spokeResourceGroupName" {}
+
+variable "hubResourceGroupName" {}
 
 variable "location" {}
 

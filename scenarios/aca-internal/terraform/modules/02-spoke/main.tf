@@ -37,10 +37,55 @@ module "nsgContainerAppsEnvironmentNsg" {
   tags              = var.tags
 }
 
-resource "azurerm_subnet_network_security_group_association" "securityGroupAssociation" {
+resource "azurerm_subnet_network_security_group_association" "infraSecurityGroupAssociation" {
   subnet_id                 = data.azurerm_subnet.infraSubnet.id
   network_security_group_id = module.nsgContainerAppsEnvironmentNsg.nsgId
 }
+
+module "nsgPrivateEndpoints" {
+  source            = "../../../../shared/terraform/modules/networking/nsg"
+  nsgName           = module.naming.resourceNames["privateEndpointsNsg"]
+  location          = var.location
+  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
+  securityRules     = var.securityRules
+  tags              = var.tags
+}
+
+resource "azurerm_subnet_network_security_group_association" "privateEndpointSecurityGroupAssociation" {
+  subnet_id                 = data.azurerm_subnet.privateEndpointsSubnet.id
+  network_security_group_id = module.nsgPrivateEndpoints.nsgId
+}
+
+module "nsgAppGateway" {
+  source            = "../../../../shared/terraform/modules/networking/nsg"
+  nsgName           = module.naming.resourceNames["applicationGatewayNsg"]
+  location          = var.location
+  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
+  securityRules     = var.securityRules
+  tags              = var.tags
+}
+
+resource "azurerm_subnet_network_security_group_association" "agwSecurityGroupAssociation" {
+  count = var.applicationGatewaySubnetAddressPrefix != "" ? 1 : 0
+  subnet_id                 = data.azurerm_subnet.appGatewaySubnet[0].id
+  network_security_group_id = module.nsgAppGateway.nsgId
+}
+
+module "nsgJumpbox" {
+  source            = "../../../../shared/terraform/modules/networking/nsg"
+  nsgName           = module.naming.resourceNames["vmJumpBoxNsg"]
+  location          = var.location
+  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
+  securityRules     = var.securityRules
+  tags              = var.tags
+}
+
+resource "azurerm_subnet_network_security_group_association" "jumpBoxSecurityGroupAssociation" {
+  count = var.jumpboxSubnetAddressPrefix != "" ? 1 : 0
+  subnet_id                 = data.azurerm_subnet.jumpboxSubnet[0].id
+  network_security_group_id = module.nsgJumpbox.nsgId
+}
+
 
 module "peeringSpokeToHub" {
   source         = "../../../../shared/terraform/modules/networking/peering"

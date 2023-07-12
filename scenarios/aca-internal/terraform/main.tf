@@ -47,6 +47,7 @@ module "supportingServices" {
   containerRegistryPullRoleAssignment = var.containerRegistryPullRoleAssignment
   keyVaultPullRoleAssignment          = var.keyVaultPullRoleAssignment
   clientIP                            = var.clientIP
+  logAnalyticsWorkspaceId             = module.spoke.logAnalyticsWorkspaceId
   vnetLinks = [
     {
       "name"                = module.spoke.spokeVNetName
@@ -119,5 +120,6 @@ module "applicationGateway" {
   appGatewaySubnetId              = module.spoke.spokeApplicationGatewaySubnetId
   appGatewayLogAnalyticsId        = module.spoke.logAnalyticsWorkspaceId
   appGatewayCertificatePath       = var.appGatewayCertificatePath
+  logAnalyticsWorkspaceId         = module.spoke.logAnalyticsWorkspaceId
   tags                            = var.tags
 }

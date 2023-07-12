@@ -43,3 +43,18 @@ module "keyVault" {
   clientIP                         = var.clientIP
   tags                             = var.tags
 }
+
+module "diagnostics" {
+  source   = "../../../../shared/terraform/modules/diagnostics"
+  logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
+  resources = [
+    {
+      "type" = "keyvault"
+      "id" = module.keyVault.keyVaultId
+    },
+    {
+      "type" = "acr"
+      "id" = module.containerRegistry.acrId
+    }
+  ]
+}

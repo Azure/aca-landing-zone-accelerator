@@ -21,3 +21,5 @@ variable "tags" {}
 variable "keyVaultName" {}
 
 variable "appGatewayCertificatePath" {}
+
+variable "logAnalyticsWorkspaceId" {}

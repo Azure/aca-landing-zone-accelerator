@@ -19,8 +19,6 @@ variable "resourceGroupName" {
 }
 
 variable "addressSpace" {
-  default = []
-  type    = list(string)
 }
 
 variable "tags" {

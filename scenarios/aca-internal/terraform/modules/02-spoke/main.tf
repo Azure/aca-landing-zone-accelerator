@@ -58,6 +58,26 @@ module "peeringHubToSpoke" {
   remoteRgName   = local.hubVnetResourceGroup
 }
 
+module "vm" {
+  source            = "../../../../shared/terraform/modules/vms"
+  osType            = "Linux"
+  nsgName           = module.naming.resourceNames["vmJumpBoxNsg"]
+  location          = var.location
+  tags              = var.tags
+  securityRules     = var.securityRules
+  nicName           = module.naming.resourceNames["vmJumpBoxNic"]
+  vmName            = module.naming.resourceNames["vmJumpBox"]
+  adminUsername     = var.vmAdminUsername
+  adminPassword     = var.vmAdminPassword
+  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
+  size              = var.vmSize
+
+  vnetResourceGroupName = azurerm_resource_group.spokeResourceGroup.name
+  vnetName              = module.vnet.vnetName
+  vmSubnetName          = var.vmSubnetName
+  addressPrefixes       = tolist([var.jumpboxSubnetAddressPrefix])
+}
+
 data "azurerm_subnet" "infraSubnet" {
   depends_on = [
     module.vnet
@@ -82,6 +102,17 @@ data "azurerm_subnet" "appGatewaySubnet" {
     module.vnet
   ]
   name                 = var.applicationGatewaySubnetName
+  resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
+  virtual_network_name = module.vnet.vnetName
+}
+
+data "azurerm_subnet" "jumpboxSubnet" {
+  count = var.jumpboxSubnetAddressPrefix != "" ? 1 : 0
+  depends_on = [
+    module.vnet
+  ]
+
+  name                 = var.jumpboxSubnetName
   resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
   virtual_network_name = module.vnet.vnetName
 }

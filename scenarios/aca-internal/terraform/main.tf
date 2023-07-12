@@ -1,19 +1,15 @@
 module "hub" {
-  source                       = "./modules/01-hub"
-  workloadName                 = var.workloadName
-  environment                  = var.environment
-  hubResourceGroupName         = var.hubResourceGroupName
-  location                     = var.location
-  vnetAddressPrefixes          = var.hubVnetAddressPrefixes
-  enableBastion                = var.enableBastion
-  bastionSubnetAddressPrefixes = var.bastionSubnetAddressPrefixes
-  vmSize                       = var.vmSize
-  vmAdminUsername              = var.vmAdminUsername
-  vmAdminPassword              = var.vmAdminPassword
-  vmLinuxSshAuthorizedKeys     = var.vmLinuxSshAuthorizedKeys
-  vmJumpboxOSType              = var.vmJumpboxOSType
-  vmJumpBoxSubnetAddressPrefix = var.vmJumpBoxSubnetAddressPrefix
-  tags                         = var.tags
+  source                           = "./modules/01-hub"
+  workloadName                     = var.workloadName
+  environment                      = var.environment
+  hubResourceGroupName             = var.hubResourceGroupName
+  location                         = var.location
+  vnetAddressPrefixes              = var.hubVnetAddressPrefixes
+  enableBastion                    = var.enableBastion
+  bastionSubnetAddressPrefixes     = var.bastionSubnetAddressPrefixes
+  gatewaySubnetAddressPrefix       = var.gatewaySubnetAddressPrefix
+  azureFirewallSubnetAddressPrefix = var.azureFirewallSubnetAddressPrefix
+  tags                             = var.tags
 }
 
 module "spoke" {
@@ -29,6 +25,12 @@ module "spoke" {
   applicationGatewaySubnetAddressPrefix = var.applicationGatewaySubnetAddressPrefix
   hubVnetId                             = module.hub.hubVnetId
   securityRules                         = var.securityRules
+  vmSize                                = var.vmSize
+  vmAdminUsername                       = var.vmAdminUsername
+  vmAdminPassword                       = var.vmAdminPassword
+  vmLinuxSshAuthorizedKeys              = var.vmLinuxSshAuthorizedKeys
+  vmJumpboxOSType                       = var.vmJumpboxOSType
+  jumpboxSubnetAddressPrefix            = var.vmJumpBoxSubnetAddressPrefix
   tags                                  = var.tags
 }
 

@@ -6,10 +6,16 @@ tags                                  = {}
 spokeResourceGroupName                = ""
 vnetAddressPrefixes                   = ["10.1.0.0/22"]
 infraSubnetAddressPrefix              = "10.1.0.0/23"
-infraSubnetName                       = "snet-infra"
-privateEndpointsSubnetAddressPrefix   = "10.1.2.0/24"
+privateEndpointsSubnetAddressPrefix   = "10.1.2.0/27"
 applicationGatewaySubnetAddressPrefix = "10.1.3.0/24"
+vmJumpBoxSubnetAddressPrefix          = "10.1.2.32/27"
+infraSubnetName                       = "snet-infra"
 hubVnetId                             = "<Hub VNET ID>"
+vmSize                                = "Standard_B2ms"
+vmAdminUsername                       = "azureuser"
+vmAdminPassword                       = ""
+vmLinuxSshAuthorizedKeys              = ""
+vmJumpboxOSType                       = "Linux"
 securityRules = [
   {
     "name" : "Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP",

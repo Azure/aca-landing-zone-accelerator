@@ -106,6 +106,20 @@ variable "applicationGatewaySubnetAddressPrefix" {
   default = ""
 }
 
+variable "gatewaySubnetName" {
+  default = "GatewaySubnet"
+  type    = string
+}
+
+variable "gatewaySubnetAddressPrefix" {}
+
+variable "azureFirewallSubnetName" {
+  default = "AzureFirewallSubnet"
+  type    = string
+}
+
+variable "azureFirewallSubnetAddressPrefix" {}
+
 variable "supportingResourceGroupName" {}
 
 variable "aRecords" {}
@@ -133,7 +147,7 @@ variable "enableTelemetry" {
 
 variable "deployHelloWorldSample" {
   default = true
-  type = bool
+  type    = bool
 }
 
 variable "clientIP" {

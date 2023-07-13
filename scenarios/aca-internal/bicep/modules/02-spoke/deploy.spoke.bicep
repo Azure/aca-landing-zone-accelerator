@@ -72,6 +72,9 @@ param vmSubnetName string = 'snet-jumpbox'
 @description('CIDR to use for the jump box subnet.')
 param vmJumpBoxSubnetAddressPrefix string
 
+@description('Optional, default value is true. If true, Azure Policies will be deployed')
+param deployAzurePolicies bool = true
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -284,6 +287,15 @@ module jumpboxWindowsVM './modules/vm/windows-vm.bicep' = if (vmJumpboxOSType ==
     vmSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
     vmNetworkInterfaceName: naming.outputs.resourcesNames.vmJumpBoxNic
     vmNetworkSecurityGroupName: naming.outputs.resourcesNames.vmJumpBoxNsg
+  }
+}
+
+@description('Assign built-in and custom (container-apps related) policies to the spoke subscription.')
+module policyAssignments './modules/policy/policy-definition.module.bicep' = if (deployAzurePolicies) {
+  name: take('policyAssignments-${deployment().name}', 64)
+  params: {
+    location: location   
+    containerRegistryName: naming.outputs.resourcesNames.containerRegistry 
   }
 }
 

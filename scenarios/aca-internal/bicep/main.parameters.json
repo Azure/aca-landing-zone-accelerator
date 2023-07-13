@@ -88,6 +88,9 @@
     },
     "applicationGatewayCertificateKeyName": {
       "value": "agwcert"
+    },
+    "deployAzurePolicies": {
+      "value": true
     }
   }
 }

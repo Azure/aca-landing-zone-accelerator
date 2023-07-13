@@ -102,6 +102,9 @@ param deployRedisCache bool = false
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
 
+@description('Optional, default value is true. If true, Azure Policies will be deployed')
+param deployAzurePolicies bool = true
+
 @description('Optional. DDoS protection mode. see https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-sku-comparison#skus')
 @allowed([
   'Enabled'
@@ -164,6 +167,7 @@ module spoke 'modules/02-spoke/deploy.spoke.bicep' = {
     vmLinuxSshAuthorizedKeys: vmLinuxSshAuthorizedKeys
     vmJumpboxOSType: vmJumpboxOSType
     vmJumpBoxSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
+    deployAzurePolicies: deployAzurePolicies
   }
 }
 

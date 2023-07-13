@@ -50,6 +50,10 @@
     },
     "vmJumpBoxSubnetAddressPrefix": {
       "value": "10.1.2.32/27"
+    },
+    //If true, Azure Policies will be deployed
+    "deployAzurePolicies": {
+      "value": true
     }
   }
 }

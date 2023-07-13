@@ -98,6 +98,10 @@
     },
     "applicationGatewayCertificateKeyName": {
       "value": "agwcert"
-    }    
+    },
+    //If true, Azure Policies will be deployed
+    "deployAzurePolicies": {
+      "value": true
+    } 
   }
 }

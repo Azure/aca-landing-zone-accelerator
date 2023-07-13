@@ -1,0 +1,43 @@
+{
+  "properties": {
+    "displayName": "Azure Container Apps should not allow insecure HTTP connections",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "This policy allows to specify whether Azure Container Apps should not allow insecure HTTP connections",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Azure Container Apps"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [{
+            "field": "type",
+            "equals": "Microsoft.App/containerApps"
+          },
+          {
+            "field": "Microsoft.App/containerApps/configuration.ingress.allowInsecure",
+            "equals": "true"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

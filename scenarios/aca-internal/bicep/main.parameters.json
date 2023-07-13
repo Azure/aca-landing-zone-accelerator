@@ -80,6 +80,9 @@
     "deployRedisCache": {
       "value": false
     },
+    "ddosProtectionMode": {
+      "value": "Enabled"
+    },
     "enableApplicationGatewayCertificate": {
       "value": true
     },

@@ -46,6 +46,14 @@ param keyVaultId string
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
 
+@description('Optional. DDoS protection mode for the Public IP of the Application Gateway. See https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-sku-comparison#skus')
+@allowed([
+  'Enabled'
+  'Disabled'
+  'VirtualNetworkInherited'
+])
+param ddosProtectionMode string = 'Disabled'
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -123,6 +131,7 @@ module applicationGatewayPublicIp '../../../../shared/bicep/network/pip.bicep' =
       '3'
     ] : []
     diagnosticWorkspaceId: applicationGatewayLogAnalyticsId
+    ddosProtectionMode: ddosProtectionMode
   }
 }
 

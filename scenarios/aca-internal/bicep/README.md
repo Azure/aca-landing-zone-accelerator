@@ -115,6 +115,7 @@ This is the starting point for the instructions on deploying this reference impl
    | `enableDaprInstrumentation` | Enable Dapr's telemetry. enableApplicationInsights` must also be set to **true** for this to work. | **true** | **false** |
    | `deployHelloWorldSample` | Deploy a simple, sample application to the infrastructure. If you prefer to deploy the more comprehensive, Dapr-enabled sample app, this needs to be disabled | **true** | **false**, because you plan on deploying the Dapr-enabled application instead. |
    | `deployRedisCache` | Feature flag, if true Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed | **false** | **true** |
+   | `ddosProtectionMode` | DDoS protection mode for the Public IP of the Application Gateway. Allowed values are "VirtualNetworkInherited", "Enabled" and "Disabled" | **Enabled** | **VirtualNetworkInherited** |
 
 2. Deploy the reference implementation.
 

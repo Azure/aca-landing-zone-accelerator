@@ -98,6 +98,14 @@ param diagnosticMetricsToEnable array = [
 @description('Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to "<resourceName>-diagnosticSettings".')
 param diagnosticSettingsName string = ''
 
+@description('Optional. DDoS protection mode. see https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-sku-comparison#skus')
+@allowed([
+  'Enabled'
+  'Disabled'
+  'VirtualNetworkInherited'
+])
+param ddosProtectionMode string = 'Disabled'
+
 var diagnosticsLogsSpecified = [for category in filter(diagnosticLogCategoriesToEnable, item => item != 'allLogs'): {
   category: category
   enabled: true
@@ -151,6 +159,9 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-07-01' = {
     } : null
     idleTimeoutInMinutes: 4
     ipTags: []
+    ddosSettings: {
+      protectionMode: ddosProtectionMode
+    }
   }
 }
 

@@ -102,6 +102,14 @@ param deployRedisCache bool = false
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
 
+@description('Optional. DDoS protection mode. see https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-sku-comparison#skus')
+@allowed([
+  'Enabled'
+  'Disabled'
+  'VirtualNetworkInherited'
+])
+param ddosProtectionMode string = 'Disabled'
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -218,6 +226,7 @@ module applicationGateway 'modules/06-application-gateway/deploy.app-gateway.bic
     enableApplicationGatewayCertificate: enableApplicationGatewayCertificate
     keyVaultId: supportingServices.outputs.keyVaultId
     deployZoneRedundantResources: deployZoneRedundantResources
+    ddosProtectionMode: ddosProtectionMode
   }
 }
 

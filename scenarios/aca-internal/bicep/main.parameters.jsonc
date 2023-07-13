@@ -85,6 +85,10 @@
     "deployRedisCache": {
       "value": false
     },
+    // DDoS protection mode for the Public IP of the Application Gateway. allowed values are "VirtualNetworkInherited", "Enabled" and "Disabled"
+    "ddosProtectionMode": {
+      "value": "Enabled"
+    },
     // The FQDN of the Application Gateway. Must match the TLS Certificate. 
     "applicationGatewayFqdn": {
       "value": "acahello.demoapp.com"

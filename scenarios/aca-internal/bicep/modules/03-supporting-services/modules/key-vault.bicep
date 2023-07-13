@@ -25,8 +25,6 @@ param spokePrivateEndpointSubnetName string
 @description('The name of the private endpoint to be created for Key Vault.')
 param keyVaultPrivateEndpointName string
 
-@description('The name of the user assigned identity with Key Vault reader role.')
-param keyVaultUserAssignedIdentityName string
 
 @description('Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
 @minValue(0)
@@ -199,12 +197,6 @@ module keyVaultNetwork '../../../../../shared/bicep/network/private-networking.b
   }
 }
 
-resource keyVaultUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: keyVaultUserAssignedIdentityName
-  location: location
-  tags: tags
-}
-
 // ------------------
 // OUTPUTS
 // ------------------
@@ -214,6 +206,3 @@ output keyVaultId string = keyVault.id
 
 @description('The name of the key vault.')
 output keyVaultName string = keyVault.name
-
-@description('The resource ID of the user assigned managed identity to access the key vault.')
-output keyVaultUserAssignedIdentityId string = keyVaultUserAssignedIdentity.id

@@ -82,7 +82,6 @@ module keyVault 'modules/key-vault.bicep' = {
     hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
     keyVaultPrivateEndpointName: naming.outputs.resourcesNames.keyVaultPep
-    keyVaultUserAssignedIdentityName: naming.outputs.resourcesNames.keyVaultUserAssignedIdentity
     diagnosticWorkspaceId: logAnalyticsWorkspaceId
   }
 }
@@ -120,9 +119,6 @@ output keyVaultId string = keyVault.outputs.keyVaultId
 
 @description('The name of the Azure Key Vault.')
 output keyVaultName string = keyVault.outputs.keyVaultName
-
-@description('The resource ID of the user-assigned managed identity to read from Azure Key Vault.')
-output keyVaultUserAssignedIdentityId string = keyVault.outputs.keyVaultUserAssignedIdentityId
 
 @description('The secret name to retrieve the connection string from KeyVault')
 output redisCacheSecretKey string = (deployRedisCache)? redisCache.outputs.redisCacheSecretKey : ''

@@ -276,9 +276,6 @@ output keyVaultId string = supportingServices.outputs.keyVaultId
 @description('The name of the key vault.')
 output keyVaultName string = supportingServices.outputs.keyVaultName
 
-@description('The resource ID of the user assigned managed identity to access the key vault.')
-output keyVaultUserAssignedIdentityId string = supportingServices.outputs.keyVaultUserAssignedIdentityId
-
 // Container Apps Environment
 @description('The resource ID of the container apps environment.')
 output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.containerAppsEnvironmentId

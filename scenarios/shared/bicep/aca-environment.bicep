@@ -62,9 +62,6 @@ resource acaEnvironment 'Microsoft.App/managedEnvironments@2022-10-01' = {
     vnetConfiguration: {
       internal: vnetEndpointInternal
       infrastructureSubnetId: subnetId
-      // outboundSettings:{
-      //   outBoundType: 'LoadBalancer'
-      // }
     }
 
     appLogsConfiguration:  {

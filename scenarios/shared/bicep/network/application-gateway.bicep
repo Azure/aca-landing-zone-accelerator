@@ -2,8 +2,8 @@
 @maxLength(80)
 param name string
 
-@description('Optional. Location for all resources.')
-param location string = resourceGroup().location
+@description('Location for all resources.')
+param location string
 
 @description('Optional. The ID(s) to assign to the resource.')
 param userAssignedIdentities object = {}
@@ -86,7 +86,7 @@ param sku string = 'WAF_Medium'
 @description('Optional. The number of Application instances to be configured.')
 @minValue(1)
 @maxValue(10)
-param capacity int = 2
+param capacity int = 1
 
 @description('Optional. SSL certificates of the application gateway resource.')
 param sslCertificates array = []
@@ -249,17 +249,6 @@ var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
   }
 }]
 
-@allowed([
-  ''
-  'CanNotDelete'
-  'ReadOnly'
-])
-@description('Optional. Specify the type of lock.')
-param lock string = ''
-
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-param roleAssignments array = []
-
 @description('Optional. Resource tags.')
 param tags object = {}
 
@@ -350,15 +339,6 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2022-07-01' =
   zones: zones
 }
 
-resource applicationGateway_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock)) {
-  name: '${applicationGateway.name}-${lock}-lock'
-  properties: {
-    level: any(lock)
-    notes: lock == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
-  }
-  scope: applicationGateway
-}
-
 resource applicationGateway_diagnosticSettingName 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(diagnosticStorageAccountId) || !empty(diagnosticWorkspaceId) || !empty(diagnosticEventHubAuthorizationRuleId) || !empty(diagnosticEventHubName)) {
   name: !empty(diagnosticSettingsName) ? diagnosticSettingsName : '${name}-diagnosticSettings'
   properties: {
@@ -372,18 +352,6 @@ resource applicationGateway_diagnosticSettingName 'Microsoft.Insights/diagnostic
   scope: applicationGateway
 }
 
-module applicationGateway_roleAssignments '.bicep/nested_roleAssignments.bicep' = [for (roleAssignment, index) in roleAssignments: {
-  name: '${uniqueString(deployment().name, location)}-AppGateway-Rbac-${index}'
-  params: {
-    description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
-    principalIds: roleAssignment.principalIds
-    principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : ''
-    roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
-    condition: contains(roleAssignment, 'condition') ? roleAssignment.condition : ''
-    delegatedManagedIdentityResourceId: contains(roleAssignment, 'delegatedManagedIdentityResourceId') ? roleAssignment.delegatedManagedIdentityResourceId : ''
-    resourceId: applicationGateway.id
-  }
-}]
 
 @description('The name of the application gateway.')
 output name string = applicationGateway.name

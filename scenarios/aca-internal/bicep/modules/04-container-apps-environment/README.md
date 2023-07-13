@@ -24,9 +24,12 @@ The application platform, Azure Containers Apps, and its logging sinks within Az
    RESOURCEID_VNET_HUB=$(az deployment sub show -n acalza01-hub --query properties.outputs.hubVNetId.value -o tsv)
    RESOURCENAME_RESOURCEGROUP_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeResourceGroupName.value -o tsv)
    RESOURCENAME_VNET_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeVNetName.value -o tsv)
+   LOG_ANALYTICS_WS_ID=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.logAnalyticsWorkspaceId.value -o tsv)
+
    echo RESOURCEID_VNET_HUB: $RESOURCEID_VNET_HUB && \
    echo RESOURCENAME_RESOURCEGROUP_SPOKE: $RESOURCENAME_RESOURCEGROUP_SPOKE && \
-   echo RESOURCENAME_VNET_SPOKE: $RESOURCENAME_VNET_SPOKE
+   echo RESOURCENAME_VNET_SPOKE: $RESOURCENAME_VNET_SPOKE && \
+   echo LOG_ANALYTICS_WS_ID: $LOG_ANALYTICS_WS_ID
 
    # [This takes about 11 minutes to run.]
    az deployment group create \
@@ -34,7 +37,8 @@ The application platform, Azure Containers Apps, and its logging sinks within Az
       -g $RESOURCENAME_RESOURCEGROUP_SPOKE \
       -f 04-container-apps-environment/deploy.aca-environment.bicep \
       -p 04-container-apps-environment/deploy.aca-environment.parameters.jsonc \
-      -p hubVNetId=${RESOURCEID_VNET_HUB} spokeVNetName=${RESOURCENAME_VNET_SPOKE} enableApplicationInsights=true
+      -p hubVNetId=${RESOURCEID_VNET_HUB} spokeVNetName=${RESOURCENAME_VNET_SPOKE} enableApplicationInsights=true enableDaprInstrumentation=true \
+      -p logAnalyticsWorkspaceId=${LOG_ANALYTICS_WS_ID}
    ```
 
 1. Explore your final infrastructure. *Optional.*

@@ -99,6 +99,9 @@ param enableTelemetry bool = true
 @description('Optional, default value is false. If true, Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed')
 param deployRedisCache bool = false
 
+@description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
+param deployZoneRedundantResources bool = true
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -214,6 +217,7 @@ module applicationGateway 'modules/06-application-gateway/deploy.app-gateway.bic
     applicationGatewaySubnetId: spoke.outputs.spokeApplicationGatewaySubnetId
     enableApplicationGatewayCertificate: enableApplicationGatewayCertificate
     keyVaultId: supportingServices.outputs.keyVaultId
+    deployZoneRedundantResources: deployZoneRedundantResources
   }
 }
 

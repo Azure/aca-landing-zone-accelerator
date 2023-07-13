@@ -118,6 +118,9 @@ param enableApplicationGatewayCertificate bool
 @description('The name of the certificate key to use for Application Gateway certificate.')
 param applicationGatewayCertificateKeyName string
 
+@description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
+param deployZoneRedundantResources bool = true
+
 
 // ------------------
 // VARIABLES
@@ -245,6 +248,7 @@ module applicationGateway '../../modules/06-application-gateway/deploy.app-gatew
     enableApplicationGatewayCertificate: enableApplicationGatewayCertificate
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     keyVaultId: keyVaultId
+    deployZoneRedundantResources: deployZoneRedundantResources
   }
 }
 

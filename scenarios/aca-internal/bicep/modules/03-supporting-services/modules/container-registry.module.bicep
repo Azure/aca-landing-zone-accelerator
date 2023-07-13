@@ -31,6 +31,9 @@ param containerRegistryUserAssignedIdentityName string
 @description('Optional. Resource ID of the diagnostic log analytics workspace.')
 param diagnosticWorkspaceId string = ''
 
+@description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
+param deployZoneRedundantResources bool = true
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -89,6 +92,7 @@ module containerRegistry '../../../../../shared/bicep/container-registry.bicep' 
     tags: tags    
     name: containerRegistryName
     acrSku: 'Premium'
+    zoneRedundancy: deployZoneRedundantResources ? 'Enabled' : 'Disabled'
     acrAdminUserEnabled: false
     publicNetworkAccess: 'Disabled'
     networkRuleBypassOptions: 'AzureServices'

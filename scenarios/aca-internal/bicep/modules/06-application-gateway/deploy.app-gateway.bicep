@@ -43,6 +43,9 @@ param applicationGatewayLogAnalyticsId string = ''
 @description('The resource ID of the existing Key Vault which contains Application Gateway\'s cert.')
 param keyVaultId string
 
+@description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
+param deployZoneRedundantResources bool = true
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -101,25 +104,224 @@ module appGatewayAddCertificates './modules/app-gateway-cert.bicep' = if (enable
     keyVaultName: keyVaultName
     appGatewayCertificateData: loadFileAsBase64(applicationGatewayCertificatePath)
     appGatewayCertificateKeyName: applicationGatewayCertificateKeyName
-    appGatewayUserAssignedIdentityPrincipalId: userAssignedIdentity.outputs.principalId
+    appGatewayUserAssignedIdentityPrincipalId: userAssignedIdentity.outputs.principalId        
   }
 }
 
-@description('Azure Application Gateway, which acts as the public Internet gateway and WAF for the workload.')
-module appGatewayConfiguration './modules/app-gateway-config.bicep' = {
-  name: take('appGatewayConfiguration-Deployment-${uniqueString(resourceGroup().id)}', 64)
+
+module applicationGatewayPublicIp '../../../../shared/bicep/network/pip.bicep' = {
+  name: take('applicationGatewayPublicIp-Deployment-${uniqueString(resourceGroup().id)}', 64)
   params: {
-    appGatewayName: naming.outputs.resourcesNames.applicationGateway
+    location: location
+    name: naming.outputs.resourcesNames.applicationGatewayPip
+    tags: tags
+    skuName : 'Standard'
+    publicIPAllocationMethod: 'Static'
+    zones: (deployZoneRedundantResources) ? [
+      '1'
+      '2'
+      '3'
+    ] : []
+    diagnosticWorkspaceId: applicationGatewayLogAnalyticsId
+  }
+}
+
+module applicationGateway '../../../../shared/bicep/network/application-gateway.bicep' = {
+  name: take('applicationGateway-Deployment-${uniqueString(resourceGroup().id)}', 64)
+  params: {
+    name: naming.outputs.resourcesNames.applicationGateway
     location: location
     tags: tags
-    appGatewayFqdn: applicationGatewayFqdn
-    appGatewayPrimaryBackendEndFqdn: applicationGatewayPrimaryBackendEndFqdn
-    appGatewayBackendHealthProbePath: appGatewayBackendHealthProbePath
-    appGatewayPublicIpName: naming.outputs.resourcesNames.applicationGatewayPip
-    appGatewaySubnetId: applicationGatewaySubnetId
-    appGatewayUserAssignedIdentityId: userAssignedIdentity.outputs.id
-    keyVaultSecretId: (enableApplicationGatewayCertificate) ? appGatewayAddCertificates.outputs.SecretUri : ''
-    appGatewayLogAnalyticsId: applicationGatewayLogAnalyticsId
+    userAssignedIdentities: {
+      '${userAssignedIdentity.outputs.id}': {}
+    }
+    sku: 'WAF_v2'
+    diagnosticWorkspaceId: applicationGatewayLogAnalyticsId
+
+    gatewayIPConfigurations: [
+      {
+        name: 'appGatewayIpConfig'
+        properties: {
+          subnet: {
+            id: applicationGatewaySubnetId
+          }
+        }
+      }
+    ]
+
+    backendAddressPools: [
+      {
+        name: 'acaServiceBackend'
+        properties: {
+          backendAddresses: [
+            {
+              fqdn: applicationGatewayPrimaryBackendEndFqdn
+            }
+          ]
+        }
+      }
+    ]
+
+    sslCertificates: (enableApplicationGatewayCertificate) ? [
+      {
+        name: applicationGatewayFqdn
+        properties: {
+          keyVaultSecretId: appGatewayAddCertificates.outputs.SecretUri
+        }
+      }
+    ] : []
+
+    frontendIPConfigurations: [
+      {
+        name: 'appGwPublicFrontendIp'
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          publicIPAddress: {
+            id: applicationGatewayPublicIp.outputs.resourceId
+          }
+        }
+      }
+    ]
+
+    frontendPorts: (enableApplicationGatewayCertificate) ? [
+      {
+        name: 'port_443'
+        properties: {
+          port: 443
+        }
+      }
+      {
+        name: 'port_80'
+        properties: {
+          port: 80
+        }
+      }
+    ] : [
+      {
+        name: 'port_80'
+        properties: {
+          port: 80
+        }
+      }
+    ]
+
+    backendHttpSettingsCollection: [     
+      {
+        name: 'https'
+        properties: {
+          port: 443
+          protocol: 'Https'
+          cookieBasedAffinity: 'Disabled'
+          pickHostNameFromBackendAddress: true
+          requestTimeout: 20
+          probe: {
+            id: resourceId('Microsoft.Network/applicationGateways/probes', naming.outputs.resourcesNames.applicationGateway, 'webProbe')
+          }
+        }
+      }
+    ]
+
+    httpListeners: (!enableApplicationGatewayCertificate) ? [
+      {
+        name: 'httpListener'
+        properties: {
+          frontendIPConfiguration: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/frontendIPConfigurations/appGwPublicFrontendIp'
+          }
+          frontendPort: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/frontendPorts/port_80'
+          }
+          protocol: 'Http'
+          hostnames: []
+          requireServerNameIndication: false
+        }
+      }
+    ] : [
+      {
+        name: 'httpListener'
+        properties: {
+          frontendIPConfiguration: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/frontendIPConfigurations/appGwPublicFrontendIp'
+          }
+          frontendPort: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/frontendPorts/port_443'
+          }
+          protocol: 'Https'
+          sslCertificate: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/sslCertificates/${applicationGatewayFqdn}'
+          }
+          hostnames: []
+          requireServerNameIndication: false
+        }
+      }
+    ]
+
+    requestRoutingRules:  [
+      {
+        name: 'routingRules'
+        properties: {
+          ruleType: 'Basic'
+          priority: 100
+          httpListener: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/httpListeners/httpListener'
+          }
+          backendAddressPool: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendAddressPools/acaServiceBackend'
+          }
+          backendHttpSettings: {
+            #disable-next-line use-resource-id-functions
+            id: '${resourceId('Microsoft.Network/applicationGateways', naming.outputs.resourcesNames.applicationGateway)}/backendHttpSettingsCollection/https'
+          }
+        }
+      }
+    ]
+
+    probes: [
+      {
+        name: 'webProbe'
+        properties: {
+          protocol: 'Https'
+          host: applicationGatewayPrimaryBackendEndFqdn
+          path: appGatewayBackendHealthProbePath
+          interval: 30
+          timeout: 30
+          unhealthyThreshold: 3
+          pickHostNameFromBackendHttpSettings: false
+          minServers: 0
+          match: {
+            statusCodes: [
+              '200-499'
+            ]
+          }
+        }
+      }
+    ]
+
+    zones: (deployZoneRedundantResources) ? [
+      '1'
+      '2'
+      '3'
+    ] : []
+
+    webApplicationFirewallConfiguration: {
+      enabled: true
+      firewallMode: 'Prevention'
+      ruleSetType: 'OWASP'
+      ruleSetVersion: '3.2'
+      disabledRuleGroups: []
+      requestBodyCheck: true
+      maxRequestBodySizeInKb: 128
+      fileUploadLimitInMb: 100
+    }
+    sslPolicyType: 'Predefined'
+    sslPolicyName: 'AppGwSslPolicy20220101'
   }
 }
 
@@ -127,8 +329,12 @@ module appGatewayConfiguration './modules/app-gateway-config.bicep' = {
 // OUTPUTS
 // ------------------
 
+
+// @description('The resource of the  public IP address of the application gateway.')
+// output appGatewayPipId string = appGatewayPip.id
+
 @description('The FQDN of the Azure Application Gateway.')
-output applicationGatewayFqdn string = appGatewayConfiguration.outputs.applicationGatewayFqdn
+output applicationGatewayFqdn string = applicationGatewayFqdn
 
 @description('The public IP address of the Azure Application Gateway.')
-output applicationGatewayPublicIp string = appGatewayConfiguration.outputs.applicationGatewayPublicIp
+output applicationGatewayPublicIp string = applicationGatewayPublicIp.outputs.ipAddress

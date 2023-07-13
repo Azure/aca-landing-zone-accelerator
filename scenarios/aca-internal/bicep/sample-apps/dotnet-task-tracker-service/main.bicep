@@ -124,11 +124,15 @@ param applicationGatewayCertificateKeyName string
 @description('Application Insights Name.')
 param applicationInsightsName string
 
-var appInsightName = empty(applicationInsightsName) ? naming.outputs.resourcesNames.applicationInsights : applicationInsightsName
+@description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
+param deployZoneRedundantResources bool = true
+
 
 // ------------------
 // VARIABLES
 // ------------------
+
+var appInsightName = empty(applicationInsightsName) ? naming.outputs.resourcesNames.applicationInsights : applicationInsightsName
 
 var keyVaultIdTokens = split(keyVaultId, '/')
 var keyVaultName = keyVaultIdTokens[8]
@@ -136,7 +140,6 @@ var keyVaultName = keyVaultIdTokens[8]
 var secretStoreComponentName = 'secretstoreakv'
 
 var appGatewayBackendHealthProbePath = '/'
-
 
 // ------------------
 // RESOURCES
@@ -279,6 +282,7 @@ module applicationGateway '../../modules/06-application-gateway/deploy.app-gatew
     enableApplicationGatewayCertificate: enableApplicationGatewayCertificate
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     keyVaultId: keyVaultId
+    deployZoneRedundantResources: deployZoneRedundantResources
   }
 }
 

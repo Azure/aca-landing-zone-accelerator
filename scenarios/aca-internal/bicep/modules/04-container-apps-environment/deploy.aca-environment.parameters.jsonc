@@ -35,8 +35,9 @@
     "enableTelemetry": {
       "value": true
     },
-    "localAnalyticsWsName": {
-      "value": "<LOCAL_ANALYTICS_WORKSPACE_NAME>"
+    // Optional. Resource ID of the diagnostic log analytics workspace. If left empty, no diagnostics settings will be defined. 
+    "logAnalyticsWorkspaceId": {
+      "value": ""
     }
   }
 }

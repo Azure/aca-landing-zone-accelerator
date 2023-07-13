@@ -15,7 +15,8 @@ module "naming" {
 module "containerRegistry" {
   source                                    = "../../../../shared/terraform/modules/acr"
   acrName                                   = module.naming.resourceNames["containerRegistry"]
-  resourceGroupName                         = var.spokeResourceGroupName
+  spokeResourceGroupName                    = var.spokeResourceGroupName
+  hubResourceGroupName                      = var.hubResourceGroupName
   location                                  = var.location
   vnetLinks                                 = var.vnetLinks != [] ? var.vnetLinks : local.vnetLinks
   aRecords                                  = var.aRecords

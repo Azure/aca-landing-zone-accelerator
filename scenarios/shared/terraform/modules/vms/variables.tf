@@ -2,10 +2,6 @@ variable "osType" {
   default = "Linux"
 }
 
-variable "nsgName" {
-  default = ""
-}
-
 variable "location" {
   default = "northeurope"
 }
@@ -13,17 +9,7 @@ variable "location" {
 variable "tags" {
 }
 
-variable "vnetName" {
-  type = string
-}
-
 variable "vnetResourceGroupName" {
-}
-
-variable "addressPrefixes" {
-}
-
-variable "securityRules" {
 }
 
 variable "nicName" {
@@ -45,6 +31,6 @@ variable "resourceGroupName" {
 variable "size" {
 }
 
-variable "vmSubnetName" {
+variable "subnetId" {
 
 }

@@ -25,7 +25,7 @@ module "vnet" {
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
   addressSpace      = var.vnetAddressPrefixes
   tags              = var.tags
-  subnets           = local.subnets
+  subnets           = local.spokeSubnets
 }
 
 module "nsgContainerAppsEnvironmentNsg" {
@@ -33,7 +33,7 @@ module "nsgContainerAppsEnvironmentNsg" {
   nsgName           = module.naming.resourceNames["containerAppsEnvironmentNsg"]
   location          = var.location
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  securityRules     = var.securityRules
+  securityRules     = var.containerAppsSecurityRules
   tags              = var.tags
 }
 
@@ -47,7 +47,6 @@ module "nsgPrivateEndpoints" {
   nsgName           = module.naming.resourceNames["privateEndpointsNsg"]
   location          = var.location
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  securityRules     = var.securityRules
   tags              = var.tags
 }
 
@@ -61,7 +60,7 @@ module "nsgAppGateway" {
   nsgName           = module.naming.resourceNames["applicationGatewayNsg"]
   location          = var.location
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  securityRules     = var.securityRules
+  securityRules     = var.appGatewaySecurityRules
   tags              = var.tags
 }
 
@@ -76,7 +75,6 @@ module "nsgJumpbox" {
   nsgName           = module.naming.resourceNames["vmJumpBoxNsg"]
   location          = var.location
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  securityRules     = var.securityRules
   tags              = var.tags
 }
 
@@ -106,21 +104,16 @@ module "peeringHubToSpoke" {
 module "vm" {
   source            = "../../../../shared/terraform/modules/vms"
   osType            = "Linux"
-  nsgName           = module.naming.resourceNames["vmJumpBoxNsg"]
   location          = var.location
   tags              = var.tags
-  securityRules     = var.securityRules
   nicName           = module.naming.resourceNames["vmJumpBoxNic"]
   vmName            = module.naming.resourceNames["vmJumpBox"]
   adminUsername     = var.vmAdminUsername
   adminPassword     = var.vmAdminPassword
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
   size              = var.vmSize
-
   vnetResourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  vnetName              = module.vnet.vnetName
-  vmSubnetName          = var.vmSubnetName
-  addressPrefixes       = tolist([var.jumpboxSubnetAddressPrefix])
+  subnetId          = data.azurerm_subnet.jumpboxSubnet[0].id
 }
 
 data "azurerm_subnet" "infraSubnet" {

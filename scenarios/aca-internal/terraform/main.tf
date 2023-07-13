@@ -24,7 +24,6 @@ module "spoke" {
   privateEndpointsSubnetAddressPrefix   = var.privateEndpointsSubnetAddressPrefix
   applicationGatewaySubnetAddressPrefix = var.applicationGatewaySubnetAddressPrefix
   hubVnetId                             = module.hub.hubVnetId
-  securityRules                         = var.securityRules
   vmSize                                = var.vmSize
   vmAdminUsername                       = var.vmAdminUsername
   vmAdminPassword                       = var.vmAdminPassword

@@ -335,9 +335,6 @@ output spokeInfraSubnetId string = vnetSpokeCreated::spokeInfraSubnet.id
 @description('The name of the spoke infrastructure subnet.')
 output spokeInfraSubnetName string = vnetSpokeCreated::spokeInfraSubnet.name
 
-@description('The resource ID of the spoke private endpoints subnet.')
-output spokePrivateEndpointsSubnetId string = vnetSpokeCreated::spokePrivateEndpointsSubnet.id
-
 @description('The name of the spoke private endpoints subnet.')
 output spokePrivateEndpointsSubnetName string = vnetSpokeCreated::spokePrivateEndpointsSubnet.name
 

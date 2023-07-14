@@ -261,9 +261,6 @@ output spokeInfraSubnetId string = spoke.outputs.spokeInfraSubnetId
 @description('The name of the Spoke Infrastructure Subnet.')
 output spokeInfraSubnetName string = spoke.outputs.spokeInfraSubnetName
 
-@description('The resource ID of the Spoke Private Endpoints Subnet.')
-output spokePrivateEndpointsSubnetId string = spoke.outputs.spokePrivateEndpointsSubnetId
-
 @description('The name of the Spoke Private Endpoints Subnet.')
 output spokePrivateEndpointsSubnetName string = spoke.outputs.spokePrivateEndpointsSubnetName
 

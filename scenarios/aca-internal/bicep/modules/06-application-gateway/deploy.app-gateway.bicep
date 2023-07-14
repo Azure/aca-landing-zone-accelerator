@@ -338,10 +338,6 @@ module applicationGateway '../../../../shared/bicep/network/application-gateway.
 // OUTPUTS
 // ------------------
 
-
-// @description('The resource of the  public IP address of the application gateway.')
-// output appGatewayPipId string = appGatewayPip.id
-
 @description('The FQDN of the Azure Application Gateway.')
 output applicationGatewayFqdn string = applicationGatewayFqdn
 

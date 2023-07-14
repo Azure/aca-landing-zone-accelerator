@@ -89,24 +89,6 @@ az storage container-rm create --storage-account $STORAGE_ACCOUNT_NAME --name $C
 
 ### Deploy the reference implementation
 
-#### Configure Terraform remote state
-
-To configure your Terraform deployment to use the newly provisioned storage account and container, edit the [`./providers.tf`](./providers.tf) file at lines 11-13 as below:
-
-```hcl
-  backend "azurerm" {
-    resource_group_name  = "<REPLACE with $RESOURCE_GROUP_NAME>"
-    storage_account_name = "<REPLACE with $STORAGE_ACCOUNT_NAME>"
-    container_name       = "tfstate"
-    key                  = "acalza/terraform.tfstate"
-  }
-```
-
-* `resource_group_name`: Name of the Azure Resource Group that the storage account resides in.
-* `storage_account_name`: Name of the Azure Storage Account to be used to hold remote state.
-* `container_name`: Name of the Azure Storage Account Blob Container to store remote state.
-* `key`: Path and filename for the remote state file to be placed in the Storage Account Container. If the state file does not exist in this path, Terraform will automatically generate one for you.
-
 #### Provide parameters required for deployment
 
 As you configured the backend remote state with your live Azure infrastructure resource values, you must also provide them for your deployment.
@@ -151,7 +133,11 @@ Before deploying, you need to decide how you would like to deploy the solution w
   
 #### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
 ``` bash
-terraform init
+terraform init `
+    --backend-config=resource_group_name="tfstate" `
+    --backend-config=storage_account_name=<Your TF State Store Storage Account Name> `
+    --backend-config=container_name="tfstate" `
+    --backend-config=key="acalza/terraform.state"
 terraform plan --var-file terraform.tfvars -out tfplan
 terraform apply tfplan
 ```

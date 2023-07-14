@@ -12,7 +12,7 @@ variable "resourceGroupName" {
 }
 
 variable "location" {
-  default = "eastus"
+  default = "northeurope"
   type    = string
 }
 

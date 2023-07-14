@@ -44,6 +44,7 @@ module "supportingServices" {
   spokePrivateEndpointSubnetId        = module.spoke.spokePrivateEndpointsSubnetId
   containerRegistryPullRoleAssignment = var.containerRegistryPullRoleAssignment
   keyVaultPullRoleAssignment          = var.keyVaultPullRoleAssignment
+  clientIP                            = var.clientIP
   vnetLinks = [
     {
       "name"                = module.spoke.spokeVNetName
@@ -97,13 +98,16 @@ module "helloWorldApp" {
   tags                                    = var.tags
 }
 
+
+# If you would like to deploy an Application Gateway and have provided your IP address for KeyVault access, leave this module uncommented
+# If you would like to keep your KeyVault private, comment out this module
 module "applicationGateway" {
   source                          = "./modules/06-application-gateway"
   workloadName                    = var.workloadName
   environment                     = var.environment
   location                        = var.location
   resourceGroupName               = module.spoke.spokeResourceGroupName
-  keyVaultId                      = module.supportingServices.keyVaultId
+  keyVaultName                    = module.supportingServices.keyVaultName
   appGatewayCertificateKeyName    = var.appGatewayCertificateKeyName
   appGatewayFQDN                  = var.appGatewayFQDN
   appGatewayPrimaryBackendEndFQDN = module.helloWorldApp.helloWorldAppFQDN
@@ -111,9 +115,4 @@ module "applicationGateway" {
   appGatewayLogAnalyticsId        = module.containerAppsEnvironment.logAnalyticsWorkspaceId
   appGatewayCertificatePath       = var.appGatewayCertificatePath
   tags                            = var.tags
-
-  # RBAC role should be assigned before creating a new secret (certificate appgw)
-  # moduleDependencies = [
-  #   module.supportingServices.keyVaultSecretsOfficerRoleAssignmentId
-  # ]
 }

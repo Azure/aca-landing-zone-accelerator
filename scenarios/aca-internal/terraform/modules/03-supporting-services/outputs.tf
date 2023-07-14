@@ -13,3 +13,7 @@ output "containerRegistryUserAssignedIdentityId" {
 output "keyVaultId" {
   value = module.keyVault.keyVaultId
 }
+
+output "keyVaultName" {
+  value = module.keyVault.keyVaultName
+}

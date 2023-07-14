@@ -16,7 +16,7 @@ variable "environment" {
 
 variable "location" {
   type    = string
-  default = "eastus"
+  default = "northeurope"
 }
 
 variable "hubResourceGroupName" {
@@ -134,4 +134,8 @@ variable "enableTelemetry" {
 variable "deployHelloWorldSample" {
   default = true
   type = bool
+}
+
+variable "clientIP" {
+  default = ""
 }

@@ -11,7 +11,7 @@ param location string
 @description('The name of the Container Registry that will be white-listed by the policy.')
 param containerRegistryName string
 
-// Azure Continaer Apps Built-in Policy Definitions: https://learn.microsoft.com/en-us/azure/container-apps/policy-reference#policy-definitions
+// Azure Container Apps Built-in Policy Definitions: https://learn.microsoft.com/azure/container-apps/policy-reference#policy-definitions
 var builtInPolicies = [  
   {
     name: 'authentication-should-be-enabled-on-container-apps'

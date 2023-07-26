@@ -91,6 +91,9 @@
     },
     "deployAzurePolicies": {
       "value": true
+    },
+    "deployZoneRedundantResources": {
+      "value": true
     }
   }
 }

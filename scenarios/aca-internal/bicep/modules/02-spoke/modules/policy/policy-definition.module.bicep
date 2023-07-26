@@ -18,7 +18,7 @@ var builtInPolicies = [
     definition: {
       properties: {
         displayName: 'Authentication should be enabled on container apps'
-        description: 'container Apps Authentication is a feature that can prevent anonymous HTTP requests from reaching the Container App, or authenticate those that have tokens before they reach the Container App'    
+        description: 'Container Apps Authentication is a feature that can prevent anonymous HTTP requests from reaching the Container App, or authenticate those that have tokens before they reach the Container App'
       }
     }
     parameters: {

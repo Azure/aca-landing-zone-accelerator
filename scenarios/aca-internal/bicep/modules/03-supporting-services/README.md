@@ -44,9 +44,8 @@ By default, they are deployed to the spoke resource group.
 
 ## Private DNS Zones
 
-Private DNS zones in this reference implementation are implemented directly at the regional hub; furthermore, the workload is directly using Azure DNS for resolution. Your networking topology might support this model or instead DNS & DNS zones for Private Link might be handed at the regional hub or in a [VWAN virtual hub extension](https://learn.microsoft.com/azure/architecture/guide/networking/private-link-vwan-dns-virtual-hub-extension-pattern) by your networking team.
+Private DNS zones in this reference implementation are deployed at the hub level. For any resource that requires a private endpoint, the workload team (as part of the deployment of the LZA), will create the appropriate private DNS Zones & records, as well as the link to the Virtual Networks that need to resolve DNS names of the private Azure resources. The workload, in the LZA implementation, is using Azure DNS for resolution. Since this reference implementation is expected to be deployed isolated from existing infrastructure, Private DNS Zones are deployed in this way (in the hub, without Azure Policies etc), in order to resemple the recommendations of the CAF/ESLZ [Private Link and DNS integration at scale](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/private-link-and-dns-integration-at-scale), without over-complicating the Azure Container Apps LZA implementation. 
 
-If your organization operate a centralized DNS model, you'll need to adapt how DNS zones records are managed this implementation into your existing enterprise networking DNS zone strategy. Since this reference implementation is expected to be deployed isolated from existing infrastructure; this is not something you need to address now; but will be something to understand and address when taking your solution to production.
 
 ## Next step
 

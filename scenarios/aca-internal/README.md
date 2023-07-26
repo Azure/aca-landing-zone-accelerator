@@ -15,7 +15,7 @@ By the end of this deployment guide, you would have deployed an "internal enviro
 - Azure Container Registry
 - Azure Bastion
 - Azure Application Gateway (with Web Application Firewall)
-- Azure Standard Public IP (with [DDoS protection](https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-sku-comparison#skus) )
+- Azure Standard Public IP (with [DDoS protection](https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus))
 - Azure Key Vault
 - Azure Private Endpoint
 - Azure Private DNS Zones

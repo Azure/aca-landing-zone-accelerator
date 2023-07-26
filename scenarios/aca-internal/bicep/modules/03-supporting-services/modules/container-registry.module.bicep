@@ -120,15 +120,6 @@ resource containerRegistryUserAssignedIdentity 'Microsoft.ManagedIdentity/userAs
   tags: tags
 }
 
-// resource containerRegistryPullRoleAssignment2 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-//   name: guid(subscription().id, containerRegistryExisting.id, containerRegistryUserAssignedIdentity.id) 
-//   scope: containerRegistryExisting
-//   properties: {
-//     principalId: containerRegistryUserAssignedIdentity.properties.principalId
-//     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', containerRegistryPullRoleGuid)
-//     principalType: 'ServicePrincipal'
-//   }
-// }
 
 module containerRegistryPullRoleAssignment '../../../../../shared/bicep/role-assignments/role-assignment.bicep' = {
   name: take('containerRegistryPullRoleAssignmentDeployment-${deployment().name}', 64)

@@ -252,10 +252,10 @@ var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
 @description('Optional. Resource tags.')
 param tags object = {}
 
-@description('Optional. Backend settings of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits).')
+@description('Optional. Backend settings of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits).')
 param backendSettingsCollection array = []
 
-@description('Optional. Listeners of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits).')
+@description('Optional. Listeners of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits).')
 param listeners array = []
 
 @description('Optional. Routing rules of the application gateway resource.')

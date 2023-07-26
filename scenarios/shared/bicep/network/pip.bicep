@@ -98,7 +98,7 @@ param diagnosticMetricsToEnable array = [
 @description('Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to "<resourceName>-diagnosticSettings".')
 param diagnosticSettingsName string = ''
 
-@description('Optional. DDoS protection mode. see https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-sku-comparison#skus')
+@description('Optional. DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus')
 @allowed([
   'Enabled'
   'Disabled'

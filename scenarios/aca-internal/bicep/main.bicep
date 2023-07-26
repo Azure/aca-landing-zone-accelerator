@@ -105,7 +105,7 @@ param deployZoneRedundantResources bool = true
 @description('Optional, default value is true. If true, Azure Policies will be deployed')
 param deployAzurePolicies bool = true
 
-@description('Optional. DDoS protection mode. see https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-sku-comparison#skus')
+@description('Optional. DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus')
 @allowed([
   'Enabled'
   'Disabled'

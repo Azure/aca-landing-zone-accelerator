@@ -8,7 +8,7 @@ targetScope = 'subscription'
 @description('The location where the resources will be created.')
 param location string
 
-@description('The name of the Container Registry that will be white-listed by the policy.')
+@description('The name of the Container Registry that will be allow-listed by the policy.')
 param containerRegistryName string
 
 // Azure Container Apps Built-in Policy Definitions: https://learn.microsoft.com/azure/container-apps/policy-reference#policy-definitions

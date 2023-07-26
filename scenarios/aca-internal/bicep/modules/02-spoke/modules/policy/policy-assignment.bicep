@@ -17,9 +17,6 @@ param policyDefinitionId string
 resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
   name: uniqueString('${policy.name}')
   location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
   properties: {
     description: policy.definition.properties.description
     displayName: policy.definition.properties.displayName

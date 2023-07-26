@@ -180,8 +180,8 @@
                             "type": "Microsoft.Common.TextBox",
                             "label": "Hub Virtual Network Address Space",
                             "subLabel": "",
-                            "defaultValue": "[[\"10.0.0.0/16\"]",
-                            "placeholder": "[[\"10.0.0.0/16\"]",
+                            "defaultValue": "[[\"10.0.0.0/24\"]",
+                            "placeholder": "[[\"10.0.0.0/24\"]",
                             "toolTip": "The address prefixs to use for the Hub virtual network.",
                             "constraints": {
                                 "required": true,
@@ -197,7 +197,7 @@
                             "type": "Microsoft.Common.TextBox",
                             "label": "Bastion Subnet Address Prefix",
                             "subLabel": "",
-                            "defaultValue": "10.0.2.0/27",
+                            "defaultValue": "10.0.0.128/26",
                             "toolTip": "CIDR to use for the Azure Bastion subnet.",
                             "constraints": {
                                 "required": true,
@@ -213,7 +213,7 @@
                             "type": "Microsoft.Common.TextBox",
                             "label": "VM Jump Box Subnet Address Prefix",
                             "subLabel": "",
-                            "defaultValue": "10.0.3.0/24",
+                            "defaultValue": "10.1.2.32/27",
                             "toolTip": "CIDR to use for the virtual machine subnet.",
                             "constraints": {
                                 "required": true,
@@ -282,7 +282,7 @@
                             "type": "Microsoft.Common.TextBox",
                             "label": "Spoke Private Endpoints Subnet Address Prefix",
                             "subLabel": "",
-                            "defaultValue": "10.1.2.0/24",
+                            "defaultValue": "10.1.2.0/27",
                             "toolTip": "CIDR of the Spoke Private Endpoints Subnet.",
                             "constraints": {
                                 "required": true,

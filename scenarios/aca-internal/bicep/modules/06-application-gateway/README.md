@@ -23,10 +23,12 @@ The "Hello World" container app is exposed through Application Gateway, includin
    RESOURCEID_SUBNET_APPGW=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeApplicationGatewaySubnetId.value -o tsv)
    FQDN_HELLOWORLD_ACA=$(az deployment group show -g rg-lzaaca-spoke-dev-eus2 -n acalza01-helloworld --query properties.outputs.helloWorldAppFqdn.value -o tsv)
    RESOURCEID_KEYVAULT=$(az deployment group show -g rg-lzaaca-spoke-dev-eus2 -n acalza01-dependencies --query properties.outputs.keyVaultId.value -o tsv)
+   LOG_ANALYTICS_WS_ID=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.logAnalyticsWorkspaceId.value -o tsv)
    echo RESOURCENAME_RESOURCEGROUP_SPOKE: $RESOURCENAME_RESOURCEGROUP_SPOKE && \
    echo RESOURCEID_SUBNET_APPGW: $RESOURCEID_SUBNET_APPGW && \
    echo FQDN_HELLOWORLD_ACA: $FQDN_HELLOWORLD_ACA && \
-   echo RESOURCEID_KEYVAULT: $RESOURCEID_KEYVAULT
+   echo RESOURCEID_KEYVAULT: $RESOURCEID_KEYVAULT  && \
+   echo LOG_ANALYTICS_WS_ID: $LOG_ANALYTICS_WS_ID
    
    # [This takes about six minutes to run.] 
    az deployment group create \
@@ -34,7 +36,8 @@ The "Hello World" container app is exposed through Application Gateway, includin
       -g $RESOURCENAME_RESOURCEGROUP_SPOKE \
       -f 06-application-gateway/deploy.app-gateway.bicep \
       -p 06-application-gateway/deploy.app-gateway.parameters.jsonc \
-      -p applicationGatewaySubnetId=${RESOURCEID_SUBNET_APPGW} applicationGatewayPrimaryBackendEndFqdn=${FQDN_HELLOWORLD_ACA} keyVaultId=${RESOURCEID_KEYVAULT}
+      -p applicationGatewaySubnetId=${RESOURCEID_SUBNET_APPGW} applicationGatewayPrimaryBackendEndFqdn=${FQDN_HELLOWORLD_ACA} keyVaultId=${RESOURCEID_KEYVAULT} \
+      -p applicationGatewayLogAnalyticsId=${LOG_ANALYTICS_WS_ID}
    ```
 
 1. Get the public IP of Application Gateway.

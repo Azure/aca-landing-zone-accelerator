@@ -31,7 +31,13 @@ param spokeVNetId string
 param spokePrivateEndpointSubnetName string
 
 @description('Deploy Redis cache premium SKU')
-param deployRedisCache bool = true
+param deployRedisCache bool
+
+@description('Optional. Resource ID of the diagnostic log analytics workspace. If left empty, no diagnostics settings will be defined.')
+param logAnalyticsWorkspaceId string = ''
+
+@description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
+param deployZoneRedundantResources bool = true
 
 // ------------------
 // RESOURCES
@@ -49,7 +55,7 @@ module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
 }
 
 @description('Azure Container Registry, where all workload images should be pulled from.')
-module containerRegistry 'modules/container-registry.bicep' = {
+module containerRegistry 'modules/container-registry.module.bicep' = {
   name: 'containerRegistry-${uniqueString(resourceGroup().id)}'
   params: {
     containerRegistryName: naming.outputs.resourcesNames.containerRegistry
@@ -60,6 +66,8 @@ module containerRegistry 'modules/container-registry.bicep' = {
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
     containerRegistryPrivateEndpointName: naming.outputs.resourcesNames.containerRegistryPep
     containerRegistryUserAssignedIdentityName: naming.outputs.resourcesNames.containerRegistryUserAssignedIdentity
+    diagnosticWorkspaceId: logAnalyticsWorkspaceId
+    deployZoneRedundantResources: deployZoneRedundantResources
   }
 }
 
@@ -74,25 +82,17 @@ module keyVault 'modules/key-vault.bicep' = {
     hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
     keyVaultPrivateEndpointName: naming.outputs.resourcesNames.keyVaultPep
-    keyVaultUserAssignedIdentityName: naming.outputs.resourcesNames.keyVaultUserAssignedIdentity
+    diagnosticWorkspaceId: logAnalyticsWorkspaceId
   }
 }
 
-@description('The log sink for Azure Diagnostics')
-module logAnalyticsWorkspace '../../../../shared/bicep/log-analytics-ws.bicep' = {
-  name: take('logAnalyticsWs-${uniqueString(resourceGroup().id)}', 64)
-  params: {
-    location: location
-    name: naming.outputs.resourcesNames.logAnalyticsWorkspace
-  }
-}
 
-module redisCache 'modules/redisCache.bicep' = if (deployRedisCache) {
+module redisCache 'modules/redis-cache.bicep' = if (deployRedisCache) {
   name: 'redisCache-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
     redisName: naming.outputs.resourcesNames.redisCache
-    logAnalyticsWsId: logAnalyticsWorkspace.outputs.logAnalyticsWsId
+    logAnalyticsWsId: logAnalyticsWorkspaceId
     keyVaultName: keyVault.outputs.keyVaultName
     spokeVNetId: spokeVNetId
     hubVNetId: hubVNetId
@@ -119,12 +119,6 @@ output keyVaultId string = keyVault.outputs.keyVaultId
 
 @description('The name of the Azure Key Vault.')
 output keyVaultName string = keyVault.outputs.keyVaultName
-
-@description('The resource ID of the user-assigned managed identity to read from Azure Key Vault.')
-output keyVaultUserAssignedIdentityId string = keyVault.outputs.keyVaultUserAssignedIdentityId
-
-@description('The resource ID of the Azure Log Analytics Workspace.')
-output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.outputs.logAnalyticsWsId
 
 @description('The secret name to retrieve the connection string from KeyVault')
 output redisCacheSecretKey string = (deployRedisCache)? redisCache.outputs.redisCacheSecretKey : ''

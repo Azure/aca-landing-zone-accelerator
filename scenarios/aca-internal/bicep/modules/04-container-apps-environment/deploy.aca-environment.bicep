@@ -42,6 +42,9 @@ param enableTelemetry bool = true
 @description('The resource id of an existing Azure Log Analytics Workspace.')
 param logAnalyticsWorkspaceId string
 
+@description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
+param deployZoneRedundantResources bool = true
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -115,11 +118,12 @@ module containerAppsEnvironment '../../../../shared/bicep/aca-environment.bicep'
     subnetId: spokeVNet::infraSubnet.id
     vnetEndpointInternal: true
     appInsightsInstrumentationKey: (enableApplicationInsights && enableDaprInstrumentation) ? applicationInsights.outputs.appInsInstrumentationKey : ''
+    zoneRedundant: deployZoneRedundantResources
   }
 }
 
 @description('The Private DNS zone containing the ACA load balancer IP')
-module containerAppsEnvironmentPrivateDnsZone '../../../../shared/bicep/private-dns-zone.bicep' = {
+module containerAppsEnvironmentPrivateDnsZone '../../../../shared/bicep/network/private-dns-zone.bicep' = {
   name: 'containerAppsEnvironmentPrivateDnsZone-${uniqueString(resourceGroup().id)}'
   params: {
     name: containerAppsEnvironment.outputs.containerAppsEnvironmentDefaultDomain

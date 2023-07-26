@@ -120,7 +120,7 @@ resource cosmosDbDatabaseCollection 'Microsoft.DocumentDB/databaseAccounts/sqlDa
   }
 }
 
-module cosmosDbNetworking '../../../../../shared/bicep/private-networking.bicep' = {
+module cosmosDbNetworking '../../../../../shared/bicep/network/private-networking.bicep' = {
   name: 'cosmosDbNetworking-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
@@ -130,6 +130,7 @@ module cosmosDbNetworking '../../../../../shared/bicep/private-networking.bicep'
     privateEndpointSubResourceName: cosmosDbAccountResourceName
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
+    vnetHubResourceId: hubVNetId
   }
 }
 

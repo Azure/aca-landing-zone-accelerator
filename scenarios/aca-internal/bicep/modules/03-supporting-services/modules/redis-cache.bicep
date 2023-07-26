@@ -98,7 +98,7 @@ module redis '../../../../../shared/bicep/redis.bicep' = {
   }
 }
 
-module redisPrivateNetworking '../../../../../shared/bicep/private-networking.bicep' = {
+module redisPrivateNetworking '../../../../../shared/bicep/network/private-networking.bicep' = {
   name: 'redisPrivateNetworking-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
@@ -108,6 +108,7 @@ module redisPrivateNetworking '../../../../../shared/bicep/private-networking.bi
     privateEndpointSubResourceName: redisResourceName
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
+    vnetHubResourceId: hubVNetId
   }
 }
 

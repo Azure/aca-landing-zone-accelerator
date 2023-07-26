@@ -25,24 +25,27 @@ By default, they are deployed to the spoke resource group.
    RESOURCEID_VNET_HUB=$(az deployment sub show -n acalza01-hub --query properties.outputs.hubVNetId.value -o tsv)
    RESOURCENAME_RESOURCEGROUP_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeResourceGroupName.value -o tsv)
    RESOURCEID_VNET_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeVNetId.value -o tsv)
+   LOG_ANALYTICS_WS_ID=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.logAnalyticsWorkspaceId.value -o tsv)
+
    echo RESOURCEID_VNET_HUB: $RESOURCEID_VNET_HUB && \
    echo RESOURCENAME_RESOURCEGROUP_SPOKE: $RESOURCENAME_RESOURCEGROUP_SPOKE && \
-   echo RESOURCEID_VNET_SPOKE: $RESOURCEID_VNET_SPOKE
+   echo RESOURCEID_VNET_SPOKE: $RESOURCEID_VNET_SPOKE  && \
+   echo LOG_ANALYTICS_WS_ID: $LOG_ANALYTICS_WS_ID
 
-   # [This takes about four minutes to run.]
+   # [This takes about four minutes to run (if you add deployRedis=false).]
    az deployment group create \
       -n acalza01-dependencies \
       -g $RESOURCENAME_RESOURCEGROUP_SPOKE \
       -f 03-supporting-services/deploy.supporting-services.bicep \
       -p 03-supporting-services/deploy.supporting-services.parameters.jsonc \
-      -p hubVNetId=${RESOURCEID_VNET_HUB} spokeVNetId=${RESOURCEID_VNET_SPOKE}
+      -p hubVNetId=${RESOURCEID_VNET_HUB} spokeVNetId=${RESOURCEID_VNET_SPOKE} \
+      -p logAnalyticsWorkspaceId=${LOG_ANALYTICS_WS_ID}
    ```
 
 ## Private DNS Zones
 
-Private DNS zones in this reference implementation are implemented directly at the spoke level, meaning the workload team creates the private link DNS zones & records for the resources needed; furthermore, the workload is directly using Azure DNS for resolution. Your networking topology might support this decentralized model or instead DNS & DNS zones for Private Link might be handed at the regional hub or in a [VWAN virtual hub extension](https://learn.microsoft.com/azure/architecture/guide/networking/private-link-vwan-dns-virtual-hub-extension-pattern) by your networking team.
+Private DNS zones in this reference implementation are deployed at the hub level. For any resource that requires a private endpoint, the workload team (as part of the deployment of the LZA), will create the appropriate private DNS Zones & records, as well as the link to the Virtual Networks that need to resolve DNS names of the private Azure resources. The workload, in the LZA implementation, is using Azure DNS for resolution. Since this reference implementation is expected to be deployed isolated from existing infrastructure, Private DNS Zones are deployed in this way (in the hub, without Azure Policies etc), in order to resemple the recommendations of the CAF/ESLZ [Private Link and DNS integration at scale](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/private-link-and-dns-integration-at-scale), without over-complicating the Azure Container Apps LZA implementation. 
 
-If your organization operate a centralized DNS model, you'll need to adapt how DNS zones records are managed this implementation into your existing enterprise networking DNS zone strategy. Since this reference implementation is expected to be deployed isolated from existing infrastructure; this is not something you need to address now; but will be something to understand and address when taking your solution to production.
 
 ## Next step
 

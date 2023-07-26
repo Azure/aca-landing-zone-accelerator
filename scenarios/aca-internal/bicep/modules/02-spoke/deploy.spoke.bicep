@@ -293,6 +293,7 @@ module jumpboxWindowsVM './modules/vm/windows-vm.bicep' = if (vmJumpboxOSType ==
 @description('Assign built-in and custom (container-apps related) policies to the spoke subscription.')
 module policyAssignments './modules/policy/policy-definition.module.bicep' = if (deployAzurePolicies) {
   name: take('policyAssignments-${deployment().name}', 64)
+  scope: spokeResourceGroup
   params: {
     location: location   
     containerRegistryName: naming.outputs.resourcesNames.containerRegistry 

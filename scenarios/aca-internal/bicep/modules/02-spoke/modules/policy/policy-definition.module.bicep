@@ -1,6 +1,3 @@
-// Scope
-targetScope = 'subscription'
-
 // ------------------
 //    PARAMETERS
 // ------------------
@@ -225,16 +222,24 @@ module builtInPolicyAssignment 'policy-assignment.bicep' = [for (policy, i) in b
 }]
 
 
-resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2021-06-01' = [for policy in customPolicies: {
-  name: guid(policy.name)
-  properties: {
-    description: policy.definition.properties.description
-    displayName: policy.definition.properties.displayName
-    metadata: policy.definition.properties.metadata
-    mode: policy.definition.properties.mode
-    parameters: policy.definition.properties.parameters
-    policyType: policy.definition.properties.policyType
-    policyRule: policy.definition.properties.policyRule
+// resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2021-06-01' = [for policy in customPolicies: {
+//   name: guid(policy.name)
+//   properties: {
+//     description: policy.definition.properties.description
+//     displayName: policy.definition.properties.displayName
+//     metadata: policy.definition.properties.metadata
+//     mode: policy.definition.properties.mode
+//     parameters: policy.definition.properties.parameters
+//     policyType: policy.definition.properties.policyType
+//     policyRule: policy.definition.properties.policyRule
+//   }
+// }]
+
+module policyDefinition 'policy-definition.bicep' = [for policy in customPolicies: {
+  name: 'poDef_${guid(policy.name)}'
+  scope: subscription()
+  params: {
+    policy: policy
   }
 }]
 
@@ -243,7 +248,7 @@ module customPolicyAssignment 'policy-assignment.bicep' = [for (policy, i) in cu
   params: {    
     location: location
     policy: policy
-    policyDefinitionId: policyDefinition[i].id    
+    policyDefinitionId: policyDefinition[i].outputs.policyDefinitionId  
   } 
   dependsOn: [
     policyDefinition

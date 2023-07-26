@@ -27,7 +27,7 @@ All resources have enabled their Diagnostics Settings (by default sending the lo
 
 All the resources that support Zone Redundancy (i.e. Cotainer Apps Environment, Application Gateway, Standard IP) are set by default to be deployed in all Availability Zones. If you are planning to deploy to a region that is not supporting Availability Zones you need to set the  parameter  `deployZoneRedundantResources` to `false`.
 
-Azure policies related to Azure Container Apps (both built-in but some custom as well) are applied to the Subscription by default. If you wish to skip Azure Policy Assignment, set the parameter `deployAzurePolicies` to `false`. 
+Azure policies related to Azure Container Apps (both built-in but some custom as well) are applied to the spoke Resource Group by default. If you wish to skip Azure Policy Assignment, set the parameter `deployAzurePolicies` to `false`. 
 
 ## Deploy the reference implementation
 

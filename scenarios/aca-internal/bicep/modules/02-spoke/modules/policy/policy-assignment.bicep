@@ -1,8 +1,5 @@
 // based on: https://github.com/Azure-Samples/aca-azure-policy
 
-// Scope
-targetScope = 'subscription'
-
 // Parameters
 @description('Specifies the location of the deployment.')
 param location string
@@ -25,7 +22,5 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01'
   }
 }
 
-
 // Outputs
 output policyAssignmentId string = policyAssignment.id
-output principalId string = policyAssignment.identity.principalId

@@ -75,7 +75,6 @@ module "containerAppsEnvironment" {
   hubVnetId              = module.hub.hubVnetId
   spokeVnetId            = module.spoke.spokeVNetId
   spokeInfraSubnetId     = module.spoke.spokeInfraSubnetId
-  resourceGroupName       = module.spoke.spokeResourceGroupName
   logAnalyticsWorkspaceId = module.spoke.logAnalyticsWorkspaceId
   vnetLinks = [
     {

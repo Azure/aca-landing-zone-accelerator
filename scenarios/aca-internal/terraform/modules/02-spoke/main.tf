@@ -131,6 +131,10 @@ module "diagnostics" {
     {
       "type" = "vnet-spoke"
       "id" = module.vnet.vnetId
+    },
+    {
+      "type" = "vm-jumpbox"
+      "id" = module.vm.vmId
     }
   ]
 }

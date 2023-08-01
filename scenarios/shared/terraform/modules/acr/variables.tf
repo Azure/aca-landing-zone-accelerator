@@ -1,4 +1,8 @@
-variable "resourceGroupName" {
+variable "hubResourceGroupName" {
+
+}
+
+variable "spokeResourceGroupName" {
 
 }
 

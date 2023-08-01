@@ -1,33 +1,11 @@
-module "nsg" {
-  source            = "../networking/nsg"
-  resourceGroupName = var.resourceGroupName
-  nsgName           = var.nsgName
-  location          = var.location
-  tags              = var.tags
-  securityRules     = var.securityRules
-}
-
-resource "azurerm_subnet" "vmSubnet" {
-  name                 = var.vmSubnetName
-  resource_group_name  = var.vnetResourceGroupName
-  virtual_network_name = var.vnetName
-  address_prefixes     = var.addressPrefixes
-}
-
-resource "azurerm_subnet_network_security_group_association" "vmNsg" {
-  subnet_id                 = azurerm_subnet.vmSubnet.id
-  network_security_group_id = module.nsg.nsgId
-}
-
 resource "azurerm_network_interface" "vmNic" {
-  depends_on = [ azurerm_subnet.vmSubnet ]
   name                = var.nicName
   resource_group_name = var.vnetResourceGroupName
   location            = var.location
 
   ip_configuration {
     name                          = "ipconfig1"
-    subnet_id                     = azurerm_subnet.vmSubnet.id
+    subnet_id                     = var.subnetId
     private_ip_address_allocation = "Dynamic"
   }
 }

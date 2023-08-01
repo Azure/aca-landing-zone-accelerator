@@ -5,12 +5,7 @@ workloadName = "lzaaca"
 environment                  = "dev"
 tags                         = {}
 hubResourceGroupName         = ""
-vnetAddressPrefixes          = ["10.0.0.0/16"]
+vnetAddressPrefixes          = ["10.0.0.0/24"]
 enableBastion                = true
-bastionSubnetAddressPrefixes = ["10.0.2.0/27"]
-vmSize                       = "Standard_B2ms"
-vmAdminUsername              = "azureuser"
-vmAdminPassword              = ""
-vmLinuxSshAuthorizedKeys     = ""
-vmJumpboxOSType              = "Linux"
-vmJumpBoxSubnetAddressPrefix = "10.0.3.0/24"
+bastionSubnetAddressPrefixes = ["10.0.0.128/26"]
+

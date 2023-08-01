@@ -2,7 +2,7 @@ data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "keyvault" {
   name                            = var.keyVaultName
-  resource_group_name             = var.resourceGroupName
+  resource_group_name             = var.spokeResourceGroupName
   location                        = var.location
   sku_name                        = "standard"
   tenant_id                       = data.azurerm_client_config.current.tenant_id
@@ -22,18 +22,18 @@ resource "azurerm_key_vault" "keyvault" {
 }
 
 module "keyVaultPrivateZones" {
-  source            = "../networking/private-zones"
-  resourceGroupName = var.resourceGroupName
-  vnetLinks         = var.vnetLinks
-  zoneName          = local.privateDnsZoneNames
-  records           = var.aRecords
-  tags              = var.tags
+  source                  = "../networking/private-zones"
+  resourceGroupName       = var.hubResourceGroupName
+  vnetLinks               = var.vnetLinks
+  zoneName                = local.privateDnsZoneNames
+  records                 = var.aRecords
+  tags                    = var.tags
 }
 
 module "keyVaultPrivateEndpoints" {
   source            = "../networking/private-endpoints"
   endpointName      = var.keyVaultPep
-  resourceGroupName = var.resourceGroupName
+  resourceGroupName = var.spokeResourceGroupName
   subnetId          = var.subnetId
   privateLinkId     = azurerm_key_vault.keyvault.id
   privateDnsZoneIds = [module.keyVaultPrivateZones.privateDnsZoneId]
@@ -43,7 +43,7 @@ module "keyVaultPrivateEndpoints" {
 
 resource "azurerm_user_assigned_identity" "keyVaultUserAssignedIdentity" {
   name                = var.keyVaultUserAssignedIdentityName
-  resource_group_name = var.resourceGroupName
+  resource_group_name = var.spokeResourceGroupName
   location            = var.location
   tags                = var.tags
 }

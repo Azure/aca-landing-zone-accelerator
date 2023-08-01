@@ -25,7 +25,7 @@ module "vnet" {
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
   addressSpace      = var.vnetAddressPrefixes
   tags              = var.tags
-  subnets           = local.subnets
+  subnets           = local.spokeSubnets
 }
 
 module "nsgContainerAppsEnvironmentNsg" {
@@ -33,14 +33,57 @@ module "nsgContainerAppsEnvironmentNsg" {
   nsgName           = module.naming.resourceNames["containerAppsEnvironmentNsg"]
   location          = var.location
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  securityRules     = var.securityRules
+  securityRules     = var.containerAppsSecurityRules
   tags              = var.tags
 }
 
-resource "azurerm_subnet_network_security_group_association" "securityGroupAssociation" {
+resource "azurerm_subnet_network_security_group_association" "infraSecurityGroupAssociation" {
   subnet_id                 = data.azurerm_subnet.infraSubnet.id
   network_security_group_id = module.nsgContainerAppsEnvironmentNsg.nsgId
 }
+
+module "nsgPrivateEndpoints" {
+  source            = "../../../../shared/terraform/modules/networking/nsg"
+  nsgName           = module.naming.resourceNames["privateEndpointsNsg"]
+  location          = var.location
+  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
+  tags              = var.tags
+}
+
+resource "azurerm_subnet_network_security_group_association" "privateEndpointSecurityGroupAssociation" {
+  subnet_id                 = data.azurerm_subnet.privateEndpointsSubnet.id
+  network_security_group_id = module.nsgPrivateEndpoints.nsgId
+}
+
+module "nsgAppGateway" {
+  source            = "../../../../shared/terraform/modules/networking/nsg"
+  nsgName           = module.naming.resourceNames["applicationGatewayNsg"]
+  location          = var.location
+  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
+  securityRules     = var.appGatewaySecurityRules
+  tags              = var.tags
+}
+
+resource "azurerm_subnet_network_security_group_association" "agwSecurityGroupAssociation" {
+  count = var.applicationGatewaySubnetAddressPrefix != "" ? 1 : 0
+  subnet_id                 = data.azurerm_subnet.appGatewaySubnet[0].id
+  network_security_group_id = module.nsgAppGateway.nsgId
+}
+
+module "nsgJumpbox" {
+  source            = "../../../../shared/terraform/modules/networking/nsg"
+  nsgName           = module.naming.resourceNames["vmJumpBoxNsg"]
+  location          = var.location
+  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
+  tags              = var.tags
+}
+
+resource "azurerm_subnet_network_security_group_association" "jumpBoxSecurityGroupAssociation" {
+  count = var.jumpboxSubnetAddressPrefix != "" ? 1 : 0
+  subnet_id                 = data.azurerm_subnet.jumpboxSubnet[0].id
+  network_security_group_id = module.nsgJumpbox.nsgId
+}
+
 
 module "peeringSpokeToHub" {
   source         = "../../../../shared/terraform/modules/networking/peering"
@@ -56,6 +99,21 @@ module "peeringHubToSpoke" {
   remoteVnetId   = module.vnet.vnetId
   remoteVnetName = local.hubVnetName
   remoteRgName   = local.hubVnetResourceGroup
+}
+
+module "vm" {
+  source            = "../../../../shared/terraform/modules/vms"
+  osType            = "Linux"
+  location          = var.location
+  tags              = var.tags
+  nicName           = module.naming.resourceNames["vmJumpBoxNic"]
+  vmName            = module.naming.resourceNames["vmJumpBox"]
+  adminUsername     = var.vmAdminUsername
+  adminPassword     = var.vmAdminPassword
+  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
+  size              = var.vmSize
+  vnetResourceGroupName = azurerm_resource_group.spokeResourceGroup.name
+  subnetId          = data.azurerm_subnet.jumpboxSubnet[0].id
 }
 
 data "azurerm_subnet" "infraSubnet" {
@@ -82,6 +140,17 @@ data "azurerm_subnet" "appGatewaySubnet" {
     module.vnet
   ]
   name                 = var.applicationGatewaySubnetName
+  resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
+  virtual_network_name = module.vnet.vnetName
+}
+
+data "azurerm_subnet" "jumpboxSubnet" {
+  count = var.jumpboxSubnetAddressPrefix != "" ? 1 : 0
+  depends_on = [
+    module.vnet
+  ]
+
+  name                 = var.jumpboxSubnetName
   resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
   virtual_network_name = module.vnet.vnetName
 }

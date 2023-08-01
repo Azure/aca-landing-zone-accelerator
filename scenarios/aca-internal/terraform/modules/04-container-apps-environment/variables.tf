@@ -34,7 +34,9 @@ variable "spokeInfraSubnetId" {
   type = string
 }
 
-variable "resourceGroupName" {}
+variable "spokeResourceGroupName" {}
+
+variable "hubResourceGroupName" {}
 
 variable "tags" {}
 

@@ -4,7 +4,13 @@ resource "azurerm_public_ip" "appGatewayPip" {
   resource_group_name = var.resourceGroupName
   sku                 = "Standard"
   sku_tier            = "Regional"
+  zones = var.makeZoneRedundant == true? [
+    "1",
+    "2",
+    "3"
+  ]: []
   allocation_method   = "Static"
+  ddos_protection_mode = var.ddosProtectionEnabled
   tags                = var.tags
 }
 
@@ -18,8 +24,9 @@ resource "azurerm_application_gateway" "appGateway" {
   }
 
   sku {
-    name = "WAF_v2"
-    tier = "WAF_v2"
+    name = var.skuName
+    tier = var.skuTier
+    capacity = var.capacity
   }
 
   gateway_ip_configuration {
@@ -27,18 +34,6 @@ resource "azurerm_application_gateway" "appGateway" {
     subnet_id = var.appGatewaySubnetId
   }
 
-  //logic
-  # dynamic "ssl_certificate" {
-  #   for_each = var.sslCertificates
-  #   content {
-  #     name                = ssl_certificate.value.name
-  #     data                = ssl_certificate.value.data
-  #     password            = ssl_certificate.value.password
-  #     key_vault_secret_id = ssl_certificate.value.key_vault_secret_id
-  #   }
-  # }
-
-  // May need some new logic here
   ssl_certificate {
     name                = var.appGatewayFQDN
     key_vault_secret_id = var.keyVaultSecretId
@@ -50,14 +45,6 @@ resource "azurerm_application_gateway" "appGateway" {
     public_ip_address_id          = azurerm_public_ip.appGatewayPip.id
   }
 
-  # dynamic "frontend_port" {
-  #   for_each = var.frontendPorts
-  #   content {
-  #     name = frontend_port.value.name
-  #     port = lookup(frontend_port.value, "port", null)
-  #   }
-  # }
-  // May need some logic here
   frontend_port {
     name = "port_443"
     port = 443
@@ -72,20 +59,6 @@ resource "azurerm_application_gateway" "appGateway" {
     name  = "acaServiceBackend"
     fqdns = [var.appGatewayPrimaryBackendEndFQDN]
   }
-
-  // Missing probe name
-  # dynamic "backend_http_settings" {
-  #   for_each = var.backendHttpSettings
-  #   content {
-  #     port                                = backend_http_settings.value.port
-  #     protocol                            = backend_http_settings.value.protocol
-  #     name                                = backend_http_settings.value.name
-  #     cookie_based_affinity               = backend_http_settings.value.cookieBasedAffinity
-  #     pick_host_name_from_backend_address = true
-  #     affinity_cookie_name                = backend_http_settings.value.affinityCookieName
-  #     request_timeout                     = backend_http_settings.value.requestTimeout
-  #   }
-  # }
 
   backend_http_settings {
     name                                = "defaultHttpBackendHttpSetting"
@@ -106,18 +79,7 @@ resource "azurerm_application_gateway" "appGateway" {
     request_timeout                     = 20
     probe_name                          = "webProbe"
   }
-  # dynamic "http_listener" {
-  #   for_each = var.httpListeners
-  #   content {
-  #     frontend_ip_configuration_name =  http_listener.value.frontendIp
-  #     frontend_port_name = ""
-  #     protocol = ""
-  #     ssl_certificate_name = ""
-  #     require_sni = false
-  #   }
-  # }
 
-  // may need some logic here
   http_listener {
     name                           = "httpListener"
     frontend_ip_configuration_name = "appGwPublicFrontendIp"
@@ -127,16 +89,6 @@ resource "azurerm_application_gateway" "appGateway" {
     require_sni                    = false
   }
 
-  # dynamic "request_routing_rule" {
-  #       for_each = var.requestRoutingRules
-  #       content {
-  #         name = ""
-  #         rule_type = ""
-  #         http_listener_name = ""
-  #         backend_address_pool_name = ""
-  #         backend_http_settings_name = ""
-  #       }
-  # }
   request_routing_rule {
     name                       = "routingRules"
     rule_type                  = "Basic"

@@ -12,14 +12,6 @@ module "naming" {
   location     = var.location
 }
 
-module "logAnalyticsWorkspace" {
-  source            = "../../../../shared/terraform/modules/monitoring/log-analytics"
-  resourceGroupName = var.spokeResourceGroupName
-  location          = var.location
-  workspaceName     = module.naming.resourceNames["logAnalyticsWorkspace"]
-  tags              = var.tags
-}
-
 module "applicationInsights" {
   source            = "../../../../shared/terraform/modules/monitoring/app-insights"
   appInsightsName   = var.appInsightsName
@@ -32,7 +24,7 @@ module "applicationInsights" {
 module "containerAppsEnvironment" {
   source                  = "../../../../shared/terraform/modules/aca-environment"
   environmentName         = module.naming.resourceNames["containerAppsEnvironment"]
-  resourceGroupName       = var.spokeResourceGroupName
+  resourceGroupName    = var.spokeResourceGroupName
   location                = var.location
   logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
   subnetId                = var.spokeInfraSubnetId

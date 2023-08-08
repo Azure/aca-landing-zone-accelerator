@@ -13,6 +13,10 @@
     "tags": {
         "value": {}
     },
+    // DDoS protection mode for the Public IP of the Application Gateway. Allowed values are "VirtualNetworkInherited", "Enabled" and "Disabled"
+    "ddosProtectionMode": {
+      "value": "Enabled"
+    },
     // The FQDN of the Application Gateway. Must match the TLS Certificate.
     "applicationGatewayFqdn": {
         "value": "acahello.demoapp.com"
@@ -20,6 +24,10 @@
     // Replace with the resource ID of the application gateway subnet of the spoke virtual network
     "applicationGatewaySubnetId": {
       "value": "<APPLICATION_GATEWAY_SUBNET_RESOURCE_ID>"
+    },
+    // The resource ID of the exsiting Log Analytics workload for diagnostic settngs, or nothing if you don\'t need any
+    "applicationGatewayLogAnalyticsId": {
+      "value": ""
     },
     // Replace with the FQDN of the hello world sample app
     "applicationGatewayPrimaryBackendEndFqdn": {

@@ -1,0 +1,685 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
+    "view": {
+        "kind": "Form",
+        "properties": {
+            "title": "Azure Container Apps LZA - Secure Baseline Deployment",
+            "steps": [
+                {
+                    "name": "basics",
+                    "label": "Basics",
+                    "elements": [
+                        {
+                            "name": "resourceScope",
+                            "type": "Microsoft.Common.ResourceScope"
+                            
+                        },
+                        {
+                            "name": "getSubscriptions",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "POST",
+                                "path": "providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01",
+                                "body": {
+                                    "query": "ResourceContainers | where type =~ 'microsoft.resources/subscriptions' | where properties.state =~ 'enabled' | project label=tostring(name), description=subscriptionId, value=subscriptionId | order by label asc"
+                                }
+                            }
+                        },
+                        {
+                            "name": "getLocations",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "locations?api-version=2019-11-01"
+                            }
+                        },
+                        {
+                            "name": "workloadName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Workload Name",
+                            "subLabel": "",
+                            "defaultValue": "aca-lza",
+                            "toolTip": "The name of the workload that is being deployed. Up to 10 characters long.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": [
+                                    {
+                                        "isValid": "[or(or(empty(steps('basics').workloadName),and(not(startsWith(steps('basics').workloadName,'[[')),startsWith(steps('basics').workloadName,'['),endsWith(steps('basics').workloadName,']'),greater(indexOf(steps('basics').workloadName,'('),-1),greater(indexOf(steps('basics').workloadName,')'),-1))),greaterOrEquals(length(steps('basics').workloadName),2))]",
+                                        "message": "The value must have a length of at least 2."
+                                    },
+                                    {
+                                        "isValid": "[or(or(empty(steps('basics').workloadName),and(not(startsWith(steps('basics').workloadName,'[[')),startsWith(steps('basics').workloadName,'['),endsWith(steps('basics').workloadName,']'),greater(indexOf(steps('basics').workloadName,'('),-1),greater(indexOf(steps('basics').workloadName,')'),-1))),lessOrEquals(length(steps('basics').workloadName),10))]",
+                                        "message": "The value must have a length of at most 10."
+                                    }
+                                ]
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "environment",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Environment",
+                            "subLabel": "",
+                            "defaultValue": "test",
+                            "toolTip": "The name of the environment (e.g. \"dev\", \"test\", \"prod\", \"uat\", \"dr\", \"qa\"). Up to 8 characters long.",
+                            "placeholder": "test",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": [
+                                    {
+                                        "isValid": "[or(or(empty(steps('basics').environment),and(not(startsWith(steps('basics').environment,'[[')),startsWith(steps('basics').environment,'['),endsWith(steps('basics').environment,']'),greater(indexOf(steps('basics').environment,'('),-1),greater(indexOf(steps('basics').environment,')'),-1))),lessOrEquals(length(steps('basics').environment),8))]",
+                                        "message": "The value must have a length of at most 8."
+                                    }
+                                ]
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "location",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Location",
+                            "subLabel": "",
+                            "defaultValue": "[steps('basics').resourceScope.location.displayName]",
+                            "toolTip": "Azure region where the resources will be deployed in",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": false
+                        },
+                        {
+                            "name": "sctnOptionalRgName",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Optional Resource Group Names",
+                            "elements": [
+                                {
+                                    "name": "lblOptionalRgNameInfo",
+                                    "type": "Microsoft.Common.TextBlock",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "All the resources will be deployed following the Cloud Adoption Framework for Azure naming conventions. Two resource groups will be created: one for the hub resources and one for the spoke resources. The names of the resource groups will be generated based on the workload name and environment. You can override the names of the resource groups by specifying the names below. The names must follow the Cloud Adoption Framework for Azure naming conventions.",
+                                        "link": {
+                                            "label": "Cloud Adoption Framework for Azure: Naming conventions",
+                                            "uri": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "hubResourceGroupName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Hub Resource Group Name",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "placeholder": "i.e. aca-hub-rg or rg-aca-hub",
+                            "toolTip": "Optional. The name of the hub resource group to create the resources in. If set, it overrides the name generated by the template.",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "spokeResourceGroupName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Spoke Resource Group Name",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "placeholder": "i.e. aca-spoke-rg or rg-aca-spoke",
+                            "toolTip": "Optional. The name of the resource group to create the resources in. If set, it overrides the name generated by the template.",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        }
+                    ]
+                },
+                {
+                    "name": "networking",
+                    "label": "Network settings",
+                    "elements": [
+                        {
+                            "name": "sectionHubNew",
+                            "type": "Microsoft.Common.Section",
+                            "label": "CIDR Settings for new Hub network and subnets",
+                            "visible": true,
+                            "elements": [
+                                {
+                                    "name": "textHubNew",
+                                    "type": "Microsoft.Common.TextBlock",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "You can accept the default address spaces, as shown below, or you can use your own.",
+                                        "link": {
+                                            "label": "What address ranges can I use in my Virtual Networks?",
+                                            "uri": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-faq#what-address-ranges-can-i-use-in-my-vnets"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "vnetAddressPrefixes",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Hub Virtual Network Address Space",
+                            "subLabel": "",
+                            "defaultValue": "[[\"10.0.0.0/24\"]",
+                            "placeholder": "[[\"10.0.0.0/24\"]",
+                            "toolTip": "The address prefixs to use for the Hub virtual network.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "bastionSubnetAddressPrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Bastion Subnet Address Prefix",
+                            "subLabel": "",
+                            "defaultValue": "10.0.0.128/26",
+                            "toolTip": "CIDR to use for the Azure Bastion subnet.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "vmJumpBoxSubnetAddressPrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "VM Jump Box Subnet Address Prefix",
+                            "subLabel": "",
+                            "defaultValue": "10.1.2.32/27",
+                            "toolTip": "CIDR to use for the virtual machine subnet.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "sectionSpoke",
+                            "type": "Microsoft.Common.Section",
+                            "label": "CIDR Settings for the Spoke network and subnets",
+                            "visible": true,
+                            "elements": [
+                                {
+                                    "name": "textSpoke",
+                                    "type": "Microsoft.Common.TextBlock",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "You can accept the default address spaces, as shown below, or you can use your own.",
+                                        "link": {
+                                            "label": "What address ranges can I use in my Virtual Networks?",
+                                            "uri": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-faq#what-address-ranges-can-i-use-in-my-vnets"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "spokeVNetAddressPrefixes",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Spoke Virtual Network Address Space",
+                            "subLabel": "",
+                            "defaultValue": "[[\"10.1.0.0/22\"]",
+                            "placeholder": "[[\"10.1.0.0/22\"]",
+                            "toolTip": "CIDR of the Spoke Virtual Network.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "spokeInfraSubnetAddressPrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Spoke Infra Subnet Address Prefix",
+                            "subLabel": "",
+                            "defaultValue": "10.1.0.0/23",
+                            "toolTip": "CIDR of the Spoke Infrastructure Subnet.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "spokePrivateEndpointsSubnetAddressPrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Spoke Private Endpoints Subnet Address Prefix",
+                            "subLabel": "",
+                            "defaultValue": "10.1.2.0/27",
+                            "toolTip": "CIDR of the Spoke Private Endpoints Subnet.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "spokeApplicationGatewaySubnetAddressPrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Spoke Application Gateway Subnet Address Prefix",
+                            "subLabel": "",
+                            "defaultValue": "10.1.3.0/24",
+                            "toolTip": "CIDR of the Spoke Application Gateway Subnet.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        }
+                    ]
+                },
+                {
+                    "name": "vmsettings",
+                    "label": "Jump-Box settings (VM)",
+                    "elements": [
+                        {
+                            "name": "vmJumpboxOSType",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Vm Jumpbox OS Type",
+                            "subLabel": "",
+                            "defaultValue": "none",
+                            "toolTip": "Select if you want to deploy a hump-box VM, and if so, which OS type.",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "none",
+                                        "value": "none"
+                                    },
+                                    {
+                                        "label": "windows",
+                                        "value": "windows"
+                                    },
+                                    {
+                                        "label": "linux",
+                                        "value": "linux"
+                                    }                                    
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "lblVmSku",
+                            "type": "Microsoft.Common.TextBlock",
+                            "visible": "[not(equals(steps('vmsettings').vmJumpboxOSType, 'none'))]",
+                            "options": {
+                                "text": "You can accept the default VM size, as shown below, or you can use your own.",
+                                "link": {
+                                    "label": "Azure Virtual Machine Sizes",
+                                    "uri": "https://learn.microsoft.com/azure/virtual-machines/sizes"
+                                }
+                            }
+                        },
+                        {
+                            "name": "vmSize",
+                            "type": "Microsoft.Compute.SizeSelector",
+                            "label": "VM Size",
+                            "toolTip": "The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.",
+                            "recommendedSizes": [
+                                "Standard_D1",
+                                "Standard_D2",
+                                "Standard_D3",
+                                "Standard_B2ms"
+                            ],
+                            "constraints": {
+                                "allowedSizes": []
+                            },
+                            "options": {
+                                "hideDiskTypeFilter": false
+                            },
+                            "osPlatform": "Windows",                            
+                            "count": 1,
+                            "visible": "[not(equals(steps('vmsettings').vmJumpboxOSType, 'none'))]",
+                            "scope": {
+                                "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
+                                "location": "[steps('basics').resourceScope.location.name]"
+                            }
+                        },
+                        {
+                            "name": "vmAdminUsername",
+                            "type": "Microsoft.Compute.UserNameTextBox",
+                            "label": "Admin Username",
+                            "defaultValue": "azureuser",
+                            "toolTip": "",
+                            "constraints": {
+                                "required": true,
+                                "regex": "^[a-z0-9A-Z]{8,15}$",
+                                "validationMessage": "Only alphanumeric characters are allowed, and the value must be 8-15 characters long."
+                            },
+                            "osPlatform": "Windows",
+                            "visible": "[not(equals(steps('vmsettings').vmJumpboxOSType, 'none'))]"
+                        },
+                        {
+                            "name": "vmAdminPassword",
+                            "type": "Microsoft.Compute.CredentialsCombo",
+                            "label": {
+                                "password": "Password",
+                                "confirmPassword": "Confirm password"
+                            },
+                            "toolTip": {
+                                "password": ""
+                            },
+                            "constraints": {
+                                "required": true,
+                                "customPasswordRegex": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[\\w~@#$%^&*+=|{}:;!.?\\()\\[\\]-]{12,}$",
+                                "customValidationMessage": "The password must contain at least 12 characters, with at least 1 uppercase, 1 lowercase and 1 number."
+                            },
+                            "options": {
+                                "hideConfirmation": false
+                            },
+                            "osPlatform": "Windows",
+                            "visible": "[not(equals(steps('vmsettings').vmJumpboxOSType, 'none'))]"
+                        },
+                        {
+                            "name": "vmLinuxSshAuthorizedKeys",
+                            "type": "Microsoft.Common.PasswordBox",
+                            "label": {
+                                "password": "Vm Linux Ssh Authorized Keys",
+                                "confirmPassword": "Confirm password"
+                            },
+                            "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDpNpoh248rsraL3uejAwKlla+pHaDLbp4DM7bKFoc3Rt1DeXPs0XTutJcNtq4iRq+ooRQ1T7WaK42MfQQxt3qkXwjyv8lPJ4v7aElWkAbxZIRYVYmQVxxwfw+zyB1rFdaCQD/kISg/zXxCWw+gdds4rEy7eq23/bXFM0l7pNvbAULIB6ZY7MRpC304lIAJusuZC59iwvjT3dWsDNWifA1SJtgr39yaxB9Fb01UdacwJNuvfGC35GNYH0VJ56c+iCFeAnMXIT00cYuHf0FCRTP0WvTKl+PQmeD1pwxefdFvKCVpidU2hOARb4ooapT0SDM1SODqjaZ/qwWP18y/qQ/v imported-openssh-key",
+                            "placeholder": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDpNpoh248rsraL3uejAwKlla+pHaDLbp4DM7bKFoc3Rt1DeXPs0XTutJcNtq4iRq+ooRQ1T7WaK42MfQQxt3qkXwjyv8lPJ4v7aElWkAbxZIRYVYmQVxxwfw+zyB1rFdaCQD/kISg/zXxCWw+gdds4rEy7eq23/bXFM0l7pNvbAULIB6ZY7MRpC304lIAJusuZC59iwvjT3dWsDNWifA1SJtgr39yaxB9Fb01UdacwJNuvfGC35GNYH0VJ56c+iCFeAnMXIT00cYuHf0FCRTP0WvTKl+PQmeD1pwxefdFvKCVpidU2hOARb4ooapT0SDM1SODqjaZ/qwWP18y/qQ/v imported-openssh-key", 
+                            "toolTip": "The SSH public key to use for the virtual machine. https://learn.microsoft.com/azure/virtual-machines/linux/mac-create-ssh-keys",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "options": {
+                                "hideConfirmation": true
+                            },
+                            "visible": "[equals(steps('vmsettings').vmJumpboxOSType, 'linux')]"
+                        }
+                    ]
+                },
+                {
+                    "name": "flags",
+                    "label": "Deployment feature flags",
+                    "elements": [                        
+                        {
+                            "name": "enableBastion",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Deploy Bastion",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "Enable or disable the creation of the Azure Bastion.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        }, 
+                        {
+                            "name": "deployRedisCache",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Deploy Redis Cache",
+                            "subLabel": "",
+                            "defaultValue": "false",
+                            "toolTip": "Optional, default value is false. If true, Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "deployHelloWorldSample",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Deploy Hello World Sample",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "Enable or disable the deployment of the Hello World Sample App. If disabled, the Application Gateway will not be deployed.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "enableApplicationInsights",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Enable Application Insights",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "Enable or disable the createion of Application Insights.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "enableDaprInstrumentation",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Enable Dapr Instrumentation",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. If Application Insights is not enabled, this parameter is ignored.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },                       
+
+
+                        {
+                            "name": "enableTelemetry",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Enable Telemetry",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "Enable usage and telemetry feedback to Microsoft.",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": false
+                        },                            
+                        {
+                            "name": "applicationGatewayFqdn",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Application Gateway Fqdn",
+                            "subLabel": "",
+                            "defaultValue": "acahello.demoapp.com",
+                            "toolTip": "The FQDN of the Application Gateway. Must match the TLS Certificate.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": false
+                        },
+                        {
+                            "name": "enableApplicationGatewayCertificate",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Enable Application Gateway Certificate",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "Enable or disable Application Gateway Certificate (PFX).",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": false
+                        },
+                        {
+                            "name": "applicationGatewayCertificateKeyName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Application Gateway Certificate Key Name",
+                            "subLabel": "",
+                            "defaultValue": "agwcert",
+                            "toolTip": "The name of the certificate key to use for Application Gateway certificate.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": false
+                        }
+                    ]
+                }
+            ]
+        },
+        "outputs": {
+            "parameters": {
+                "workloadName": "[steps('basics').workloadName]",
+                "environment": "[steps('basics').environment]",
+                "location": "[steps('basics').location]",
+                "hubResourceGroupName": "[steps('basics').hubResourceGroupName]",
+                "spokeResourceGroupName": "[steps('basics').spokeResourceGroupName]",
+                "vnetAddressPrefixes": "[steps('networking').vnetAddressPrefixes]",
+                "vmJumpBoxSubnetAddressPrefix": "[steps('networking').vmJumpBoxSubnetAddressPrefix]",
+                "bastionSubnetAddressPrefix": "[steps('networking').bastionSubnetAddressPrefix]",
+                "spokeVNetAddressPrefixes": "[steps('networking').spokeVNetAddressPrefixes]",
+                "spokeInfraSubnetAddressPrefix": "[steps('networking').spokeInfraSubnetAddressPrefix]",
+                "spokePrivateEndpointsSubnetAddressPrefix": "[steps('networking').spokePrivateEndpointsSubnetAddressPrefix]",
+                "spokeApplicationGatewaySubnetAddressPrefix": "[steps('networking').spokeApplicationGatewaySubnetAddressPrefix]",
+                "vmSize": "[if( not( equals(steps('vmsettings').vmJumpboxOSType, 'none') ), steps('vmsettings').vmSize, 'Standard_B2ms')]",
+                "vmAdminUsername": "[if( not( equals(steps('vmsettings').vmJumpboxOSType, 'none') ), steps('vmsettings').vmAdminUsername, 'azureuser')]",
+                "vmAdminPassword": "[if( not( equals(steps('vmsettings').vmJumpboxOSType, 'none') ), steps('vmsettings').vmAdminPassword.password, 'Pass@word123$' )]",
+                "vmLinuxSshAuthorizedKeys": "[if ( equals ( steps('vmsettings').vmJumpboxOSType, 'linux'), steps('vmsettings').vmLinuxSshAuthorizedKeys, 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDpNpoh248rsraL3uejAwKlla+pHaDLbp4DM7bKFoc3Rt1DeXPs0XTutJcNtq4iRq+ooRQ1T7WaK42MfQQxt3qkXwjyv8lPJ4v7aElWkAbxZIRYVYmQVxxwfw+zyB1rFdaCQD/kISg/zXxCWw+gdds4rEy7eq23/bXFM0l7pNvbAULIB6ZY7MRpC304lIAJusuZC59iwvjT3dWsDNWifA1SJtgr39yaxB9Fb01UdacwJNuvfGC35GNYH0VJ56c+iCFeAnMXIT00cYuHf0FCRTP0WvTKl+PQmeD1pwxefdFvKCVpidU2hOARb4ooapT0SDM1SODqjaZ/qwWP18y/qQ/v imported-openssh-key'])",
+                "vmJumpboxOSType": "[steps('vmsettings').vmJumpboxOSType]",
+                "enableBastion": "[steps('flags').enableBastion]",   
+                "enableApplicationInsights": "[steps('flags').enableApplicationInsights]",
+                "enableDaprInstrumentation": "[steps('flags').enableDaprInstrumentation]",
+                "deployHelloWorldSample": "[steps('flags').deployHelloWorldSample]",
+                "applicationGatewayFqdn": "acahello.demoapp.com",
+                "enableApplicationGatewayCertificate": "true",
+                "applicationGatewayCertificateKeyName": "agwcert",
+                "enableTelemetry": "[steps('flags').enableTelemetry]",
+                "deployRedisCache": "[steps('flags').deployRedisCache]"
+            },
+            "kind": "Subscription",
+            "location": "[steps('basics').resourceScope.location.name]",
+            "subscriptionId": "[steps('basics').resourceScope.subscription.id]"
+        }
+    }
+}

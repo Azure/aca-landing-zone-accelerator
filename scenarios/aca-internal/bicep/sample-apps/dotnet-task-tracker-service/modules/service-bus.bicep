@@ -115,7 +115,7 @@ resource serviceBusTopicSubscription 'Microsoft.ServiceBus/namespaces/topics/sub
   parent: serviceBusTopic
 }
 
-module serviceBusNetworking '../../../../../shared/bicep/private-networking.bicep' = {
+module serviceBusNetworking '../../../../../shared/bicep/network/private-networking.bicep' = {
   name: 'serviceBusNetworking-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
@@ -125,6 +125,7 @@ module serviceBusNetworking '../../../../../shared/bicep/private-networking.bice
     privateEndpointSubResourceName: serviceBusNamespaceResourceName
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
+    vnetHubResourceId: hubVNetId
   }
 }
 

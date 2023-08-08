@@ -1,6 +1,6 @@
 resource "azurerm_container_registry" "acr" {
   name                = var.acrName
-  resource_group_name = var.resourceGroupName
+  resource_group_name = var.spokeResourceGroupName
   location            = var.location
   tags                = var.tags
 
@@ -13,7 +13,7 @@ resource "azurerm_container_registry" "acr" {
 
 module "containerRegistryPrivateZones" {
   source            = "../networking/private-zones"
-  resourceGroupName = var.resourceGroupName
+  resourceGroupName = var.hubResourceGroupName
   vnetLinks         = var.vnetLinks
   zoneName          = local.privateDnsZoneNames
   records           = var.aRecords
@@ -23,7 +23,7 @@ module "containerRegistryPrivateZones" {
 module "containerRegistryPrivateEndpoints" {
   source            = "../networking/private-endpoints"
   endpointName      = var.containerRegistryPep
-  resourceGroupName = var.resourceGroupName
+  resourceGroupName = var.spokeResourceGroupName
   subnetId          = var.subnetId
   privateLinkId     = azurerm_container_registry.acr.id
   privateDnsZoneIds = [module.containerRegistryPrivateZones.privateDnsZoneId]
@@ -33,7 +33,7 @@ module "containerRegistryPrivateEndpoints" {
 
 resource "azurerm_user_assigned_identity" "containerRegistryUserAssignedIdentity" {
   name                = var.containerRegistryUserAssignedIdentityName
-  resource_group_name = var.resourceGroupName
+  resource_group_name = var.spokeResourceGroupName
   location            = var.location
   tags                = var.tags
 }

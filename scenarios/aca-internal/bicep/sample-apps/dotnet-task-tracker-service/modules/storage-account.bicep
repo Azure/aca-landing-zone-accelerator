@@ -99,7 +99,7 @@ resource externalQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2
   parent: storageQueuesService
 }
 
-module storageAccountBlobNetworking '../../../../../shared/bicep/private-networking.bicep' = {
+module storageAccountBlobNetworking '../../../../../shared/bicep/network/private-networking.bicep' = {
   name: 'storageAccountBlobNetworking-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
@@ -109,10 +109,11 @@ module storageAccountBlobNetworking '../../../../../shared/bicep/private-network
     privateEndpointSubResourceName: 'blob'
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
+    vnetHubResourceId: hubVNetId
   }
 }
 
-module storageAccountQueueNetworking '../../../../../shared/bicep/private-networking.bicep' = {
+module storageAccountQueueNetworking '../../../../../shared/bicep/network/private-networking.bicep' = {
   name: 'storageAccountQueueNetworking-${uniqueString(resourceGroup().id)}'
   params: {
     location: location
@@ -122,6 +123,7 @@ module storageAccountQueueNetworking '../../../../../shared/bicep/private-networ
     privateEndpointSubResourceName: 'queue'
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
+    vnetHubResourceId: hubVNetId
   }
 }
 

@@ -16,4 +16,5 @@ variable "location" {
 variable "tags" {}
 
 variable "securityRules" {
+  default = []
 }

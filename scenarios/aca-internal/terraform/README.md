@@ -89,24 +89,6 @@ az storage container-rm create --storage-account $STORAGE_ACCOUNT_NAME --name $C
 
 ### Deploy the reference implementation
 
-#### Configure Terraform remote state
-
-To configure your Terraform deployment to use the newly provisioned storage account and container, edit the [`./providers.tf`](./providers.tf) file at lines 11-13 as below:
-
-```hcl
-  backend "azurerm" {
-    resource_group_name  = "<REPLACE with $RESOURCE_GROUP_NAME>"
-    storage_account_name = "<REPLACE with $STORAGE_ACCOUNT_NAME>"
-    container_name       = "tfstate"
-    key                  = "acalza/terraform.tfstate"
-  }
-```
-
-* `resource_group_name`: Name of the Azure Resource Group that the storage account resides in.
-* `storage_account_name`: Name of the Azure Storage Account to be used to hold remote state.
-* `container_name`: Name of the Azure Storage Account Blob Container to store remote state.
-* `key`: Path and filename for the remote state file to be placed in the Storage Account Container. If the state file does not exist in this path, Terraform will automatically generate one for you.
-
 #### Provide parameters required for deployment
 
 As you configured the backend remote state with your live Azure infrastructure resource values, you must also provide them for your deployment.
@@ -125,28 +107,37 @@ The table below summurizes the avaialble parameters and the possible values that
    | `enableTelemetry` | Enables or disabled telemetry collection | **true** | **false** |
    | `hubResourceGroupName` | The name of the hub resource group to create the hub resources in. | *none*. This results in a new resource group being created. | **rg-byo-hub-academo**. This results in `rg-byo-hub-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
    | `spokeResourceGroupName` | The name of the spoke resource group to create the spoke resources in. | *none*. This results in a new resource group being created. | **rg-byo-spoke-academo**. This results in `rg-byo-spoke-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
-   | `vnetAddressPrefixes` | An array of string. The address prefixes to use for the hub virtual network. | `["10.0.0.0/16"]` | `["10.100.0.0/16"]` |
+   | `vnetAddressPrefixes` | An array of string. The address prefixes to use for the hub virtual network. | `["10.0.0.0/24"]` | `["10.100.0.0/24"]` |
    | `enableBastion` | Controls if Azure Bastion is deployed. | `true` | false` |
-   | `bastionSubnetAddressPrefix` | CIDR to use for the Azure Bastion subnet. Must be a subset of the hub CIDR ranges. | **10.0.2.0/27** | **10.100.2.0/27** |
+   | `bastionSubnetAddressPrefix` | CIDR to use for the Azure Bastion subnet. Must be a subset of the hub CIDR ranges. | **10.0.0.128/26** | **10.100.2.0/26** |
    | `vmSize` | The size of the virtual machine to create for the jump box. | `Standard_B2ms` | Any one of: [VM sizes](https://learn.microsoft.om/azure/virtual-machines/sizes) |
    | `vmAdminUsername` | The username to use for the jump box. | **azureuser** | `jumpboxadmin` |
    | `vmAdminPassword` | The password to use for the jump box admin user. | **Password123** :stop_sign: You *should* change this. | Any cryptographically strong password of your choosing. |
    | `vmLinuxSshAuthorizedKeys` | The SSH public key to use for the jump box (if VM is Linux) | *unusable/garbage value* | Any SSH keys you wish in the form of **ssh-rsa AAAAB6NzC...P38/oqQv description**|
    | `vmJumpboxOSType` | The type of OS for the deployed jump box. | **linux** | **windows** |
-   | `vmJumpBoxSubnetAddressPrefix` | CIDR to use for the jump box subnet. must be a subset of the hub CIDR ranges. | **10.0.3.0/24** | **10.100.3./24** |
+   | `vmJumpBoxSubnetAddressPrefix` | CIDR to use for the jump box subnet. must be a subset of the hub CIDR ranges. | **10.1.2.32/27** | **10.100.3.128/25** |
    | `spokeVNetAddressPrefixes` | An array of string. The address prefixes to use for the spoke virtual network. | `["10.1.0.0/22"]` | `["10.101.0./22"]` |
    | `spokeInfraSubnetAddressPrefix` | CIDR of the spoke infrastructure subnet. Must be a subset of the spoke CIDR ranges. | **10.1.0.0/23** | **10.101.0.0/23** |
    | `spokePrivateEndpointsSubnetAddressPrefix` | CIDR of the spoke private endpoint subnet. Must be a subset of the spoke CIDR ranges. | **10.1.2.0/4** | **10.101.2.0/24** |
    | `spokeApplicationGatewaySubnetAddressPrefix` | CIDR of the spoke Application Gateway subnet. Must be a subset of the spoke CIDR ranges. | **10.1.3.0/24** | **10.101.3.0/24** |
    | `enableApplicationInsights` | Controls if Application Insights is deployed and configured. | **true** | **false** |
    | `deployHelloWorldSample` | Deploy a simple, sample application to the infrastructure. If you prefer to deploy the more comprehensive, Dapr-enabled sample app, this needs to be disabled | **true** | **false**, because you plan on deploying the Dapr-enabled application instead. |
+   | `clientIP` | If you'd like to deploy the architecture with Application Gateway without having to deploy Application Gateway separately, this should be set to the Public IP address of the machine executing the deployment | "" | 192.168.1.1 |
 
 
 #### Deploy
 
+Before deploying, you need to decide how you would like to deploy the solution with Application Gateway. You have two options:
+- If you provide your client IP address, the Public IP address of the machine executing the Terraform deployment, it will be added to the Network ACL for the KeyVault used to house the Application Gateway certificate and it will allow you to proceed through the entire deployment. 
+- If you would like to keep the KeyVault fully private, you will need to comment out the Application Gateway module in the [main.tf](main.tf) and leave the clientIP value blank in your tfvars file. Follow the [instructions for deploying Application Gateway separately on your jump box](../terraform/modules/06-application-gateway/main.tf). 
+  
 #### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
 ``` bash
-terraform init
+terraform init `
+    --backend-config=resource_group_name="tfstate" `
+    --backend-config=storage_account_name=<Your TF State Store Storage Account Name> `
+    --backend-config=container_name="tfstate" `
+    --backend-config=key="acalza/terraform.state"
 terraform plan --var-file terraform.tfvars -out tfplan
 terraform apply tfplan
 ```

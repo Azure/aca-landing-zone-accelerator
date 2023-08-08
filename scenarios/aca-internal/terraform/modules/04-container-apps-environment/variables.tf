@@ -19,7 +19,7 @@ variable "environment" {
 
 variable "location" {
   type    = string
-  default = "eastus"
+  default = "northeurope"
 }
 
 variable "spokeVnetId" {
@@ -34,7 +34,9 @@ variable "spokeInfraSubnetId" {
   type = string
 }
 
-variable "resourceGroupName" {}
+variable "spokeResourceGroupName" {}
+
+variable "hubResourceGroupName" {}
 
 variable "tags" {}
 

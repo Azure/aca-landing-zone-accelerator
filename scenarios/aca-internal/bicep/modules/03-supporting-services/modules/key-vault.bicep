@@ -25,8 +25,45 @@ param spokePrivateEndpointSubnetName string
 @description('The name of the private endpoint to be created for Key Vault.')
 param keyVaultPrivateEndpointName string
 
-@description('The name of the user assigned identity with Key Vault reader role.')
-param keyVaultUserAssignedIdentityName string
+
+@description('Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
+@minValue(0)
+@maxValue(365)
+param diagnosticLogsRetentionInDays int = 365
+
+@description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+param diagnosticStorageAccountId string = ''
+
+@description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+param diagnosticWorkspaceId string = ''
+
+@description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
+param diagnosticEventHubAuthorizationRuleId string = ''
+
+@description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+param diagnosticEventHubName string = ''
+
+
+@description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource.')
+@allowed([
+  'allLogs'
+  'AuditEvent'
+  'AzurePolicyEvaluationDetails'
+])
+param diagnosticLogCategoriesToEnable array = [
+  'allLogs'
+]
+
+@description('Optional. The name of metrics that will be streamed.')
+@allowed([
+  'AllMetrics'
+])
+param diagnosticMetricsToEnable array = [
+  'AllMetrics'
+]
+
+@description('Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to "<resourceName>-diagnosticSettings".')
+param diagnosticSettingsName string = ''
 
 // ------------------
 // VARIABLES
@@ -45,7 +82,6 @@ var spokeSubscriptionId = spokeVNetIdTokens[2]
 var spokeResourceGroupName = spokeVNetIdTokens[4]
 var spokeVNetName = spokeVNetIdTokens[8]
 
-var keyvaultReaderRoleGuid = '21090545-7ca7-4776-b22c-e363652d74d2'
 
 var spokeVNetLinks = [
   {
@@ -59,6 +95,36 @@ var spokeVNetLinks = [
     registrationEnabled: false
   }
 ]
+
+var diagnosticsLogsSpecified = [for category in filter(diagnosticLogCategoriesToEnable, item => item != 'allLogs'): {
+  category: category
+  enabled: true
+  retentionPolicy: {
+    enabled: true
+    days: diagnosticLogsRetentionInDays
+  }
+}]
+
+var diagnosticsLogs = contains(diagnosticLogCategoriesToEnable, 'allLogs') ? [
+  {
+    categoryGroup: 'allLogs'
+    enabled: true
+    retentionPolicy: {
+      enabled: true
+      days: diagnosticLogsRetentionInDays
+    }
+  }
+] : diagnosticsLogsSpecified
+
+var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
+  category: metric
+  timeGrain: null
+  enabled: true
+  retentionPolicy: {
+    enabled: true
+    days: diagnosticLogsRetentionInDays
+  }
+}]
 
 
 // ------------------
@@ -103,7 +169,21 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-module keyVaultNetwork '../../../../../shared/bicep/private-networking.bicep' = {
+resource keyVault_diagnosticSettings 'Microsoft.Insights/diagnosticsettings@2021-05-01-preview' = if ((!empty(diagnosticStorageAccountId)) || (!empty(diagnosticWorkspaceId)) || (!empty(diagnosticEventHubAuthorizationRuleId)) || (!empty(diagnosticEventHubName))) {
+  name: !empty(diagnosticSettingsName) ? diagnosticSettingsName : '${keyVaultName}-diagnosticSettings'
+  properties: {
+    storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
+    workspaceId: !empty(diagnosticWorkspaceId) ? diagnosticWorkspaceId : null
+    eventHubAuthorizationRuleId: !empty(diagnosticEventHubAuthorizationRuleId) ? diagnosticEventHubAuthorizationRuleId : null
+    eventHubName: !empty(diagnosticEventHubName) ? diagnosticEventHubName : null
+    metrics: diagnosticsMetrics
+    logs: diagnosticsLogs
+  }
+  scope: keyVault
+}
+
+
+module keyVaultNetwork '../../../../../shared/bicep/network/private-networking.bicep' = {
   name: 'keyVaultNetwork-${uniqueString(keyVault.id)}'
   params: {
     location: location
@@ -113,22 +193,7 @@ module keyVaultNetwork '../../../../../shared/bicep/private-networking.bicep' = 
     privateEndpointSubResourceName: keyVaultResourceName
     virtualNetworkLinks: spokeVNetLinks
     subnetId: spokePrivateEndpointSubnet.id
-  }
-}
-
-resource keyVaultUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: keyVaultUserAssignedIdentityName
-  location: location
-  tags: tags
-}
-
-resource keyVaultReaderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscription().id, keyVault.id, keyVaultUserAssignedIdentity.id) 
-  scope: keyVault
-  properties: {
-    principalId: keyVaultUserAssignedIdentity.properties.principalId
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', keyvaultReaderRoleGuid)
-    principalType: 'ServicePrincipal'
+    vnetHubResourceId: hubVNetId
   }
 }
 
@@ -141,6 +206,3 @@ output keyVaultId string = keyVault.id
 
 @description('The name of the key vault.')
 output keyVaultName string = keyVault.name
-
-@description('The resource ID of the user assigned managed identity to access the key vault.')
-output keyVaultUserAssignedIdentityId string = keyVaultUserAssignedIdentity.id

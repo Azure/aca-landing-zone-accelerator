@@ -9,7 +9,7 @@ variable "networkName" {
 }
 
 variable "location" {
-  default = "eastus"
+  default = "northeurope"
   type    = string
 }
 
@@ -19,8 +19,6 @@ variable "resourceGroupName" {
 }
 
 variable "addressSpace" {
-  default = []
-  type    = list(string)
 }
 
 variable "tags" {

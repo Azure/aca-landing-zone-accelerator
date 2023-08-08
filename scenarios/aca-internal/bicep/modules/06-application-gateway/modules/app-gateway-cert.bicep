@@ -9,6 +9,7 @@ param keyVaultName string
 param appGatewayUserAssignedIdentityPrincipalId string
 
 param appGatewayCertificateKeyName string
+
 param appGatewayCertificateData string
 
 // ------------------

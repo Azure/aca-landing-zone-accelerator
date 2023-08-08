@@ -33,7 +33,9 @@ variable "spokePrivateEndpointSubnetId" {
   type = string
 }
 
-variable "resourceGroupName" {}
+variable "hubResourceGroupName" {}
+
+variable "spokeResourceGroupName" {}
 
 variable "aRecords" {}
 

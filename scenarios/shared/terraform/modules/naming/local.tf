@@ -4,9 +4,10 @@ locals {
   namingBaseNoWorkloadName = "${var.resourceTypeToken}-${var.environment}-${var.regionAbbreviations["${var.location}"]}"
 
   resourceNames = {
-    vnetSpoke                              = "${replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations["virtualNetwork"])}-spoke"
+    vnetSpoke                              = "${replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.virtualNetwork)}-spoke"
     vnetHub                                = "${replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.virtualNetwork)}-hub"
     applicationGateway                     = replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.applicationGateway)
+    applicationGatewayNsg                  = "${var.resourceTypeAbbreviations.networkSecurityGroup}-${replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.applicationGateway)}"
     applicationGatewayPip                  = "${var.resourceTypeAbbreviations.publicIpAddress}-${replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.applicationGateway)}"
     applicationGatewayUserAssignedIdentity = "${var.resourceTypeAbbreviations.managedIdentity}-${replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.applicationGateway)}-KeyVaultSecretUser"
     applicationInsights                    = replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.applicationInsights)
@@ -25,6 +26,7 @@ locals {
     keyVaultPep                            = "${var.resourceTypeAbbreviations.privateEndpoint}-${replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.keyVault)}"
     keyVaultUserAssignedIdentity           = "${var.resourceTypeAbbreviations.managedIdentity}-${replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.keyVault)}-KeyVaultReader"
     logAnalyticsWorkspace                  = replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.logAnalyticsWorkspace)
+    privateEndpointsNsg                    = "${var.resourceTypeAbbreviations.networkSecurityGroup}-${replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.privateEndpoint)}"
     privateLinkServiceName                 = "${var.resourceTypeAbbreviations.privateLinkService}-${replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.frontDoor)}"
     rgHubName                              = "${var.resourceTypeAbbreviations.resourceGroup}-${var.workloadName}-hub-${var.environment}-${var.regionAbbreviations[lower(var.location)]}"
     rgSpokeName                            = "${var.resourceTypeAbbreviations.resourceGroup}-${var.workloadName}-spoke-${var.environment}-${var.regionAbbreviations[lower(var.location)]}"

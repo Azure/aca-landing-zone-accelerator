@@ -16,7 +16,7 @@ variable "environment" {
 
 variable "location" {
   type    = string
-  default = "eastus"
+  default = "northeurope"
 }
 
 variable "hubResourceGroupName" {}
@@ -32,34 +32,6 @@ variable "enableBastion" {
 
 variable "bastionSubnetAddressPrefixes" {}
 
-variable "vmSize" {}
-
-variable "vmAdminUsername" {
-  default = "vmadmin"
-}
-
-variable "vmAdminPassword" {
-  sensitive = true
-}
-
-variable "vmLinuxSshAuthorizedKeys" {}
-
-variable "vmJumpboxOSType" {
-  default = "Linux"
-  validation {
-    condition = anytrue([
-      var.vmJumpboxOSType == "Linux",
-      var.vmJumpboxOSType == "Windows"
-    ])
-    error_message = "OS Type must be Linux or Windows."
-  }
-}
-
-variable "vmSubnetName" {
-  default = "snet-jumpbox"
-  type    = string
-}
-
 variable "ddosProtectionPlanId" {
   default = null
   type    = string
@@ -69,4 +41,16 @@ variable "securityRules" {
   default = []
 }
 
-variable "vmJumpBoxSubnetAddressPrefix" {}
+variable "gatewaySubnetName" {
+  default = "GatewaySubnet"
+  type    = string
+}
+  
+variable "gatewaySubnetAddressPrefix" {}
+
+variable "azureFirewallSubnetName" {
+  default = "AzureFirewallSubnet"
+  type = string
+}
+
+variable "azureFirewallSubnetAddressPrefix" {}

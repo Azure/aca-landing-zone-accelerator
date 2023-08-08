@@ -44,6 +44,7 @@ var resourceNames = {
   applicationGatewayPip: '${naming.resourceTypeAbbreviations.publicIpAddress}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationGateway)}'
   applicationGatewayUserAssignedIdentity: '${naming.resourceTypeAbbreviations.managedIdentity}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationGateway)}-KeyVaultSecretUser'
   applicationGatewayNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationGateway)}'
+  pepNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-pep'
   applicationInsights: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationInsights)
   azureFirewall: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.azureFirewall)  
   azureFirewallPip: '${naming.resourceTypeAbbreviations.publicIpAddress}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.azureFirewall)}'  
@@ -62,7 +63,6 @@ var resourceNames = {
   frontDoorProfile:  replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.frontDoor)
   keyVault: endsWith( keyVaultName, '-') ? take( keyVaultName, 23 ) : keyVaultName
   keyVaultPep:  '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.keyVault )}'
-  keyVaultUserAssignedIdentity:  '${naming.resourceTypeAbbreviations.managedIdentity}-${replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.keyVault )}-KeyVaultReader'
   logAnalyticsWorkspace: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.logAnalyticsWorkspace)
   routeTable: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.routeTable)
   serviceBus: replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.serviceBus)
@@ -72,6 +72,7 @@ var resourceNames = {
   vmJumpBox: replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)
   vmJumpBoxNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'
   vmJumpBoxNic: '${naming.resourceTypeAbbreviations.networkInterface}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.virtualMachine)}'
+  frontDoor: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.frontDoor)
 }
 
 output resourcesNames object = resourceNames

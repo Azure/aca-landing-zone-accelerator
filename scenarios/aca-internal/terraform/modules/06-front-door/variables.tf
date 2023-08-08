@@ -19,7 +19,7 @@ variable "environment" {
 
 variable "location" {
   type    = string
-  default = "eastus"
+  default = "northeurope"
 }
 
 variable "containerAppsEnvironmentId" {}

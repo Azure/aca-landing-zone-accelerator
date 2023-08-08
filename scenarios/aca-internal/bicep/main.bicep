@@ -32,8 +32,11 @@ param enableBastion bool
 @description('CIDR to use for the Azure Bastion subnet.')
 param bastionSubnetAddressPrefix string
 
-@description('CIDR to use for the Azure Firewall subnet.')
-param azfwAddressPrefix string
+@description('CIDR to use for the gatewaySubnet.')
+param gatewaySubnetAddressPrefix string
+
+@description('CIDR to use for the azureFirewallSubnet.')
+param azureFirewallSubnetAddressPrefix string
 
 // Hub Virtual Machine
 @description('The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.')
@@ -96,6 +99,20 @@ param enableTelemetry bool = true
 @description('Optional, default value is false. If true, Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed')
 param deployRedisCache bool = false
 
+@description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
+param deployZoneRedundantResources bool = true
+
+@description('Optional, default value is true. If true, Azure Policies will be deployed')
+param deployAzurePolicies bool = true
+
+@description('Optional. DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus')
+@allowed([
+  'Enabled'
+  'Disabled'
+  'VirtualNetworkInherited'
+])
+param ddosProtectionMode string = 'Disabled'
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -119,14 +136,9 @@ module hub 'modules/01-hub/deploy.hub.bicep' = {
     workloadName: workloadName
     vnetAddressPrefixes: vnetAddressPrefixes
     enableBastion: enableBastion
-    bastionSubnetAddressPrefix: bastionSubnetAddressPrefix
-    azfwAddressPrefix: azfwAddressPrefix
-    vmSize: vmSize
-    vmAdminUsername: vmAdminUsername
-    vmAdminPassword: vmAdminPassword
-    vmLinuxSshAuthorizedKeys: vmLinuxSshAuthorizedKeys
-    vmJumpboxOSType: vmJumpboxOSType
-    vmJumpBoxSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
+    bastionSubnetAddressPrefix: bastionSubnetAddressPrefix    
+    azureFirewallSubnetAddressPrefix: azureFirewallSubnetAddressPrefix
+    gatewaySubnetAddressPrefix: gatewaySubnetAddressPrefix
   }
 }
 
@@ -150,6 +162,13 @@ module spoke 'modules/02-spoke/deploy.spoke.bicep' = {
     spokePrivateEndpointsSubnetAddressPrefix: spokePrivateEndpointsSubnetAddressPrefix
     spokeVNetAddressPrefixes: spokeVNetAddressPrefixes
     networkApplianceIpAddress: hub.outputs.networkApplianceIpAddress
+    vmSize: vmSize
+    vmAdminUsername: vmAdminUsername
+    vmAdminPassword: vmAdminPassword
+    vmLinuxSshAuthorizedKeys: vmLinuxSshAuthorizedKeys
+    vmJumpboxOSType: vmJumpboxOSType
+    vmJumpBoxSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
+    deployAzurePolicies: deployAzurePolicies
   }
 }
 
@@ -182,7 +201,7 @@ module containerAppsEnvironment 'modules/04-container-apps-environment/deploy.ac
     enableApplicationInsights: enableApplicationInsights
     enableDaprInstrumentation: enableDaprInstrumentation
     enableTelemetry: enableTelemetry
-    logAnalyticsWorkspaceId: supportingServices.outputs.logAnalyticsWorkspaceId
+    logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -211,6 +230,8 @@ module applicationGateway 'modules/06-application-gateway/deploy.app-gateway.bic
     applicationGatewaySubnetId: spoke.outputs.spokeApplicationGatewaySubnetId
     enableApplicationGatewayCertificate: enableApplicationGatewayCertificate
     keyVaultId: supportingServices.outputs.keyVaultId
+    deployZoneRedundantResources: deployZoneRedundantResources
+    ddosProtectionMode: ddosProtectionMode
   }
 }
 
@@ -241,9 +262,6 @@ output spokeInfraSubnetId string = spoke.outputs.spokeInfraSubnetId
 @description('The name of the Spoke Infrastructure Subnet.')
 output spokeInfraSubnetName string = spoke.outputs.spokeInfraSubnetName
 
-@description('The resource ID of the Spoke Private Endpoints Subnet.')
-output spokePrivateEndpointsSubnetId string = spoke.outputs.spokePrivateEndpointsSubnetId
-
 @description('The name of the Spoke Private Endpoints Subnet.')
 output spokePrivateEndpointsSubnetName string = spoke.outputs.spokePrivateEndpointsSubnetName
 
@@ -268,9 +286,6 @@ output keyVaultId string = supportingServices.outputs.keyVaultId
 
 @description('The name of the key vault.')
 output keyVaultName string = supportingServices.outputs.keyVaultName
-
-@description('The resource ID of the user assigned managed identity to access the key vault.')
-output keyVaultUserAssignedIdentityId string = supportingServices.outputs.keyVaultUserAssignedIdentityId
 
 // Container Apps Environment
 @description('The resource ID of the container apps environment.')

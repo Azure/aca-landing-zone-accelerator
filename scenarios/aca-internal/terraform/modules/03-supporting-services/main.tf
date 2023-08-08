@@ -15,7 +15,8 @@ module "naming" {
 module "containerRegistry" {
   source                                    = "../../../../shared/terraform/modules/acr"
   acrName                                   = module.naming.resourceNames["containerRegistry"]
-  resourceGroupName                         = var.resourceGroupName
+  spokeResourceGroupName                    = var.spokeResourceGroupName
+  hubResourceGroupName                      = var.hubResourceGroupName
   location                                  = var.location
   vnetLinks                                 = var.vnetLinks != [] ? var.vnetLinks : local.vnetLinks
   aRecords                                  = var.aRecords
@@ -29,7 +30,8 @@ module "containerRegistry" {
 
 module "keyVault" {
   source                           = "../../../../shared/terraform/modules/keyvault"
-  resourceGroupName                = var.resourceGroupName
+  spokeResourceGroupName           = var.spokeResourceGroupName
+  hubResourceGroupName             = var.hubResourceGroupName
   keyVaultName                     = module.naming.resourceNames["keyVault"]
   location                         = var.location
   vnetLinks                        = var.vnetLinks != [] ? var.vnetLinks : local.vnetLinks

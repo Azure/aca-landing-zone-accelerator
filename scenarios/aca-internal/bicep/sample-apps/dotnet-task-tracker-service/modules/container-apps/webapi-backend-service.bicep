@@ -142,7 +142,7 @@ resource backendApiService 'Microsoft.App/containerApps@2022-06-01-preview' = {
 }
 
 // Assign cosmosdb account read/write access to aca system assigned identity
-// To know more: https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac
+// To know more: https://learn.microsoft.com/azure/cosmos-db/how-to-setup-rbac
 resource backendApiService_cosmosdb_role_assignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2022-08-15' = {
   name: guid(subscription().id, backendApiService.name, '00000000-0000-0000-0000-000000000002')
   parent: cosmosDbAccount

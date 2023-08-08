@@ -4,7 +4,7 @@
   "parameters": {
     // The name of the workload that is being deployed. Up to 10 characters long. This wil be used as part of the naming convention (i.e. as defined here: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) 
     "workloadName": {
-      "value": "lzaaca"
+      "value": "lzaaca02"
     },
     //The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.
     "environment": {
@@ -25,13 +25,19 @@
       "value": ""
     },
     "vnetAddressPrefixes": {
-        "value":  ["10.0.0.0/16"]
+        "value":  ["10.0.0.0/24"]
     },
     "enableBastion": {
         "value": true
     },
+    "gatewaySubnetAddressPrefix": {
+      "value": "10.0.0.0/27"
+    },
+    "azureFirewallSubnetAddressPrefix": {
+      "value": "10.0.0.64/26"
+    },
     "bastionSubnetAddressPrefix": {
-        "value":  "10.0.2.0/27"
+      "value": "10.0.0.128/26"
     },
     "azfwAddressPrefix": {
         "value":  "10.0.1.0/26"
@@ -52,7 +58,7 @@
         "value": "linux"
     },
     "vmJumpBoxSubnetAddressPrefix": {
-        "value":  "10.0.3.0/24"
+        "value":  "10.1.2.32/27"
     },
     "spokeVNetAddressPrefixes": {
       "value":  ["10.1.0.0/22"]
@@ -61,7 +67,7 @@
       "value":  "10.1.0.0/23"
     },
     "spokePrivateEndpointsSubnetAddressPrefix": {
-      "value":  "10.1.2.0/24"
+      "value":  "10.1.2.0/27"
     },
     "spokeApplicationGatewaySubnetAddressPrefix": {
       "value":  "10.1.3.0/24"
@@ -78,6 +84,14 @@
     "deployHelloWorldSample": {
       "value": true
     },
+    // if true Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed
+    "deployRedisCache": {
+      "value": false
+    },
+    // DDoS protection mode for the Public IP of the Application Gateway. allowed values are "VirtualNetworkInherited", "Enabled" and "Disabled"
+    "ddosProtectionMode": {
+      "value": "Enabled"
+    },
     // The FQDN of the Application Gateway. Must match the TLS Certificate. 
     "applicationGatewayFqdn": {
       "value": "acahello.demoapp.com"
@@ -88,9 +102,13 @@
     "applicationGatewayCertificateKeyName": {
       "value": "agwcert"
     },
-    // if true Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed
-    "deployRedisCache": {
-      "value": false
+    //If true, Azure Policies will be deployed
+    "deployAzurePolicies": {
+      "value": true
+    },
+    //If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.
+    "deployZoneRedundantResources": {
+      "value": true
     }
   }
 }

@@ -116,7 +116,6 @@ param ddosProtectionMode string = 'Disabled'
 // ------------------
 // VARIABLES
 // ------------------
-
 var namingRules = json(loadTextContent('../../shared/bicep/naming/naming-rules.jsonc'))
 var rgHubName = !empty(hubResourceGroupName) ? hubResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-hub-${environment}-${namingRules.regionAbbreviations[toLower(location)]}'
 var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-spoke-${environment}-${namingRules.regionAbbreviations[toLower(location)]}'
@@ -125,7 +124,6 @@ var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${n
 // ------------------
 // RESOURCES
 // ------------------
-
 module hub 'modules/01-hub/deploy.hub.bicep' = {
   name: take('hub-${deployment().name}-deployment', 64)
   params: {

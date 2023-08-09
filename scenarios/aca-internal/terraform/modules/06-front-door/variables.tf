@@ -51,3 +51,5 @@ variable "frontDoorOriginRouteName" {
 }
 
 variable "frontDoorOriginHostName" {}
+
+variable "logAnalyticsWorkspaceId" {}

@@ -26,3 +26,14 @@ module "frontDoor" {
   frontDoorRouteName                = var.frontDoorOriginRouteName
   frontDoorProfileName              = module.naming.resourceNames["frontDoorProfile"]
 }
+
+module "diagnostics" {
+  source = "../../../../shared/terraform/modules/diagnostics"
+  logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
+  resources = [
+    {
+      "type" = "fd"
+      "id"   = module.frontDoor.frontDoorId
+    }
+  ]
+}

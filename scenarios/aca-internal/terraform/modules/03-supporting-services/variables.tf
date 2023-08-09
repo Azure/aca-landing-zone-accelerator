@@ -48,3 +48,5 @@ variable "keyVaultPullRoleAssignment" {}
 variable "vnetLinks" {}
 
 variable "clientIP" {}
+
+variable "logAnalyticsWorkspaceId" {}

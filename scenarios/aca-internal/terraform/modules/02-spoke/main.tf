@@ -116,6 +116,29 @@ module "vm" {
   subnetId          = data.azurerm_subnet.jumpboxSubnet[0].id
 }
 
+module "logAnalyticsWorkspace" {
+  source            = "../../../../shared/terraform/modules/monitoring/log-analytics"
+  resourceGroupName = module.naming.resourceNames["rgSpokeName"]
+  location          = var.location
+  workspaceName     = module.naming.resourceNames["logAnalyticsWorkspace"]
+  tags              = var.tags
+}
+
+module "diagnostics" {
+  source = "../../../../shared/terraform/modules/diagnostics"
+  logAnalyticsWorkspaceId = module.logAnalyticsWorkspace.workspaceId
+  resources = [ 
+    {
+      "type" = "vnet-spoke"
+      "id" = module.vnet.vnetId
+    },
+    {
+      "type" = "vm-jumpbox"
+      "id" = module.vm.vmId
+    }
+  ]
+}
+
 data "azurerm_subnet" "infraSubnet" {
   depends_on = [
     module.vnet

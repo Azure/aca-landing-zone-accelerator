@@ -125,6 +125,7 @@ module containerAppsEnvironment '../../../../shared/bicep/aca-environment.bicep'
 @description('The Private DNS zone containing the ACA load balancer IP')
 module containerAppsEnvironmentPrivateDnsZone '../../../../shared/bicep/network/private-dns-zone.bicep' = {
   name: 'containerAppsEnvironmentPrivateDnsZone-${uniqueString(resourceGroup().id)}'
+  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
   params: {
     name: containerAppsEnvironment.outputs.containerAppsEnvironmentDefaultDomain
     virtualNetworkLinks: [

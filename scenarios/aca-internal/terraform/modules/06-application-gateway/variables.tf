@@ -23,3 +23,14 @@ variable "keyVaultName" {}
 variable "appGatewayCertificatePath" {}
 
 variable "logAnalyticsWorkspaceId" {}
+variable "ddosProtectionEnabled" {
+  default = "Enabled" 
+}
+
+variable "enableAppGatewayCertificate" {
+  default = true
+}
+
+variable "makeZoneRedundant" {
+  default = true
+}

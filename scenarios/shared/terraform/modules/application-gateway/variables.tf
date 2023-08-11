@@ -52,7 +52,7 @@ variable "capacity" {
   }
 }
 
-variable "sslPolicyCipherSuites " {
+variable "sslPolicyCipherSuites" {
   default = ["TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384","TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"]
   validation {
     condition = length(var.sslPolicyCipherSuites) > 0
@@ -69,7 +69,7 @@ variable "sslProtocolEnums" {
 }
 
 variable "sslPolicyName" {
-  default = ""
+  default = null
   validation {
     condition = var.sslPolicyName == "AppGwSslPolicy20150501" || var.sslPolicyName == "AppGwSslPolicy20170401" || var.sslPolicyName == "AppGwSslPolicy20170401S" || var.sslPolicyName == "AppGwSslPolicy20220101" || var.sslPolicyName == "AppGwSslPolicy20220101S"
     error_message = "The SSL policy must be one of the following: AppGwSslPolicy20150501, AppGwSslPolicy20170401, AppGwSslPolicy20170401S, AppGwSslPolicy20220101, AppGwSslPolicy20220101S"
@@ -92,6 +92,9 @@ variable "autoscaleMinCapacity" {
   default = -1
 }
 
+variable "autoScaleSettings" {
+  default = []
+}
 variable "makeZoneRedundant" {
   default = true
 }
@@ -102,4 +105,48 @@ variable "ddosProtectionEnabled" {
     condition = var.ddosProtectionEnabled == "Enabled" || var.ddosProtectionEnabled == "Disabled" || var.ddosProtectionEnabled == "VirtualNetworkInherited"
     error_message = "The DDOS protection must be set to Enabled, Disabled or VirtualNetworkInherited"
   }
+}
+
+variable "gatewayIPConfigurations" {
+  default = []
+}
+
+variable "frontendPorts" {
+  default = []
+}
+
+variable "frontendIPConfigurations" {
+  default = []
+}
+
+variable "backendAddressPools" {
+  default = []
+}
+
+variable "sslCertificates" {
+  default = []
+}
+
+variable "backendHttpSettings" {
+  default = []
+}
+
+variable "httpListeners" {
+  default = []
+}
+
+variable "requestRoutingRules" {
+  default = []
+}
+
+variable "probes" {
+  default = []
+}
+
+variable "zones" {
+  default = []
+}
+
+variable "firewallConfiguration" {
+  default = []
 }

@@ -6,16 +6,22 @@ targetScope = 'resourceGroup'
 
 @description('The location where the resources will be created.')
 param location string = resourceGroup().location
+
 @description('The name of the bastion host to create.')
 param bastionName string
+
 @description('The name of the virtual network in which bastion subnet is created.')
 param bastionVNetName string
+
 @description('The name of the bastion subnet.')
 param bastionSubnetName string
+
 @description('CIDR of the bastion subnet.')
 param bastionSubnetAddressPrefix string
+
 @description('The name of the network security group to create.')
 param bastionNetworkSecurityGroupName string
+
 @description('The name of the public IP address to create.')
 param bastionPublicIpName string
 

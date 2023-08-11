@@ -91,7 +91,7 @@ jobs:
           scope: subscription
           region: ${{ vars.LOCATION }}
           template: ./scenarios/aca-internal/bicep/main.bicep
-          parameters: ./scenarios/aca-internal/bicep/main.parameters.jsonc deployHelloWorldSample=false
+          parameters: ./scenarios/aca-internal/bicep/main.parameters.jsonc deployHelloWorldSample=true
           failOnStdErr: false
     outputs:
       spokeResourceGroupName: ${{ steps.deployment.outputs.spokeResourceGroupName }}

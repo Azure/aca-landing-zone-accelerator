@@ -2,8 +2,14 @@
 name: LZA Deployment
 
 on:
-  # When you directly push in the main branch, or a pull request is issued for the main branch
+  # When you directly push in the main branch
   push:   
+    branches: 
+      - main
+    paths:
+      - 'scenarios/aca-internal/bicep/**'
+      - '!scenarios/aca-internal/bicep/**.md'
+  # when pull request is issued for the main branch
   pull_request:
     branches: 
       - main

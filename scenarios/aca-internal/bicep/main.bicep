@@ -184,6 +184,7 @@ module supportingServices 'modules/03-supporting-services/deploy.supporting-serv
     spokeVNetId: spoke.outputs.spokeVNetId
     hubVNetId: hub.outputs.hubVNetId
     deployRedisCache: deployRedisCache
+    logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -232,6 +233,7 @@ module applicationGateway 'modules/06-application-gateway/deploy.app-gateway.bic
     keyVaultId: supportingServices.outputs.keyVaultId
     deployZoneRedundantResources: deployZoneRedundantResources
     ddosProtectionMode: ddosProtectionMode
+    applicationGatewayLogAnalyticsId: spoke.outputs.logAnalyticsWorkspaceId
   }
 }
 

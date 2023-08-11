@@ -28,29 +28,94 @@ param vnetEndpointInternal bool
 @description('Custome vnet configuration for the nevironment. NOTE: Current GA (Feb 2023): The subnet associated with a Container App Environment requires a CIDR prefix of /23 or larger')
 param subnetId string
 
-@description('mandatory for log-analytics')
-param logAnalyticsWsResourceId string
-
 @description('optional, default is empty. App Insights instrumentation key provided to Dapr for tracing')
 param appInsightsInstrumentationKey string = ''
+
+@description('optional, default is empty. Resource group for the infrastructure resources (e.g. load balancer, public IP, etc.)')
+param infrastructureResourceGroupName string = ''
+
+
+@description('Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
+@minValue(0)
+@maxValue(365)
+param diagnosticLogsRetentionInDays int = 365
+
+@description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+param diagnosticStorageAccountId string = ''
+
+@description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+param diagnosticWorkspaceId string = ''
+
+@description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
+param diagnosticEventHubAuthorizationRuleId string = ''
+
+@description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+param diagnosticEventHubName string = ''
+
+
+@description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource.')
+@allowed([
+  'allLogs'
+  'ContainerAppConsoleLogs'
+  'ContainerAppSystemLogs'
+  'AppEnvSpringAppConsoleLogs'
+])
+param diagnosticLogCategoriesToEnable array = [
+  'allLogs'
+]
+
+@description('Optional. The name of metrics that will be streamed.')
+@allowed([
+  'AllMetrics'
+])
+param diagnosticMetricsToEnable array = [
+  'AllMetrics'
+]
+
+@description('Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to "<resourceName>-diagnosticSettings".')
+param diagnosticSettingsName string = ''
 
 
 // ------------------
 // VARIABLES
 // ------------------
 
-var lawsSplitTokens = !empty(logAnalyticsWsResourceId) ? split(logAnalyticsWsResourceId, '/') : array('')
+var diagnosticsLogsSpecified = [for category in filter(diagnosticLogCategoriesToEnable, item => item != 'allLogs'): {
+  category: category
+  enabled: true
+  retentionPolicy: {
+    enabled: true
+    days: diagnosticLogsRetentionInDays
+  }
+}]
+
+var diagnosticsLogs = contains(diagnosticLogCategoriesToEnable, 'allLogs') ? [
+  {
+    categoryGroup: 'allLogs'
+    enabled: true
+    retentionPolicy: {
+      enabled: true
+      days: diagnosticLogsRetentionInDays
+    }
+  }
+] : diagnosticsLogsSpecified
+
+var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
+  category: metric
+  timeGrain: null
+  enabled: true
+  retentionPolicy: {
+    enabled: true
+    days: diagnosticLogsRetentionInDays
+  }
+}]
 
 // ------------------
 // RESOURCES
 // ------------------
 
-resource laws 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!empty(logAnalyticsWsResourceId) ) {
-  scope: resourceGroup(lawsSplitTokens[2], lawsSplitTokens[4])
-  name: lawsSplitTokens[8]
-}
 
-resource acaEnvironment 'Microsoft.App/managedEnvironments@2022-11-01-preview' = {
+resource acaEnvironment 'Microsoft.App/managedEnvironments@2023-04-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -63,13 +128,23 @@ resource acaEnvironment 'Microsoft.App/managedEnvironments@2022-11-01-preview' =
     }
     workloadProfiles: workloadProfiles
     appLogsConfiguration:  {
-      destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: !empty(logAnalyticsWsResourceId) ? laws.properties.customerId : null
-        sharedKey: !empty(logAnalyticsWsResourceId) ? laws.listKeys().primarySharedKey: null
-      }
+      destination: 'azure-monitor'
     }
+    infrastructureResourceGroup: empty(infrastructureResourceGroupName) ? take('ME_${resourceGroup().name}_${name}', 63) : infrastructureResourceGroupName
   }
+}
+
+resource acaEnvironment_diagnosticSettings 'Microsoft.Insights/diagnosticsettings@2021-05-01-preview' = if ((!empty(diagnosticStorageAccountId)) || (!empty(diagnosticWorkspaceId)) || (!empty(diagnosticEventHubAuthorizationRuleId)) || (!empty(diagnosticEventHubName))) {
+  name: !empty(diagnosticSettingsName) ? diagnosticSettingsName : '${name}-diagnosticSettings'
+  properties: {
+    storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
+    workspaceId: !empty(diagnosticWorkspaceId) ? diagnosticWorkspaceId : null
+    eventHubAuthorizationRuleId: !empty(diagnosticEventHubAuthorizationRuleId) ? diagnosticEventHubAuthorizationRuleId : null
+    eventHubName: !empty(diagnosticEventHubName) ? diagnosticEventHubName : null
+    metrics: diagnosticsMetrics
+    logs: diagnosticsLogs
+  }
+  scope: acaEnvironment
 }
 
 

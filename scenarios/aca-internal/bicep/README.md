@@ -127,7 +127,7 @@ This is the starting point for the instructions on deploying this reference impl
 
    ``` bash
    LOCATION=northeurope # or any location that suits your needs
-   LZA_DEPLOYMENT_NAME=bicepAcaLzaDeployment  # or any other value that suits your needs
+   LZA_DEPLOYMENT_NAME=bicepAcaLzaUDRDeployment  # or any other value that suits your needs
 
    ```bash
    az deployment sub create \

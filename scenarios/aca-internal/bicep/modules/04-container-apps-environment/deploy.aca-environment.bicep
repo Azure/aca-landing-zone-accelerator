@@ -114,16 +114,18 @@ module containerAppsEnvironment '../../../../shared/bicep/aca-environment.bicep'
     name: naming.outputs.resourcesNames.containerAppsEnvironment
     location: location
     tags: tags
-    logAnalyticsWsResourceId: logAnalyticsWorkspaceId
+    diagnosticWorkspaceId: logAnalyticsWorkspaceId
     subnetId: spokeVNet::infraSubnet.id
     vnetEndpointInternal: true
     appInsightsInstrumentationKey: (enableApplicationInsights && enableDaprInstrumentation) ? applicationInsights.outputs.appInsInstrumentationKey : ''
     zoneRedundant: deployZoneRedundantResources
+    infrastructureResourceGroupName: ''
   }
 }
 
 @description('The Private DNS zone containing the ACA load balancer IP')
 module containerAppsEnvironmentPrivateDnsZone '../../../../shared/bicep/network/private-dns-zone.bicep' = {
+  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
   name: 'containerAppsEnvironmentPrivateDnsZone-${uniqueString(resourceGroup().id)}'
   params: {
     name: containerAppsEnvironment.outputs.containerAppsEnvironmentDefaultDomain

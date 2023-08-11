@@ -5,12 +5,16 @@ targetScope = 'resourceGroup'
 
 @description('The location where the resources will be created.')
 param location string
+
 @description('The name of the azure firewall to create.')
 param firewallName string
+
 @description('The name for the public ip address of the azure firewall.')
 param publicIpName string
+
 @description('The Name of the virtual network in which afw is created.')
 param afwVNetName string
+
 @description('The log analytics workspace id to which the azure firewall will send logs.')
 param logAnalyticsWorkspaceId string
 
@@ -44,7 +48,7 @@ var applicationRuleCollections = [
           targetFqdns: [
             'mcr.microsoft.com'
             '*.data.mcr.microsoft.com'
-            '*.blob.core.windows.net' //NOTE: If you use ACR the endpoint must be added as well.
+            '*.blob.${environment().suffixes.storage}' //NOTE: If you use ACR the endpoint must be added as well.
           ]
         }
       ]

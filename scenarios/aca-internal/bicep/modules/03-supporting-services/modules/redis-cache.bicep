@@ -25,7 +25,6 @@ param spokePrivateEndpointSubnetName string
 @description('The name of the private endpoint to be created for Redis Cache.')
 param redisCachePrivateEndpointName string 
 
-
 @description('The name of the deployed key vault')
 param keyVaultName string
 

@@ -2,11 +2,14 @@
 name: LZA Deployment
 
 on:
-  # When a pull request is issued for the main branch
+  # When you directly push in the main branch, or a pull request is issued for the main branch
+  push:   
   pull_request:
-    branches: [ "main" ]
+    branches: 
+      - main
     paths:
-      - scenarios/aca-internal/bicep
+      - 'scenarios/aca-internal/bicep/**'
+      - '!scenarios/aca-internal/bicep/**.md'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   

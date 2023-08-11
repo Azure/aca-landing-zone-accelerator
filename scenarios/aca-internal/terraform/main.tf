@@ -47,6 +47,7 @@ module "supportingServices" {
   containerRegistryPullRoleAssignment = var.containerRegistryPullRoleAssignment
   keyVaultPullRoleAssignment          = var.keyVaultPullRoleAssignment
   clientIP                            = var.clientIP
+  logAnalyticsWorkspaceId             = module.spoke.logAnalyticsWorkspaceId
   vnetLinks = [
     {
       "name"                = module.spoke.spokeVNetName
@@ -74,6 +75,7 @@ module "containerAppsEnvironment" {
   hubVnetId              = module.hub.hubVnetId
   spokeVnetId            = module.spoke.spokeVNetId
   spokeInfraSubnetId     = module.spoke.spokeInfraSubnetId
+  logAnalyticsWorkspaceId = module.spoke.logAnalyticsWorkspaceId
   vnetLinks = [
     {
       "name"                = module.spoke.spokeVNetName
@@ -115,7 +117,8 @@ module "applicationGateway" {
   appGatewayFQDN                  = var.appGatewayFQDN
   appGatewayPrimaryBackendEndFQDN = module.helloWorldApp.helloWorldAppFQDN
   appGatewaySubnetId              = module.spoke.spokeApplicationGatewaySubnetId
-  appGatewayLogAnalyticsId        = module.containerAppsEnvironment.logAnalyticsWorkspaceId
+  appGatewayLogAnalyticsId        = module.spoke.logAnalyticsWorkspaceId
   appGatewayCertificatePath       = var.appGatewayCertificatePath
+  logAnalyticsWorkspaceId         = module.spoke.logAnalyticsWorkspaceId
   tags                            = var.tags
 }

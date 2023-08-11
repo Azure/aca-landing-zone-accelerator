@@ -43,3 +43,14 @@ module "appGatewayConfiguration" {
   appGatewayLogAnalyticsId         = var.appGatewayLogAnalyticsId
   tags                             = var.tags
 }
+
+module "diagnostics" {
+  source = "../../../../shared/terraform/modules/diagnostics"
+  logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
+  resources = [
+    {
+      "type" = "agw"
+      "id"   = module.appGatewayConfiguration.applicationGatewayId
+    }
+  ]
+}

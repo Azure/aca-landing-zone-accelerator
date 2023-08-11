@@ -180,6 +180,7 @@ module supportingServices 'modules/03-supporting-services/deploy.supporting-serv
     workloadName: workloadName
     spokeVNetId: spoke.outputs.spokeVNetId
     hubVNetId: hub.outputs.hubVNetId    
+    deployRedisCache: deployRedisCache
     logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
   }
 }

@@ -238,6 +238,7 @@ module applicationGateway 'modules/06-application-gateway/deploy.app-gateway.bic
 // OUTPUTS
 // ------------------
 
+
 // Hub
 @description('The resource ID of hub virtual network.')
 output hubVNetId string = hub.outputs.hubVNetId

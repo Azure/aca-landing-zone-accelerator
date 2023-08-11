@@ -2,8 +2,14 @@
 name: LZA Deployment
 
 on:
-  # When you directly push in the main branch, or a pull request is issued for the main branch
+  # When you directly push in the main branch
   push:   
+    branches: 
+      - main
+    paths:
+      - 'scenarios/aca-internal/bicep/**'
+      - '!scenarios/aca-internal/bicep/**.md'
+  # when pull request is issued for the main branch
   pull_request:
     branches: 
       - main
@@ -85,7 +91,7 @@ jobs:
           scope: subscription
           region: ${{ vars.LOCATION }}
           template: ./scenarios/aca-internal/bicep/main.bicep
-          parameters: ./scenarios/aca-internal/bicep/main.parameters.jsonc deployHelloWorldSample=false
+          parameters: ./scenarios/aca-internal/bicep/main.parameters.jsonc deployHelloWorldSample=true
           failOnStdErr: false
     outputs:
       spokeResourceGroupName: ${{ steps.deployment.outputs.spokeResourceGroupName }}

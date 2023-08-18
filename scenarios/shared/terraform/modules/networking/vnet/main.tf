@@ -6,12 +6,10 @@ resource "azurerm_virtual_network" "vnet" {
   resource_group_name = var.resourceGroupName
   address_space       = var.addressSpace
 
-
   # var.ddosProtectionPlanId != "" ? ddos_protection_plan  {
   #     enable = var.ddosProtectionPlanId != ""? true: false
   #     id = var.ddosProtectionPlanId != ""? var.ddosProtectionPlanId: null
   # }
-
 
   tags = var.tags
 }

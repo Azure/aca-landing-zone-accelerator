@@ -11,7 +11,7 @@ resource "azurerm_monitor_diagnostic_setting" "rule" {
   name                           = "${each.key}-diagnostic-settings"
   target_resource_id             = each.value.id
   log_analytics_workspace_id     = var.logAnalyticsWorkspaceId
-  log_analytics_destination_type = "AzureDiagnostics"
+  # log_analytics_destination_type = "AzureDiagnostics" # todo
 
   dynamic "enabled_log" {
     iterator = entry

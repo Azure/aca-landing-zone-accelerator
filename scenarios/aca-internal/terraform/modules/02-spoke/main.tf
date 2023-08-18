@@ -65,7 +65,7 @@ module "nsgAppGateway" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "agwSecurityGroupAssociation" {
-  count = var.applicationGatewaySubnetAddressPrefix != "" ? 1 : 0
+  count                     = var.applicationGatewaySubnetAddressPrefix != "" ? 1 : 0
   subnet_id                 = data.azurerm_subnet.appGatewaySubnet[0].id
   network_security_group_id = module.nsgAppGateway.nsgId
 }
@@ -79,11 +79,44 @@ module "nsgJumpbox" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "jumpBoxSecurityGroupAssociation" {
-  count = var.jumpboxSubnetAddressPrefix != "" ? 1 : 0
+  count                     = var.jumpboxSubnetAddressPrefix != "" ? 1 : 0
   subnet_id                 = data.azurerm_subnet.jumpboxSubnet[0].id
   network_security_group_id = module.nsgJumpbox.nsgId
 }
 
+resource "azurerm_route_table" "routeTable" {
+  name                          = module.naming.resourceNames["routeTable"]
+  location                      = var.location
+  resource_group_name           = azurerm_resource_group.spokeResourceGroup.name
+  disable_bgp_route_propagation = true
+  tags                          = var.tags
+}
+
+resource "azurerm_route" "route_to_firewall" {
+  name                   = "route-to-firewall"
+  resource_group_name    = azurerm_resource_group.spokeResourceGroup.name
+  route_table_name       = azurerm_route_table.routeTable.name
+  address_prefix         = "0.0.0.0/0"
+  next_hop_type          = "VirtualAppliance" # "VirtualNetworkGateway"
+  next_hop_in_ip_address = var.firewall_private_ip_address
+}
+
+resource "azurerm_subnet_route_table_association" "routeTableInfraSubnetAssociation" {
+  subnet_id      = data.azurerm_subnet.infraSubnet.id
+  route_table_id = azurerm_route_table.routeTable.id
+}
+
+# module "routeTable" {
+#   source            = "../../../../shared/terraform/modules/networking/route-table"
+#   routeTableName    = module.naming.resourceNames["routeTable"]
+#   location          = var.location
+#   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
+#   tags              = var.tags
+#   routes = [
+#     {
+#       "name"                   = "default"
+#       "addressPrefix"          = "
+# }
 
 module "peeringSpokeToHub" {
   source         = "../../../../shared/terraform/modules/networking/peering"
@@ -102,18 +135,18 @@ module "peeringHubToSpoke" {
 }
 
 module "vm" {
-  source            = "../../../../shared/terraform/modules/vms"
-  osType            = "Linux"
-  location          = var.location
-  tags              = var.tags
-  nicName           = module.naming.resourceNames["vmJumpBoxNic"]
-  vmName            = module.naming.resourceNames["vmJumpBox"]
-  adminUsername     = var.vmAdminUsername
-  adminPassword     = var.vmAdminPassword
-  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  size              = var.vmSize
+  source                = "../../../../shared/terraform/modules/vms"
+  osType                = "Linux"
+  location              = var.location
+  tags                  = var.tags
+  nicName               = module.naming.resourceNames["vmJumpBoxNic"]
+  vmName                = module.naming.resourceNames["vmJumpBox"]
+  adminUsername         = var.vmAdminUsername
+  adminPassword         = var.vmAdminPassword
+  resourceGroupName     = azurerm_resource_group.spokeResourceGroup.name
+  size                  = var.vmSize
   vnetResourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  subnetId          = data.azurerm_subnet.jumpboxSubnet[0].id
+  subnetId              = data.azurerm_subnet.jumpboxSubnet[0].id
 }
 
 module "logAnalyticsWorkspace" {
@@ -125,16 +158,16 @@ module "logAnalyticsWorkspace" {
 }
 
 module "diagnostics" {
-  source = "../../../../shared/terraform/modules/diagnostics"
+  source                  = "../../../../shared/terraform/modules/diagnostics"
   logAnalyticsWorkspaceId = module.logAnalyticsWorkspace.workspaceId
-  resources = [ 
+  resources = [
     {
       "type" = "vnet-spoke"
-      "id" = module.vnet.vnetId
+      "id"   = module.vnet.vnetId
     },
     {
       "type" = "vm-jumpbox"
-      "id" = module.vm.vmId
+      "id"   = module.vm.vmId
     }
   ]
 }

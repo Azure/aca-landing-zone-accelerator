@@ -1,3 +1,12 @@
+output "subnets" { # todo: delete
+  value = module.hub.subnets
+}
+
+output "firewallSubnetId" {
+  value = module.hub.firewallSubnetId
+  
+}
+
 // Hub
 output "hubVnetId" {
   value = module.hub.hubVnetId

@@ -17,6 +17,10 @@ locals {
   appGatewayandDefaultSubnets = var.applicationGatewaySubnetAddressPrefix != "" ? concat(local.defaultSubnets, [{ "name" = var.applicationGatewaySubnetName
   "addressPrefixes" = tolist([var.applicationGatewaySubnetAddressPrefix]) }]) : local.defaultSubnets
 
-  spokeSubnets = var.vmJumpboxOSType != "none" ? concat(local.appGatewayandDefaultSubnets, [{ "name" = var.jumpboxSubnetName
-  "addressPrefixes" = tolist([var.jumpboxSubnetAddressPrefix]) }]) : local.appGatewayandDefaultSubnets
+  spokeSubnets = var.vmJumpboxOSType != "none" ? concat(local.appGatewayandDefaultSubnets, [
+    { 
+      "name" = var.jumpboxSubnetName
+      "addressPrefixes" = tolist([var.jumpboxSubnetAddressPrefix]) 
+    }
+    ]) : local.appGatewayandDefaultSubnets
 }

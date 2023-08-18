@@ -26,15 +26,15 @@ module "vnet" {
   addressSpace         = var.vnetAddressPrefixes
   tags                 = var.tags
   ddosProtectionPlanId = var.ddosProtectionPlanId
-  subnets              = [
+  subnets = [
     {
-      "name" = var.gatewaySubnetName
+      "name"            = var.gatewaySubnetName
       "addressPrefixes" = [var.gatewaySubnetAddressPrefix]
     },
-    {
-      "name" = var.azureFirewallSubnetName
-      "addressPrefixes" = [var.azureFirewallSubnetAddressPrefix]
-    }
+    # {
+    #   "name"            = var.azureFirewallSubnetName
+    #   "addressPrefixes" = [var.azureFirewallSubnetAddressPrefix]
+    # }
   ]
 }
 
@@ -48,4 +48,18 @@ module "bastion" {
   bastionPipName        = module.naming.resourceNames["bastionPip"]
   tags                  = var.tags
   bastionHostName       = module.naming.resourceNames["bastion"]
+}
+
+module "firewall" {
+  source                = "../../../../shared/terraform/modules/firewall"
+  vnetName              = module.vnet.vnetName
+  # firewallSubnetName    = var.azureFirewallSubnetName # "${module.vnet.vnetId}/subnets/${var.azureFirewallSubnetName}" # module.vnet.firewallSubnetId.id # todo: enhance this
+  vnetResourceGroupName = azurerm_resource_group.hubResourceGroup.name
+  location              = var.location
+  addressPrefixes       = [var.azureFirewallSubnetAddressPrefix]
+  firewallName          = module.naming.resourceNames["firewall"]
+  firewallPipName       = module.naming.resourceNames["firewallPip"]
+  firewallSkuTier       = var.firewallSkuTier
+  tags                  = var.tags
+  # applicationRuleCollections = var.applicationRuleCollections
 }

@@ -71,12 +71,14 @@ module "containerAppsEnvironment" {
   environment             = var.environment
   location                = var.location
   spokeResourceGroupName  = module.spoke.spokeResourceGroupName
+  spokeResourceGroupId    = module.spoke.spokeResourceGroupId
   hubResourceGroupName    = module.hub.hubResourceGroupName
   appInsightsName         = var.appInsightsName
   hubVnetId               = module.hub.hubVnetId
   spokeVnetId             = module.spoke.spokeVNetId
   spokeInfraSubnetId      = module.spoke.spokeInfraSubnetId
   logAnalyticsWorkspaceId = module.spoke.logAnalyticsWorkspaceId
+
   vnetLinks = [
     {
       "name"                = module.spoke.spokeVNetName
@@ -98,6 +100,7 @@ module "helloWorldApp" {
   deployApp                               = var.deployHelloWorldSample
   location                                = var.location
   resourceGroupName                       = module.spoke.spokeResourceGroupName
+  resourceGroupId                         = module.spoke.spokeResourceGroupId
   helloWorldContainerAppName              = var.helloWorldContainerAppName
   containerAppsEnvironmentId              = module.containerAppsEnvironment.containerAppsEnvironmentId
   containerRegistryUserAssignedIdentityId = module.supportingServices.containerRegistryUserAssignedIdentityId

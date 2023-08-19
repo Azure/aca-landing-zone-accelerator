@@ -2,6 +2,10 @@ output "spokeResourceGroupName" {
   value = azurerm_resource_group.spokeResourceGroup.name
 }
 
+output "spokeResourceGroupId" {
+  value = azurerm_resource_group.spokeResourceGroup.id
+}
+
 output "spokeVNetId" {
   value = module.vnet.vnetId
 }

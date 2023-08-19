@@ -19,5 +19,14 @@ variable "subnetId" {
   type = string
 }
 
-variable "resourceGroupName" {}
+variable "resourceGroupName" {
+  type = string
+}
 
+variable "resourceGroupId" {
+  type = string
+}
+
+variable "tags" {
+  type = map(string)
+}

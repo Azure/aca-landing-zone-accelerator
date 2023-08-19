@@ -28,8 +28,8 @@ module "vnet" {
   ddosProtectionPlanId = var.ddosProtectionPlanId
   subnets = [
     {
-      "name"            = var.gatewaySubnetName
-      "addressPrefixes" = [var.gatewaySubnetAddressPrefix]
+      name               = var.gatewaySubnetName
+      addressPrefixes    = var.gatewaySubnetAddressPrefix
     },
     # {
     #   "name"            = var.azureFirewallSubnetName
@@ -51,8 +51,8 @@ module "bastion" {
 }
 
 module "firewall" {
-  source                = "../../../../shared/terraform/modules/firewall"
-  vnetName              = module.vnet.vnetName
+  source   = "../../../../shared/terraform/modules/firewall"
+  vnetName = module.vnet.vnetName
   # firewallSubnetName    = var.azureFirewallSubnetName # "${module.vnet.vnetId}/subnets/${var.azureFirewallSubnetName}" # module.vnet.firewallSubnetId.id # todo: enhance this
   vnetResourceGroupName = azurerm_resource_group.hubResourceGroup.name
   location              = var.location

@@ -34,7 +34,12 @@ variable "spokeInfraSubnetId" {
   type = string
 }
 
-variable "spokeResourceGroupName" {}
+variable "spokeResourceGroupName" {
+  type = string
+}
+variable "spokeResourceGroupId" {
+  type = string
+}
 
 variable "hubResourceGroupName" {}
 
@@ -55,4 +60,6 @@ variable "enableTelemetry" {
 
 variable "vnetLinks" {}
 
-variable "logAnalyticsWorkspaceId" {}
+variable "logAnalyticsWorkspaceId" {
+  type = string
+}

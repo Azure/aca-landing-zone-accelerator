@@ -1,6 +1,10 @@
-variable "location" {}
+variable "location" {
+  type = string
+}
 
-variable "tags" {}
+variable "tags" {
+  type = map(string)
+}
 
 variable "helloWorldContainerAppName" {
   type    = string
@@ -11,10 +15,22 @@ variable "helloWorldContainerAppName" {
   }
 }
 
-variable "containerRegistryUserAssignedIdentityId" {}
+variable "containerRegistryUserAssignedIdentityId" {
+  type = string
+}
 
-variable "containerAppsEnvironmentId" {}
+variable "containerAppsEnvironmentId" {
+  type = string
+}
 
-variable "resourceGroupName" {}
+variable "resourceGroupName" {
+  type = string
+}
 
-variable "deployApp" {}
+variable "resourceGroupId" {
+  type = string
+}
+
+variable "deployApp" {
+  type = bool
+}

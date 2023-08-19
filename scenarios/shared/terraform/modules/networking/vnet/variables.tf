@@ -30,4 +30,12 @@ variable "ddosProtectionPlanId" {
 }
 
 variable "subnets" {
+  type = list(object({
+    name            = string,
+    addressPrefixes = string,
+    service_delegation = optional(list(object({
+      name    = string,
+      actions = list(string)
+    })))
+  }))
 }

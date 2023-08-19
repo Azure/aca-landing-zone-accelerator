@@ -24,10 +24,12 @@ module "applicationInsights" {
 module "containerAppsEnvironment" {
   source                  = "../../../../shared/terraform/modules/aca-environment"
   environmentName         = module.naming.resourceNames["containerAppsEnvironment"]
-  resourceGroupName    = var.spokeResourceGroupName
+  resourceGroupName       = var.spokeResourceGroupName
+  resourceGroupId         = var.spokeResourceGroupId
   location                = var.location
   logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
   subnetId                = var.spokeInfraSubnetId
+  tags                    = var.tags
 }
 
 module "containerAppsEnvironmentPrivateDnsZone" {

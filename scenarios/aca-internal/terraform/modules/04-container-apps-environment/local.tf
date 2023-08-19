@@ -9,20 +9,18 @@ locals {
   spokeVnetResourceGroup = local.spokeTokens[4]
   spokeVnetName          = local.spokeTokens[8]
 
-
   vnetLinks = [
     {
-      "name"                = local.spokeVnetName
-      "vnetId"              = var.spokeVnetId
-      "resourceGroupName"   = local.spokeVnetResourceGroup
-      "registrationEnabled" = false
+      name                = local.spokeVnetName
+      vnetId              = var.spokeVnetId
+      resourceGroupName   = local.spokeVnetResourceGroup
+      registrationEnabled = false
     },
     {
-      "name"                = local.hubVnetName
-      "vnetId"              = var.hubVnetId
-      "resourceGroupName"   = local.hubVnetResourceGroup
-      "registrationEnabled" = false
+      name                = local.hubVnetName
+      vnetId              = var.hubVnetId
+      resourceGroupName   = local.hubVnetResourceGroup
+      registrationEnabled = false
     }
   ]
-
 }

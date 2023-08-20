@@ -20,11 +20,11 @@ output "firewall_private_ip_address" {
   value = module.firewall.firewall_private_ip_address
 }
 
-output "subnets" { # todo: delete
-  value       = module.vnet.subnets
+output "subnets" {
+  value = module.vnet.subnets
 }
 
-output "firewallSubnetId" {
-  description = "The resource ID of the firewall subnet."
-  value       = module.vnet.firewallSubnetId
-}
+# output "firewallSubnetId" {
+#   description = "The resource ID of the firewall subnet."
+#   value       = module.vnet.firewallSubnetId
+# }

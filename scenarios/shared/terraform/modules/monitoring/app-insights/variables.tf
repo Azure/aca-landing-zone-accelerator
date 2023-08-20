@@ -12,7 +12,6 @@ variable "resourceGroupName" {
 }
 
 variable "location" {
-  default = "northeurope"
   type    = string
 }
 

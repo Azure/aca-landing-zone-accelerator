@@ -1,5 +1,4 @@
 variable "networkName" {
-  default = ""
   type    = string
   validation {
     condition     = length(var.networkName) >= 2 && length(var.networkName) <= 32
@@ -9,12 +8,10 @@ variable "networkName" {
 }
 
 variable "location" {
-  default = "northeurope"
   type    = string
 }
 
 variable "resourceGroupName" {
-  default = ""
   type    = string
 }
 
@@ -22,11 +19,6 @@ variable "addressSpace" {
 }
 
 variable "tags" {
-}
-
-variable "ddosProtectionPlanId" {
-  default = ""
-  type    = string
 }
 
 variable "subnets" {

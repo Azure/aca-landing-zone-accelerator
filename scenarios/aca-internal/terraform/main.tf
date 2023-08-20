@@ -1,15 +1,17 @@
 module "hub" {
-  source                           = "./modules/01-hub"
-  workloadName                     = var.workloadName
-  environment                      = var.environment
-  hubResourceGroupName             = var.hubResourceGroupName
-  location                         = var.location
-  vnetAddressPrefixes              = var.hubVnetAddressPrefixes
-  enableBastion                    = var.enableBastion
-  bastionSubnetAddressPrefixes     = var.bastionSubnetAddressPrefixes
-  gatewaySubnetAddressPrefix       = var.gatewaySubnetAddressPrefix
-  azureFirewallSubnetAddressPrefix = var.azureFirewallSubnetAddressPrefix
-  tags                             = var.tags
+  source                               = "./modules/01-hub"
+  workloadName                         = var.workloadName
+  environment                          = var.environment
+  hubResourceGroupName                 = var.hubResourceGroupName
+  location                             = var.location
+  vnetAddressPrefixes                  = var.hubVnetAddressPrefixes
+  enableBastion                        = var.enableBastion
+  bastionSubnetAddressPrefixes         = var.bastionSubnetAddressPrefixes
+  gatewaySubnetAddressPrefix           = var.gatewaySubnetAddressPrefix
+  azureFirewallSubnetAddressPrefix     = var.azureFirewallSubnetAddressPrefix
+  azureFirewallSubnetMgmtAddressPrefix = var.azureFirewallSubnetMgmtAddressPrefix
+  firewallSkuTier                      = var.firewallSkuTier
+  tags                                 = var.tags
 }
 
 module "spoke" {

@@ -16,7 +16,6 @@ variable "environment" {
 
 variable "location" {
   type    = string
-  default = "northeurope"
 }
 
 variable "hubResourceGroupName" {}
@@ -31,11 +30,6 @@ variable "enableBastion" {
 }
 
 variable "bastionSubnetAddressPrefixes" {}
-
-variable "ddosProtectionPlanId" {
-  default = null
-  type    = string
-}
 
 variable "securityRules" {
   default = []
@@ -53,7 +47,9 @@ variable "azureFirewallSubnetName" {
   type = string
 }
 
-variable "azureFirewallSubnetAddressPrefix" {}
+variable "azureFirewallSubnetAddressPrefix" {
+  type = string
+}
 
 variable "firewallSkuTier" {
   type    = string
@@ -62,6 +58,15 @@ variable "firewallSkuTier" {
     condition     = contains(["Basic", "Standard", "Premium"], var.firewallSkuTier)
     error_message = "firewallSkuTier must be Basic, Standard or Premium"
   }
+}
+
+variable "azureFirewallSubnetMgmtName" {
+  default = "AzureFirewallManagementSubnet"
+  type = string
+}
+
+variable "azureFirewallSubnetMgmtAddressPrefix" {
+  type = string
 }
 
 variable "applicationRuleCollections" {

@@ -1,25 +1,27 @@
 // The name of the workloard that is being deployed. Up to 10 characters long. This wil be used as part of the naming convention (i.e. as defined here: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) 
 workloadName = "lzaaca"
 //The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.
-environment                           = "dev"
+environment                           = "prod"
 tags                                  = {}
-location                              = "northeurope"
+location                              = "westeurope"
 hubVnetAddressPrefixes                = ["10.0.0.0/24"]
+gatewaySubnetAddressPrefix            = "10.0.0.0/27"
+azureFirewallSubnetAddressPrefix      = "10.0.0.64/26"
+bastionSubnetAddressPrefixes          = "10.0.0.128/26"
+azureFirewallSubnetMgmtAddressPrefix  = "10.0.0.192/26"
 enableBastion                         = true
-bastionSubnetAddressPrefixes          = ["10.0.0.128/26"]
-vmSize                                = "Standard_B2ms"
+firewallSkuTier                       = "Basic" # Allowed values: "Basic", "Standard", "Premium"
+vmSize                                = "Standard_B1ms"
 vmAdminUsername                       = "vmadmin"
 vmAdminPassword                       = "@Aa123456789" # change this to a strong password
 vmLinuxSshAuthorizedKeys              = ""
 vmJumpboxOSType                       = "Linux"
-vmJumpBoxSubnetAddressPrefix          = "10.1.2.32/27"
 spokeVnetAddressPrefixes              = ["10.1.0.0/22"]
 infraSubnetAddressPrefix              = "10.1.0.0/23"
-infraSubnetName                       = "snet-infra"
 privateEndpointsSubnetAddressPrefix   = "10.1.2.0/27"
+vmJumpBoxSubnetAddressPrefix          = "10.1.2.32/27"
 applicationGatewaySubnetAddressPrefix = "10.1.3.0/24"
-azureFirewallSubnetAddressPrefix      = "10.0.0.64/26"
-gatewaySubnetAddressPrefix            = "10.0.0.0/27"
+infraSubnetName                       = "snet-infra"
 deployHelloWorldSample                = true
 clientIP                              = "176.177.25.47" # todo: change this to your own IP address
 supportingResourceGroupName           = "supporting-services"

@@ -1,19 +1,18 @@
-output "subnets" { # todo: delete
-  value = module.hub.subnets
-}
-
-output "firewallSubnetId" {
-  value = module.hub.firewallSubnetId
-  
-}
-
 // Hub
-output "hubVnetId" {
-  value = module.hub.hubVnetId
-}
+# output "hubVnetId" {
+#   value = module.hub.hubVnetId
+# }
 
 output "hubResourceGroupName" {
   value = module.hub.hubResourceGroupName
+}
+
+output "spokeResourceGroupName" {
+  value = module.spoke.spokeResourceGroupName
+}
+
+output "applicationGatewayPublicIpAddress" {
+  value = module.applicationGateway.applicationGatewayPublicIp
 }
 
 # // Spoke

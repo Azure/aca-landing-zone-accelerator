@@ -23,6 +23,7 @@ locals {
     cosmosDbNoSqlPep                       = "${var.resourceTypeAbbreviations.privateEndpoint}-${lower(substr(replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.cosmosDbNoSql), 0, 44))}"
     firewall                               = replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.firewall)
     firewallPip                            = "${var.resourceTypeAbbreviations.publicIpAddress}-${replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.firewall)}"
+    firewallPipMgmt                        = "${var.resourceTypeAbbreviations.publicIpAddress}-${replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.firewall)}-mgmt"
     frontDoorProfile                       = replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.frontDoor)
     keyVault                               = substr(replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.keyVault), 0, 24)
     keyVaultPep                            = "${var.resourceTypeAbbreviations.privateEndpoint}-${replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.keyVault)}"

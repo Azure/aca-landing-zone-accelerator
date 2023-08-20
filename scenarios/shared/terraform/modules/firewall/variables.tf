@@ -1,12 +1,12 @@
-variable "vnetName" {
+# variable "vnetName" {
+#   type = string
+# }
+
+variable "resourceGroupName" {
   type = string
 }
 
-variable "vnetResourceGroupName" {
-  type = string
-}
-
-variable "addressPrefixes" {}
+# variable "addressPrefixes" {}
 
 variable "firewallPipName" {}
 
@@ -28,6 +28,30 @@ variable "firewallSkuTier" {
 variable "applicationRuleCollections" {
   default = []
   # type = 
+}
+
+variable "firewallSubnetName" {
+  type = string
+}
+
+variable "firewallSubnetAddressPrefix" {
+  type = string
+}
+
+variable "firewallSubnetMgmtName" {
+  type = string
+}
+
+variable firewallSubnetMgmtAddressPrefix {
+  type = string
+}
+
+variable "firewallPipMgmtName" {
+  type = string
+}
+
+variable "vnetName" {
+  type = string
 }
 
 # variable "firewallSubnetId" {

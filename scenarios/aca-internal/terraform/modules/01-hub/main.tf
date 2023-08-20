@@ -19,22 +19,17 @@ resource "azurerm_resource_group" "hubResourceGroup" {
 }
 
 module "vnet" {
-  source               = "../../../../shared/terraform/modules/networking/vnet"
-  networkName          = module.naming.resourceNames["vnetHub"]
-  location             = var.location
-  resourceGroupName    = azurerm_resource_group.hubResourceGroup.name
-  addressSpace         = var.vnetAddressPrefixes
-  tags                 = var.tags
-  ddosProtectionPlanId = var.ddosProtectionPlanId
+  source            = "../../../../shared/terraform/modules/networking/vnet"
+  networkName       = module.naming.resourceNames["vnetHub"]
+  location          = var.location
+  resourceGroupName = azurerm_resource_group.hubResourceGroup.name
+  addressSpace      = var.vnetAddressPrefixes
+  tags              = var.tags
   subnets = [
     {
-      name               = var.gatewaySubnetName
-      addressPrefixes    = var.gatewaySubnetAddressPrefix
-    },
-    # {
-    #   "name"            = var.azureFirewallSubnetName
-    #   "addressPrefixes" = [var.azureFirewallSubnetAddressPrefix]
-    # }
+      name            = var.gatewaySubnetName
+      addressPrefixes = var.gatewaySubnetAddressPrefix
+    }
   ]
 }
 
@@ -51,15 +46,18 @@ module "bastion" {
 }
 
 module "firewall" {
-  source   = "../../../../shared/terraform/modules/firewall"
-  vnetName = module.vnet.vnetName
-  # firewallSubnetName    = var.azureFirewallSubnetName # "${module.vnet.vnetId}/subnets/${var.azureFirewallSubnetName}" # module.vnet.firewallSubnetId.id # todo: enhance this
-  vnetResourceGroupName = azurerm_resource_group.hubResourceGroup.name
-  location              = var.location
-  addressPrefixes       = [var.azureFirewallSubnetAddressPrefix]
-  firewallName          = module.naming.resourceNames["firewall"]
-  firewallPipName       = module.naming.resourceNames["firewallPip"]
-  firewallSkuTier       = var.firewallSkuTier
-  tags                  = var.tags
-  # applicationRuleCollections = var.applicationRuleCollections
+  source                          = "../../../../shared/terraform/modules/firewall"
+  resourceGroupName               = azurerm_resource_group.hubResourceGroup.name
+  location                        = var.location
+  vnetName                        = module.vnet.vnetName
+  firewallSubnetName              = var.azureFirewallSubnetName
+  firewallSubnetAddressPrefix     = var.azureFirewallSubnetAddressPrefix
+  firewallName                    = module.naming.resourceNames["firewall"]
+  firewallPipName                 = module.naming.resourceNames["firewallPip"]
+  firewallSkuTier                 = var.firewallSkuTier
+  firewallSubnetMgmtName          = var.azureFirewallSubnetMgmtName
+  firewallSubnetMgmtAddressPrefix = var.azureFirewallSubnetMgmtAddressPrefix
+  firewallPipMgmtName             = module.naming.resourceNames["firewallPipMgmt"]
+  tags                            = var.tags
+  # applicationRuleCollections = var.applicationRuleCollections # todo
 }

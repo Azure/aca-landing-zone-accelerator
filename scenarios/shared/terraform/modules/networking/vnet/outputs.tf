@@ -10,11 +10,11 @@ output "vnetName" {
   value = azurerm_virtual_network.vnet.name
 }
 
-output "subnets" { # todo: delete
-  value = azurerm_subnet.subnets
-}
-
-output "firewallSubnetId" {
-  value = azurerm_subnet.subnets # ["AzureFirewallSubnet"] # todo
-  # value = "hello"
+output "subnets" {
+  value = tomap({ for subnet in azurerm_subnet.subnets :
+    subnet.name => {
+      name = subnet.name
+      id   = subnet.id
+    }
+  })
 }

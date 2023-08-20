@@ -15,27 +15,27 @@ output "spokeVNetName" {
 }
 
 output "spokeInfraSubnetId" {
-  value = data.azurerm_subnet.infraSubnet.id
+  value = module.vnet.subnets[var.infraSubnetName].id
 }
 
 output "spokeInfraSubnetName" {
-  value = data.azurerm_subnet.infraSubnet.name
+  value = module.vnet.subnets[var.infraSubnetName].name
 }
 
 output "spokePrivateEndpointsSubnetId" {
-  value = data.azurerm_subnet.privateEndpointsSubnet.id
+  value = module.vnet.subnets[var.privateEndpointsSubnetName].id
 }
 
 output "spokePrivateEndpointsSubnetName" {
-  value = data.azurerm_subnet.privateEndpointsSubnet.name
+  value = module.vnet.subnets[var.privateEndpointsSubnetName].name
 }
 
 output "spokeApplicationGatewaySubnetId" {
-  value = var.applicationGatewaySubnetAddressPrefix != "" ? data.azurerm_subnet.appGatewaySubnet[0].id : null
+  value = var.applicationGatewaySubnetAddressPrefix != "" ? module.vnet.subnets[var.applicationGatewaySubnetName].id : null
 }
 
 output "spokeApplicationGatewaySubnetName" {
-  value = var.applicationGatewaySubnetAddressPrefix != "" ? data.azurerm_subnet.appGatewaySubnet[0].name : null
+  value = var.applicationGatewaySubnetAddressPrefix != "" ? module.vnet.subnets[var.applicationGatewaySubnetName].name : null
 }
 
 output "logAnalyticsWorkspaceId" {

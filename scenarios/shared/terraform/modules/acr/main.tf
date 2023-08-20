@@ -22,6 +22,7 @@ module "containerRegistryPrivateZones" {
 
 module "containerRegistryPrivateEndpoints" {
   source            = "../networking/private-endpoints"
+  location          = var.location
   endpointName      = var.containerRegistryPep
   resourceGroupName = var.spokeResourceGroupName
   subnetId          = var.subnetId

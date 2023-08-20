@@ -38,7 +38,7 @@ module "nsgContainerAppsEnvironmentNsg" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "infraSecurityGroupAssociation" {
-  subnet_id                 = data.azurerm_subnet.infraSubnet.id
+  subnet_id                 = module.vnet.subnets[var.infraSubnetName].id
   network_security_group_id = module.nsgContainerAppsEnvironmentNsg.nsgId
 }
 
@@ -51,7 +51,7 @@ module "nsgPrivateEndpoints" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "privateEndpointSecurityGroupAssociation" {
-  subnet_id                 = data.azurerm_subnet.privateEndpointsSubnet.id
+  subnet_id                 = module.vnet.subnets[var.privateEndpointsSubnetName].id
   network_security_group_id = module.nsgPrivateEndpoints.nsgId
 }
 
@@ -66,7 +66,7 @@ module "nsgAppGateway" {
 
 resource "azurerm_subnet_network_security_group_association" "agwSecurityGroupAssociation" {
   count                     = var.applicationGatewaySubnetAddressPrefix != "" ? 1 : 0
-  subnet_id                 = data.azurerm_subnet.appGatewaySubnet[0].id
+  subnet_id                 = module.vnet.subnets[var.applicationGatewaySubnetName].id
   network_security_group_id = module.nsgAppGateway.nsgId
 }
 
@@ -80,7 +80,7 @@ module "nsgJumpbox" {
 
 resource "azurerm_subnet_network_security_group_association" "jumpBoxSecurityGroupAssociation" {
   count                     = var.jumpboxSubnetAddressPrefix != "" ? 1 : 0
-  subnet_id                 = data.azurerm_subnet.jumpboxSubnet[0].id
+  subnet_id                 = module.vnet.subnets[var.jumpboxSubnetName].id
   network_security_group_id = module.nsgJumpbox.nsgId
 }
 
@@ -102,11 +102,11 @@ resource "azurerm_route" "route_to_firewall" {
 }
 
 resource "azurerm_subnet_route_table_association" "routeTableInfraSubnetAssociation" {
-  subnet_id      = data.azurerm_subnet.infraSubnet.id
+  subnet_id      = module.vnet.subnets[var.infraSubnetName].id
   route_table_id = azurerm_route_table.routeTable.id
 }
 
-# module "routeTable" {
+# module "routeTable" { # todo
 #   source            = "../../../../shared/terraform/modules/networking/route-table"
 #   routeTableName    = module.naming.resourceNames["routeTable"]
 #   location          = var.location
@@ -146,12 +146,12 @@ module "vm" {
   resourceGroupName     = azurerm_resource_group.spokeResourceGroup.name
   size                  = var.vmSize
   vnetResourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  subnetId              = data.azurerm_subnet.jumpboxSubnet[0].id
+  subnetId              = module.vnet.subnets[var.jumpboxSubnetName].id # data.azurerm_subnet.jumpboxSubnet[0].id
 }
 
 module "logAnalyticsWorkspace" {
   source            = "../../../../shared/terraform/modules/monitoring/log-analytics"
-  resourceGroupName = module.naming.resourceNames["rgSpokeName"]
+  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
   location          = var.location
   workspaceName     = module.naming.resourceNames["logAnalyticsWorkspace"]
   tags              = var.tags
@@ -162,51 +162,51 @@ module "diagnostics" {
   logAnalyticsWorkspaceId = module.logAnalyticsWorkspace.workspaceId
   resources = [
     {
-      "type" = "vnet-spoke"
-      "id"   = module.vnet.vnetId
+      type = "vnet-spoke"
+      id   = module.vnet.vnetId
     },
     {
-      "type" = "vm-jumpbox"
-      "id"   = module.vm.vmId
+      type = "vm-jumpbox"
+      id   = module.vm.vmId
     }
   ]
 }
 
-data "azurerm_subnet" "infraSubnet" {
-  depends_on = [
-    module.vnet
-  ]
-  name                 = var.infraSubnetName
-  resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
-  virtual_network_name = module.vnet.vnetName
-}
+# data "azurerm_subnet" "infraSubnet" {
+#   depends_on = [
+#     module.vnet
+#   ]
+#   name                 = var.infraSubnetName
+#   resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
+#   virtual_network_name = module.vnet.vnetName
+# }
 
-data "azurerm_subnet" "privateEndpointsSubnet" {
-  depends_on = [
-    module.vnet
-  ]
-  name                 = var.privateEndpointsSubnetName
-  resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
-  virtual_network_name = module.vnet.vnetName
-}
+# data "azurerm_subnet" "privateEndpointsSubnet" {
+#   depends_on = [
+#     module.vnet
+#   ]
+#   name                 = var.privateEndpointsSubnetName
+#   resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
+#   virtual_network_name = module.vnet.vnetName
+# }
 
-data "azurerm_subnet" "appGatewaySubnet" {
-  count = var.applicationGatewaySubnetAddressPrefix != "" ? 1 : 0
-  depends_on = [
-    module.vnet
-  ]
-  name                 = var.applicationGatewaySubnetName
-  resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
-  virtual_network_name = module.vnet.vnetName
-}
+# data "azurerm_subnet" "appGatewaySubnet" {
+#   count = var.applicationGatewaySubnetAddressPrefix != "" ? 1 : 0
+#   depends_on = [
+#     module.vnet
+#   ]
+#   name                 = var.applicationGatewaySubnetName
+#   resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
+#   virtual_network_name = module.vnet.vnetName
+# }
 
-data "azurerm_subnet" "jumpboxSubnet" {
-  count = var.jumpboxSubnetAddressPrefix != "" ? 1 : 0
-  depends_on = [
-    module.vnet
-  ]
+# data "azurerm_subnet" "jumpboxSubnet" {
+#   count = var.jumpboxSubnetAddressPrefix != "" ? 1 : 0
+#   depends_on = [
+#     module.vnet
+#   ]
 
-  name                 = var.jumpboxSubnetName
-  resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
-  virtual_network_name = module.vnet.vnetName
-}
+#   name                 = var.jumpboxSubnetName
+#   resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
+#   virtual_network_name = module.vnet.vnetName
+# }

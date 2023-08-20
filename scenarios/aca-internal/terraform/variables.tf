@@ -16,7 +16,6 @@ variable "environment" {
 
 variable "location" {
   type    = string
-  default = "northeurope"
 }
 
 variable "hubResourceGroupName" {
@@ -70,6 +69,19 @@ variable "vmSubnetName" {
 variable "ddosProtectionPlanId" {
   default = null
   type    = string
+}
+
+variable azureFirewallSubnetMgmtAddressPrefix {
+  type = string
+}
+
+variable "firewallSkuTier" {
+  type    = string
+  default = "Standard"
+  validation {
+    condition     = contains(["Basic", "Standard", "Premium"], var.firewallSkuTier)
+    error_message = "firewallSkuTier must be Basic, Standard or Premium"
+  }
 }
 
 variable "containerAppsSecurityRules" {

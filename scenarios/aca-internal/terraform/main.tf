@@ -53,16 +53,16 @@ module "supportingServices" {
   logAnalyticsWorkspaceId             = module.spoke.logAnalyticsWorkspaceId
   vnetLinks = [
     {
-      "name"                = module.spoke.spokeVNetName
-      "vnetId"              = module.spoke.spokeVNetId
-      "resourceGroupName"   = module.spoke.spokeResourceGroupName
-      "registrationEnabled" = false
+      name                = module.spoke.spokeVNetName
+      vnetId              = module.spoke.spokeVNetId
+      resourceGroupName   = module.spoke.spokeResourceGroupName
+      registrationEnabled = false
     },
     {
-      "name"                = module.hub.hubVnetName
-      "vnetId"              = module.hub.hubVnetId
-      "resourceGroupName"   = module.hub.hubResourceGroupName
-      "registrationEnabled" = false
+      name                = module.hub.hubVnetName
+      vnetId              = module.hub.hubVnetId
+      resourceGroupName   = module.hub.hubResourceGroupName
+      registrationEnabled = false
   }]
   tags = var.tags
 }
@@ -83,16 +83,16 @@ module "containerAppsEnvironment" {
 
   vnetLinks = [
     {
-      "name"                = module.spoke.spokeVNetName
-      "vnetId"              = module.spoke.spokeVNetId
-      "resourceGroupName"   = module.spoke.spokeResourceGroupName
-      "registrationEnabled" = false
+      name                = module.spoke.spokeVNetName
+      vnetId              = module.spoke.spokeVNetId
+      resourceGroupName   = module.spoke.spokeResourceGroupName
+      registrationEnabled = false
     },
     {
-      "name"                = module.hub.hubVnetName
-      "vnetId"              = module.hub.hubVnetId
-      "resourceGroupName"   = module.hub.hubResourceGroupName
-      "registrationEnabled" = false
+      name                = module.hub.hubVnetName
+      vnetId              = module.hub.hubVnetId
+      resourceGroupName   = module.hub.hubResourceGroupName
+      registrationEnabled = false
   }]
   tags = var.tags
 }
@@ -123,7 +123,6 @@ module "applicationGateway" {
   appGatewayFQDN                  = var.appGatewayFQDN
   appGatewayPrimaryBackendEndFQDN = module.helloWorldApp.helloWorldAppFQDN
   appGatewaySubnetId              = module.spoke.spokeApplicationGatewaySubnetId
-  appGatewayLogAnalyticsId        = module.spoke.logAnalyticsWorkspaceId
   appGatewayCertificatePath       = var.appGatewayCertificatePath
   logAnalyticsWorkspaceId         = module.spoke.logAnalyticsWorkspaceId
   tags                            = var.tags

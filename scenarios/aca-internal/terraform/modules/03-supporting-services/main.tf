@@ -27,7 +27,6 @@ module "containerRegistry" {
   tags                                      = var.tags
 }
 
-
 module "keyVault" {
   source                           = "../../../../shared/terraform/modules/keyvault"
   spokeResourceGroupName           = var.spokeResourceGroupName

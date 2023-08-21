@@ -33,14 +33,12 @@ module "appGatewayConfiguration" {
   appGatewayName                   = module.naming.resourceNames["applicationGateway"]
   resourceGroupName                = var.resourceGroupName
   location                         = var.location
-  diagnosticSettingName            = "agw-diagnostics"
   appGatewayFQDN                   = var.appGatewayFQDN
   appGatewayPrimaryBackendEndFQDN  = var.appGatewayPrimaryBackendEndFQDN
   appGatewayPublicIpName           = module.naming.resourceNames["applicationGatewayPip"]
   appGatewaySubnetId               = var.appGatewaySubnetId
   appGatewayUserAssignedIdentityId = azurerm_user_assigned_identity.appGatewayUserIdentity.id
   keyVaultSecretId                 = module.appGatewayAddCertificates.SecretUri
-  appGatewayLogAnalyticsId         = var.appGatewayLogAnalyticsId
   tags                             = var.tags
 }
 
@@ -49,8 +47,8 @@ module "diagnostics" {
   logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
   resources = [
     {
-      "type" = "agw"
-      "id"   = module.appGatewayConfiguration.applicationGatewayId
+      type = "agw"
+      id   = module.appGatewayConfiguration.applicationGatewayId
     }
   ]
 }

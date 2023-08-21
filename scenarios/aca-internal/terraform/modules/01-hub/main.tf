@@ -47,17 +47,43 @@ module "bastion" {
 
 module "firewall" {
   source                          = "../../../../shared/terraform/modules/firewall"
+  firewallName                    = module.naming.resourceNames["firewall"]
+  firewallPipName                 = module.naming.resourceNames["firewallPip"]
+  firewallPipMgmtName             = module.naming.resourceNames["firewallPipMgmt"]
+  firewallSubnetName              = var.azureFirewallSubnetName
+  firewallSubnetAddressPrefix     = var.azureFirewallSubnetAddressPrefix
+  firewallSubnetMgmtName          = var.azureFirewallSubnetMgmtName
+  firewallSubnetMgmtAddressPrefix = var.azureFirewallSubnetMgmtAddressPrefix
+  firewallSkuTier                 = var.firewallSkuTier
   resourceGroupName               = azurerm_resource_group.hubResourceGroup.name
   location                        = var.location
   vnetName                        = module.vnet.vnetName
-  firewallSubnetName              = var.azureFirewallSubnetName
-  firewallSubnetAddressPrefix     = var.azureFirewallSubnetAddressPrefix
-  firewallName                    = module.naming.resourceNames["firewall"]
-  firewallPipName                 = module.naming.resourceNames["firewallPip"]
-  firewallSkuTier                 = var.firewallSkuTier
-  firewallSubnetMgmtName          = var.azureFirewallSubnetMgmtName
-  firewallSubnetMgmtAddressPrefix = var.azureFirewallSubnetMgmtAddressPrefix
-  firewallPipMgmtName             = module.naming.resourceNames["firewallPipMgmt"]
   tags                            = var.tags
-  # applicationRuleCollections = var.applicationRuleCollections # todo
+  applicationRuleCollections = [
+    {
+      name     = "allow-aca-rules"
+      priority = 110
+      action   = "Allow"
+
+      rules = [
+        {
+          name = "allow-aca-controlplane"
+          protocols = [
+            {
+              type = "Http"
+              port = 80
+            },
+            {
+              type = "Https"
+              port = 443
+          }]
+          source_addresses = ["*"]
+          destination_fqdns = [
+            "mcr.microsoft.com",
+            "*.data.mcr.microsoft.com",
+            # "*.blob.${environment().suffixes.storage}" //NOTE: If you use ACR the endpoint must be added as well.
+          ]
+      }]
+    }
+  ]
 }

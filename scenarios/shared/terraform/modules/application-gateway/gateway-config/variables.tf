@@ -14,16 +14,10 @@ variable "appGatewaySubnetId" {}
 
 variable "appGatewayPrimaryBackendEndFQDN" {}
 
-variable "appGatewayLogAnalyticsId" {}
-
 variable "appGatewayFQDN" {
 
 }
 
 variable "keyVaultSecretId" {
   sensitive = true
-}
-
-variable "diagnosticSettingName" {
-
 }

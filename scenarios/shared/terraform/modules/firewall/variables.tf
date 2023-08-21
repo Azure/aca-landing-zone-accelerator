@@ -27,7 +27,21 @@ variable "firewallSkuTier" {
 
 variable "applicationRuleCollections" {
   default = []
-  # type = 
+  type = list(object({
+    name     = string
+    priority = number
+    action   = string
+    rules = list(object({
+      name        = string
+      description = optional(string)
+      protocols = list(object({
+        type = string
+        port = number
+      }))
+      source_addresses  = list(string)
+      destination_fqdns = list(string)
+    }))
+  }))
 }
 
 variable "firewallSubnetName" {
@@ -42,7 +56,7 @@ variable "firewallSubnetMgmtName" {
   type = string
 }
 
-variable firewallSubnetMgmtAddressPrefix {
+variable "firewallSubnetMgmtAddressPrefix" {
   type = string
 }
 

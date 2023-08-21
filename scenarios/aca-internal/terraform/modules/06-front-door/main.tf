@@ -32,8 +32,8 @@ module "diagnostics" {
   logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
   resources = [
     {
-      "type" = "fd"
-      "id"   = module.frontDoor.frontDoorId
+      type = "fd"
+      id   = module.frontDoor.frontDoorId
     }
   ]
 }

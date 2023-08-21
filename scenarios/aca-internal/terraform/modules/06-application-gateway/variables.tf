@@ -14,8 +14,6 @@ variable "appGatewayPrimaryBackendEndFQDN" {}
 
 variable "appGatewaySubnetId" {}
 
-variable "appGatewayLogAnalyticsId" {}
-
 variable "tags" {}
 
 variable "keyVaultName" {}

@@ -42,10 +42,9 @@ resource "azurerm_firewall" "firewall" {
   sku_name            = "AZFW_VNet"         # AZFW_Hub
   sku_tier            = var.firewallSkuTier # "Standard" # "Premium" # "Basic"
   firewall_policy_id  = azurerm_firewall_policy.firewall_policy.id
-  zones               = ["1"] # ["1", "2", "3"]
+  zones               = ["1"]   # ["1", "2", "3"]
+  threat_intel_mode   = "Alert" # Off, Alert,Deny and ""(empty string). Defaults to Alert.
   tags                = var.tags
-  # dns_servers         = ["168.63.129.16"]
-  # threat_intel_mode = "Alert" # Off, Alert,Deny and ""(empty string). Defaults to Alert.
 
   ip_configuration {
     name                 = "ipconf"
@@ -75,29 +74,31 @@ resource "azurerm_firewall_policy_rule_collection_group" "policy_group_aca" {
   firewall_policy_id = azurerm_firewall_policy.firewall_policy.id
   priority           = 100
 
-  application_rule_collection {
-    name     = "allow-aca-rules"
-    priority = 110
-    action   = "Allow"
+  dynamic "application_rule_collection" {
+    for_each = var.applicationRuleCollections
+    content {
+      name     = application_rule_collection.value.name
+      priority = application_rule_collection.value.priority
+      action   = application_rule_collection.value.action
 
-    rule {
-      name = "allow-aca-controlplane"
-      protocols {
-        type = "Http"
-        port = 80
+      dynamic "rule" {
+        for_each = application_rule_collection.value.rules # each.value.rules
+        # iterator = rule
+        content {
+          name = rule.value.name
+
+          dynamic "protocols" {
+            for_each = rule.value.protocols
+            # iterator = protocol
+            content {
+              type = protocols.value.type
+              port = protocols.value.port
+            }
+          }
+          source_addresses  = rule.value.source_addresses
+          destination_fqdns = rule.value.destination_fqdns
+        }
       }
-      protocols {
-        type = "Https"
-        port = 443
-      }
-      source_addresses = ["*"]
-      destination_fqdns = [
-        "mcr.microsoft.com",
-        "*.data.mcr.microsoft.com",
-        # "*.blob.${environment().suffixes.storage}" //NOTE: If you use ACR the endpoint must be added as well.
-      ]
     }
   }
 }
-
-# todo: disgnostic settings for firewall

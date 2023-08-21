@@ -177,28 +177,3 @@ resource "azurerm_application_gateway" "appGateway" {
     max_capacity = 3
   }
 }
-
-//need diagnostics settings
-
-resource "azurerm_monitor_diagnostic_setting" "name" {
-  name                       = var.diagnosticSettingName
-  target_resource_id         = azurerm_application_gateway.appGateway.id
-  log_analytics_workspace_id = var.appGatewayLogAnalyticsId
-
-  enabled_log {
-    category_group = "allLogs"
-    retention_policy {
-      enabled = true
-      days    = 0
-    }
-  }
-
-  metric {
-    category = "AllMetrics"
-    enabled  = true
-    retention_policy {
-      enabled = false
-      days    = 0
-    }
-  }
-}

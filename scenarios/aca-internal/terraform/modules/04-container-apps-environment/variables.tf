@@ -18,7 +18,7 @@ variable "environment" {
 }
 
 variable "location" {
-  type    = string
+  type = string
 }
 
 variable "spokeVnetId" {
@@ -59,6 +59,14 @@ variable "enableTelemetry" {
 
 variable "vnetLinks" {}
 
+variable "logAnalyticsWorkspaceCustomerId" {
+  type = string
+}
+
 variable "logAnalyticsWorkspaceId" {
+  type = string
+}
+
+variable "logAnalyticsWorkspaceSharedKey" {
   type = string
 }

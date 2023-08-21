@@ -39,5 +39,13 @@ output "spokeApplicationGatewaySubnetName" {
 }
 
 output "logAnalyticsWorkspaceId" {
-  value = module.logAnalyticsWorkspace.workspaceId
+  value = module.logAnalyticsWorkspace.id
+}
+
+output "logAnalyticsWorkspaceCustomerId" {
+  value = module.logAnalyticsWorkspace.customerId
+}
+
+output logAnalyticsWorkspaceSharedKey {
+  value = module.logAnalyticsWorkspace.sharedKey
 }

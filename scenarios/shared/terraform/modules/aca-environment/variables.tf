@@ -3,14 +3,18 @@
 // ------------------
 
 variable "location" {
-  type    = string
-}
-
-variable "environmentName" {
   type = string
 }
 
-variable "logAnalyticsWorkspaceId" {
+variable "acaEnvironmentName" {
+  type = string
+}
+
+variable "logAnalyticsWorkspaceCustomerId" {
+  type = string
+}
+
+variable "logAnalyticsWorkspaceSharedKey" {
   type = string
 }
 

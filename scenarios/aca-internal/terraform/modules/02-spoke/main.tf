@@ -147,7 +147,7 @@ module "logAnalyticsWorkspace" {
 
 module "diagnostics" {
   source                  = "../../../../shared/terraform/modules/diagnostics"
-  logAnalyticsWorkspaceId = module.logAnalyticsWorkspace.workspaceId
+  logAnalyticsWorkspaceId = module.logAnalyticsWorkspace.id
   resources = [
     {
       type = "vnet-spoke"

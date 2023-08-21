@@ -1,22 +1,25 @@
 resource "azapi_resource" "container_apps_environment" {
   type                      = "Microsoft.App/managedEnvironments@2023-04-01-preview"
-  name                      = var.environmentName
+  name                      = var.acaEnvironmentName
   parent_id                 = var.resourceGroupId
   location                  = var.location
   tags                      = var.tags
-  response_export_values    = ["properties.defaultDomain", "properties.staticIp"]
+  response_export_values    = ["properties.defaultDomain", "properties.staticIp"] # ["*"] # 
   ignore_missing_property   = false
   schema_validation_enabled = true
+  ignore_casing             = true
 
   body = jsonencode({
     properties = {
-      # appLogsConfiguration = { # todo: add app logs configuration
-      #   destination = "log-analytics"
-      #   logAnalyticsConfiguration = {
-      #     customerId = var.logAnalyticsWorkspaceId # var.container_apps_environment.log_analytics.workspace_id
-      #     # sharedKey  = var.logAnalyticsSharedKey   # var.container_apps_environment.log_analytics.shared_key
-      #   }
-      # }
+      zoneRedundant = false
+
+      appLogsConfiguration = {
+        destination = "log-analytics"
+        logAnalyticsConfiguration = {
+          customerId = var.logAnalyticsWorkspaceCustomerId
+          sharedKey  = var.logAnalyticsWorkspaceSharedKey # todo : required during creation, should be ignored later or it will recreate resources
+        }
+      }
       vnetConfiguration = {
         infrastructureSubnetId = var.subnetId
         internal               = true
@@ -34,7 +37,12 @@ resource "azapi_resource" "container_apps_environment" {
         #   workloadProfileType = profile.workload_profile_type
         # }
       ]
-      zoneRedundant = false
     }
   })
+  
+  lifecycle {
+    ignore_changes = [
+      body
+    ]
+  }
 }

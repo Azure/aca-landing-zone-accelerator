@@ -13,23 +13,24 @@ module "naming" {
 }
 
 module "applicationInsights" {
-  source            = "../../../../shared/terraform/modules/monitoring/app-insights"
-  appInsightsName   = var.appInsightsName
-  resourceGroupName = var.spokeResourceGroupName
-  location          = var.location
-  workspaceId       = var.logAnalyticsWorkspaceId
-  tags              = var.tags
+  source                  = "../../../../shared/terraform/modules/monitoring/app-insights"
+  appInsightsName         = var.appInsightsName
+  resourceGroupName       = var.spokeResourceGroupName
+  location                = var.location
+  logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
+  tags                    = var.tags
 }
 
 module "containerAppsEnvironment" {
-  source                  = "../../../../shared/terraform/modules/aca-environment"
-  environmentName         = module.naming.resourceNames["containerAppsEnvironment"]
-  resourceGroupName       = var.spokeResourceGroupName
-  resourceGroupId         = var.spokeResourceGroupId
-  location                = var.location
-  logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
-  subnetId                = var.spokeInfraSubnetId
-  tags                    = var.tags
+  source                          = "../../../../shared/terraform/modules/aca-environment"
+  acaEnvironmentName              = module.naming.resourceNames["containerAppsEnvironment"]
+  resourceGroupName               = var.spokeResourceGroupName
+  resourceGroupId                 = var.spokeResourceGroupId
+  location                        = var.location
+  logAnalyticsWorkspaceCustomerId = var.logAnalyticsWorkspaceCustomerId
+  logAnalyticsWorkspaceSharedKey  = var.logAnalyticsWorkspaceSharedKey
+  subnetId                        = var.spokeInfraSubnetId
+  tags                            = var.tags
 }
 
 module "containerAppsEnvironmentPrivateDnsZone" {
@@ -37,10 +38,12 @@ module "containerAppsEnvironmentPrivateDnsZone" {
   resourceGroupName = var.hubResourceGroupName
   zoneName          = module.containerAppsEnvironment.containerAppsEnvironmentDefaultDomain
   vnetLinks         = var.vnetLinks != [] ? var.vnetLinks : local.vnetLinks
+  tags              = var.tags
+
   records = [
-    { "name"        = "*"
-      "ipv4Address" = [module.containerAppsEnvironment.containerAppsEnvironmentLoadBalancerIP]
+    {
+      name        = "*"
+      ipv4Address = [module.containerAppsEnvironment.containerAppsEnvironmentLoadBalancerIP]
   }]
-  tags = var.tags
 }
 

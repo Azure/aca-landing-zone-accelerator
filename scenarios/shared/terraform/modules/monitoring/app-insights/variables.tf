@@ -60,6 +60,6 @@ variable "applicationType" {
   }
 }
 
-variable "workspaceId" {
+variable "logAnalyticsWorkspaceId" {
   type = string
 }

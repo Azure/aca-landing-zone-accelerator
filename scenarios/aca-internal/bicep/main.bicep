@@ -180,7 +180,7 @@ module supportingServices 'modules/03-supporting-services/deploy.supporting-serv
     environment: environment
     workloadName: workloadName
     spokeVNetId: spoke.outputs.spokeVNetId
-    hubVNetId: hub.outputs.hubVNetId
+    hubVNetId: hub.outputs.hubVNetId    
     deployRedisCache: deployRedisCache
     logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
   }
@@ -238,6 +238,7 @@ module applicationGateway 'modules/06-application-gateway/deploy.app-gateway.bic
 // ------------------
 // OUTPUTS
 // ------------------
+
 
 // Hub
 @description('The resource ID of hub virtual network.')

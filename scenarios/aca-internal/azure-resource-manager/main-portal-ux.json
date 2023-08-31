@@ -81,6 +81,54 @@
                             "visible": true
                         },
                         {
+                            "name": "deployZoneRedundantResources",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Deploy Zone Redundant Resources",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "deployAzurePolicies",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Deploy Azure Policies for Azure Container Apps",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "If true, built-in and custom Azure Policies for Azure Container Apps will be deployed in the spoke Resource Group. If false, no Azure Policies will be deployed.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
                             "name": "location",
                             "type": "Microsoft.Common.TextBox",
                             "label": "Location",
@@ -193,6 +241,38 @@
                             "visible": true
                         },
                         {
+                            "name": "gatewaySubnetAddressPrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Gateway Subnet Address Prefix",
+                            "subLabel": "",
+                            "defaultValue": "10.0.0.0/27",
+                            "toolTip": "CIDR to use for the Gateway Subnet.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "azureFirewallSubnetAddressPrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Azure Firewall Subnet Address Prefix",
+                            "subLabel": "",
+                            "defaultValue": "10.0.0.64/26",
+                            "toolTip": "CIDR to use for the Azure Firewall subnet.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
                             "name": "bastionSubnetAddressPrefix",
                             "type": "Microsoft.Common.TextBox",
                             "label": "Bastion Subnet Address Prefix",
@@ -207,23 +287,7 @@
                             },
                             "infoMessages": [],
                             "visible": true
-                        },
-                        {
-                            "name": "vmJumpBoxSubnetAddressPrefix",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "VM Jump Box Subnet Address Prefix",
-                            "subLabel": "",
-                            "defaultValue": "10.1.2.32/27",
-                            "toolTip": "CIDR to use for the virtual machine subnet.",
-                            "constraints": {
-                                "required": true,
-                                "regex": "",
-                                "validationMessage": "",
-                                "validations": []
-                            },
-                            "infoMessages": [],
-                            "visible": true
-                        },
+                        },                        
                         {
                             "name": "sectionSpoke",
                             "type": "Microsoft.Common.Section",
@@ -284,6 +348,22 @@
                             "subLabel": "",
                             "defaultValue": "10.1.2.0/27",
                             "toolTip": "CIDR of the Spoke Private Endpoints Subnet.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "vmJumpBoxSubnetAddressPrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "VM Jump Box Subnet Address Prefix",
+                            "subLabel": "",
+                            "defaultValue": "10.1.2.32/27",
+                            "toolTip": "CIDR to use for the virtual machine subnet.",
                             "constraints": {
                                 "required": true,
                                 "regex": "",
@@ -562,7 +642,34 @@
                             "infoMessages": [],
                             "visible": true
                         },                       
-
+                        {
+                            "name": "ddosProtectionMode",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Enable DDoS Protection",
+                            "subLabel": "",
+                            "defaultValue": "Enabled",
+                            "toolTip": "DDoS protection mode for the Public IP of the Application Gateway. Allowed values are 'VirtualNetworkInherited', 'Enabled' and 'Disabled'",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Enabled",
+                                        "value": "Enabled"
+                                    },
+                                    {
+                                        "label": "VirtualNetworkInherited",
+                                        "value": "VirtualNetworkInherited"
+                                    },
+                                    {
+                                        "label": "Disabled",
+                                        "value": "Disabled"
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
 
                         {
                             "name": "enableTelemetry",
@@ -652,11 +759,15 @@
             "parameters": {
                 "workloadName": "[steps('basics').workloadName]",
                 "environment": "[steps('basics').environment]",
+                "deployZoneRedundantResources": "[steps('basics').deployZoneRedundantResources]",
+                "deployAzurePolicies": "[steps('basics').deployAzurePolicies]",
                 "location": "[steps('basics').location]",
                 "hubResourceGroupName": "[steps('basics').hubResourceGroupName]",
                 "spokeResourceGroupName": "[steps('basics').spokeResourceGroupName]",
                 "vnetAddressPrefixes": "[steps('networking').vnetAddressPrefixes]",
                 "vmJumpBoxSubnetAddressPrefix": "[steps('networking').vmJumpBoxSubnetAddressPrefix]",
+                "gatewaySubnetAddressPrefix": "[steps('networking').gatewaySubnetAddressPrefix]",
+                "azureFirewallSubnetAddressPrefix": "[steps('networking').azureFirewallSubnetAddressPrefix]",
                 "bastionSubnetAddressPrefix": "[steps('networking').bastionSubnetAddressPrefix]",
                 "spokeVNetAddressPrefixes": "[steps('networking').spokeVNetAddressPrefixes]",
                 "spokeInfraSubnetAddressPrefix": "[steps('networking').spokeInfraSubnetAddressPrefix]",
@@ -666,16 +777,17 @@
                 "vmAdminUsername": "[if( not( equals(steps('vmsettings').vmJumpboxOSType, 'none') ), steps('vmsettings').vmAdminUsername, 'azureuser')]",
                 "vmAdminPassword": "[if( not( equals(steps('vmsettings').vmJumpboxOSType, 'none') ), steps('vmsettings').vmAdminPassword.password, 'Pass@word123$' )]",
                 "vmLinuxSshAuthorizedKeys": "[if ( equals ( steps('vmsettings').vmJumpboxOSType, 'linux'), steps('vmsettings').vmLinuxSshAuthorizedKeys, 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDpNpoh248rsraL3uejAwKlla+pHaDLbp4DM7bKFoc3Rt1DeXPs0XTutJcNtq4iRq+ooRQ1T7WaK42MfQQxt3qkXwjyv8lPJ4v7aElWkAbxZIRYVYmQVxxwfw+zyB1rFdaCQD/kISg/zXxCWw+gdds4rEy7eq23/bXFM0l7pNvbAULIB6ZY7MRpC304lIAJusuZC59iwvjT3dWsDNWifA1SJtgr39yaxB9Fb01UdacwJNuvfGC35GNYH0VJ56c+iCFeAnMXIT00cYuHf0FCRTP0WvTKl+PQmeD1pwxefdFvKCVpidU2hOARb4ooapT0SDM1SODqjaZ/qwWP18y/qQ/v imported-openssh-key'])",
-                "vmJumpboxOSType": "[steps('vmsettings').vmJumpboxOSType]",
-                "enableBastion": "[steps('flags').enableBastion]",   
-                "enableApplicationInsights": "[steps('flags').enableApplicationInsights]",
-                "enableDaprInstrumentation": "[steps('flags').enableDaprInstrumentation]",
-                "deployHelloWorldSample": "[steps('flags').deployHelloWorldSample]",
+                "vmJumpboxOSType": "[steps('vmsettings').vmJumpboxOSType]",                
                 "applicationGatewayFqdn": "acahello.demoapp.com",
                 "enableApplicationGatewayCertificate": "true",
                 "applicationGatewayCertificateKeyName": "agwcert",
+                "enableBastion": "[steps('flags').enableBastion]",
+                "enableApplicationInsights": "[steps('flags').enableApplicationInsights]",
+                "enableDaprInstrumentation": "[steps('flags').enableDaprInstrumentation]",
+                "deployHelloWorldSample": "[steps('flags').deployHelloWorldSample]",
                 "enableTelemetry": "[steps('flags').enableTelemetry]",
-                "deployRedisCache": "[steps('flags').deployRedisCache]"
+                "deployRedisCache": "[steps('flags').deployRedisCache]",
+                "ddosProtectionMode": "[steps('flags').ddosProtectionMode]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",

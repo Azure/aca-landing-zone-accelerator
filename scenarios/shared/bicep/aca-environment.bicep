@@ -97,7 +97,7 @@ var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
 // ------------------
 
 
-resource acaEnvironment 'Microsoft.App/managedEnvironments@2023-04-01-preview' = {
+resource acaEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
   name: name
   location: location
   tags: tags

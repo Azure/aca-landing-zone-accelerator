@@ -17,7 +17,7 @@
       "metadata": {
         "description": "The name of the workload that is being deployed. Up to 10 characters long."
       }
-    },
+    }, 
     "environment": {
       "type": "string",
       "defaultValue": "test",

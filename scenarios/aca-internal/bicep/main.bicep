@@ -137,6 +137,7 @@ module hub 'modules/01-hub/deploy.hub.bicep' = {
     bastionSubnetAddressPrefix: bastionSubnetAddressPrefix    
     azureFirewallSubnetAddressPrefix: azureFirewallSubnetAddressPrefix
     gatewaySubnetAddressPrefix: gatewaySubnetAddressPrefix
+    spokeInfraSubnetAddressPrefix: spokeInfraSubnetAddressPrefix
   }
 }
 

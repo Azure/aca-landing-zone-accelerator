@@ -109,7 +109,7 @@ var defaultSubnets = [
         id: nsgContainerAppsEnvironment.outputs.nsgId
       }
       routeTable: {
-        id: routeTable.outputs.resourceId
+        id: egressLockdownUdr.outputs.resourceId
       }
       delegations: [
         {
@@ -265,8 +265,8 @@ module peerHubToSpoke '../../../../shared/bicep/network/peering.bicep' = if (!em
   }
 }
 @description('The Route Table deployment')
-module routeTable '../../../../shared/bicep/routeTables/main.bicep' = {
-  name: take('routeTable-${uniqueString(spokeResourceGroup.id)}', 64)
+module egressLockdownUdr '../../../../shared/bicep/routeTables/main.bicep' = {
+  name: take('egressLockdownUdr-${uniqueString(spokeResourceGroup.id)}', 64)
   scope: spokeResourceGroup
   params: {
     name: naming.outputs.resourcesNames.routeTable
@@ -274,7 +274,7 @@ module routeTable '../../../../shared/bicep/routeTables/main.bicep' = {
     tags: tags
     routes: [
       {
-        name: 'internetToFirewall'
+        name: 'defaultEgressLockdown'
         properties: {
           addressPrefix: '0.0.0.0/0'
           nextHopType: 'VirtualAppliance'

@@ -257,6 +257,7 @@ If you have deployed the *Hello World Sample Application* and you wish to verify
 
 1. In the console, run ```curl -s https://mcr.microsoft.com```. You should see a successful response (because the default LZA deployment adds the application rule *ace-allow-rules* which among others adds ```mcr.microsoft.com``` to the allowlist for your firewall policies). If you get an error that curl is not found in the container's shell, follow the next steps to install it.
    > a. Run ```apk add curl``` to add the curl package. If you get an error, most possibly some URL is being blocked by your firewall, so let's investigate that.
+
    > b. Got to your hub, find your azure firewall, and click on the logs. there run the following query: 
    ```      
    AzureDiagnostics
@@ -297,8 +298,10 @@ If you have deployed the *Hello World Sample Application* and you wish to verify
    | order by TimeGenerated desc
    | limit 100      
    ```
-   > You should find some calls t with target fqdn ```dl-cdn.alpinelinux.org``` that are being blocked. This already verifies that the firewall is successfully fitlering the egress traffic, but let's fix that, and add ```curl``` in your container.    
+   > You should find some calls t with target fqdn ```dl-cdn.alpinelinux.org``` that are being blocked. This already verifies that the firewall is successfully fitlering the egress traffic, but let's fix that, and add ```curl``` in your container. 
+
    >c. Go to the Azure Firewall > Settings > Rules     (Classic) > Application Rule Connection and add an application rule that permits calls to ```dl-cdn.alpinelinux.org``` with http:80 and https:443 protocols. Wait for the rule to be updated/created and then try again to install curl (```apk add curl```). 
+   
    >d. Once *curl* is installed run again ```curl -s https://mcr.microsoft.com```,  you should see a successful response. 
 
 1. Run ```curl -s https://www.docker.com``` (for a URL that doesn't match any of your destination rules). You should get no response, which indicates that your firewall has blocked the request. If you wish you can check the Firewall's logs (with the query found in the previous setp) to verify that your call to www.docker.com has been denied. 

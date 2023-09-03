@@ -225,7 +225,71 @@ az group delete -n <your-hub-resource-group>
 > **Note**
    When you first run your pipeline, you may need to give the pipeline permission to access the service connection and the variable group. This will only occur the first time you run the pipeline.
 
-#### :broom: Clean up resources
+### Step-by-step deployment guide
+
+These instructions are spread over a series of dedicated pages for each step along the way. With this method of deployment, you can leverage the step-by-step process considering where possibly different teams (devops, network, operations etc) with different levels of access, are required to coordinate and deploy all of the required resources.
+
+:arrow_forward: This starts with [Deploy the hub networking resources](./modules/01-hub/README.md).
+
+## :rotating_light: Verify your firewall is blocking outbound traffic
+If you have deployed the *Hello World Sample Application* and you wish to verify your Azure Firewall configuration is set up correctly, you can use the ```curl``` command from your app's debugging console. follow the steps below: 
+
+1. Navigate to your Container App that is configured with Azure Firewall.
+
+1. From the menu on the left, select Console, then select your container that supports the curl command.
+
+1. In the Choose start up command menu, select ```/bin/sh```, and select Connect.
+
+1. In the console, run ```curl -s https://mcr.microsoft.com```. You should see a successful response (because the default LZA deployment adds the application rule *ace-allow-rules* which among others adds ```mcr.microsoft.com``` to the allowlist for your firewall policies). If you get an error that curl is not found in the container's shell, follow the next steps to install it.
+   > a. Run ```apk add curl``` to add the curl package. If you get an error, most possibly some URL is being blocked by your firewall, so let's investigate that.
+   > b. Got to your hub, find your azure firewall, and click on the logs. there run the following query: 
+   ```      
+   AzureDiagnostics
+   | where Category == "AzureFirewallNetworkRule" or Category == "AzureFirewallApplicationRule"
+   | extend msg_original = msg_s
+   | extend msg_s = replace(@'. Action: Deny. Reason: SNI TLS extension was missing.', @' to no_data:no_data. Action: Deny. Rule Collection: default behavior. Rule: SNI TLS extension missing', msg_s)
+   | extend msg_s = replace(@'No rule matched. Proceeding with default action', @'Rule Collection: default behavior. Rule: no rule matched', msg_s)
+   | parse msg_s with * " Web Category: " WebCategory
+   | extend msg_s = replace(@'(. Web Category:).*','', msg_s)
+   | parse msg_s with * ". Rule Collection: " RuleCollection ". Rule: " Rule
+   | extend msg_s = replace(@'(. Rule Collection:).*','', msg_s)
+   | parse msg_s with * ". Rule Collection Group: " RuleCollectionGroup
+   | extend msg_s = replace(@'(. Rule Collection Group:).*','', msg_s)
+   | parse msg_s with * ". Policy: " Policy
+   | extend msg_s = replace(@'(. Policy:).*','', msg_s)
+   | parse msg_s with * ". Signature: " IDSSignatureIDInt ". IDS: " IDSSignatureDescription ". Priority: " IDSPriorityInt ". Classification: " IDSClassification
+   | extend msg_s = replace(@'(. Signature:).*','', msg_s)
+   | parse msg_s with * " was DNAT'ed to " NatDestination
+   | extend msg_s = replace(@"( was DNAT'ed to ).*",". Action: DNAT", msg_s)
+   | parse msg_s with * ". ThreatIntel: " ThreatIntel
+   | extend msg_s = replace(@'(. ThreatIntel:).*','', msg_s)
+   | extend URL = extract(@"(Url: )(.*)(\. Action)",2,msg_s)
+   | extend msg_s=replace(@"(Url: .*)(Action)",@"\2",msg_s)
+   | parse msg_s with Protocol " request from " SourceIP " to " Target ". Action: " Action
+   | extend 
+      SourceIP = iif(SourceIP contains ":",strcat_array(split(SourceIP,":",0),""),SourceIP),
+      SourcePort = iif(SourceIP contains ":",strcat_array(split(SourceIP,":",1),""),""),
+      Target = iif(Target contains ":",strcat_array(split(Target,":",0),""),Target),
+      TargetPort = iif(SourceIP contains ":",strcat_array(split(Target,":",1),""),""),
+      Action = iif(Action contains ".",strcat_array(split(Action,".",0),""),Action),
+      Policy = case(RuleCollection contains ":", split(RuleCollection, ":")[0] ,Policy),
+      RuleCollectionGroup = case(RuleCollection contains ":", split(RuleCollection, ":")[1], RuleCollectionGroup),
+      RuleCollection = case(RuleCollection contains ":", split(RuleCollection, ":")[2], RuleCollection),
+      IDSSignatureID = tostring(IDSSignatureIDInt),
+      IDSPriority = tostring(IDSPriorityInt)
+   | project TimeGenerated,Protocol,SourceIP,SourcePort,Target,TargetPort,URL,Action, NatDestination, OperationName,ThreatIntel,IDSSignatureID,IDSSignatureDescription,IDSPriority,IDSClassification,Policy,RuleCollectionGroup,RuleCollection,Rule,WebCategory, msg_original
+   | where Action == "Deny"
+   | order by TimeGenerated desc
+   | limit 100      
+   ```
+   > You should find some calls t with target fqdn ```dl-cdn.alpinelinux.org``` that are being blocked. This already verifies that the firewall is successfully fitlering the egress traffic, but let's fix that, and add ```curl``` in your container.    
+   >c. Go to the Azure Firewall > Settings > Rules     (Classic) > Application Rule Connection and add an application rule that permits calls to ```dl-cdn.alpinelinux.org``` with http:80 and https:443 protocols. Wait for the rule to be updated/created and then try again to install curl (```apk add curl```). 
+   >d. Once *curl* is installed run again ```curl -s https://mcr.microsoft.com```,  you should see a successful response. 
+
+1. Run ```curl -s https://www.docker.com``` (for a URL that doesn't match any of your destination rules). You should get no response, which indicates that your firewall has blocked the request. If you wish you can check the Firewall's logs (with the query found in the previous setp) to verify that your call to www.docker.com has been denied. 
+
+
+## :broom: Clean up resources
 
 Use the following commands to remove the resources you created.
 
@@ -233,9 +297,3 @@ Use the following commands to remove the resources you created.
 az group delete -n <your-spoke-resource-group>
 az group delete -n <your-hub-resource-group>
 ```
-
-### Step-by-step deployment guide
-
-These instructions are spread over a series of dedicated pages for each step along the way. With this method of deployment, you can leverage the step-by-step process considering where possibly different teams (devops, network, operations etc) with different levels of access, are required to coordinate and deploy all of the required resources.
-
-:arrow_forward: This starts with [Deploy the hub networking resources](./modules/01-hub/README.md).

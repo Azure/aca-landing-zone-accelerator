@@ -145,6 +145,8 @@ This is the starting point for the instructions on deploying this reference impl
 
 #### :broom: Clean up resources
 
+Before cleaning up the resources you might wish to [verify the Azure Firewall Rules](#rotating_light-verify-your-firewall-is-blocking-outbound-traffic)
+
 When you are done exploring the resources created by the Standalone deployment guide, use the following command to remove the resources you created.
 
 ```bash
@@ -198,6 +200,8 @@ az group delete -n $HUB_RESOURCE_GROUP_NAME
 
 #### :broom: Clean up resources
 
+Before cleaning up the resources you might wish to [verify the Azure Firewall Rules](#rotating_light-verify-your-firewall-is-blocking-outbound-traffic)
+
 If you didn't select automatic clean up of the deployed resources, use the following commands to remove the resources you created.
 
 ```bash
@@ -225,6 +229,17 @@ az group delete -n <your-hub-resource-group>
 > **Note**
    When you first run your pipeline, you may need to give the pipeline permission to access the service connection and the variable group. This will only occur the first time you run the pipeline.
 
+#### :broom: Clean up resources
+
+Before cleaning up the resources you might wish to [verify the Azure Firewall Rules](#rotating_light-verify-your-firewall-is-blocking-outbound-traffic)
+
+Use the following commands to remove the resources you created.
+
+```bash
+az group delete -n <your-spoke-resource-group>
+az group delete -n <your-hub-resource-group>
+```   
+
 ### Step-by-step deployment guide
 
 These instructions are spread over a series of dedicated pages for each step along the way. With this method of deployment, you can leverage the step-by-step process considering where possibly different teams (devops, network, operations etc) with different levels of access, are required to coordinate and deploy all of the required resources.
@@ -232,7 +247,7 @@ These instructions are spread over a series of dedicated pages for each step alo
 :arrow_forward: This starts with [Deploy the hub networking resources](./modules/01-hub/README.md).
 
 ## :rotating_light: Verify your firewall is blocking outbound traffic
-If you have deployed the *Hello World Sample Application* and you wish to verify your Azure Firewall configuration is set up correctly, you can use the ```curl``` command from your app's debugging console. follow the steps below: 
+If you have deployed the *Hello World Sample Application* and you wish to verify your Azure Firewall configuration is set up correctly, you can use the ```curl``` command from your app's debugging console. Follow the steps below: 
 
 1. Navigate to your Container App that is configured with Azure Firewall.
 
@@ -287,13 +302,3 @@ If you have deployed the *Hello World Sample Application* and you wish to verify
    >d. Once *curl* is installed run again ```curl -s https://mcr.microsoft.com```,  you should see a successful response. 
 
 1. Run ```curl -s https://www.docker.com``` (for a URL that doesn't match any of your destination rules). You should get no response, which indicates that your firewall has blocked the request. If you wish you can check the Firewall's logs (with the query found in the previous setp) to verify that your call to www.docker.com has been denied. 
-
-
-## :broom: Clean up resources
-
-Use the following commands to remove the resources you created.
-
-```bash
-az group delete -n <your-spoke-resource-group>
-az group delete -n <your-hub-resource-group>
-```

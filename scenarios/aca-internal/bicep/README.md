@@ -298,10 +298,10 @@ If you have deployed the *Hello World Sample Application* and you wish to verify
    | order by TimeGenerated desc
    | limit 100      
    ```
-   > You should find some calls t with target fqdn ```dl-cdn.alpinelinux.org``` that are being blocked. This already verifies that the firewall is successfully fitlering the egress traffic, but let's fix that, and add ```curl``` in your container. 
+   > You should find some calls t with target fqdn ```dl-cdn.alpinelinux.org``` that are being blocked. This already verifies that the firewall is successfully filtering the egress traffic, but let's fix that, and add ```curl``` in your container. 
 
    >c. Go to the Azure Firewall > Settings > Rules     (Classic) > Application Rule Connection and add an application rule that permits calls to ```dl-cdn.alpinelinux.org``` with http:80 and https:443 protocols. Wait for the rule to be updated/created and then try again to install curl (```apk add curl```). 
-   
+
    >d. Once *curl* is installed run again ```curl -s https://mcr.microsoft.com```,  you should see a successful response. 
 
-1. Run ```curl -s https://www.docker.com``` (for a URL that doesn't match any of your destination rules). You should get no response, which indicates that your firewall has blocked the request. If you wish you can check the Firewall's logs (with the query found in the previous setp) to verify that your call to www.docker.com has been denied. 
+1. Run ```curl -s https://www.docker.com``` (for a URL that doesn't match any of your destination rules). You should get no response, which indicates that your firewall has blocked the request. If you wish you can check the Firewall's logs (with the query found in the previous step) to verify that your call to www.docker.com has been denied. 

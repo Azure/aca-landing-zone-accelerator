@@ -166,11 +166,14 @@ var applicationRuleCollections = [
           targetFqdns: [
             'github.com'
             '*.github.com'
+            'ghcr.io'
+            '*.ghcr.io'
             '*.nuget.org'
             '*.blob.${environment().suffixes.storage}'  // might replace wildcard with specific FQDN
             '*.table.${environment().suffixes.storage}' // might replace wildcard with specific FQDN
             '*.servicebus.windows.net'                  // might replace wildcard with specific FQDN
-            'raw.githubusercontent.com'
+            'githubusercontent.com'
+            '*.githubusercontent.com'
             'dev.azure.com'
             'portal.azure.com'
             '*.portal.azure.com'

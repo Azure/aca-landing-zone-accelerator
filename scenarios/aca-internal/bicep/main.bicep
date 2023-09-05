@@ -137,6 +137,7 @@ module hub 'modules/01-hub/deploy.hub.bicep' = {
     bastionSubnetAddressPrefix: bastionSubnetAddressPrefix    
     azureFirewallSubnetAddressPrefix: azureFirewallSubnetAddressPrefix
     gatewaySubnetAddressPrefix: gatewaySubnetAddressPrefix
+    spokeInfraSubnetAddressPrefix: spokeInfraSubnetAddressPrefix
   }
 }
 
@@ -159,6 +160,7 @@ module spoke 'modules/02-spoke/deploy.spoke.bicep' = {
     spokeInfraSubnetAddressPrefix: spokeInfraSubnetAddressPrefix
     spokePrivateEndpointsSubnetAddressPrefix: spokePrivateEndpointsSubnetAddressPrefix
     spokeVNetAddressPrefixes: spokeVNetAddressPrefixes
+    networkApplianceIpAddress: hub.outputs.networkApplianceIpAddress
     vmSize: vmSize
     vmAdminUsername: vmAdminUsername
     vmAdminPassword: vmAdminPassword

@@ -37,6 +37,9 @@ param gatewaySubnetAddressPrefix string
 @description('CIDR to use for the azureFirewallSubnet.')
 param azureFirewallSubnetAddressPrefix string
 
+@description('CIDR of the spoke infrastructure subnet.')
+param spokeInfraSubnetAddressPrefix string
+
 
 // ------------------
 // VARIABLES
@@ -92,6 +95,16 @@ resource hubResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
+@description('The log sink for Azure Diagnostics')
+module hubLogAnalyticsWorkspace '../../../../shared/bicep/log-analytics-ws.bicep' = {
+  scope: hubResourceGroup
+  name: take('hubLogWs-${uniqueString(hubResourceGroup.id)}', 64)
+  params: {
+    location: location
+    name: naming.outputs.resourcesNames.logAnalyticsWorkspace
+  }
+}
+
 @description('User-configured naming rules')
 module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
   scope: hubResourceGroup
@@ -114,6 +127,21 @@ module vnetHub '../../../../shared/bicep/network/vnet.bicep' = {
     subnets: vnetSubnets
     vnetAddressPrefixes: vnetAddressPrefixes
     tags: tags
+  }
+}
+
+@description('The Azure Firewall deployment. This would normally be already provisioned by your platform team.')
+module azfw './modules/azureFirewall.bicep' = {
+  scope: hubResourceGroup
+  name: take('afw-${deployment().name}', 64)
+  params: {
+    location: location
+    tags: tags
+    afwVNetName: vnetHub.outputs.vnetName
+    logAnalyticsWorkspaceId: hubLogAnalyticsWorkspace.outputs.logAnalyticsWsId
+    firewallName: naming.outputs.resourcesNames.azureFirewall
+    publicIpName: naming.outputs.resourcesNames.azureFirewallPip
+    spokeInfraSubnetAddressPrefix: spokeInfraSubnetAddressPrefix
   }
 }
 
@@ -142,3 +170,6 @@ output hubVNetId string = vnetHub.outputs.vnetId
 
 @description('The name of the hub resource group.')
 output resourceGroupName string = hubResourceGroup.name
+
+@description('The private IP address of the Azure Firewall.')
+output networkApplianceIpAddress string = azfw.outputs.afwPrivateIp

@@ -26,7 +26,7 @@ param containerAppsEnvironmentId string
 // ------------------
 
 @description('The "Hello World" Container App.')
-resource containerApp 'Microsoft.App/containerApps@2022-10-01' = {
+resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
   name: helloWorldContainerAppName
   location: location
   tags: tags
@@ -49,6 +49,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-10-01' = {
       secrets: []
     }
     environmentId: containerAppsEnvironmentId
+    workloadProfileName: 'Consumption'
     template: {
       containers: [
         {

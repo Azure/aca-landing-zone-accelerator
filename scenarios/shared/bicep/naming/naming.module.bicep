@@ -46,6 +46,8 @@ var resourceNames = {
   applicationGatewayNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationGateway)}'
   pepNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-pep'
   applicationInsights: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.applicationInsights)
+  azureFirewall: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.azureFirewall)  
+  azureFirewallPip: '${naming.resourceTypeAbbreviations.publicIpAddress}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.azureFirewall)}'  
   bastion: replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.bastion)
   bastionNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.bastion)}'
   bastionPip: '${naming.resourceTypeAbbreviations.publicIpAddress}-${replace(namingBaseNoWorkloadName, resourceTypeToken, naming.resourceTypeAbbreviations.bastion)}'
@@ -62,6 +64,7 @@ var resourceNames = {
   keyVault: endsWith( keyVaultName, '-') ? take( keyVaultName, 23 ) : keyVaultName
   keyVaultPep:  '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.keyVault )}'
   logAnalyticsWorkspace: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.logAnalyticsWorkspace)
+  routeTable: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.routeTable)
   serviceBus: replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.serviceBus)
   serviceBusPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.serviceBus)}'
   storageAccount: toLower(take( replace ( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.storageAccount), '-', ''), 24))

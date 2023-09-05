@@ -41,19 +41,6 @@ module "keyVaultPrivateEndpoints" {
   tags              = var.tags
 }
 
-resource "azurerm_user_assigned_identity" "keyVaultUserAssignedIdentity" {
-  name                = var.keyVaultUserAssignedIdentityName
-  resource_group_name = var.spokeResourceGroupName
-  location            = var.location
-  tags                = var.tags
-}
-
-resource "azurerm_role_assignment" "keyVaultPullRoleAssignment" {
-  scope                = azurerm_key_vault.keyvault.id
-  role_definition_name = "Key Vault Reader"
-  principal_id         = azurerm_user_assigned_identity.keyVaultUserAssignedIdentity.principal_id
-}
-
 # enable user to read/write secrets
 resource "azurerm_role_assignment" "keyVaultSecretsOfficerRoleAssignment" {
   scope                = azurerm_key_vault.keyvault.id

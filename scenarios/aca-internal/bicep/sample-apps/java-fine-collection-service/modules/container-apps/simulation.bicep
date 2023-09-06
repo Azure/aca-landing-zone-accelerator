@@ -39,7 +39,7 @@ var containerAppName = 'ca-${simulationName}'
 // RESOURCES
 // ------------------
 
-resource simulationService 'Microsoft.App/containerApps@2022-06-01-preview' = {
+resource simulationService 'Microsoft.App/containerApps@2023-05-01' = {
   name: containerAppName
   location: location
   tags: tags

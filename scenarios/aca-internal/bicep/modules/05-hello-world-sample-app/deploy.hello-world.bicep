@@ -26,7 +26,7 @@ param containerAppsEnvironmentId string
 // ------------------
 
 @description('The "Hello World" Container App.')
-resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
+resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
   name: helloWorldContainerAppName
   location: location
   tags: tags

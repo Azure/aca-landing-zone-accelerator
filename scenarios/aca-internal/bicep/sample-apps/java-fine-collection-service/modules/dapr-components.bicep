@@ -71,7 +71,7 @@ resource secretstoreComponent 'Microsoft.App/managedEnvironments/daprComponents@
 }
 
 // Secret store is only supported in the preview version of the Dapr components API
-resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-06-01-preview' = {
+resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2023-05-01' = {
   name: pubSubComponentName
   parent: containerAppsEnvironment
   properties: {
@@ -96,7 +96,7 @@ resource pubsubComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-
   }
 }
 
-resource statestoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-06-01-preview' = {
+resource statestoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2023-05-01' = {
   name: stateStoreComponentName
   parent: containerAppsEnvironment
   properties: {

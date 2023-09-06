@@ -37,7 +37,7 @@ param frontendWebAppPortNumber int
 // RESOURCES
 // ------------------
 
-resource frontendWebAppService 'Microsoft.App/containerApps@2022-06-01-preview' = {
+resource frontendWebAppService 'Microsoft.App/containerApps@2023-05-01' = {
   name: frontendWebAppServiceName
   location: location
   tags: tags

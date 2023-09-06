@@ -77,7 +77,7 @@ resource cosmosDbDatabaseCollection 'Microsoft.DocumentDB/databaseAccounts/sqlDa
   parent: cosmosDbDatabase
 }
 
-resource trafficControlService 'Microsoft.App/containerApps@2022-06-01-preview' = {
+resource trafficControlService 'Microsoft.App/containerApps@2023-05-01' = {
   name: containerAppName
   location: location
   tags: tags

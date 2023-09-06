@@ -36,7 +36,7 @@ var containerAppName = 'ca-${vehicleRegistrationServiceName}'
 // RESOURCES
 // ------------------
 
-resource vehicleRegistrationService 'Microsoft.App/containerApps@2022-03-01' = {
+resource vehicleRegistrationService 'Microsoft.App/containerApps@2023-05-01' = {
   name: containerAppName
   location: location
   tags: tags

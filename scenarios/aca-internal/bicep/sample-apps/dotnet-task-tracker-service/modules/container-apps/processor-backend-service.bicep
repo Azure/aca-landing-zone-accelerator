@@ -96,7 +96,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing 
   name: externalStorageAccountName
 }
 
-resource backendProcessorService 'Microsoft.App/containerApps@2022-06-01-preview' = {
+resource backendProcessorService 'Microsoft.App/containerApps@2023-05-01' = {
   name: backendProcessorServiceName
   location: location
   tags: tags

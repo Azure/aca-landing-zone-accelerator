@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  aca-jobs:
+    image: ${DOCKER_REGISTRY-}acajobs
+    build:
+      context: .
+      dockerfile: ./Dockerfile

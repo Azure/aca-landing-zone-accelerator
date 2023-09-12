@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "aca_jobs": {
+      "commandName": "Project",
+      "commandLineArgs": "--role=sender",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true
+    }
+  }
+}

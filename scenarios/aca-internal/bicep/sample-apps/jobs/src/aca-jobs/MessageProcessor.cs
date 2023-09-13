@@ -1,40 +1,38 @@
 ﻿using aca_jobs.Model;
 using Azure.Identity;
 using Azure.Messaging.ServiceBus;
+using Microsoft.Extensions.Options;
 
 namespace aca_jobs;
 
-public class MessageProcessor : BackgroundService
+public class MessageProcessor : IJob
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<Program>  _logger;
     private readonly ConfigurationOptions _settings;
     private readonly ServiceBusReceiver _receiver;
     private readonly ServiceBusSender _sender;
 
-    public MessageProcessor(ILogger logger, ConfigurationOptions settings)
+    public MessageProcessor(ILogger<Program>  logger, IOptions<ConfigurationOptions> options)
     {
         _logger = logger;
-        _settings = settings;
+        _settings = options.Value;
         var client = new ServiceBusClient(_settings.ServiceBusNamespace, 
             new DefaultAzureCredential());
         _receiver = client.CreateReceiver(_settings.InputQueueName);
         _sender = client.CreateSender(_settings.OutputQueueName);
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    public async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            _logger.LogInformation("Processor running at: {time}", DateTimeOffset.Now);
+        _logger.LogInformation("Processor running at: {time}", DateTimeOffset.Now);
 
-            var numbers = await _receiver.ReceiveNumbersAsync(_settings.FetchCount, TimeSpan.FromMinutes(_settings.MaxWaitTime),
-                stoppingToken);
-            
-            foreach (var n in numbers)
-            {
-                await _sender.SendMessageAsync(
-                    new ServiceBusMessage(Fibonacci(n).ToString()), stoppingToken);
-            }
+        var numbers = await _receiver.ReceiveNumbersAsync(_settings.FetchCount, TimeSpan.FromMinutes(_settings.MaxWaitTime),
+            stoppingToken);
+        
+        foreach (var n in numbers)
+        {
+            await _sender.SendMessageAsync(
+                new ServiceBusMessage(Fibonacci(n).ToString()), stoppingToken);
         }
     }
     

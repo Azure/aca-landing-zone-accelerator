@@ -9,7 +9,7 @@ public class ConfigurationOptions
 
     public int MinNumber { get; set; } = 1;
     public int MaxNumber { get; set; } = 10;
-    public int MessageCount { get; set; } = 100;
+    public int MessageCount { get; set; } = 10;
     public int FetchCount { get; set; } = 10;
     public int MaxWaitTime { get; set; } = 1;
     public string SendType { get; set; } = "list";

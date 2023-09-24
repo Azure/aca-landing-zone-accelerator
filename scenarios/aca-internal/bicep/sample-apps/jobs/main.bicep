@@ -10,6 +10,9 @@ targetScope = 'resourceGroup'
 @description('The location where the resources will be created.')
 param location string = resourceGroup().location
 
+@description('Optional.The environment name to be used when deploying the resources.')
+param environment string = 'dev'
+
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
@@ -25,7 +28,7 @@ param managedIdentityName string
 @description('The log analytics workspace id.')
 param workspaceId string
 
-@description('Specifies the name of the parameters Azure Service Bus queue.')
+@description('Specifies the name of the input Azure Service Bus queue.')
 param parametersServiceBusQueueName string = 'parameters'
 
 @description('Specifies the name of the results Azure Service Bus queue.')
@@ -46,13 +49,13 @@ param processorJobName string = '${toLower(workloadName)}-processor'
 param receiverJobName string = '${toLower(workloadName)}-receiver'
 
 @description('Specifies the name (e.g., sbsender) of the container image of the sender job.')
-param senderImageName string = 'sbsender'
+param senderImageName string = 'jobs/aca-jobs'
 
 @description('Specifies the name (e.g., sbprocessor) of the container image of the processor job.')
-param processorImageName string = 'sbprocessor'
+param processorImageName string = 'jobs/aca-jobs'
 
 @description('Specifies the name (e.g., sbreceiver) of the container image of the receiver job.')
-param receiverImageName string = 'sbreceiver'
+param receiverImageName string = 'jobs/aca-jobs'
 
 @description('Specifies the tag (e.g., v1) of the container image of the sender job.')
 param senderImageTag string = 'v1'
@@ -99,11 +102,8 @@ param spokePrivateEndpointsSubnetName string
 @description('The resource ID of the Hub Virtual Network.')
 param hubVNetId string
 
-@description('The name of service bus\' private endpoint.')
-param serviceBusPrivateEndpointName string
-
 // Existing Resources
-resource environment 'Microsoft.App/managedEnvironments@2023-05-01' existing = {
+resource acaEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' existing = {
   name: containerAppsEnvironmentName
 }
 
@@ -116,10 +116,20 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
 }
 
 // Variables
-
 var telemetryId = '9b4433d6-924a-4c07-b47c-7478619759c7-${location}-acajobs'
 
 // Resources
+@description('User-configured naming rules')
+module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
+  scope: resourceGroup()
+  name: take('aca-jobs-${deployment().name}', 64)
+  params: {
+    uniqueId: uniqueString(resourceGroup().id)
+    environment: environment
+    workloadName: workloadName
+    location: location
+  }
+}
 
 // The service bus namespace used to pass messages between the jobs
 module namespace 'modules/service-bus.bicep' = {
@@ -127,12 +137,13 @@ module namespace 'modules/service-bus.bicep' = {
   params: {
     location: location
     tags: tags
-    serviceBusName: ''
+    serviceBusName: naming.outputs.resourcesNames.serviceBus
     workspaceId: workspaceId
     spokePrivateEndpointsSubnetName: spokePrivateEndpointsSubnetName
     spokeVNetName: spokeVNetName
     hubVNetId: hubVNetId
-    serviceBusPrivateEndpointName: serviceBusPrivateEndpointName
+    serviceBusPrivateEndpointName: naming.outputs.resourcesNames.serviceBusPep
+    managedIdentityPrincipalId: managedIdentity.properties.principalId
   }
 }
 
@@ -148,7 +159,7 @@ module senderJob 'modules/container-apps-job.bicep' = {
     replicaCompletionCount: senderParallelism
     replicaRetryLimit: replicaRetryLimit
     replicaTimeout: replicaTimeout
-    environmentId: environment.id
+    environmentId: acaEnvironment.id
     tags: tags
     registries: [
       {
@@ -162,28 +173,44 @@ module senderJob 'modules/container-apps-job.bicep' = {
         value: managedIdentity.properties.clientId
       }
       {
-        name: 'FULLY_QUALIFIED_NAMESPACE'
+        name: 'SETTINGS__SERVICEBUSNAMESPACE'
         value: toLower('${namespace.outputs.serviceBusName}.servicebus.windows.net')
       }
       {
-        name: 'INPUT_QUEUE_NAME'
+        name: 'SETTINGS__INPUTQUEUENAME'
         value: parametersServiceBusQueueName
       }
       {
-        name: 'MIN_NUMBER'
+        name: 'SETTINGS__OUTPUTQUEUENAME'
+        value: resultsServiceBusQueueName
+      }
+      {
+        name: 'SETTINGS__MINNUMBER'
         value: '1'
       }
       {
-        name: 'MAX_NUMBER'
+        name: 'SETTINGS__MAXNUMBER'
         value: '10'
       }
       {
-        name: 'MESSAGE_COUNT'
-        value: '100'
+        name: 'SETTINGS_MESSAGECOUNT'
+        value: '10'
       }
       {
-        name: 'SEND_TYPE'
+        name: 'SETTINGS_FETCHCOUNT'
+        value: '10'
+      }
+      {
+        name: 'SETTINGS_MAXWAITTIME'
+        value: '1'
+      }      
+      {
+        name: 'SETTINGS__SENDTYPE'
         value: 'list'
+      }
+      {
+        name: 'SETTINGS__WORKERROLE'
+        value: 'sender'
       }
     ]
   }
@@ -202,7 +229,7 @@ module processorJob 'modules/container-apps-job.bicep' = {
     replicaCompletionCount: processorParallelism
     replicaRetryLimit: replicaRetryLimit
     replicaTimeout: replicaTimeout
-    environmentId: environment.id
+    environmentId: acaEnvironment.id
     tags: tags
     registries: [
       {
@@ -216,24 +243,44 @@ module processorJob 'modules/container-apps-job.bicep' = {
         value: managedIdentity.properties.clientId
       }
       {
-        name: 'FULLY_QUALIFIED_NAMESPACE'
+        name: 'SETTINGS__SERVICEBUSNAMESPACE'
         value: toLower('${namespace.outputs.serviceBusName}.servicebus.windows.net')
       }
       {
-        name: 'INPUT_QUEUE_NAME'
+        name: 'SETTINGS__INPUTQUEUENAME'
         value: parametersServiceBusQueueName
       }
       {
-        name: 'OUTPUT_QUEUE_NAME'
+        name: 'SETTINGS__OUTPUTQUEUENAME'
         value: resultsServiceBusQueueName
       }
       {
-        name: 'MAX_MESSAGE_COUNT'
-        value: '20'
+        name: 'SETTINGS__MINNUMBER'
+        value: '1'
       }
       {
-        name: 'MAX_WAIT_TIME'
-        value: '5'
+        name: 'SETTINGS__MAXNUMBER'
+        value: '10'
+      }
+      {
+        name: 'SETTINGS_MESSAGECOUNT'
+        value: '10'
+      }
+      {
+        name: 'SETTINGS_FETCHCOUNT'
+        value: '10'
+      }
+      {
+        name: 'SETTINGS_MAXWAITTIME'
+        value: '1'
+      }      
+      {
+        name: 'SETTINGS__SENDTYPE'
+        value: 'list'
+      }
+      {
+        name: 'SETTINGS__WORKERROLE'
+        value: 'processor'
       }
     ]
   }
@@ -254,7 +301,7 @@ module receiverJob 'modules/container-apps-job.bicep' = {
     replicaCompletionCount: receiverParallelism
     replicaRetryLimit: replicaRetryLimit
     replicaTimeout: replicaTimeout
-    environmentId: environment.id
+    environmentId: acaEnvironment.id
     tags: tags
     registries: [
       {
@@ -268,20 +315,44 @@ module receiverJob 'modules/container-apps-job.bicep' = {
         value: managedIdentity.properties.clientId
       }
       {
-        name: 'FULLY_QUALIFIED_NAMESPACE'
+        name: 'SETTINGS__SERVICEBUSNAMESPACE'
         value: toLower('${namespace.outputs.serviceBusName}.servicebus.windows.net')
       }
       {
-        name: 'OUTPUT_QUEUE_NAME'
+        name: 'SETTINGS__INPUTQUEUENAME'
+        value: parametersServiceBusQueueName
+      }
+      {
+        name: 'SETTINGS__OUTPUTQUEUENAME'
         value: resultsServiceBusQueueName
       }
       {
-        name: 'MAX_MESSAGE_COUNT'
-        value: '20'
+        name: 'SETTINGS__MINNUMBER'
+        value: '1'
       }
       {
-        name: 'MAX_WAIT_TIME'
-        value: '5'
+        name: 'SETTINGS__MAXNUMBER'
+        value: '10'
+      }
+      {
+        name: 'SETTINGS_MESSAGECOUNT'
+        value: '10'
+      }
+      {
+        name: 'SETTINGS_FETCHCOUNT'
+        value: '10'
+      }
+      {
+        name: 'SETTINGS_MAXWAITTIME'
+        value: '1'
+      }      
+      {
+        name: 'SETTINGS__SENDTYPE'
+        value: 'list'
+      }
+      {
+        name: 'SETTINGS__WORKERROLE'
+        value: 'receiver'
       }
     ]
     secrets: [

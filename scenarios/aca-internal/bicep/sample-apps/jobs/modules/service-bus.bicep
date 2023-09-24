@@ -28,6 +28,9 @@ param serviceBusPrivateEndpointName string
 @description('The resource ID of the Log Analytics Workspace.')
 param workspaceId string
 
+@description('The resource ID of the ACA managed identity.')
+param managedIdentityPrincipalId string
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -51,6 +54,9 @@ var hubVNetIdTokens = split(hubVNetId, '/')
 var hubSubscriptionId = hubVNetIdTokens[2]
 var hubResourceGroupName = hubVNetIdTokens[4]
 var hubVNetName = hubVNetIdTokens[8]
+var roleIds = [
+  '090c5cfd-751d-490a-894a-3ce6f1109419' // Azure Service Bus Data Owner
+]
 
 // ------------------
 // RESOURCES
@@ -83,6 +89,22 @@ module serviceBusNamespace '../../../../../shared/bicep/service-bus.bicep' = {
   }
 }
 
+// Get a reference to servicebus namespace
+resource servicebus 'Microsoft.ServiceBus/namespaces@2022-01-01-preview' existing = {
+  name: serviceBusName
+}
+
+// Grant permissions to the principalID to specific role to servicebus
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleId in roleIds : {
+  name: guid(servicebus.id, roleId, managedIdentityPrincipalId)
+  scope: servicebus
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleId)
+    principalId: managedIdentityPrincipalId
+    principalType: 'ServicePrincipal'
+  }
+}]
+
 module serviceBusNetworking '../../../../../shared/bicep/network/private-networking.bicep' = {
   name: 'serviceBusNetworking-${uniqueString(resourceGroup().id)}'
   params: {
@@ -102,7 +124,7 @@ module serviceBusNetworking '../../../../../shared/bicep/network/private-network
 // ------------------
 
 @description('The name of the service bus namespace.')
-output serviceBusName string = serviceBusNamespace.name
+output serviceBusName string = serviceBusNamespace.outputs.name
 @description('The connection string of the service bus namespace.')
 output connectionString string = serviceBusNamespace.outputs.connectionString
 @description('The queue names of the service bus namespace.')

@@ -397,3 +397,4 @@ override.tf.json
 # Visual Studio
 .vs/
 appsettings.Development.json
+launchSettings.json

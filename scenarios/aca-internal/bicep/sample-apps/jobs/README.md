@@ -164,6 +164,7 @@ The sample is deployed to Azure using a bicep template found at the root directo
     ![bastion](../../../../../docs/media/acaInternal/bastion-login.png)
 
 2. Install pre-reqs azure CLI, Docker client
+    
     Unfortunatelly the jump host doesn't have the required tools installed. So, you would have to install them.
 
     - [az cli](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt)
@@ -187,10 +188,98 @@ The sample is deployed to Azure using a bicep template found at the root directo
         sudo apt-get update
         ```
 3. git clone repository
-4. git checkout feature/jobs
-4. docker build to acr
+    
+    Next the source code needs to be downloaded from the git repository.
+
+    ```bash
+    git clone https://github.com/Azure/aca-landing-zone-accelerator.git
+    git fetch -b feature/jobs
+    git checkout feature/jobs
+    ```
+4. Build the container image
+
+    To build the docker container image, navigate to the ```aca-landing-zone-accelerator/scenarios/aca-internal/bicep/sample-apps/jobs/src/``` where the ```Dockerfile``` is located and run
+
+    ```bash
+    sudo docker build -t aca-jobs:v1 .
+    ```
+
+    Once the image is build you should be able to see it by running
+
+    ```bash
+    sudo docker images
+    ```
+
+    ![](../../../../../docs/media/acaInternal/jobs-docker-image.png)
+
+5. Publish job image to Azure Container Registry
+
+    To publish the newly created image, you need to first tag it with the fully quallified name of the LZA ACR.
+
+    ```bash
+    sudo docker tag aca-jobs:v1 <ACR NAME>.azurecr.io/jobs/aca-jobs:v1
+    ```
+
+    and then push it
+
+    ```bash
+    sudo docker push <ACR NAME>.azurecr.io/jobs/aca-jobs:v1
+    ```
+
+    To verify that the image has been succesfully published
+
+    ```bash
+    az acr repository list -n <ACR NAME>
+    az acr repository show -n <ACR NAME> --image jobs/aca-jobs:v1
+    ```
+
 5. Deploy jobs to container apps environment
 
+    Once the image exist at the container registry you can publish the application (jobs). To do so navigate one level up to ```aca-landing-zone-accelerator/scenarios/aca-internal/bicep/sample-apps/jobs/``` and run the following az deployment script replacing the parameter values with the required information.
+
     ```bash 
-    az deployment group create --resource-group rg-lzaaca-udr-spoke-dev-neu --name jobs-deployment --template-file main.bicep --parameters workloadName=lzaacajobs containerAppsEnvironmentName='cae-lzaaca-udr-dev-neu' acrName=crlzaacaudr6dnqbdevneu managedIdentityName='id-crlzaacaudr6dnqbdevneu-AcrPull' workspaceId='/subscriptions/c3caea05-d40f-4cd5-a694-68a5bef3904d/resourcegroups/rg-lzaaca-udr-spoke-dev-neu/providers/microsoft.operationalinsights/workspaces/log-lzaaca-udr-dev-neu' spokeVNetName='vnet-lzaaca-udr-dev-neu-spoke' spokePrivateEndpointsSubnetName='snet-pep' hubVNetId='/subscriptions/c3caea05-d40f-4cd5-a694-68a5bef3904d/resourceGroups/rg-lzaaca-udr-hub-dev-neu/providers/Microsoft.Network/virtualNetworks/vnet-dev-neu-hub'
+    az deployment group create \
+        --resource-group rg-lzaaca-udr-spoke-dev-neu \
+        --name jobs-deployment \
+        --template-file main.bicep \
+        --parameters workloadName=lzaacajobs containerAppsEnvironmentName='<CAE NAME>' acrName=<ACR NAME> managedIdentityName='<MID NAME>' workspaceId='<LA RRESOURCE ID' spokeVNetName='<SPOKE VNET NAME>' spokePrivateEndpointsSubnetName='<PE SUBNET>' hubVNetId='<HUB VNET RESOURCE ID>'
     ```
+
+    When the deployment completes you should be able to see 4 new resources in your resource group.
+
+    ![](../../../../../docs/media/acaInternal/jobs-deployed.png)
+
+    ## Running the sample application
+
+    To run the sample application:
+    
+    1. Navigate to the sender job overview page and click the ```Run Now``` button at the top menu bar
+
+        ![](../../../../../docs/media/acaInternal/run-job.png)
+
+        Navigate to the execution history page of the job and verify that the job execution succeeded.
+
+        ![](../../../../../docs/media/acaInternal/job-exec-history.png)
+
+        You should also be able to see a few messages at the incoming queue of the service bus namespace.
+    
+    2. The processor job runs every 5 minutes. Navigate to the Execution history page and verify that the job executes succesfully. 
+
+    3. The receiver jon will poll the result queue for new messages. Once the processor has processed the incoming messages it will post them there.
+
+        To get the results navigate to the execution logs and run the follwing query
+
+        ```
+        ContainerAppConsoleLogs
+        | where ContainerGroupName startswith 'lzaacajobs-receiver'
+        | project TimeGenerated, Log
+        
+        ```
+
+        you should be able to see the calculated Fibonacci numbers.
+
+        ![](../../../.././../docs/media/acaInternal/job-results.png)
+
+        > **NOTE:**
+        >
+        > Logs are not ingested in real time and can take a while before the results appear at the log analytics workspace.

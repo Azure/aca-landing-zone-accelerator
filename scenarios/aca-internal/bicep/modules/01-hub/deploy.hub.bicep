@@ -37,6 +37,9 @@ param gatewaySubnetAddressPrefix string
 @description('CIDR to use for the azureFirewallSubnet.')
 param azureFirewallSubnetAddressPrefix string
 
+@description('CIDR of the spoke infrastructure subnet.')
+param spokeInfraSubnetAddressPrefix string
+
 
 // ------------------
 // VARIABLES
@@ -138,6 +141,7 @@ module azfw './modules/azureFirewall.bicep' = {
     logAnalyticsWorkspaceId: hubLogAnalyticsWorkspace.outputs.logAnalyticsWsId
     firewallName: naming.outputs.resourcesNames.azureFirewall
     publicIpName: naming.outputs.resourcesNames.azureFirewallPip
+    spokeInfraSubnetAddressPrefix: spokeInfraSubnetAddressPrefix
   }
 }
 

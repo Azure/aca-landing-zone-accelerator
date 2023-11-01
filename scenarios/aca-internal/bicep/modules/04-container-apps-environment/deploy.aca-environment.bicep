@@ -127,6 +127,7 @@ module containerAppsEnvironment '../../../../shared/bicep/aca-environment.bicep'
 module containerAppsEnvironmentPrivateDnsZone '../../../../shared/bicep/network/private-dns-zone.bicep' = {
   scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
   name: 'containerAppsEnvironmentPrivateDnsZone-${uniqueString(resourceGroup().id)}'
+  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
   params: {
     name: containerAppsEnvironment.outputs.containerAppsEnvironmentDefaultDomain
     virtualNetworkLinks: [

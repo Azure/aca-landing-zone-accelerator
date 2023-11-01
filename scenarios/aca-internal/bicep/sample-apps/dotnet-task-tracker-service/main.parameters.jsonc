@@ -80,13 +80,13 @@
       "value": "<CONTAINER_REGISTRY_NAME>"
     },
     "backendProcessorServiceImage": {
-      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/tasksmanager/tasksmanager-backend-processor:latest"
+      "value": "ghcr.io/azure/tasksmanager-backend-processor:latest"
     },
     "backendApiServiceImage": {
-      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/tasksmanager/tasksmanager-backend-api:latest"
+      "value": "ghcr.io/azure/tasksmanager-backend-api:latest"
     },
     "frontendWebAppServiceImage": {
-      "value": "<CONTAINER_REGISTRY_NAME>.azurecr.io/tasksmanager/tasksmanager-frontend-webapp:latest"
+      "value": "ghcr.io/azure/tasksmanager-frontend-webapp:latest"
     },
     /* APPLICATION GATEWAY */
     // The FQDN of the Application Gateawy. Must match the TLS Certificate.

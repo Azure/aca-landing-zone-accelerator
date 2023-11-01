@@ -110,16 +110,37 @@ Where `<parameter-name>` is the name of the parameter and `<parameter-value>` is
 You can get the parameters from the landing zone deployment:
 
 ```bash
+# Set a parameter with the Subscription Deployment name you used for the ACA LZA. This is required to query and get several names of resources
 LZA_DEPLOYMENT_NAME=<LZA_DEPLOYMENT_NAME>
+
+# Get the name of the Spoke Resoure Group
 SPOKE_RESOURCE_GROUP_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokeResourceGroupName.value -o tsv)
+
+# Get the name of the Container Apps Environment that has been deployed by the ACA LZA
 CONTAINER_APPS_ENVIRONMENT_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.containerAppsEnvironmentName.value -o tsv)
+
+# Get the Resource ID of the Hub's Virtual Network
 HUB_VNET_ID=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.hubVNetId.value -o tsv)
+
+# Get the name of the spoke's Virtual Network
 SPOKE_VNET_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokeVnetName.value -o tsv)
+
+# Get the name of the subnet that holds the private endpoints (their NICs)
 SPOKE_PRIVATE_ENDPOINTS_SUBNET_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokePrivateEndpointsSubnetName.value -o tsv)
+
+# Get the Resource ID of the the KeyVault
 KEY_VAULT_ID=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.keyVaultId.value -o tsv)
+
+# Get the name of the ACR
 CONTAINER_REGISTRY_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.containerRegistryName.value -o tsv)
+
+# Get the ID of the ACR IDentity
 CONTAINER_REGISTRY_USER_ASSIGNED_IDENTITY_ID=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.containerRegistryUserAssignedIdentityId.value -o tsv)
+
+# Get the name of the application gateway subnet
 SPOKE_APPLICATION_GATEWAY_SUBNET_NAME=$(az deployment sub show -n "$LZA_DEPLOYMENT_NAME" --query properties.outputs.spokeApplicationGatewaySubnetName.value -o tsv)
+
+
 # Set app insights name to empty if workload name is same as that of used when deploying the landing zone. If not, Set with the name of the app insights created for the workload
 APPLICATION_INSIGHTS_NAME=<APPLICATION_INSIGHTS_NAME>
 ```

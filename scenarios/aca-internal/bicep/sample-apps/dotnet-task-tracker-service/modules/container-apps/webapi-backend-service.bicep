@@ -77,7 +77,7 @@ resource cosmosDbDatabaseCollection 'Microsoft.DocumentDB/databaseAccounts/sqlDa
   parent: cosmosDbDatabase
 }
 
-resource backendApiService 'Microsoft.App/containerApps@2022-06-01-preview' = {
+resource backendApiService 'Microsoft.App/containerApps@2023-05-01' = {
   name: backendApiServiceName
   location: location
   tags: tags

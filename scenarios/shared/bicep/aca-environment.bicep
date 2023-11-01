@@ -14,13 +14,16 @@ param tags object = {}
 @description('Optional, default value is false. Sets if the environment will use availability zones. Your Container App Environment and the apps in it will be zone redundant. This requieres vNet integration.')
 param zoneRedundant bool = false
 
-@description('Mandatory, default is Consumption')
-param workloadProfiles array = [
-  {
-    name: 'Consumption'
-    workloadProfileType: 'Consumption'
-  }
-]
+@description('Optional, the workload profiles required by the end user. The default is "Consumption", and is automatically added whether workload profiles are specified or not.')
+param workloadProfiles array = []
+// Example of a workload profile below:
+// [ {
+//     workloadProfileType: 'D4'  // available types can be found here: https://learn.microsoft.com/en-us/azure/container-apps/workload-profiles-overview#profile-types
+//     name: '<name of the workload profile>'
+//     minimumCount: 1
+//     maximumCount: 3
+//   }
+// ]
 
 @description('If true, the endpoint is an internal load balancer. If false the hosted apps are exposed on an internet-accessible IP address ')
 param vnetEndpointInternal bool
@@ -33,12 +36,6 @@ param appInsightsInstrumentationKey string = ''
 
 @description('optional, default is empty. Resource group for the infrastructure resources (e.g. load balancer, public IP, etc.)')
 param infrastructureResourceGroupName string = ''
-
-
-@description('Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
-@minValue(0)
-@maxValue(365)
-param diagnosticLogsRetentionInDays int = 365
 
 @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
 param diagnosticStorageAccountId string = ''
@@ -83,20 +80,12 @@ param diagnosticSettingsName string = ''
 var diagnosticsLogsSpecified = [for category in filter(diagnosticLogCategoriesToEnable, item => item != 'allLogs'): {
   category: category
   enabled: true
-  retentionPolicy: {
-    enabled: true
-    days: diagnosticLogsRetentionInDays
-  }
 }]
 
 var diagnosticsLogs = contains(diagnosticLogCategoriesToEnable, 'allLogs') ? [
   {
     categoryGroup: 'allLogs'
     enabled: true
-    retentionPolicy: {
-      enabled: true
-      days: diagnosticLogsRetentionInDays
-    }
   }
 ] : diagnosticsLogsSpecified
 
@@ -104,18 +93,23 @@ var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
   category: metric
   timeGrain: null
   enabled: true
-  retentionPolicy: {
-    enabled: true
-    days: diagnosticLogsRetentionInDays
-  }
 }]
+
+var defaultWorkloadProfile = [
+  {
+    workloadProfileType: 'Consumption'
+    name: 'Consumption'
+  }
+]
+
+var effectiveWorkloadProfiles = workloadProfiles != [] ? concat(defaultWorkloadProfile, workloadProfiles) : defaultWorkloadProfile
 
 // ------------------
 // RESOURCES
 // ------------------
 
 
-resource acaEnvironment 'Microsoft.App/managedEnvironments@2023-04-01-preview' = {
+resource acaEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
   name: name
   location: location
   tags: tags
@@ -126,7 +120,7 @@ resource acaEnvironment 'Microsoft.App/managedEnvironments@2023-04-01-preview' =
       internal: vnetEndpointInternal
       infrastructureSubnetId: subnetId
     }
-    workloadProfiles: workloadProfiles
+    workloadProfiles: effectiveWorkloadProfiles
     appLogsConfiguration:  {
       destination: 'azure-monitor'
     }

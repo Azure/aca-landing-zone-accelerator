@@ -8,6 +8,8 @@ param location string
 @description('The name of the Container Registry that will be allow-listed by the policy.')
 param containerRegistryName string
 
+var namingRules = json(loadTextContent('../../../../../../shared/bicep/naming/naming-rules.jsonc'))
+
 // Azure Container Apps Built-in Policy Definitions: https://learn.microsoft.com/azure/container-apps/policy-reference#policy-definitions
 var builtInPolicies = [  
   {
@@ -236,7 +238,7 @@ module builtInPolicyAssignment 'policy-assignment.bicep' = [for (policy, i) in b
 // }]
 
 module policyDefinition 'policy-definition.bicep' = [for policy in customPolicies: {
-  name: 'poDef_${guid(policy.name)}'
+  name: 'poDef_${namingRules.regionAbbreviations[toLower(location)]}_${guid(policy.name)}'
   scope: subscription()
   params: {
     policy: policy

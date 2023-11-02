@@ -262,7 +262,7 @@ The sample is deployed to Azure using a bicep template found at the root directo
 
     ```bash 
     # Change directory to the bicep folder (/aca-landing-zone-accelerator/scenarios/aca-internal/bicep/sample-apps/jobs)
-    # <MID_NAME>: the User=assigned managed Identity created by the ACA LZA deployment, ending in `-AcrPull`
+    # <MID_NAME>: the user-assigned managed Identity created by the ACA LZA deployment, ending in `-AcrPull`
     az deployment group create \
         --resource-group <RG_SPOKE_NAME> \
         --name jobs-deployment \

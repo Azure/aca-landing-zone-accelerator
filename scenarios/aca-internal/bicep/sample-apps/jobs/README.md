@@ -186,6 +186,12 @@ The sample is deployed to Azure using a bicep template found at the root directo
         "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
         sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
         sudo apt-get update
+
+        # Install Docker packages latest version
+        sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+        # verify docker Engine installation
+        sudo docker run hello-world
         ```
 3. git clone repository
     
@@ -193,12 +199,13 @@ The sample is deployed to Azure using a bicep template found at the root directo
 
     ```bash
     git clone https://github.com/Azure/aca-landing-zone-accelerator.git
+    # TODO: We need to remove that when this branch will be merged to main
     git fetch -b feature/jobs
     git checkout feature/jobs
     ```
 4. Build the container image
 
-    To build the docker container image, navigate to the ```aca-landing-zone-accelerator/scenarios/aca-internal/bicep/sample-apps/jobs/src/``` where the ```Dockerfile``` is located and run
+    To build the docker container image, navigate to the ```aca-landing-zone-accelerator/scenarios/aca-internal/bicep/sample-apps/jobs/src/aca-jobs/``` where the ```Dockerfile``` is located and run
 
     ```bash
     sudo docker build -t aca-jobs:v1 .
@@ -220,6 +227,22 @@ The sample is deployed to Azure using a bicep template found at the root directo
     sudo docker tag aca-jobs:v1 <ACR NAME>.azurecr.io/jobs/aca-jobs:v1
     ```
 
+    To push the image to the private container registry, you need to authenticate first:
+
+    ```bash
+    # authenticate to your azure tenant
+    az login --use-device-code
+
+    # check the active subscription
+    az account show
+
+    # [OPTIONAL] switch to the desired Azure Subscription if required
+    az account set -s <SUBSCRIPTION_NAME_OR_SUBSCRIPTION_GUID>
+    
+    # Authenticate to the Private Container Registry (if The login server endpoint suffix '.azurecr.io' is used, it will be automatically omitted.)
+    sudo az acr login --name <ACR NAME>
+    
+    ```
     and then push it
 
     ```bash
@@ -238,11 +261,19 @@ The sample is deployed to Azure using a bicep template found at the root directo
     Once the image exist at the container registry you can publish the application (jobs). To do so navigate one level up to ```aca-landing-zone-accelerator/scenarios/aca-internal/bicep/sample-apps/jobs/``` and run the following az deployment script replacing the parameter values with the required information.
 
     ```bash 
+    # Change directory to the bicep folder (/aca-landing-zone-accelerator/scenarios/aca-internal/bicep/sample-apps/jobs)
+    # <MID_NAME>: the User=assigned managed Identity created by the ACA LZA deployment, ending in `-AcrPull`
     az deployment group create \
-        --resource-group rg-lzaaca-udr-spoke-dev-neu \
+        --resource-group <RG_SPOKE_NAME> \
         --name jobs-deployment \
         --template-file main.bicep \
-        --parameters workloadName=lzaacajobs containerAppsEnvironmentName='<CAE NAME>' acrName=<ACR NAME> managedIdentityName='<MID NAME>' workspaceId='<LA RRESOURCE ID' spokeVNetName='<SPOKE VNET NAME>' spokePrivateEndpointsSubnetName='<PE SUBNET>' hubVNetId='<HUB VNET RESOURCE ID>'
+        --parameters workloadName=lzaacajobs \
+        containerAppsEnvironmentName='<CAE NAME>' \
+        acrName=<ACR NAME> managedIdentityName='<MID_NAME>' \ 
+        workspaceId='LAWS_RESOURCE_ID>' \
+        spokeVNetName='<SPOKE VNET NAME>' \
+        spokePrivateEndpointsSubnetName='<PE SUBNET>' \
+        hubVNetId='<HUB VNET RESOURCE ID>'
     ```
 
     When the deployment completes you should be able to see 4 new resources in your resource group.

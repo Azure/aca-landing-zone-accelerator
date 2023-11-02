@@ -381,7 +381,9 @@ module receiverJob 'modules/container-apps-job.bicep' = {
   }
 }
 
+
 @description('Microsoft telemetry deployment.')
+#disable-next-line no-deployments-resources
 resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
   name: telemetryId
   properties: {

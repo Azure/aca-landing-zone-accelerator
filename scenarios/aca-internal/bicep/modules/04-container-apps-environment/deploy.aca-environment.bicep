@@ -127,7 +127,6 @@ module containerAppsEnvironment '../../../../shared/bicep/aca-environment.bicep'
 module containerAppsEnvironmentPrivateDnsZone '../../../../shared/bicep/network/private-dns-zone.bicep' = {
   scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
   name: 'containerAppsEnvironmentPrivateDnsZone-${uniqueString(resourceGroup().id)}'
-  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
   params: {
     name: containerAppsEnvironment.outputs.containerAppsEnvironmentDefaultDomain
     virtualNetworkLinks: [
@@ -153,6 +152,7 @@ module containerAppsEnvironmentPrivateDnsZone '../../../../shared/bicep/network/
 }
 
 @description('Microsoft telemetry deployment.')
+#disable-next-line no-deployments-resources
 resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
   name: telemetryId
   properties: {

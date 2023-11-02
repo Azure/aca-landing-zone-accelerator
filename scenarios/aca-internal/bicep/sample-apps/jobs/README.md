@@ -36,13 +36,13 @@ Container apps and event-driven jobs use KEDA scalers. They both evaluate scalin
 In an app, each replica continuously processes events and a scaling rule determines the number of replicas to run to meet demand. In event-driven jobs, each job typically processes a single event, and a scaling rule determines the number of jobs to run.
 
 ## Jobs Sample Container App
-The purpose of this sample app is to demonstrate the usage of the [Jobs feature](https://learn.microsoft.com/en-us/azure/container-apps/jobs?tabs=azure-cli) within the context of the Azure Container Apps Landing Zone accelerator. The solution deploys all 3 different [types](https://learn.microsoft.com/en-us/azure/container-apps/jobs?tabs=azure-cli#job-trigger-types) of Jobs, a manual triggered, a schedule triggered and an event trigered one with basic functionality of calculating the Fibonacci number for a given range of numbers.
+The purpose of this sample app is to demonstrate the usage of the [Jobs feature](https://learn.microsoft.com/en-us/azure/container-apps/jobs?tabs=azure-cli) within the context of the Azure Container Apps landing zone accelerator. The solution deploys all 3 different [types](https://learn.microsoft.com/en-us/azure/container-apps/jobs?tabs=azure-cli#job-trigger-types) of Jobs, a manual triggered, a schedule triggered and an event trigered one with basic functionality of calculating the Fibonacci number for a given range of numbers.
 
 ## Architecture
 ![a](../../../../../docs/media/acaInternal/aca-jobs.png)
 
 ### Prerequisites
- - An active Azure Container Apps Landing Zone deployment
+ - An active Azure Container Apps landing zone deployment
  - [Visual Studio Code](https://code.visualstudio.com/) installed on one of the supported platforms along with the [Bicep extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep).
  - Azure CLI version 2.49.0 or later installed. To install or upgrade, see [Install Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
 
@@ -68,14 +68,14 @@ Bellow you can find all the available configuration options for the jobs impleme
 |------|-------------|--------------|
 |```SETTINGS__SERVICEBUSNAMESPACE```|The service bus namespace fully qualified url| jobstest.servicebus.windows.net,
 |```SETTINGS__INPUTQUEUENAME```|The name of the queue the sender job is going to be pushing messages to and the processing job is going to be reading from.| inputqueue,
-|```SETTINGS__OUTPUTQUEUENAME```|The name of the queue the proccessing job is going to be pushing messages to| outputqueue,
-|```SETTINGS__MINNUMBER```|The minimum number from which to pick from for the Fibonacci calcluation| 1,
+|```SETTINGS__OUTPUTQUEUENAME```|The name of the queue the processing job is going to be pushing messages to| output-queue,
+|```SETTINGS__MINNUMBER```|The minimum number from which to pick from for the Fibonacci calculation| 1,
 |```SETTINGS__MAXNUMBER```|The maximum number from which to pick from for the Fibonacci calculation| 10,
 |```SETTINGS__MESSAGECOUNT```|The number of selections, calculations, messages the sender is going to be sending fot the processor job to calculate| 20,
 |```SETTINGS__FETCHCOUNT```|The number of messages to be fetched in one go| 10,
 |```SETTINGS__MAXWAITTIME```|The allowed maximum wait time for messages to be delivered by the queues| 1,
 |```SETTINGS__SENDTYPE```|The way messages are being posted to service bus queues| list/batch,
-|```SETTINGS__WORKERROLE```|Defines the role of the job| sender/precessor/receiver
+|```SETTINGS__WORKERROLE```|Defines the role of the job| sender/processor/receiver
 
 ### Jobs bicep implementation
 The sample is deployed to Azure using a bicep template found at the root directory and named ```main.bicep```. This, besides deploying the Service Bus namespace, it deploys:
@@ -214,7 +214,7 @@ The sample is deployed to Azure using a bicep template found at the root directo
 
 5. Publish job image to Azure Container Registry
 
-    To publish the newly created image, you need to first tag it with the fully quallified name of the LZA ACR.
+    To publish the newly created image, you need to first tag it with the fully qualified name of the LZA ACR.
 
     ```bash
     sudo docker tag aca-jobs:v1 <ACR NAME>.azurecr.io/jobs/aca-jobs:v1
@@ -226,7 +226,7 @@ The sample is deployed to Azure using a bicep template found at the root directo
     sudo docker push <ACR NAME>.azurecr.io/jobs/aca-jobs:v1
     ```
 
-    To verify that the image has been succesfully published
+    To verify that the image has been successfully published
 
     ```bash
     az acr repository list -n <ACR NAME>
@@ -263,11 +263,11 @@ The sample is deployed to Azure using a bicep template found at the root directo
 
         You should also be able to see a few messages at the incoming queue of the service bus namespace.
     
-    2. The processor job runs every 5 minutes. Navigate to the Execution history page and verify that the job executes succesfully. 
+    2. The processor job runs every 5 minutes. Navigate to the Execution history page and verify that the job executes successfully. 
 
     3. The receiver jon will poll the result queue for new messages. Once the processor has processed the incoming messages it will post them there.
 
-        To get the results navigate to the execution logs and run the follwing query
+        To get the results navigate to the execution logs and run the following query
 
         ```
         ContainerAppConsoleLogs

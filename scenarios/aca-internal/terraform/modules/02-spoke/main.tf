@@ -33,7 +33,7 @@ module "nsgContainerAppsEnvironmentNsg" {
   nsgName           = module.naming.resourceNames["containerAppsEnvironmentNsg"]
   location          = var.location
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  securityRules     = var.containerAppsSecurityRules
+  securityRules     = var.containerAppsSecurityRules.default
   tags              = var.tags
 }
 
@@ -60,7 +60,7 @@ module "nsgAppGateway" {
   nsgName           = module.naming.resourceNames["applicationGatewayNsg"]
   location          = var.location
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  securityRules     = var.appGatewaySecurityRules
+  securityRules     = var.appGatewaySecurityRules.default
   tags              = var.tags
 }
 

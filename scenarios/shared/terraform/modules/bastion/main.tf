@@ -3,7 +3,7 @@ module "nsg" {
   nsgName           = var.bastionNsgName
   location          = var.location
   resourceGroupName = var.vnetResourceGroupName
-  securityRules     = var.securityRules
+  securityRules     = var.securityRules.default
   tags              = var.tags
 }
 
@@ -42,5 +42,3 @@ resource "azurerm_bastion_host" "bastionHost" {
     public_ip_address_id = azurerm_public_ip.bastionPip.id
   }
 }
-
-

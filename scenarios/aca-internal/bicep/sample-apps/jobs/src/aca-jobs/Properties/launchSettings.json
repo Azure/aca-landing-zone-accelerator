@@ -1,0 +1,22 @@
+{
+  "profiles": {
+    "aca_jobs": {
+      "commandName": "Project",
+      "commandLineArgs": "",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "SETTINGS__SERVICEBUSNAMESPACE": "jobstest.servicebus.windows.net",
+        "SETTINGS__INPUTQUEUENAME": "inputqueue",
+        "SETTINGS__OUTPUTQUEUENAME": "outputqueue",
+        "SETTINGS__MINNUMBER": "1",
+        "SETTINGS__MAXNUMBER": "10",
+        "SETTINGS__MESSAGECOUNT": "20",
+        "SETTINGS__FETCHCOUNT": "10",
+        "SETTINGS__MAXWAITTIME": "1",
+        "SETTINGS__SENDTYPE": "list",
+        "SETTINGS__WORKERROLE": "receiver"
+      },
+      "dotnetRunMessages": true
+    }
+  }
+}

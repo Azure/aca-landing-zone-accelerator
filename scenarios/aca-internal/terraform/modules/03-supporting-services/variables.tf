@@ -50,3 +50,5 @@ variable "vnetLinks" {}
 variable "clientIP" {}
 
 variable "logAnalyticsWorkspaceId" {}
+
+variable "supportingResourceGroupName" {}

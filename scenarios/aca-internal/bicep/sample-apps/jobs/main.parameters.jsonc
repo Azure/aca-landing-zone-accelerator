@@ -1,0 +1,41 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "environment":{
+        "value": "dev"
+      },
+      // The name of the container apps environment
+      "containerAppsEnvironmentName": {
+        "value": "<CONTAINER_APPS_ENVIRONMENT_NAME>"
+      },
+      // The name of the acr used in the lza
+      "acrName": {
+        "value": "<ACR_NAME>"
+      },
+      //A managed indentity name used by the container apps
+      "managedIdentityName": {
+        "value": "<MANAGED_IDENTITY_NAME>"
+      },
+      //The log analytics workspace id used by the container apps
+      "workspaceId": {
+        "value": "<WORKSPACE_ID>"
+      },
+      //A name for the workload being deployed
+      "workloadName": {
+        "value": "lzaacajobs"
+      },
+      //The spoke vnet used to deploy the service bus into
+      "spokeVNetName": {
+        "value": "<SPOKE_VNET_NAME>"
+      },
+      //The subnet of the spoke vnet used to deploy the service bus private endpoint into
+      "spokePrivateEndpointsSubnetName": {
+        "value": "<SPOKE_PRIVATE_ENDPOINTS_SUBNET_NAME>"
+      },
+      //The hub vnet resource id needed to post the dns records of Service Bus
+      "hubVNetId":{
+        "value": "<HUB_VNET_ID>"
+      }
+    }
+}

@@ -199,10 +199,8 @@ The sample is deployed to Azure using a bicep template found at the root directo
 
     ```bash
     git clone https://github.com/Azure/aca-landing-zone-accelerator.git
-    # TODO: We need to remove that when this branch will be merged to main
-    git fetch -b feature/jobs
-    git checkout feature/jobs
     ```
+    
 4. Build the container image
 
     To build the docker container image, navigate to the ```aca-landing-zone-accelerator/scenarios/aca-internal/bicep/sample-apps/jobs/src/aca-jobs/``` where the ```Dockerfile``` is located and run

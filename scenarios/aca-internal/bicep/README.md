@@ -3,12 +3,10 @@
 This is the Bicep-based deployment guide for [Scenario 1: Azure Container Apps - Internal environment secure baseline](../README.md).
 
 ## Quick deployment to Azure
-You can deploy the current LZA directly in your azure subscription using Azure Dev CLI. 
 
-### Deploy to Azure via Portal
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazure%2Faca-landing-zone-accelerator%2Fmain%2Fscenarios%2Faca-internal%2Fazure-resource-manager%2Fmain.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fazure%2Faca-landing-zone-accelerator%2Fmain%2Fscenarios%2Faca-internal%2Fazure-resource-manager%2Fmain-portal-ux.json?v=1)
+### Deploy with the Azure Developer CLI (using Codespaces)
 
-### Using Codespaces via Azure Dev CLI 
+You can deploy the current LZA directly in your Azure subscription using Azure Dev CLI. 
 
 - Visit [github.com/Azure/aca-landing-zone-accelerator](https://github.com/Azure/aca-landing-zone-accelerator)
 - Click on the `Green Code` button.
@@ -18,6 +16,9 @@ You can deploy the current LZA directly in your azure subscription using Azure D
 - Login to Azure using the command `azd auth login`.
 - Use the command `azd up` to deploy, provide environment name and subscription to deploy to.
 - Finally, use the command `azd down` to clean up resources deployed.
+
+### Deploy with the Azure Portal
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazure%2Faca-landing-zone-accelerator%2Fmain%2Fscenarios%2Faca-internal%2Fazure-resource-manager%2Fmain.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fazure%2Faca-landing-zone-accelerator%2Fmain%2Fscenarios%2Faca-internal%2Fazure-resource-manager%2Fmain-portal-ux.json?v=1)
 
 ## Prerequisites
 

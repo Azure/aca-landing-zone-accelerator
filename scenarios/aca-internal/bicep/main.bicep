@@ -99,6 +99,9 @@ param enableTelemetry bool = true
 @description('Optional, default value is false. If true, Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed')
 param deployRedisCache bool = false
 
+@description('Deploy (or not) an Azure OpenAI account. ATTENTION: At the time of writing this, OpenAI is in preview and only available in limited regions: look here: https://learn.microsoft.com/azure/ai-services/openai/chatgpt-quickstart#prerequisites')
+param deployOpenAi bool
+
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
 
@@ -184,6 +187,7 @@ module supportingServices 'modules/03-supporting-services/deploy.supporting-serv
     hubVNetId: hub.outputs.hubVNetId    
     deployRedisCache: deployRedisCache
     logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
+    deployOpenAi: deployOpenAi
   }
 }
 

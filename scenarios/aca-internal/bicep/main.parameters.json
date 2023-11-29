@@ -80,6 +80,9 @@
     "deployRedisCache": {
       "value": false
     },
+    "deployOpenAi": {
+      "value": true
+    },
     "ddosProtectionMode": {
       "value": "Enabled"
     },

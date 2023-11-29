@@ -33,6 +33,12 @@ param spokePrivateEndpointSubnetName string
 @description('Deploy Redis cache premium SKU')
 param deployRedisCache bool
 
+@description('Deploy (or not) an Azure OpenAI account. ATTENTION: At the time of writing this, OpenAI is in preview and only available in limited regions: look here: https://learn.microsoft.com/azure/ai-services/openai/chatgpt-quickstart#prerequisites')
+param deployOpenAi bool
+
+@description('Deploy (or not) a model on the openAI Account. This is used only as a sample to show how to deploy a model on the OpenAI account.')
+param deployOpenAiGptModel bool = false
+
 @description('Optional. Resource ID of the diagnostic log analytics workspace. If left empty, no diagnostics settings will be defined.')
 param logAnalyticsWorkspaceId string = ''
 
@@ -98,6 +104,23 @@ module redisCache 'modules/redis-cache.bicep' = if (deployRedisCache) {
     hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
     redisCachePrivateEndpointName: naming.outputs.resourcesNames.redisCachePep
+  }
+}
+
+
+module openAi 'modules/open-ai.module.bicep'= if(deployOpenAi) {
+  name: take('openAiModule-Deployment', 64)
+  params: {
+    name: naming.outputs.resourcesNames.openAiAccount
+    deploymentName: naming.outputs.resourcesNames.openAiDeployment
+    location: location
+    tags: tags
+    vnetHubResourceId: hubVNetId
+    logAnalyticsWsId: logAnalyticsWorkspaceId
+    deployOpenAiGptModel: deployOpenAiGptModel
+    spokeVNetId: spokeVNetId
+    hubVNetId: hubVNetId
+    spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
   }
 }
 

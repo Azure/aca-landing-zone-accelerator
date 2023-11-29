@@ -750,6 +750,48 @@
                             },
                             "infoMessages": [],
                             "visible": false
+                        },
+                        {
+                            "name": "openAiInfoTitle",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Azure OpenAI Feature Flag",
+                            "elements": []
+                        },
+                        {
+                            "name": "openAiInfo",
+                            "type": "Microsoft.Common.TextBlock",
+                            "visible": true,
+                            "options": {
+                                "text": "Please be informed that currently Azure OpenAI is in preview and only available in limited regions. Also your azure subscription needs to be allow-listed.",
+                                "link": {
+                                    "label": "Azure OpenAI Prerequisites",
+                                    "uri": "https://learn.microsoft.com/azure/ai-services/openai/chatgpt-quickstart#prerequisites"
+                                }
+                            }
+                        },
+                        {
+                            "name": "deployOpenAi",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Deploy OpenAI",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "set to true if you want to deploy OpenAI",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
                         }
                     ]
                 }
@@ -787,7 +829,8 @@
                 "deployHelloWorldSample": "[steps('flags').deployHelloWorldSample]",
                 "enableTelemetry": "[steps('flags').enableTelemetry]",
                 "deployRedisCache": "[steps('flags').deployRedisCache]",
-                "ddosProtectionMode": "[steps('flags').ddosProtectionMode]"
+                "ddosProtectionMode": "[steps('flags').ddosProtectionMode]",
+                "deployOpenAi": "[steps('flags').deployOpenAi]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",

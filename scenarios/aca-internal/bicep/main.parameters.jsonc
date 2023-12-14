@@ -36,8 +36,11 @@
     "azureFirewallSubnetAddressPrefix": {
       "value": "10.0.0.64/26"
     },
-    "bastionSubnetAddressPrefix": {
+    "azureFirewallSubnetManagementAddressPrefix": {
       "value": "10.0.0.128/26"
+    },
+    "bastionSubnetAddressPrefix": {
+      "value": "10.0.0.196/26"
     },
     "vmSize": {
         "value": "Standard_B2ms"

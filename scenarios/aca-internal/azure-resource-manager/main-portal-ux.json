@@ -273,11 +273,27 @@
                             "visible": true
                         },
                         {
+                            "name": "azureFirewallSubnetManagementAddressPrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Azure Firewall Management Subnet Address Prefix (azFW Basic)",
+                            "subLabel": "",
+                            "defaultValue": "10.0.0.128/26",
+                            "toolTip": "CIDR to use for the Azure Firewall Management subnet - required by Azure Firewall Basic.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
                             "name": "bastionSubnetAddressPrefix",
                             "type": "Microsoft.Common.TextBox",
                             "label": "Bastion Subnet Address Prefix",
                             "subLabel": "",
-                            "defaultValue": "10.0.0.128/26",
+                            "defaultValue": "10.0.0.196/26",
                             "toolTip": "CIDR to use for the Azure Bastion subnet.",
                             "constraints": {
                                 "required": true,
@@ -810,6 +826,7 @@
                 "vmJumpBoxSubnetAddressPrefix": "[steps('networking').vmJumpBoxSubnetAddressPrefix]",
                 "gatewaySubnetAddressPrefix": "[steps('networking').gatewaySubnetAddressPrefix]",
                 "azureFirewallSubnetAddressPrefix": "[steps('networking').azureFirewallSubnetAddressPrefix]",
+                "azureFirewallSubnetManagementAddressPrefix": "[steps('networking').azureFirewallSubnetManagementAddressPrefix]",
                 "bastionSubnetAddressPrefix": "[steps('networking').bastionSubnetAddressPrefix]",
                 "spokeVNetAddressPrefixes": "[steps('networking').spokeVNetAddressPrefixes]",
                 "spokeInfraSubnetAddressPrefix": "[steps('networking').spokeInfraSubnetAddressPrefix]",

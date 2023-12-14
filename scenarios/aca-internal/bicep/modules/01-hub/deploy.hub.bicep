@@ -37,6 +37,9 @@ param gatewaySubnetAddressPrefix string
 @description('CIDR to use for the azureFirewallSubnet.')
 param azureFirewallSubnetAddressPrefix string
 
+@description('CIDR to use for the AzureFirewallManagementSubnet, which is required by AzFW Basic.')
+param azureFirewallSubnetManagementAddressPrefix string
+
 @description('CIDR of the spoke infrastructure subnet.')
 param spokeInfraSubnetAddressPrefix string
 
@@ -50,6 +53,7 @@ var gatewaySubnetName = 'GatewaySubnet'
 
 // This cannot be another value
 var azureFirewallSubnetName = 'AzureFirewallSubnet'
+var AzureFirewallManagementSubnetName = 'AzureFirewallManagementSubnet'
 
 //Subnet definition taking in consideration feature flags
 var defaultSubnets = [
@@ -63,6 +67,12 @@ var defaultSubnets = [
     name: azureFirewallSubnetName
     properties: {
       addressPrefix: azureFirewallSubnetAddressPrefix
+    }
+  }
+  {
+    name: AzureFirewallManagementSubnetName
+    properties: {
+      addressPrefix: azureFirewallSubnetManagementAddressPrefix
     }
   }
 ]

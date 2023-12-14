@@ -308,6 +308,26 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2022-11-01' existing = {
   name: afwVNetName
 }
 
+
+module dasdasd '../../../../../shared/bicep/azureFirewalls/main-basic.bicep' = {
+  name: 'afw-deployment2'
+  params: {
+    tags: tags
+    location: location
+    name: firewallName
+    publicIpName: publicIpName
+    azureSkuTier: 'Basic'
+    vNetId: hubVnet.id
+    publicIPResourceID: '' //Required only if you want to use an existing public ip address
+    additionalPublicIpConfigurations: []
+    applicationRuleCollections: applicationRuleCollections
+    networkRuleCollections: networkRules
+    natRuleCollections: []
+    threatIntelMode: 'Deny'
+    diagnosticWorkspaceId: logAnalyticsWorkspaceId
+  }
+}
+
 @description('The azure firewall deployment.')
 module afw '../../../../../shared/bicep/azureFirewalls/main.bicep' = {
   name: 'afw-deployment'
@@ -328,6 +348,7 @@ module afw '../../../../../shared/bicep/azureFirewalls/main.bicep' = {
     lock: ''
   }
 }
+
 
 output afwPrivateIp string = afw.outputs.privateIp
 output afwId string = afw.outputs.resourceId

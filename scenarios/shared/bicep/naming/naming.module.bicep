@@ -58,6 +58,8 @@ var resourceNames = {
   containerRegistryUserAssignedIdentity:  '${naming.resourceTypeAbbreviations.managedIdentity}-${toLower( replace ( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.containerRegistry), '-', '' ) )}-AcrPull'
   redisCache: replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.redisCache)
   redisCachePep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.redisCache )}'
+  openAiAccount: replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.cognitiveAccount )
+  openAiDeployment: replace ( namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.openAiDeployment )
   cosmosDbNoSql: toLower( take(replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.cosmosDbNoSql), 44) )
   cosmosDbNoSqlPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${toLower( take(replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.cosmosDbNoSql), 44) )}'
   frontDoorProfile:  replace(namingBase, resourceTypeToken, naming.resourceTypeAbbreviations.frontDoor)

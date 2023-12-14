@@ -8,7 +8,7 @@ Egressing your spoke traffic through a hub network (following the hub-spoke mode
 
 ## Expected results
 
-After executing these steps you'll have the hub resource group (`rg-lzaaca-hub-dev-reg`, by default) populated with a regional virtual network, Azure Bastion, and jump box virtual machines. Based on how you [configured the naming and deployment parameters](../../README.md#steps), your result may be slightly different. No spokes will have been created yet.
+After executing these steps you'll have the hub resource group (`rg-lzaaca-hub-dev-reg`, by default) populated with a regional virtual network, Azure Bastion, and Azure Firewall. Based on how you [configured the naming and deployment parameters](../../README.md#steps), your result may be slightly different. No spokes will have been created yet.
 
 ![A picture of the components in the hub resource group.](./media/hub.png)
 
@@ -17,7 +17,7 @@ After executing these steps you'll have the hub resource group (`rg-lzaaca-hub-d
 - Hub resource group
 - Hub virtual network
 - Azure Bastion (optional)
-- Jump box virtual machine (optional)
+- Azure Firewall (optional)
 
 ### IP addressing
 

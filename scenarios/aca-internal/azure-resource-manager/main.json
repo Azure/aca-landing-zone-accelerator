@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.20.4.51522",
-      "templateHash": "16890157800374396003"
+      "version": "0.23.1.45101",
+      "templateHash": "1187710645189274265"
     }
   },
   "parameters": {
@@ -197,6 +197,12 @@
         "description": "Optional, default value is false. If true, Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed"
       }
     },
+    "deployOpenAi": {
+      "type": "bool",
+      "metadata": {
+        "description": "Deploy (or not) an Azure OpenAI account. ATTENTION: At the time of writing this, OpenAI is in preview and only available in limited regions: look here: https://learn.microsoft.com/azure/ai-services/openai/chatgpt-quickstart#prerequisites"
+      }
+    },
     "deployZoneRedundantResources": {
       "type": "bool",
       "defaultValue": true,
@@ -225,7 +231,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
+    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\",\r\n        \"cognitiveAccount\": \"cog\",\r\n        \"openAiDeployment\": \"oaidep\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
     "namingRules": "[json(variables('$fxv#0'))]",
     "rgHubName": "[if(not(empty(parameters('hubResourceGroupName'))), parameters('hubResourceGroupName'), format('{0}-{1}-hub-{2}-{3}', variables('namingRules').resourceTypeAbbreviations.resourceGroup, parameters('workloadName'), parameters('environment'), variables('namingRules').regionAbbreviations[toLower(parameters('location'))]))]",
     "rgSpokeName": "[if(not(empty(parameters('spokeResourceGroupName'))), parameters('spokeResourceGroupName'), format('{0}-{1}-spoke-{2}-{3}', variables('namingRules').resourceTypeAbbreviations.resourceGroup, parameters('workloadName'), parameters('environment'), variables('namingRules').regionAbbreviations[toLower(parameters('location'))]))]"
@@ -289,8 +295,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "15055241805197292224"
+              "version": "0.23.1.45101",
+              "templateHash": "10973378448016983471"
             }
           },
           "parameters": {
@@ -368,7 +374,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
+            "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\",\r\n        \"cognitiveAccount\": \"cog\",\r\n        \"openAiDeployment\": \"oaidep\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
             "gatewaySubnetName": "GatewaySubnet",
             "azureFirewallSubnetName": "AzureFirewallSubnet",
             "defaultSubnets": [
@@ -425,8 +431,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "18168190213647109808"
+                      "version": "0.23.1.45101",
+                      "templateHash": "1844430525693158654"
                     }
                   },
                   "parameters": {
@@ -588,8 +594,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "17377164283203683573"
+                      "version": "0.23.1.45101",
+                      "templateHash": "1396335178164847616"
                     }
                   },
                   "parameters": {
@@ -622,7 +628,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
+                    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\",\r\n        \"cognitiveAccount\": \"cog\",\r\n        \"openAiDeployment\": \"oaidep\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
                     "naming": "[json(variables('$fxv#0'))]",
                     "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
                     "resourceTypeToken": "RES_TYPE",
@@ -652,6 +658,8 @@
                       "containerRegistryUserAssignedIdentity": "[format('{0}-{1}-AcrPull', variables('naming').resourceTypeAbbreviations.managedIdentity, toLower(replace(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerRegistry), '-', '')))]",
                       "redisCache": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.redisCache)]",
                       "redisCachePep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.redisCache))]",
+                      "openAiAccount": "[replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cognitiveAccount)]",
+                      "openAiDeployment": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.openAiDeployment)]",
                       "cosmosDbNoSql": "[toLower(take(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cosmosDbNoSql), 44))]",
                       "cosmosDbNoSqlPep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, toLower(take(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cosmosDbNoSql), 44)))]",
                       "frontDoorProfile": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.frontDoor)]",
@@ -722,8 +730,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "16217514057343077749"
+                      "version": "0.23.1.45101",
+                      "templateHash": "11475170866976628368"
                     }
                   },
                   "parameters": {
@@ -870,8 +878,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "16791462007843690388"
+                      "version": "0.23.1.45101",
+                      "templateHash": "5164800293709493867"
                     }
                   },
                   "parameters": {
@@ -1254,8 +1262,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "158794803731121081"
+                              "version": "0.23.1.45101",
+                              "templateHash": "36997633427771227"
                             }
                           },
                           "parameters": {
@@ -1617,8 +1625,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.20.4.51522",
-                                      "templateHash": "5079954306472424205"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "8983288402858976358"
                                     }
                                   },
                                   "parameters": {
@@ -1912,8 +1920,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.20.4.51522",
-                                              "templateHash": "11249227806125160411"
+                                              "version": "0.23.1.45101",
+                                              "templateHash": "15781585805590730053"
                                             }
                                           },
                                           "parameters": {
@@ -2130,8 +2138,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.20.4.51522",
-                                      "templateHash": "5756838136756954963"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "16022215935591204400"
                                     }
                                   },
                                   "parameters": {
@@ -2411,8 +2419,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "10067602788727268258"
+                      "version": "0.23.1.45101",
+                      "templateHash": "15693143826990020218"
                     }
                   },
                   "parameters": {
@@ -2758,8 +2766,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "12007169105571564298"
+              "version": "0.23.1.45101",
+              "templateHash": "7163957242722742322"
             }
           },
           "parameters": {
@@ -2972,7 +2980,7 @@
                 }
               }
             ],
-            "$fxv#2": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
+            "$fxv#2": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\",\r\n        \"cognitiveAccount\": \"cog\",\r\n        \"openAiDeployment\": \"oaidep\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
             "nsgCaeRules": "[json(replace(variables('$fxv#0'), '<location>', parameters('location')))]",
             "nsgAppGwRules": "[variables('$fxv#1')]",
             "namingRules": "[json(variables('$fxv#2'))]",
@@ -3023,8 +3031,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "17377164283203683573"
+                      "version": "0.23.1.45101",
+                      "templateHash": "1396335178164847616"
                     }
                   },
                   "parameters": {
@@ -3057,7 +3065,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
+                    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\",\r\n        \"cognitiveAccount\": \"cog\",\r\n        \"openAiDeployment\": \"oaidep\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
                     "naming": "[json(variables('$fxv#0'))]",
                     "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
                     "resourceTypeToken": "RES_TYPE",
@@ -3087,6 +3095,8 @@
                       "containerRegistryUserAssignedIdentity": "[format('{0}-{1}-AcrPull', variables('naming').resourceTypeAbbreviations.managedIdentity, toLower(replace(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerRegistry), '-', '')))]",
                       "redisCache": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.redisCache)]",
                       "redisCachePep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.redisCache))]",
+                      "openAiAccount": "[replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cognitiveAccount)]",
+                      "openAiDeployment": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.openAiDeployment)]",
                       "cosmosDbNoSql": "[toLower(take(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cosmosDbNoSql), 44))]",
                       "cosmosDbNoSqlPep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, toLower(take(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cosmosDbNoSql), 44)))]",
                       "frontDoorProfile": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.frontDoor)]",
@@ -3155,8 +3165,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "16217514057343077749"
+                      "version": "0.23.1.45101",
+                      "templateHash": "11475170866976628368"
                     }
                   },
                   "parameters": {
@@ -3292,8 +3302,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "18168190213647109808"
+                      "version": "0.23.1.45101",
+                      "templateHash": "1844430525693158654"
                     }
                   },
                   "parameters": {
@@ -3458,8 +3468,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "984839810729505748"
+                      "version": "0.23.1.45101",
+                      "templateHash": "7002753543158218780"
                     }
                   },
                   "parameters": {
@@ -3650,8 +3660,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "984839810729505748"
+                      "version": "0.23.1.45101",
+                      "templateHash": "7002753543158218780"
                     }
                   },
                   "parameters": {
@@ -3841,8 +3851,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "984839810729505748"
+                      "version": "0.23.1.45101",
+                      "templateHash": "7002753543158218780"
                     }
                   },
                   "parameters": {
@@ -4030,8 +4040,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "9683203958437324298"
+                      "version": "0.23.1.45101",
+                      "templateHash": "8844508248456226981"
                     }
                   },
                   "parameters": {
@@ -4118,8 +4128,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "9683203958437324298"
+                      "version": "0.23.1.45101",
+                      "templateHash": "8844508248456226981"
                     }
                   },
                   "parameters": {
@@ -4213,8 +4223,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "6409655524898695648"
+                      "version": "0.23.1.45101",
+                      "templateHash": "1589616729692312977"
                     }
                   },
                   "parameters": {
@@ -4332,8 +4342,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "15433672522856459960"
+                              "version": "0.23.1.45101",
+                              "templateHash": "1512519384923161590"
                             }
                           },
                           "parameters": {
@@ -4571,8 +4581,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "4630758869167449489"
+                      "version": "0.23.1.45101",
+                      "templateHash": "8903545752840930838"
                     }
                   },
                   "parameters": {
@@ -4796,8 +4806,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "13300298721636255698"
+                      "version": "0.23.1.45101",
+                      "templateHash": "5811836382027324568"
                     }
                   },
                   "parameters": {
@@ -4973,8 +4983,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "12692501163350387927"
+                      "version": "0.23.1.45101",
+                      "templateHash": "1135276494921329178"
                     }
                   },
                   "parameters": {
@@ -4992,7 +5002,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
+                    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\",\r\n        \"cognitiveAccount\": \"cog\",\r\n        \"openAiDeployment\": \"oaidep\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
                     "$fxv#1": "{\n  \"properties\": {\n    \"displayName\": \"Azure Container Apps allowed container registries\",\n    \"policyType\": \"Custom\",\n    \"mode\": \"Indexed\",\n    \"description\": \"This policy enables you to restrict the list of container registries for Azure Container Apps.\",\n    \"metadata\": {\n      \"version\": \"1.0.0\",\n      \"category\": \"Azure Container Apps\"\n    },\n    \"parameters\": {\n      \"listOfAllowedContainerRegistries\": {\n        \"type\": \"Array\",\n        \"metadata\": {\n          \"displayName\": \"Allowed container registries\",\n          \"description\": \"The list of container registries that can be specified when deploying resources.\"\n        },\n        \"defaultValue\": [\n          \"mcr.microsoft.com\"\n        ]\n      },\n      \"effect\": {\n        \"type\": \"String\",\n        \"metadata\": {\n          \"displayName\": \"Effect\",\n          \"description\": \"Enable or disable the execution of the policy\"\n        },\n        \"allowedValues\": [\n          \"Audit\",\n          \"Deny\",\n          \"Disabled\"\n        ],\n        \"defaultValue\": \"Audit\"\n      }\n    },\n    \"policyRule\": {\n      \"if\": {\n        \"allOf\": [{\n            \"field\": \"type\",\n            \"equals\": \"Microsoft.App/containerApps\"\n          },\n          {\n            \"count\": {\n              \"field\": \"Microsoft.App/containerApps/template.containers[*]\",\n              \"where\": {\n                \"value\": \"[split(first(field('Microsoft.App/containerApps/template.containers[*].image')), '/')[0]]\",\n                \"notIn\": \"[parameters('listOfAllowedContainerRegistries')]\"\n              }\n            },\n            \"greater\": 0\n          }\n        ]\n      },\n      \"then\": {\n        \"effect\": \"[parameters('effect')]\"\n      }\n    }\n  }\n}",
                     "$fxv#2": "{\n  \"properties\": {\n    \"displayName\": \"Azure Container Apps container replica count limits\",\n    \"policyType\": \"Custom\",\n    \"mode\": \"Indexed\",\n    \"description\": \"This policy enforces limits for the minimum and maximum number of replicas for Azure Container Apps.\",\n    \"metadata\": {\n      \"version\": \"1.0.0\",\n      \"category\": \"Azure Container Apps\"\n    },\n    \"parameters\": {\n      \"minReplicas\": {\n        \"type\": \"integer\",\n        \"metadata\": {\n          \"displayName\": \"Min allowed replicas\",\n          \"description\": \"Specifies the minimum number of container replicas for the Azure Container App\"\n        },\n        \"defaultValue\": 0\n      },\n      \"maxReplicas\": {\n        \"type\": \"integer\",\n        \"metadata\": {\n          \"displayName\": \"Max allowed replicas\",\n          \"description\": \"Specifies the maximum number of container replicas for the Azure Container App\"\n        },\n        \"defaultValue\": 30\n      },\n      \"effect\": {\n        \"type\": \"String\",\n        \"metadata\": {\n          \"displayName\": \"Effect\",\n          \"description\": \"Enable or disable the execution of the policy\"\n        },\n        \"allowedValues\": [\n          \"Audit\",\n          \"Deny\",\n          \"Disabled\"\n        ],\n        \"defaultValue\": \"Audit\"\n      }\n    },\n    \"policyRule\": {\n      \"if\": {\n        \"allOf\": [{\n            \"field\": \"type\",\n            \"equals\": \"Microsoft.App/containerApps\"\n          },\n          {\n            \"anyOf\": [{\n              \"field\": \"Microsoft.App/containerApps/template.scale.minReplicas\",\n              \"less\": \"[parameters('MinReplicas')]\"\n            }, {\n              \"field\": \"Microsoft.App/containerApps/template.scale.maxReplicas\",\n              \"greater\": \"[parameters('MaxReplicas')]\"\n            }]\n          }\n        ]\n      },\n      \"then\": {\n        \"effect\": \"[parameters('effect')]\"\n      }\n    }\n  }\n}",
                     "$fxv#3": "{\n  \"properties\": {\n    \"displayName\": \"Azure Container Apps no container liveness probes\",\n    \"policyType\": \"Custom\",\n    \"mode\": \"Indexed\",\n    \"description\": \"This policy enforces that all the containers of Azure Containers Apps have liveness probes configured.\",\n    \"metadata\": {\n      \"version\": \"1.0.0\",\n      \"category\": \"Azure Container Apps\"\n    },\n    \"parameters\": {\n      \"effect\": {\n        \"type\": \"String\",\n        \"metadata\": {\n          \"displayName\": \"Effect\",\n          \"description\": \"Enable or disable the execution of the policy\"\n        },\n        \"allowedValues\": [\n          \"Audit\",\n          \"Deny\",\n          \"Disabled\"\n        ],\n        \"defaultValue\": \"Audit\"\n      }\n    },\n    \"policyRule\": {\n      \"if\": {\n        \"allOf\": [{\n            \"field\": \"type\",\n            \"equals\": \"Microsoft.App/containerApps\"\n          },\n          {\n            \"count\": {\n              \"field\": \"Microsoft.App/containerApps/template.containers[*].probes[*]\",\n              \"where\": {\n                \"field\": \"Microsoft.App/containerApps/template.containers[*].probes[*].type\",\n                \"equals\": \"Liveness\"\n              }\n            },\n            \"equals\": 0\n          }\n        ]\n      },\n      \"then\": {\n        \"effect\": \"[parameters('effect')]\"\n      }\n    }\n  }\n}",
@@ -5231,8 +5241,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "13451226014402037925"
+                              "version": "0.23.1.45101",
+                              "templateHash": "8010806321264809413"
                             }
                           },
                           "parameters": {
@@ -5304,8 +5314,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "1948385689214915540"
+                              "version": "0.23.1.45101",
+                              "templateHash": "4724583560763750750"
                             }
                           },
                           "parameters": {
@@ -5371,8 +5381,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "13451226014402037925"
+                              "version": "0.23.1.45101",
+                              "templateHash": "8010806321264809413"
                             }
                           },
                           "parameters": {
@@ -5542,6 +5552,9 @@
           },
           "logAnalyticsWorkspaceId": {
             "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.logAnalyticsWorkspaceId.value]"
+          },
+          "deployOpenAi": {
+            "value": "[parameters('deployOpenAi')]"
           }
         },
         "template": {
@@ -5550,8 +5563,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "10692680480497133942"
+              "version": "0.23.1.45101",
+              "templateHash": "11310236489092583250"
             }
           },
           "parameters": {
@@ -5608,6 +5621,19 @@
                 "description": "Deploy Redis cache premium SKU"
               }
             },
+            "deployOpenAi": {
+              "type": "bool",
+              "metadata": {
+                "description": "Deploy (or not) an Azure OpenAI account. ATTENTION: At the time of writing this, OpenAI is in preview and only available in limited regions: look here: https://learn.microsoft.com/azure/ai-services/openai/chatgpt-quickstart#prerequisites"
+              }
+            },
+            "deployOpenAiGptModel": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Deploy (or not) a model on the openAI Account. This is used only as a sample to show how to deploy a model on the OpenAI account."
+              }
+            },
             "logAnalyticsWorkspaceId": {
               "type": "string",
               "defaultValue": "",
@@ -5653,8 +5679,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "17377164283203683573"
+                      "version": "0.23.1.45101",
+                      "templateHash": "1396335178164847616"
                     }
                   },
                   "parameters": {
@@ -5687,7 +5713,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
+                    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\",\r\n        \"cognitiveAccount\": \"cog\",\r\n        \"openAiDeployment\": \"oaidep\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
                     "naming": "[json(variables('$fxv#0'))]",
                     "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
                     "resourceTypeToken": "RES_TYPE",
@@ -5717,6 +5743,8 @@
                       "containerRegistryUserAssignedIdentity": "[format('{0}-{1}-AcrPull', variables('naming').resourceTypeAbbreviations.managedIdentity, toLower(replace(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerRegistry), '-', '')))]",
                       "redisCache": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.redisCache)]",
                       "redisCachePep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.redisCache))]",
+                      "openAiAccount": "[replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cognitiveAccount)]",
+                      "openAiDeployment": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.openAiDeployment)]",
                       "cosmosDbNoSql": "[toLower(take(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cosmosDbNoSql), 44))]",
                       "cosmosDbNoSqlPep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, toLower(take(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cosmosDbNoSql), 44)))]",
                       "frontDoorProfile": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.frontDoor)]",
@@ -5798,8 +5826,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "17345295427052564703"
+                      "version": "0.23.1.45101",
+                      "templateHash": "7534193650398906273"
                     }
                   },
                   "parameters": {
@@ -5943,8 +5971,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "3865578447306201055"
+                              "version": "0.23.1.45101",
+                              "templateHash": "11665409638800967653"
                             }
                           },
                           "parameters": {
@@ -6416,8 +6444,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "1892554050389365289"
+                              "version": "0.23.1.45101",
+                              "templateHash": "17579836593992722031"
                             }
                           },
                           "parameters": {
@@ -6501,8 +6529,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.20.4.51522",
-                                      "templateHash": "16481873424741287744"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "10616302473157292384"
                                     }
                                   },
                                   "parameters": {
@@ -6626,8 +6654,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.20.4.51522",
-                                      "templateHash": "9790261476800825323"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "18009438908332647942"
                                     }
                                   },
                                   "parameters": {
@@ -6762,8 +6790,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "13945851285616680724"
+                              "version": "0.23.1.45101",
+                              "templateHash": "6213582055481102513"
                             }
                           },
                           "parameters": {
@@ -6933,8 +6961,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "17883671963145254223"
+                      "version": "0.23.1.45101",
+                      "templateHash": "17434795239076296952"
                     }
                   },
                   "parameters": {
@@ -7172,8 +7200,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "1892554050389365289"
+                              "version": "0.23.1.45101",
+                              "templateHash": "17579836593992722031"
                             }
                           },
                           "parameters": {
@@ -7257,8 +7285,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.20.4.51522",
-                                      "templateHash": "16481873424741287744"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "10616302473157292384"
                                     }
                                   },
                                   "parameters": {
@@ -7382,8 +7410,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.20.4.51522",
-                                      "templateHash": "9790261476800825323"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "18009438908332647942"
                                     }
                                   },
                                   "parameters": {
@@ -7557,8 +7585,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "14297972459831607802"
+                      "version": "0.23.1.45101",
+                      "templateHash": "4497460725209362268"
                     }
                   },
                   "parameters": {
@@ -7685,8 +7713,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "9817513104722486464"
+                              "version": "0.23.1.45101",
+                              "templateHash": "9348738149900209054"
                             }
                           },
                           "parameters": {
@@ -8020,8 +8048,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "1892554050389365289"
+                              "version": "0.23.1.45101",
+                              "templateHash": "17579836593992722031"
                             }
                           },
                           "parameters": {
@@ -8105,8 +8133,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.20.4.51522",
-                                      "templateHash": "16481873424741287744"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "10616302473157292384"
                                     }
                                   },
                                   "parameters": {
@@ -8230,8 +8258,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.20.4.51522",
-                                      "templateHash": "9790261476800825323"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "18009438908332647942"
                                     }
                                   },
                                   "parameters": {
@@ -8353,6 +8381,1347 @@
                 "[resourceId('Microsoft.Resources/deployments', format('keyVault-{0}', uniqueString(resourceGroup().id)))]",
                 "[resourceId('Microsoft.Resources/deployments', take(format('03-sharedNamingDeployment-{0}', deployment().name), 64))]"
               ]
+            },
+            {
+              "condition": "[parameters('deployOpenAi')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[take('openAiModule-Deployment', 64)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('03-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.openAiAccount]"
+                  },
+                  "deploymentName": {
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('03-sharedNamingDeployment-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.openAiDeployment]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  },
+                  "vnetHubResourceId": {
+                    "value": "[parameters('hubVNetId')]"
+                  },
+                  "logAnalyticsWsId": {
+                    "value": "[parameters('logAnalyticsWorkspaceId')]"
+                  },
+                  "deployOpenAiGptModel": {
+                    "value": "[parameters('deployOpenAiGptModel')]"
+                  },
+                  "spokeVNetId": {
+                    "value": "[parameters('spokeVNetId')]"
+                  },
+                  "hubVNetId": {
+                    "value": "[parameters('hubVNetId')]"
+                  },
+                  "spokePrivateEndpointSubnetName": {
+                    "value": "[parameters('spokePrivateEndpointSubnetName')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.23.1.45101",
+                      "templateHash": "17732164181026101003"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 2,
+                      "maxLength": 64,
+                      "metadata": {
+                        "description": "Required. Name of the OpenAI Account. Must be globally unique. Only alphanumeric characters and hyphens are allowed. The value must be 2-64 characters long and cannot start or end with a hyphen"
+                      }
+                    },
+                    "deploymentName": {
+                      "type": "string",
+                      "defaultValue": "testGPT35",
+                      "minLength": 2,
+                      "maxLength": 64,
+                      "metadata": {
+                        "description": "Required. Name of the sample deployment. Deployment Name can have only letters and numbers, no spaces. Hyphens (\"-\") and underscores (\"_\") may be used, except as ending characters."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The location to deploy the Redis cache service."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. Tags of the resource."
+                      }
+                    },
+                    "hubVNetId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the Hub Virtual Network."
+                      }
+                    },
+                    "spokeVNetId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the VNet to which the private endpoint will be connected."
+                      }
+                    },
+                    "spokePrivateEndpointSubnetName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the subnet in the VNet to which the private endpoint will be connected."
+                      }
+                    },
+                    "vnetHubResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "if empty, private dns zone will be deployed in the current RG scope"
+                      }
+                    },
+                    "logAnalyticsWsId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "An existing Log Analytics WS Id for creating app Insights, diagnostics etc."
+                      }
+                    },
+                    "deployOpenAiGptModel": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Deploy (or not) a model on the openAI Account. This is used only as a sample to show how to deploy a model on the OpenAI account."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "hubVNetIdTokens": "[split(parameters('hubVNetId'), '/')]",
+                    "hubSubscriptionId": "[variables('hubVNetIdTokens')[2]]",
+                    "hubResourceGroupName": "[variables('hubVNetIdTokens')[4]]",
+                    "hubVNetName": "[variables('hubVNetIdTokens')[8]]",
+                    "spokeVNetIdTokens": "[split(parameters('spokeVNetId'), '/')]",
+                    "spokeSubscriptionId": "[variables('spokeVNetIdTokens')[2]]",
+                    "spokeResourceGroupName": "[variables('spokeVNetIdTokens')[4]]",
+                    "spokeVNetName": "[variables('spokeVNetIdTokens')[8]]",
+                    "virtualNetworkLinks": [
+                      {
+                        "vnetName": "[variables('spokeVNetName')]",
+                        "vnetId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('spokeSubscriptionId'), variables('spokeResourceGroupName')), 'Microsoft.Network/virtualNetworks', variables('spokeVNetName'))]",
+                        "registrationEnabled": false
+                      },
+                      {
+                        "vnetName": "[variables('hubVNetName')]",
+                        "vnetId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('hubSubscriptionId'), variables('hubResourceGroupName')), 'Microsoft.Network/virtualNetworks', variables('hubVNetName'))]",
+                        "registrationEnabled": false
+                      }
+                    ],
+                    "vnetHubSplitTokens": "[if(not(empty(parameters('vnetHubResourceId'))), split(parameters('vnetHubResourceId'), '/'), array(''))]",
+                    "openAiDnsZoneName": "privatelink.openai.azure.com"
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('openAI-{0}-Deployment', parameters('name'))]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "name": {
+                            "value": "[parameters('name')]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
+                          },
+                          "hasPrivateLinks": {
+                            "value": true
+                          },
+                          "diagnosticSettings": {
+                            "value": [
+                              {
+                                "name": "OpenAI-Default-Diag",
+                                "workspaceResourceId": "[parameters('logAnalyticsWsId')]"
+                              }
+                            ]
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.23.1.45101",
+                              "templateHash": "9622005326161799841"
+                            },
+                            "name": "Cognitive Services",
+                            "description": "This module deploys a Cognitive Service.",
+                            "owner": "Azure/module-maintainers"
+                          },
+                          "definitions": {
+                            "lockType": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Specify the name of lock."
+                                  }
+                                },
+                                "kind": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "CanNotDelete",
+                                    "None",
+                                    "ReadOnly"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Specify the type of lock."
+                                  }
+                                }
+                              },
+                              "nullable": true
+                            },
+                            "roleAssignmentType": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "roleDefinitionIdOrName": {
+                                    "type": "string",
+                                    "metadata": {
+                                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                                    }
+                                  },
+                                  "principalId": {
+                                    "type": "string",
+                                    "metadata": {
+                                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                                    }
+                                  },
+                                  "principalType": {
+                                    "type": "string",
+                                    "allowedValues": [
+                                      "Device",
+                                      "ForeignGroup",
+                                      "Group",
+                                      "ServicePrincipal",
+                                      "User"
+                                    ],
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The principal type of the assigned principal ID."
+                                    }
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The description of the role assignment."
+                                    }
+                                  },
+                                  "condition": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                                    }
+                                  },
+                                  "conditionVersion": {
+                                    "type": "string",
+                                    "allowedValues": [
+                                      "2.0"
+                                    ],
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Version of the condition."
+                                    }
+                                  },
+                                  "delegatedManagedIdentityResourceId": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                                    }
+                                  }
+                                }
+                              },
+                              "nullable": true
+                            },
+                            "privateEndpointType": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The name of the private endpoint."
+                                    }
+                                  },
+                                  "location": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The location to deploy the private endpoint to."
+                                    }
+                                  },
+                                  "service": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
+                                    }
+                                  },
+                                  "subnetResourceId": {
+                                    "type": "string",
+                                    "metadata": {
+                                      "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+                                    }
+                                  },
+                                  "privateDnsZoneGroupName": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided."
+                                    }
+                                  },
+                                  "privateDnsZoneResourceIds": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
+                                    }
+                                  },
+                                  "customDnsConfigs": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "fqdn": {
+                                          "type": "string",
+                                          "nullable": true
+                                        },
+                                        "ipAddresses": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Custom DNS configurations."
+                                    }
+                                  },
+                                  "ipConfigurations": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "name": {
+                                          "type": "string"
+                                        },
+                                        "groupId": {
+                                          "type": "string"
+                                        },
+                                        "memberName": {
+                                          "type": "string"
+                                        },
+                                        "privateIpAddress": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    },
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+                                    }
+                                  },
+                                  "applicationSecurityGroupResourceIds": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+                                    }
+                                  },
+                                  "customNetworkInterfaceName": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The custom name of the network interface attached to the private endpoint."
+                                    }
+                                  },
+                                  "lock": {
+                                    "$ref": "#/definitions/lockType",
+                                    "metadata": {
+                                      "description": "Optional. Specify the type of lock."
+                                    }
+                                  },
+                                  "roleAssignments": {
+                                    "$ref": "#/definitions/roleAssignmentType",
+                                    "metadata": {
+                                      "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                                    }
+                                  },
+                                  "tags": {
+                                    "type": "object",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+                                    }
+                                  },
+                                  "manualPrivateLinkServiceConnections": {
+                                    "type": "array",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Manual PrivateLink Service Connections."
+                                    }
+                                  },
+                                  "enableTelemetry": {
+                                    "type": "bool",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Enable/Disable usage telemetry for module."
+                                    }
+                                  }
+                                }
+                              },
+                              "nullable": true
+                            },
+                            "diagnosticSettingType": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The name of diagnostic setting."
+                                    }
+                                  },
+                                  "logCategoriesAndGroups": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "category": {
+                                          "type": "string",
+                                          "nullable": true,
+                                          "metadata": {
+                                            "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                                          }
+                                        },
+                                        "categoryGroup": {
+                                          "type": "string",
+                                          "nullable": true,
+                                          "metadata": {
+                                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                                    }
+                                  },
+                                  "metricCategories": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "category": {
+                                          "type": "string",
+                                          "metadata": {
+                                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                                    }
+                                  },
+                                  "logAnalyticsDestinationType": {
+                                    "type": "string",
+                                    "allowedValues": [
+                                      "AzureDiagnostics",
+                                      "Dedicated"
+                                    ],
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                                    }
+                                  },
+                                  "workspaceResourceId": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                                    }
+                                  },
+                                  "storageAccountResourceId": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                                    }
+                                  },
+                                  "eventHubAuthorizationRuleResourceId": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                                    }
+                                  },
+                                  "eventHubName": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                                    }
+                                  },
+                                  "marketplacePartnerResourceId": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                                    }
+                                  }
+                                }
+                              },
+                              "nullable": true
+                            }
+                          },
+                          "parameters": {
+                            "name": {
+                              "type": "string",
+                              "minLength": 2,
+                              "maxLength": 64,
+                              "metadata": {
+                                "description": "Required. Name of the OpenAI Account. Must be globally unique. Only alphanumeric characters and hyphens are allowed. The value must be 2-64 characters long and cannot start or end with a hyphen"
+                              }
+                            },
+                            "kind": {
+                              "type": "string",
+                              "defaultValue": "OpenAI",
+                              "allowedValues": [
+                                "AnomalyDetector",
+                                "Bing.Autosuggest.v7",
+                                "Bing.CustomSearch",
+                                "Bing.EntitySearch",
+                                "Bing.Search.v7",
+                                "Bing.SpellCheck.v7",
+                                "CognitiveServices",
+                                "ComputerVision",
+                                "ContentModerator",
+                                "CustomVision.Prediction",
+                                "CustomVision.Training",
+                                "Face",
+                                "FormRecognizer",
+                                "ImmersiveReader",
+                                "Internal.AllInOne",
+                                "LUIS",
+                                "LUIS.Authoring",
+                                "Personalizer",
+                                "QnAMaker",
+                                "SpeechServices",
+                                "TextAnalytics",
+                                "TextTranslation",
+                                "OpenAI"
+                              ],
+                              "metadata": {
+                                "description": "Default is OpenAI. Kind of the Cognitive Services. Find available Kind-SKUs compination by running `az cognitiveservices account list-skus --kind OpenAI --location EASTUS2`  Check here: https://learn.microsoft.com/azure/ai-services/create-account-bicep?tabs=CLI."
+                              }
+                            },
+                            "sku": {
+                              "type": "string",
+                              "defaultValue": "S0",
+                              "allowedValues": [
+                                "C2",
+                                "C3",
+                                "C4",
+                                "F0",
+                                "F1",
+                                "S",
+                                "S0",
+                                "S1",
+                                "S10",
+                                "S2",
+                                "S3",
+                                "S4",
+                                "S5",
+                                "S6",
+                                "S7",
+                                "S8",
+                                "S9"
+                              ],
+                              "metadata": {
+                                "description": "Optional. Default is S0 for OpenAI. SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region."
+                              }
+                            },
+                            "location": {
+                              "type": "string",
+                              "defaultValue": "[resourceGroup().location]",
+                              "metadata": {
+                                "description": "Optional. Location for all Resources."
+                              }
+                            },
+                            "diagnosticSettings": {
+                              "$ref": "#/definitions/diagnosticSettingType",
+                              "metadata": {
+                                "description": "Optional. The diagnostic settings of the service."
+                              }
+                            },
+                            "publicNetworkAccess": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "allowedValues": [
+                                "",
+                                "Enabled",
+                                "Disabled"
+                              ],
+                              "metadata": {
+                                "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set."
+                              }
+                            },
+                            "customSubDomainName": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Conditional. Subdomain name used for token-based authentication. Required if 'networkAcls' or 'privateEndpoints' are set."
+                              }
+                            },
+                            "networkAcls": {
+                              "type": "object",
+                              "defaultValue": {},
+                              "metadata": {
+                                "description": "Optional. A collection of rules governing the accessibility from specific network locations."
+                              }
+                            },
+                            "hasPrivateLinks": {
+                              "type": "bool",
+                              "metadata": {
+                                "description": "Whether the resource has private links or not"
+                              }
+                            },
+                            "systemAssignedIdentity": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional, default is true. Enables system assigned managed identity on the resource."
+                              }
+                            },
+                            "userAssignedIdentities": {
+                              "type": "object",
+                              "defaultValue": {},
+                              "metadata": {
+                                "description": "Conditional. The ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+                              }
+                            },
+                            "lock": {
+                              "$ref": "#/definitions/lockType",
+                              "metadata": {
+                                "description": "Optional. The lock settings of the service."
+                              }
+                            },
+                            "roleAssignments": {
+                              "$ref": "#/definitions/roleAssignmentType",
+                              "metadata": {
+                                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                              }
+                            },
+                            "tags": {
+                              "type": "object",
+                              "defaultValue": {},
+                              "metadata": {
+                                "description": "Optional. Tags of the resource."
+                              }
+                            },
+                            "allowedFqdnList": {
+                              "type": "array",
+                              "defaultValue": [],
+                              "metadata": {
+                                "description": "Optional. List of allowed FQDN."
+                              }
+                            },
+                            "apiProperties": {
+                              "type": "object",
+                              "defaultValue": {},
+                              "metadata": {
+                                "description": "Optional. The API properties for special APIs."
+                              }
+                            },
+                            "disableLocalAuth": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Allow only Azure AD authentication. Should be enabled for security reasons."
+                              }
+                            },
+                            "cMKKeyVaultResourceId": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Conditional. The resource ID of a key vault to reference a customer managed key for encryption from. Required if 'cMKKeyName' is not empty."
+                              }
+                            },
+                            "cMKKeyName": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. The name of the customer managed key to use for encryption. Cannot be deployed together with the parameter 'systemAssignedIdentity' enabled."
+                              }
+                            },
+                            "cMKUserAssignedIdentityResourceId": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Conditional. User assigned identity to use when fetching the customer managed key. Required if 'cMKKeyName' is not empty."
+                              }
+                            },
+                            "cMKKeyVersion": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, latest is used."
+                              }
+                            },
+                            "dynamicThrottlingEnabled": {
+                              "type": "bool",
+                              "defaultValue": false,
+                              "metadata": {
+                                "description": "Optional. The flag to enable dynamic throttling."
+                              }
+                            },
+                            "migrationToken": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. Resource migration token."
+                              }
+                            },
+                            "restore": {
+                              "type": "bool",
+                              "defaultValue": false,
+                              "metadata": {
+                                "description": "Optional. Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists."
+                              }
+                            },
+                            "restrictOutboundNetworkAccess": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Restrict outbound network access."
+                              }
+                            },
+                            "userOwnedStorage": {
+                              "type": "array",
+                              "defaultValue": [],
+                              "metadata": {
+                                "description": "Optional. The storage accounts for this resource."
+                              }
+                            },
+                            "enableDefaultTelemetry": {
+                              "type": "bool",
+                              "defaultValue": false,
+                              "metadata": {
+                                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                              }
+                            }
+                          },
+                          "variables": {
+                            "identityType": "[if(parameters('systemAssignedIdentity'), if(not(empty(parameters('userAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(parameters('userAssignedIdentities'))), 'UserAssigned', 'None'))]",
+                            "identity": "[if(not(equals(variables('identityType'), 'None')), createObject('type', variables('identityType'), 'userAssignedIdentities', if(not(empty(parameters('userAssignedIdentities'))), parameters('userAssignedIdentities'), null())), null())]",
+                            "builtInRoleNames": {
+                              "Cognitive Services Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '25fbc0a9-bd7c-42a3-aa1a-3b75d497ee68')]",
+                              "Cognitive Services Custom Vision Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c1ff6cc2-c111-46fe-8896-e0ef812ad9f3')]",
+                              "Cognitive Services Custom Vision Deployment": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5c4089e1-6d96-4d2f-b296-c1bc7137275f')]",
+                              "Cognitive Services Custom Vision Labeler": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '88424f51-ebe7-446f-bc41-7fa16989e96c')]",
+                              "Cognitive Services Custom Vision Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '93586559-c37d-4a6b-ba08-b9f0940c2d73')]",
+                              "Cognitive Services Custom Vision Trainer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a5ae4ab-0d65-4eeb-be61-29fc9b54394b')]",
+                              "Cognitive Services Data Reader (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b59867f0-fa02-499b-be73-45a86b5b3e1c')]",
+                              "Cognitive Services Face Recognizer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9894cab4-e18a-44aa-828b-cb588cd6f2d7')]",
+                              "Cognitive Services Immersive Reader User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b2de6794-95db-4659-8781-7e080d3f2b9d')]",
+                              "Cognitive Services Language Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f07febfe-79bc-46b1-8b37-790e26e6e498')]",
+                              "Cognitive Services Language Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7628b7b8-a8b2-4cdc-b46f-e9b35248918e')]",
+                              "Cognitive Services Language Writer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f2310ca1-dc64-4889-bb49-c8e0fa3d47a8')]",
+                              "Cognitive Services LUIS Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f72c8140-2111-481c-87ff-72b910f6e3f8')]",
+                              "Cognitive Services LUIS Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18e81cdc-4e98-4e29-a639-e7d10c5a6226')]",
+                              "Cognitive Services LUIS Writer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6322a993-d5c9-4bed-b113-e49bbea25b27')]",
+                              "Cognitive Services Metrics Advisor Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'cb43c632-a144-4ec5-977c-e80c4affc34a')]",
+                              "Cognitive Services Metrics Advisor User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3b20f47b-3825-43cb-8114-4bd2201156a8')]",
+                              "Cognitive Services OpenAI Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a001fd3d-188f-4b5d-821b-7da978bf7442')]",
+                              "Cognitive Services OpenAI User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd')]",
+                              "Cognitive Services QnA Maker Editor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f4cc2bf9-21be-47a1-bdf1-5c5804381025')]",
+                              "Cognitive Services QnA Maker Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '466ccd10-b268-4a11-b098-b4849f024126')]",
+                              "Cognitive Services Speech Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0e75ca1e-0464-4b4d-8b93-68208a576181')]",
+                              "Cognitive Services Speech User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f2dc8367-1007-4938-bd23-fe263f013447')]",
+                              "Cognitive Services User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a97b65f3-24c7-4388-baec-2e87135dc908')]",
+                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                            }
+                          },
+                          "resources": {
+                            "cMKKeyVault::cMKKey": {
+                              "condition": "[and(not(empty(parameters('cMKKeyVaultResourceId'))), not(empty(parameters('cMKKeyName'))))]",
+                              "existing": true,
+                              "type": "Microsoft.KeyVault/vaults/keys",
+                              "apiVersion": "2023-02-01",
+                              "subscriptionId": "[split(if(not(empty(parameters('cMKKeyVaultResourceId'))), parameters('cMKKeyVaultResourceId'), '//'), '/')[2]]",
+                              "resourceGroup": "[split(if(not(empty(parameters('cMKKeyVaultResourceId'))), parameters('cMKKeyVaultResourceId'), '////'), '/')[4]]",
+                              "name": "[format('{0}/{1}', last(split(if(not(empty(parameters('cMKKeyVaultResourceId'))), parameters('cMKKeyVaultResourceId'), 'dummyVault'), '/')), if(not(empty(parameters('cMKKeyName'))), parameters('cMKKeyName'), 'dummyKey'))]",
+                              "dependsOn": [
+                                "cMKKeyVault"
+                              ]
+                            },
+                            "defaultTelemetry": {
+                              "condition": "[parameters('enableDefaultTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2022-09-01",
+                              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": []
+                                }
+                              }
+                            },
+                            "cMKKeyVault": {
+                              "condition": "[not(empty(parameters('cMKKeyVaultResourceId')))]",
+                              "existing": true,
+                              "type": "Microsoft.KeyVault/vaults",
+                              "apiVersion": "2021-10-01",
+                              "subscriptionId": "[split(if(not(empty(parameters('cMKKeyVaultResourceId'))), parameters('cMKKeyVaultResourceId'), '//'), '/')[2]]",
+                              "resourceGroup": "[split(if(not(empty(parameters('cMKKeyVaultResourceId'))), parameters('cMKKeyVaultResourceId'), '////'), '/')[4]]",
+                              "name": "[last(split(if(not(empty(parameters('cMKKeyVaultResourceId'))), parameters('cMKKeyVaultResourceId'), 'dummyVault'), '/'))]"
+                            },
+                            "cMKUserAssignedIdentity": {
+                              "condition": "[not(empty(parameters('cMKUserAssignedIdentityResourceId')))]",
+                              "existing": true,
+                              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+                              "apiVersion": "2023-01-31",
+                              "subscriptionId": "[split(if(not(empty(parameters('cMKUserAssignedIdentityResourceId'))), parameters('cMKUserAssignedIdentityResourceId'), '//'), '/')[2]]",
+                              "resourceGroup": "[split(if(not(empty(parameters('cMKUserAssignedIdentityResourceId'))), parameters('cMKUserAssignedIdentityResourceId'), '////'), '/')[4]]",
+                              "name": "[last(split(if(not(empty(parameters('cMKUserAssignedIdentityResourceId'))), parameters('cMKUserAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+                            },
+                            "cognitiveServices": {
+                              "type": "Microsoft.CognitiveServices/accounts",
+                              "apiVersion": "2023-05-01",
+                              "name": "[parameters('name')]",
+                              "kind": "[parameters('kind')]",
+                              "identity": "[variables('identity')]",
+                              "location": "[parameters('location')]",
+                              "tags": "[parameters('tags')]",
+                              "sku": {
+                                "name": "[parameters('sku')]"
+                              },
+                              "properties": {
+                                "customSubDomainName": "[if(not(empty(parameters('customSubDomainName'))), parameters('customSubDomainName'), parameters('name'))]",
+                                "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('defaultAction', if(contains(parameters('networkAcls'), 'defaultAction'), parameters('networkAcls').defaultAction, null()), 'virtualNetworkRules', if(contains(parameters('networkAcls'), 'virtualNetworkRules'), parameters('networkAcls').virtualNetworkRules, createArray()), 'ipRules', if(contains(parameters('networkAcls'), 'ipRules'), parameters('networkAcls').ipRules, createArray())), null())]",
+                                "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(parameters('hasPrivateLinks'), empty(parameters('networkAcls'))), 'Disabled', null()))]",
+                                "allowedFqdnList": "[parameters('allowedFqdnList')]",
+                                "apiProperties": "[parameters('apiProperties')]",
+                                "disableLocalAuth": "[parameters('disableLocalAuth')]",
+                                "encryption": "[if(not(empty(parameters('cMKKeyName'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createObject('identityClientId', reference('cMKUserAssignedIdentity').clientId, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyName', parameters('cMKKeyName'), 'keyVersion', if(not(empty(parameters('cMKKeyVersion'))), parameters('cMKKeyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null())]",
+                                "migrationToken": "[if(not(empty(parameters('migrationToken'))), parameters('migrationToken'), null())]",
+                                "restore": "[parameters('restore')]",
+                                "restrictOutboundNetworkAccess": "[parameters('restrictOutboundNetworkAccess')]",
+                                "userOwnedStorage": "[if(not(empty(parameters('userOwnedStorage'))), parameters('userOwnedStorage'), null())]",
+                                "dynamicThrottlingEnabled": "[parameters('dynamicThrottlingEnabled')]"
+                              },
+                              "dependsOn": [
+                                "cMKKeyVault",
+                                "cMKUserAssignedIdentity"
+                              ]
+                            },
+                            "cognitiveServices_lock": {
+                              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                              "type": "Microsoft.Authorization/locks",
+                              "apiVersion": "2020-05-01",
+                              "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
+                              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+                              "properties": {
+                                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                              },
+                              "dependsOn": [
+                                "cognitiveServices"
+                              ]
+                            },
+                            "cognitiveServices_diagnosticSettings": {
+                              "copy": {
+                                "name": "cognitiveServices_diagnosticSettings",
+                                "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+                              },
+                              "type": "Microsoft.Insights/diagnosticSettings",
+                              "apiVersion": "2021-05-01-preview",
+                              "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
+                              "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+                              "properties": {
+                                "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+                                "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+                                "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+                                "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+                                "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
+                                "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
+                                "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+                                "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+                              },
+                              "dependsOn": [
+                                "cognitiveServices"
+                              ]
+                            },
+                            "cognitiveServices_roleAssignments": {
+                              "copy": {
+                                "name": "cognitiveServices_roleAssignments",
+                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                              },
+                              "type": "Microsoft.Authorization/roleAssignments",
+                              "apiVersion": "2022-04-01",
+                              "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
+                              "name": "[guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                              "properties": {
+                                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+                                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+                                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                              },
+                              "dependsOn": [
+                                "cognitiveServices"
+                              ]
+                            }
+                          },
+                          "outputs": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the cognitive services account."
+                              },
+                              "value": "[parameters('name')]"
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the cognitive services account."
+                              },
+                              "value": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource group the cognitive services account was deployed into."
+                              },
+                              "value": "[resourceGroup().name]"
+                            },
+                            "endpoint": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The service endpoint of the cognitive services account."
+                              },
+                              "value": "[reference('cognitiveServices').endpoint]"
+                            },
+                            "systemAssignedPrincipalId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The principal ID of the system assigned identity."
+                              },
+                              "value": "[if(and(parameters('systemAssignedIdentity'), contains(reference('cognitiveServices', '2023-05-01', 'full').identity, 'principalId')), reference('cognitiveServices', '2023-05-01', 'full').identity.principalId, '')]"
+                            },
+                            "location": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The location the resource was deployed into."
+                              },
+                              "value": "[reference('cognitiveServices', '2023-05-01', 'full').location]"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "condition": "[parameters('deployOpenAiGptModel')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('GPT-{0}-Deployment', parameters('name'))]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "openAiName": {
+                            "value": "[parameters('name')]"
+                          },
+                          "deploymentName": {
+                            "value": "[parameters('deploymentName')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.23.1.45101",
+                              "templateHash": "8974954683276802380"
+                            }
+                          },
+                          "parameters": {
+                            "openAiName": {
+                              "type": "string",
+                              "maxLength": 64,
+                              "metadata": {
+                                "description": "Required. Name of the existing OpenAI Account"
+                              }
+                            },
+                            "deploymentName": {
+                              "type": "string",
+                              "minLength": 2,
+                              "maxLength": 64,
+                              "metadata": {
+                                "description": "Required. Deployment Name can have only letters and numbers, no spaces. Hyphens (\"-\") and underscores (\"_\") may be used, except as ending characters."
+                              }
+                            },
+                            "modelName": {
+                              "type": "string",
+                              "defaultValue": "gpt-35-turbo",
+                              "metadata": {
+                                "description": "The model name to be deployed. The model name can be found in the OpenAI portal."
+                              }
+                            },
+                            "modelVersion": {
+                              "type": "string",
+                              "defaultValue": "0613",
+                              "metadata": {
+                                "description": "The model version to be deployed. At the time of writing this is the latest version is eastus2."
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.CognitiveServices/accounts/deployments",
+                              "apiVersion": "2023-05-01",
+                              "name": "[format('{0}/{1}', parameters('openAiName'), parameters('deploymentName'))]",
+                              "sku": {
+                                "name": "Standard",
+                                "capacity": 1
+                              },
+                              "properties": {
+                                "raiPolicyName": "Microsoft.Default",
+                                "model": {
+                                  "format": "OpenAI",
+                                  "name": "[parameters('modelName')]",
+                                  "version": "[parameters('modelVersion')]"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Resources/deployments', format('openAI-{0}-Deployment', parameters('name')))]"
+                      ]
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[take(format('{0}-PrivateDnsZoneDeployment', replace(variables('openAiDnsZoneName'), '.', '-')), 64)]",
+                      "subscriptionId": "[variables('vnetHubSplitTokens')[2]]",
+                      "resourceGroup": "[variables('vnetHubSplitTokens')[4]]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "name": {
+                            "value": "[variables('openAiDnsZoneName')]"
+                          },
+                          "virtualNetworkLinks": {
+                            "value": "[variables('virtualNetworkLinks')]"
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.23.1.45101",
+                              "templateHash": "10616302473157292384"
+                            }
+                          },
+                          "parameters": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Name of the Private DNS Zone Service. For az private endpoints you might find info here: https://learn.microsoft.com/azure/private-link/private-endpoint-dns#azure-services-dns-zone-configuration"
+                              }
+                            },
+                            "tags": {
+                              "type": "object",
+                              "defaultValue": {},
+                              "metadata": {
+                                "description": "Optional. Tags of the resource."
+                              }
+                            },
+                            "virtualNetworkLinks": {
+                              "type": "array",
+                              "defaultValue": [],
+                              "metadata": {
+                                "description": "Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain vnetName, vnetId, registrationEnabled"
+                              }
+                            },
+                            "aRecords": {
+                              "type": "array",
+                              "defaultValue": [],
+                              "metadata": {
+                                "description": "Optional. Array of A records to be added to the DNS Zone"
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Network/privateDnsZones",
+                              "apiVersion": "2020-06-01",
+                              "name": "[parameters('name')]",
+                              "location": "global",
+                              "tags": "[parameters('tags')]"
+                            },
+                            {
+                              "copy": {
+                                "name": "privateDnsZoneLink",
+                                "count": "[length(parameters('virtualNetworkLinks'))]"
+                              },
+                              "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+                              "apiVersion": "2018-09-01",
+                              "name": "[format('{0}/{1}', parameters('name'), format('{0}-link', parameters('virtualNetworkLinks')[copyIndex()].vnetName))]",
+                              "location": "global",
+                              "properties": {
+                                "registrationEnabled": "[parameters('virtualNetworkLinks')[copyIndex()].registrationEnabled]",
+                                "virtualNetwork": {
+                                  "id": "[parameters('virtualNetworkLinks')[copyIndex()].vnetId]"
+                                }
+                              },
+                              "dependsOn": [
+                                "[resourceId('Microsoft.Network/privateDnsZones', parameters('name'))]"
+                              ]
+                            },
+                            {
+                              "copy": {
+                                "name": "dnsARecord",
+                                "count": "[length(parameters('aRecords'))]"
+                              },
+                              "type": "Microsoft.Network/privateDnsZones/A",
+                              "apiVersion": "2020-06-01",
+                              "name": "[format('{0}/{1}', parameters('name'), parameters('aRecords')[copyIndex()].name)]",
+                              "properties": {
+                                "ttl": 60,
+                                "aRecords": [
+                                  {
+                                    "ipv4Address": "[parameters('aRecords')[copyIndex()].ipv4Address]"
+                                  }
+                                ]
+                              },
+                              "dependsOn": [
+                                "[resourceId('Microsoft.Network/privateDnsZones', parameters('name'))]"
+                              ]
+                            }
+                          ],
+                          "outputs": {
+                            "privateDnsZonesId": {
+                              "type": "string",
+                              "value": "[resourceId('Microsoft.Network/privateDnsZones', parameters('name'))]"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[take(format('pe-{0}-Deployment', parameters('name')), 64)]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "name": {
+                            "value": "[take(format('pe-{0}', parameters('name')), 64)]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
+                          },
+                          "privateDnsZonesId": {
+                            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('vnetHubSplitTokens')[2], variables('vnetHubSplitTokens')[4]), 'Microsoft.Resources/deployments', take(format('{0}-PrivateDnsZoneDeployment', replace(variables('openAiDnsZoneName'), '.', '-')), 64)), '2022-09-01').outputs.privateDnsZonesId.value]"
+                          },
+                          "privateLinkServiceId": {
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('openAI-{0}-Deployment', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+                          },
+                          "snetId": {
+                            "value": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('spokeSubscriptionId'), variables('spokeResourceGroupName')), 'Microsoft.Network/virtualNetworks/subnets', variables('spokeVNetName'), parameters('spokePrivateEndpointSubnetName'))]"
+                          },
+                          "subresource": {
+                            "value": "account"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.23.1.45101",
+                              "templateHash": "18009438908332647942"
+                            }
+                          },
+                          "parameters": {
+                            "name": {
+                              "type": "string",
+                              "minLength": 2,
+                              "maxLength": 64,
+                              "metadata": {
+                                "description": "Required. Name of your Private Endpoint. Must begin with a letter or number, end with a letter, number or underscore, and may contain only letters, numbers, underscores, periods, or hyphens."
+                              }
+                            },
+                            "location": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Location for all resources."
+                              }
+                            },
+                            "tags": {
+                              "type": "object",
+                              "defaultValue": {},
+                              "metadata": {
+                                "description": "Optional. Tags of the resource."
+                              }
+                            },
+                            "snetId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The subnet resource ID where the nic of the PE will be attached to"
+                              }
+                            },
+                            "privateLinkServiceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource id of private link service. The resource ID of the Az Resource that we need to attach the pe to."
+                              }
+                            },
+                            "subresource": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource that the Private Endpoint will be attached to, as shown in https://learn.microsoft.com/azure/private-link/private-endpoint-overview#private-link-resource"
+                              }
+                            },
+                            "privateDnsZonesId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Id of the relevant private DNS Zone, so that the PE can create an A record for the implicitly created nic"
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Network/privateEndpoints",
+                              "apiVersion": "2020-06-01",
+                              "name": "[parameters('name')]",
+                              "location": "[parameters('location')]",
+                              "tags": "[parameters('tags')]",
+                              "properties": {
+                                "subnet": {
+                                  "id": "[parameters('snetId')]"
+                                },
+                                "privateLinkServiceConnections": [
+                                  {
+                                    "name": "[format('pl-{0}', parameters('name'))]",
+                                    "properties": {
+                                      "privateLinkServiceId": "[parameters('privateLinkServiceId')]",
+                                      "groupIds": [
+                                        "[parameters('subresource')]"
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+                              "apiVersion": "2020-06-01",
+                              "name": "[format('{0}/{1}', parameters('name'), 'dnsgroupname')]",
+                              "properties": {
+                                "privateDnsZoneConfigs": [
+                                  {
+                                    "name": "config1",
+                                    "properties": {
+                                      "privateDnsZoneId": "[parameters('privateDnsZonesId')]"
+                                    }
+                                  }
+                                ]
+                              },
+                              "dependsOn": [
+                                "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Resources/deployments', format('openAI-{0}-Deployment', parameters('name')))]",
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('vnetHubSplitTokens')[2], variables('vnetHubSplitTokens')[4]), 'Microsoft.Resources/deployments', take(format('{0}-PrivateDnsZoneDeployment', replace(variables('openAiDnsZoneName'), '.', '-')), 64))]"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', take(format('03-sharedNamingDeployment-{0}', deployment().name), 64))]"
+              ]
             }
           ],
           "outputs": {
@@ -8458,8 +9827,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "963666341063479581"
+              "version": "0.23.1.45101",
+              "templateHash": "1008771055355769997"
             }
           },
           "parameters": {
@@ -8597,8 +9966,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "17377164283203683573"
+                      "version": "0.23.1.45101",
+                      "templateHash": "1396335178164847616"
                     }
                   },
                   "parameters": {
@@ -8631,7 +10000,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
+                    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\",\r\n        \"cognitiveAccount\": \"cog\",\r\n        \"openAiDeployment\": \"oaidep\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
                     "naming": "[json(variables('$fxv#0'))]",
                     "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
                     "resourceTypeToken": "RES_TYPE",
@@ -8661,6 +10030,8 @@
                       "containerRegistryUserAssignedIdentity": "[format('{0}-{1}-AcrPull', variables('naming').resourceTypeAbbreviations.managedIdentity, toLower(replace(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerRegistry), '-', '')))]",
                       "redisCache": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.redisCache)]",
                       "redisCachePep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.redisCache))]",
+                      "openAiAccount": "[replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cognitiveAccount)]",
+                      "openAiDeployment": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.openAiDeployment)]",
                       "cosmosDbNoSql": "[toLower(take(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cosmosDbNoSql), 44))]",
                       "cosmosDbNoSqlPep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, toLower(take(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cosmosDbNoSql), 44)))]",
                       "frontDoorProfile": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.frontDoor)]",
@@ -8725,8 +10096,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "793513277786522105"
+                      "version": "0.23.1.45101",
+                      "templateHash": "11365491917366424386"
                     }
                   },
                   "parameters": {
@@ -8930,8 +10301,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "5868549807199982994"
+                      "version": "0.23.1.45101",
+                      "templateHash": "10482008398937843948"
                     }
                   },
                   "parameters": {
@@ -9213,8 +10584,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "16481873424741287744"
+                      "version": "0.23.1.45101",
+                      "templateHash": "10616302473157292384"
                     }
                   },
                   "parameters": {
@@ -9365,8 +10736,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "10952876904151546312"
+              "version": "0.23.1.45101",
+              "templateHash": "12946782960905961142"
             }
           },
           "parameters": {
@@ -9529,8 +10900,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "12325060058646562253"
+              "version": "0.23.1.45101",
+              "templateHash": "11583530359203888960"
             }
           },
           "parameters": {
@@ -9671,8 +11042,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "17377164283203683573"
+                      "version": "0.23.1.45101",
+                      "templateHash": "1396335178164847616"
                     }
                   },
                   "parameters": {
@@ -9705,7 +11076,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
+                    "$fxv#0": "{\r\n    // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n    \"resourceTypeAbbreviations\" : {\r\n        \"applicationGateway\": \"agw\",\r\n        \"applicationInsights\": \"appi\",\r\n        \"appService\": \"app\",\r\n        \"azureFirewall\": \"azfw\",\r\n        \"bastion\": \"bas\",\r\n        \"containerAppsEnvironment\": \"cae\",\r\n        \"containerRegistry\": \"cr\",\r\n        \"cosmosDbNoSql\": \"cosno\",\r\n        \"frontDoor\": \"afd\",\r\n        \"frontDoorEndpoint\": \"fde\",\r\n        \"frontDoorWaf\": \"fdfp\",\r\n        \"keyVault\": \"kv\",\r\n        \"logAnalyticsWorkspace\": \"log\",\r\n        \"managedIdentity\": \"id\",\r\n        \"networkInterface\": \"nic\",\r\n        \"networkSecurityGroup\": \"nsg\",\r\n        \"privateEndpoint\": \"pep\",\r\n        \"privateLinkService\": \"pls\",\r\n        \"publicIpAddress\": \"pip\",\r\n        \"resourceGroup\": \"rg\",\r\n        \"routeTable\": \"rt\",\r\n        \"serviceBus\": \"sb\",\r\n        \"serviceBusQueue\": \"sbq\",\r\n        \"serviceBusTopic\": \"sbt\",\r\n        \"storageAccount\": \"st\",\r\n        \"virtualMachine\": \"vm\",\r\n        \"virtualNetwork\": \"vnet\",\r\n        \"redisCache\": \"redis\",\r\n        \"cognitiveAccount\": \"cog\",\r\n        \"openAiDeployment\": \"oaidep\"\r\n    },\r\n\r\n    //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n    \"regionAbbreviations\" : {\r\n        \"australiacentral\": \"auc\",\r\n        \"australiacentral2\": \"auc2\",\r\n        \"australiaeast\": \"aue\",\r\n        \"australiasoutheast\": \"ause\",\r\n        \"brazilsouth\": \"brs\",\r\n        \"brazilsoutheast\": \"brse\",\r\n        \"canadacentral\": \"canc\",\r\n        \"canadaeast\": \"cane\",\r\n        \"centralindia\": \"cin\",\r\n        \"centralus\": \"cus\",\r\n        \"centraluseuap\": \"cuseuap\",\r\n        \"eastasia\": \"ea\",\r\n        \"eastus\": \"eus\",\r\n        \"eastus2\": \"eus2\",\r\n        \"eastus2euap\": \"eus2euap\",\r\n        \"francecentral\": \"frc\",\r\n        \"francesouth\": \"frs\",\r\n        \"germanynorth\": \"gern\",\r\n        \"germanywestcentral\": \"gerwc\",\r\n        \"japaneast\": \"jae\",\r\n        \"japanwest\": \"jaw\",\r\n        \"jioindiacentral\": \"jioinc\",\r\n        \"jioindiawest\": \"jioinw\",\r\n        \"koreacentral\": \"koc\",\r\n        \"koreasouth\": \"kors\",\r\n        \"northcentralus\": \"ncus\",\r\n        \"northeurope\": \"neu\",\r\n        \"norwayeast\": \"nore\",\r\n        \"norwaywest\": \"norw\",\r\n        \"southafricanorth\": \"san\",\r\n        \"southafricawest\": \"saw\",\r\n        \"southcentralus\": \"scus\",\r\n        \"southeastasia\": \"sea\",\r\n        \"southindia\": \"sin\",\r\n        \"swedencentral\": \"swc\",\r\n        \"switzerlandnorth\": \"swn\",\r\n        \"switzerlandwest\": \"sww\",\r\n        \"uaecentral\": \"uaec\",\r\n        \"uaenorth\": \"uaen\",\r\n        \"uksouth\": \"uks\",\r\n        \"ukwest\": \"ukw\",\r\n        \"westcentralus\": \"wcus\",\r\n        \"westeurope\": \"weu\",\r\n        \"westindia\": \"win\",\r\n        \"westus\": \"wus\",\r\n        \"westus2\": \"wus2\",\r\n        \"westus3\": \"wus3\"\r\n    }\r\n}",
                     "naming": "[json(variables('$fxv#0'))]",
                     "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
                     "resourceTypeToken": "RES_TYPE",
@@ -9735,6 +11106,8 @@
                       "containerRegistryUserAssignedIdentity": "[format('{0}-{1}-AcrPull', variables('naming').resourceTypeAbbreviations.managedIdentity, toLower(replace(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.containerRegistry), '-', '')))]",
                       "redisCache": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.redisCache)]",
                       "redisCachePep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.redisCache))]",
+                      "openAiAccount": "[replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cognitiveAccount)]",
+                      "openAiDeployment": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.openAiDeployment)]",
                       "cosmosDbNoSql": "[toLower(take(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cosmosDbNoSql), 44))]",
                       "cosmosDbNoSqlPep": "[format('{0}-{1}', variables('naming').resourceTypeAbbreviations.privateEndpoint, toLower(take(replace(variables('namingBaseUnique'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.cosmosDbNoSql), 44)))]",
                       "frontDoorProfile": "[replace(variables('namingBase'), variables('resourceTypeToken'), variables('naming').resourceTypeAbbreviations.frontDoor)]",
@@ -9795,8 +11168,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "16624770513957439457"
+                      "version": "0.23.1.45101",
+                      "templateHash": "15739076019826052470"
                     }
                   },
                   "parameters": {
@@ -9916,8 +11289,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "5981313522980772638"
+                      "version": "0.23.1.45101",
+                      "templateHash": "3552631750252376420"
                     }
                   },
                   "parameters": {
@@ -10019,8 +11392,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "17449228006888167110"
+                      "version": "0.23.1.45101",
+                      "templateHash": "5389300307854485706"
                     }
                   },
                   "parameters": {
@@ -10488,8 +11861,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "7766964496621843813"
+                      "version": "0.23.1.45101",
+                      "templateHash": "2849744112582442758"
                     }
                   },
                   "parameters": {
@@ -10903,13 +12276,6 @@
                       "metadata": {
                         "description": "Optional. Routing rules of the application gateway resource."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
                     }
                   },
                   "variables": {
@@ -10937,20 +12303,6 @@
                     "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]"
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Network/applicationGateways",
                       "apiVersion": "2022-07-01",

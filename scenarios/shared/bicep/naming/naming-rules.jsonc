@@ -28,7 +28,9 @@
         "storageAccount": "st",
         "virtualMachine": "vm",
         "virtualNetwork": "vnet",
-        "redisCache": "redis"
+        "redisCache": "redis",
+        "cognitiveAccount": "cog",
+        "openAiDeployment": "oaidep"
     },
 
     //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json

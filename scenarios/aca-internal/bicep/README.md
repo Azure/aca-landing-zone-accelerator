@@ -118,6 +118,7 @@ This is the starting point for the instructions on deploying this reference impl
    | `enableDaprInstrumentation` | Enable Dapr's telemetry. enableApplicationInsights` must also be set to **true** for this to work. | **true** | **false** |
    | `deployHelloWorldSample` | Deploy a simple, sample application to the infrastructure. If you prefer to deploy the more comprehensive, Dapr-enabled sample app, this needs to be disabled | **true** | **false**, because you plan on deploying the Dapr-enabled application instead. |
    | `deployRedisCache` | Feature flag, if true Azure Cache for Redis (Premium SKU), together with Private Endpoint and the relavant Private DNS Zone will be deployed. | **false** | **true** |
+   | `deployOpenAi` | Feature flag, Deploy (or not) an Azure OpenAI account. ATTENTION: At the time of writing this, OpenAI is in preview and only available in [limited regions](https://learn.microsoft.com/azure/ai-services/openai/chatgpt-quickstart#prerequisites) | **false** | **true** |
    | `ddosProtectionMode` | DDoS protection mode for the Public IP of the Application Gateway. Allowed values are "VirtualNetworkInherited", "Enabled" and "Disabled". | **Enabled** | **VirtualNetworkInherited** |
    | `deployAzurePolicies` | If true, Azure Policies will be deployed. | **true** | **false** |
    | `deployZoneRedundantResources` | If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. | **true** | **false** |    

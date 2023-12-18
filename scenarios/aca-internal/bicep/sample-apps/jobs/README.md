@@ -1,5 +1,5 @@
 # Azure Container Apps Jobs
-Azure Container Apps Jobs jobs allow you to run containerized tasks that execute for a given duration and complete. You can use jobs to run tasks such as data processing, machine learning, or any scenario where on-demand processing is required. For more information, see the following tutorials:
+Azure Container Apps Jobs allow you to run containerized tasks that execute for a given duration and complete. You can use jobs to run tasks such as data processing, machine learning, or any scenario where on-demand processing is required. For more information, see the following tutorials:
 
 - [Create a job with Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/jobs-get-started-cli?pivots=container-apps-job-manual): In this tutorial, you create a manual or scheduled job.
 - [Deploy an event-driven job with Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/tutorial-event-driven-jobs): shows how to create a job whose execution is triggered by each message that is sent to an Azure Storage Queue.
@@ -60,7 +60,7 @@ The behavior of the dotnet console application is controlled at runtime through 
   
   by setting the ```WORKEROLE``` to the value ```receiver``` this implementation reads the result messages from the output queue and logs it at the console.
 
-Bellow you can find all the available configuration options for the jobs implementation:
+Below you can find all the available configuration options for the jobs implementation:
 
 **Environment variables**
 
@@ -119,7 +119,7 @@ The sample is deployed to Azure using a bicep template found at the root directo
 
 - The Event triggered Container Apps Job
   
-  To deploy an event triggered job in bicep you need to define a [eventTriggerCongig](https://learn.microsoft.com/en-us/azure/templates/microsoft.app/jobs?pivots=deployment-language-bicep#jobconfiguration) at the configuration section of the container app and set the ```triggerType``` to 'Event'.
+  To deploy an event triggered job in bicep you need to define a [eventTriggerConfig](https://learn.microsoft.com/en-us/azure/templates/microsoft.app/jobs?pivots=deployment-language-bicep#jobconfiguration) at the configuration section of the container app and set the ```triggerType``` to 'Event'.
   ```bicep
   resource job 'Microsoft.App/jobs@2023-04-01-preview' = {
     name: toLower(name)
@@ -294,7 +294,7 @@ The sample is deployed to Azure using a bicep template found at the root directo
     
     2. The processor job runs every 5 minutes. Navigate to the Execution history page and verify that the job executes successfully. 
 
-    3. The receiver jon will poll the result queue for new messages. Once the processor has processed the incoming messages it will post them there.
+    3. The receiver job will poll the result queue for new messages. Once the processor has processed the incoming messages it will post them there.
 
         To get the results navigate to the execution logs and run the following query
 

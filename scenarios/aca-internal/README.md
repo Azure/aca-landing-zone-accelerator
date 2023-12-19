@@ -33,6 +33,8 @@ All resources have enabled their Diagnostics Settings (by default sending the lo
 
 All the resources that support Zone Redundancy (i.e. Container Apps Environment, Application Gateway, Standard IP) are set by default to be deployed in all Availability Zones. If you are planning to deploy to a region that is not supporting Availability Zones you need to set the  parameter  `deployZoneRedundantResources` to `false`.
 
+Opted for [Azure Firewall Basic](https://learn.microsoft.com/azure/firewall/overview#azure-firewall-basic)  due to its cost-effective pricing model. This Architecture decision aligns with budgetary constraints while providing essential firewall functionalities. However, for enterprise usage we recommend a careful examination of Azure Firewall Basic SKU limitations. End users should be aware that [higher SKUs](https://learn.microsoft.com/azure/firewall/choose-firewall-sku#feature-comparison) may offer more robust functionalities for specific enterprise requirements.
+
 Azure policies related to Azure Container Apps (both built-in but some custom as well) are applied to the spoke Resource Group by default. If you wish to skip Azure Policy Assignment, set the parameter `deployAzurePolicies` to `false`. 
 
 ## Deploy the reference implementation

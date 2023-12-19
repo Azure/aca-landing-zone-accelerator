@@ -24,6 +24,8 @@ param tags object = {}
 @description('CIDR of the spoke infrastructure subnet.')
 param spokeInfraSubnetAddressPrefix string
 
+param azureFirewallSubnetManagementAddressPrefix string 
+
 var applicationRuleCollections = [
   {
     name: 'ace-allow-rules'
@@ -308,6 +310,16 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2022-11-01' existing = {
   name: afwVNetName
 }
 
+
+resource fwManagementSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
+  parent: hubVnet
+  name: 'AzureFirewallManagementSubnet'
+  //name: '${hubVnet.name}/AzureFirewallManagementSubnet'
+  properties: {
+    addressPrefix: azureFirewallSubnetManagementAddressPrefix
+  }
+}
+
 @description('The azure firewall deployment.')
 module afw '../../../../../shared/bicep/azureFirewalls/main.bicep' = {
   name: 'afw-deployment'
@@ -316,18 +328,18 @@ module afw '../../../../../shared/bicep/azureFirewalls/main.bicep' = {
     location: location
     name: firewallName
     publicIpName: publicIpName
-    azureSkuTier: 'Standard'
+    azureSkuTier: 'Basic'
     vNetId: hubVnet.id
-    publicIPResourceID: '' //Required only if you want to use an existing public ip address
     additionalPublicIpConfigurations: []
     applicationRuleCollections: applicationRuleCollections
     networkRuleCollections: networkRules
     natRuleCollections: []
     threatIntelMode: 'Deny'
     diagnosticWorkspaceId: logAnalyticsWorkspaceId
-    lock: ''
+    azFwManagementSubnetId: fwManagementSubnet.id
   }
 }
+
 
 output afwPrivateIp string = afw.outputs.privateIp
 output afwId string = afw.outputs.resourceId

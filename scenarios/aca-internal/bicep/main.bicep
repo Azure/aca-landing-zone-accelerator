@@ -38,6 +38,9 @@ param gatewaySubnetAddressPrefix string
 @description('CIDR to use for the azureFirewallSubnet.')
 param azureFirewallSubnetAddressPrefix string
 
+@description('CIDR to use for the AzureFirewallManagementSubnet, which is required by AzFW Basic.')
+param azureFirewallSubnetManagementAddressPrefix string
+
 // Hub Virtual Machine
 @description('The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.')
 param vmSize string
@@ -139,6 +142,7 @@ module hub 'modules/01-hub/deploy.hub.bicep' = {
     enableBastion: enableBastion
     bastionSubnetAddressPrefix: bastionSubnetAddressPrefix    
     azureFirewallSubnetAddressPrefix: azureFirewallSubnetAddressPrefix
+    azureFirewallSubnetManagementAddressPrefix: azureFirewallSubnetManagementAddressPrefix
     gatewaySubnetAddressPrefix: gatewaySubnetAddressPrefix
     spokeInfraSubnetAddressPrefix: spokeInfraSubnetAddressPrefix
   }

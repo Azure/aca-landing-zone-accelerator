@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "900161156027419891"
+      "version": "0.24.24.22086",
+      "templateHash": "14482725554206056949"
     }
   },
   "parameters": {
@@ -304,8 +304,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "17913575854385706482"
+              "version": "0.24.24.22086",
+              "templateHash": "14717763998291301658"
             }
           },
           "parameters": {
@@ -453,8 +453,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "1844430525693158654"
+                      "version": "0.24.24.22086",
+                      "templateHash": "17847326324384615666"
                     }
                   },
                   "parameters": {
@@ -616,8 +616,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "1396335178164847616"
+                      "version": "0.24.24.22086",
+                      "templateHash": "2291204764315289154"
                     }
                   },
                   "parameters": {
@@ -752,8 +752,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "11475170866976628368"
+                      "version": "0.24.24.22086",
+                      "templateHash": "814413740097423608"
                     }
                   },
                   "parameters": {
@@ -892,6 +892,9 @@
                   },
                   "spokeInfraSubnetAddressPrefix": {
                     "value": "[parameters('spokeInfraSubnetAddressPrefix')]"
+                  },
+                  "azureFirewallSubnetManagementAddressPrefix": {
+                    "value": "[parameters('azureFirewallSubnetManagementAddressPrefix')]"
                   }
                 },
                 "template": {
@@ -900,8 +903,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "15401225564081922233"
+                      "version": "0.24.24.22086",
+                      "templateHash": "9504531883848133858"
                     }
                   },
                   "parameters": {
@@ -947,6 +950,9 @@
                       "metadata": {
                         "description": "CIDR of the spoke infrastructure subnet."
                       }
+                    },
+                    "azureFirewallSubnetManagementAddressPrefix": {
+                      "type": "string"
                     }
                   },
                   "variables": {
@@ -1226,9 +1232,17 @@
                   },
                   "resources": [
                     {
+                      "type": "Microsoft.Network/virtualNetworks/subnets",
+                      "apiVersion": "2020-11-01",
+                      "name": "[format('{0}/{1}', parameters('afwVNetName'), 'AzureFirewallManagementSubnet')]",
+                      "properties": {
+                        "addressPrefix": "[parameters('azureFirewallSubnetManagementAddressPrefix')]"
+                      }
+                    },
+                    {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "afw-deployment2",
+                      "name": "afw-deployment",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -1253,9 +1267,6 @@
                           "vNetId": {
                             "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('afwVNetName'))]"
                           },
-                          "publicIPResourceID": {
-                            "value": ""
-                          },
                           "additionalPublicIpConfigurations": {
                             "value": []
                           },
@@ -1273,6 +1284,9 @@
                           },
                           "diagnosticWorkspaceId": {
                             "value": "[parameters('logAnalyticsWorkspaceId')]"
+                          },
+                          "azFwManagementSubnetId": {
+                            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('afwVNetName'), 'AzureFirewallManagementSubnet')]"
                           }
                         },
                         "template": {
@@ -1282,8 +1296,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "9959665510486195244"
+                              "version": "0.24.24.22086",
+                              "templateHash": "12070682731577549681"
                             }
                           },
                           "definitions": {
@@ -1518,13 +1532,6 @@
                                 "description": "Conditional. Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty."
                               }
                             },
-                            "publicIPResourceID": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. The Public IP resource ID to associate to the AzureFirewallSubnet. If empty, then the Public IP that is created as part of this module will be applied to the AzureFirewallSubnet."
-                              }
-                            },
                             "additionalPublicIpConfigurations": {
                               "type": "array",
                               "defaultValue": [],
@@ -1539,13 +1546,6 @@
                               },
                               "metadata": {
                                 "description": "Optional. Specifies the properties of the Public IP to create and be used by the Firewall, if no existing public IP was provided."
-                              }
-                            },
-                            "managementIPResourceID": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. The Management Public IP resource ID to associate to the AzureFirewallManagementSubnet. If empty, then the Management Public IP that is created as part of this module will be applied to the AzureFirewallManagementSubnet."
                               }
                             },
                             "managementIPAddressObject": {
@@ -1679,6 +1679,9 @@
                               "metadata": {
                                 "description": "Optional. Tags of the Azure Firewall resource."
                               }
+                            },
+                            "azFwManagementSubnetId": {
+                              "type": "string"
                             }
                           },
                           "variables": {
@@ -1696,7 +1699,6 @@
                             ],
                             "azureSkuName": "[if(empty(parameters('vNetId')), 'AZFW_Hub', 'AZFW_VNet')]",
                             "requiresManagementIp": "[if(equals(parameters('azureSkuTier'), 'Basic'), true(), false())]",
-                            "isCreateDefaultManagementIP": "[and(empty(parameters('managementIPResourceID')), variables('requiresManagementIp'))]",
                             "builtInRoleNames": {
                               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -1713,7 +1715,7 @@
                               "location": "[parameters('location')]",
                               "zones": "[if(equals(length(parameters('zones')), 0), null(), parameters('zones'))]",
                               "tags": "[parameters('tags')]",
-                              "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), reference('publicIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('vNetId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), reference('managementIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('vNetId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('managementIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), reference('managementIPAddress').outputs.resourceId.value))), createObject()))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', parameters('applicationRuleCollections'), 'natRuleCollections', parameters('natRuleCollections'), 'networkRuleCollections', parameters('networkRuleCollections')), createObject('firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'hubIPAddresses', if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null()), 'virtualHub', if(not(empty(parameters('virtualHubId'))), createObject('id', parameters('virtualHubId')), null())))]",
+                              "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', reference('publicIPAddress').outputs.name.value, 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('vNetId')))), if(not(empty(parameters('publicIPAddressObject'))), createObject('publicIPAddress', createObject('id', reference('publicIPAddress').outputs.resourceId.value)), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', reference('managementIPAddress').outputs.name.value, 'properties', createObject('subnet', createObject('id', parameters('azFwManagementSubnetId')), 'publicIPAddress', createObject('id', reference('managementIPAddress').outputs.resourceId.value))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', parameters('applicationRuleCollections'), 'natRuleCollections', parameters('natRuleCollections'), 'networkRuleCollections', parameters('networkRuleCollections')), createObject('firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'hubIPAddresses', if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null()), 'virtualHub', if(not(empty(parameters('virtualHubId'))), createObject('id', parameters('virtualHubId')), null())))]",
                               "dependsOn": [
                                 "managementIPAddress",
                                 "publicIPAddress"
@@ -1779,7 +1781,7 @@
                               ]
                             },
                             "publicIPAddress": {
-                              "condition": "[and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet'))]",
+                              "condition": "[equals(variables('azureSkuName'), 'AZFW_VNet')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2022-09-01",
                               "name": "[parameters('publicIpName')]",
@@ -1827,8 +1829,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.23.1.45101",
-                                      "templateHash": "8983288402858976358"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "4760444240554037718"
                                     }
                                   },
                                   "parameters": {
@@ -2122,8 +2124,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.23.1.45101",
-                                              "templateHash": "15781585805590730053"
+                                              "version": "0.24.24.22086",
+                                              "templateHash": "10254776496318105172"
                                             }
                                           },
                                           "parameters": {
@@ -2307,7 +2309,7 @@
                               }
                             },
                             "managementIPAddress": {
-                              "condition": "[and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet'))]",
+                              "condition": "[variables('requiresManagementIp')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2022-09-01",
                               "name": "[format('{0}-management', parameters('publicIpName'))]",
@@ -2339,8 +2341,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.23.1.45101",
-                                      "templateHash": "8983288402858976358"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "4760444240554037718"
                                     }
                                   },
                                   "parameters": {
@@ -2634,8 +2636,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.23.1.45101",
-                                              "templateHash": "15781585805590730053"
+                                              "version": "0.24.24.22086",
+                                              "templateHash": "10254776496318105172"
                                             }
                                           },
                                           "parameters": {
@@ -2816,6 +2818,9 @@
                                     }
                                   }
                                 }
+                              },
+                              "metadata": {
+                                "description": "create a Management Public IP address if one is not provided and the flag is true"
                               }
                             }
                           },
@@ -2885,1154 +2890,10 @@
                             }
                           }
                         }
-                      }
-                    },
-                    {
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "afw-deployment",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "tags": {
-                            "value": "[parameters('tags')]"
-                          },
-                          "location": {
-                            "value": "[parameters('location')]"
-                          },
-                          "name": {
-                            "value": "[parameters('firewallName')]"
-                          },
-                          "publicIpName": {
-                            "value": "[parameters('publicIpName')]"
-                          },
-                          "azureSkuTier": {
-                            "value": "Standard"
-                          },
-                          "vNetId": {
-                            "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('afwVNetName'))]"
-                          },
-                          "publicIPResourceID": {
-                            "value": ""
-                          },
-                          "additionalPublicIpConfigurations": {
-                            "value": []
-                          },
-                          "applicationRuleCollections": {
-                            "value": "[variables('applicationRuleCollections')]"
-                          },
-                          "networkRuleCollections": {
-                            "value": "[variables('networkRules')]"
-                          },
-                          "natRuleCollections": {
-                            "value": []
-                          },
-                          "threatIntelMode": {
-                            "value": "Deny"
-                          },
-                          "diagnosticWorkspaceId": {
-                            "value": "[parameters('logAnalyticsWorkspaceId')]"
-                          },
-                          "lock": {
-                            "value": ""
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "36997633427771227"
-                            }
-                          },
-                          "parameters": {
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. Name of the Azure Firewall."
-                              }
-                            },
-                            "publicIpName": {
-                              "type": "string",
-                              "defaultValue": "[format('{0}-Firewall-PIP', uniqueString(deployment().name, parameters('location')))]",
-                              "metadata": {
-                                "description": "Optional. Name of the Public IP address if created. If empty, a name will be generated."
-                              }
-                            },
-                            "azureSkuTier": {
-                              "type": "string",
-                              "defaultValue": "Standard",
-                              "allowedValues": [
-                                "Standard",
-                                "Premium"
-                              ],
-                              "metadata": {
-                                "description": "Optional. Tier of an Azure Firewall."
-                              }
-                            },
-                            "vNetId": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Conditional. Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty."
-                              }
-                            },
-                            "publicIPResourceID": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. The Public IP resource ID to associate to the AzureFirewallSubnet. If empty, then the Public IP that is created as part of this module will be applied to the AzureFirewallSubnet."
-                              }
-                            },
-                            "additionalPublicIpConfigurations": {
-                              "type": "array",
-                              "defaultValue": [],
-                              "metadata": {
-                                "description": "Optional. This is to add any additional Public IP configurations on top of the Public IP with subnet IP configuration."
-                              }
-                            },
-                            "isCreateDefaultPublicIP": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Specifies if a Public IP should be created by default if one is not provided."
-                              }
-                            },
-                            "publicIPAddressObject": {
-                              "type": "object",
-                              "defaultValue": {},
-                              "metadata": {
-                                "description": "Optional. Specifies the properties of the Public IP to create and be used by Azure Firewall. If it's not provided and publicIPAddressId is empty, a '-pip' suffix will be appended to the Firewall's name."
-                              }
-                            },
-                            "applicationRuleCollections": {
-                              "type": "array",
-                              "defaultValue": [],
-                              "metadata": {
-                                "description": "Optional. Collection of application rule collections used by Azure Firewall."
-                              }
-                            },
-                            "networkRuleCollections": {
-                              "type": "array",
-                              "defaultValue": [],
-                              "metadata": {
-                                "description": "Optional. Collection of network rule collections used by Azure Firewall."
-                              }
-                            },
-                            "natRuleCollections": {
-                              "type": "array",
-                              "defaultValue": [],
-                              "metadata": {
-                                "description": "Optional. Collection of NAT rule collections used by Azure Firewall."
-                              }
-                            },
-                            "firewallPolicyId": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Resource ID of the Firewall Policy that should be attached."
-                              }
-                            },
-                            "hubIPAddresses": {
-                              "type": "object",
-                              "defaultValue": {},
-                              "metadata": {
-                                "description": "Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied."
-                              }
-                            },
-                            "virtualHubId": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Conditional. The virtualHub resource ID to which the firewall belongs. Required if `vNetId` is empty."
-                              }
-                            },
-                            "threatIntelMode": {
-                              "type": "string",
-                              "defaultValue": "Deny",
-                              "allowedValues": [
-                                "Alert",
-                                "Deny",
-                                "Off"
-                              ],
-                              "metadata": {
-                                "description": "Optional. The operation mode for Threat Intel."
-                              }
-                            },
-                            "zones": {
-                              "type": "array",
-                              "defaultValue": [
-                                "1",
-                                "2",
-                                "3"
-                              ],
-                              "metadata": {
-                                "description": "Optional. Zone numbers e.g. 1,2,3."
-                              }
-                            },
-                            "diagnosticStorageAccountId": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Diagnostic Storage Account resource identifier."
-                              }
-                            },
-                            "diagnosticWorkspaceId": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Log Analytics workspace resource identifier."
-                              }
-                            },
-                            "diagnosticEventHubAuthorizationRuleId": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-                              }
-                            },
-                            "diagnosticEventHubName": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
-                              }
-                            },
-                            "location": {
-                              "type": "string",
-                              "defaultValue": "[resourceGroup().location]",
-                              "metadata": {
-                                "description": "Optional. Location for all resources."
-                              }
-                            },
-                            "lock": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "allowedValues": [
-                                "",
-                                "CanNotDelete",
-                                "ReadOnly"
-                              ],
-                              "metadata": {
-                                "description": "Optional. Specify the type of lock."
-                              }
-                            },
-                            "roleAssignments": {
-                              "type": "array",
-                              "defaultValue": [],
-                              "metadata": {
-                                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                              }
-                            },
-                            "tags": {
-                              "type": "object",
-                              "defaultValue": {},
-                              "metadata": {
-                                "description": "Optional. Tags of the Azure Firewall resource."
-                              }
-                            },
-                            "diagnosticLogCategoriesToEnable": {
-                              "type": "array",
-                              "defaultValue": [
-                                "allLogs"
-                              ],
-                              "allowedValues": [
-                                "allLogs",
-                                "AzureFirewallApplicationRule",
-                                "AzureFirewallNetworkRule",
-                                "AzureFirewallDnsProxy"
-                              ],
-                              "metadata": {
-                                "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource."
-                              }
-                            },
-                            "diagnosticMetricsToEnable": {
-                              "type": "array",
-                              "defaultValue": [
-                                "AllMetrics"
-                              ],
-                              "allowedValues": [
-                                "AllMetrics"
-                              ],
-                              "metadata": {
-                                "description": "Optional. The name of metrics that will be streamed."
-                              }
-                            },
-                            "diagnosticSettingsName": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to \"<resourceName>-diagnosticSettings\"."
-                              }
-                            }
-                          },
-                          "variables": {
-                            "copy": [
-                              {
-                                "name": "additionalPublicIpConfigurationsVar",
-                                "count": "[length(parameters('additionalPublicIpConfigurations'))]",
-                                "input": {
-                                  "name": "[parameters('additionalPublicIpConfigurations')[copyIndex('additionalPublicIpConfigurationsVar')].name]",
-                                  "properties": {
-                                    "publicIPAddress": "[if(contains(parameters('additionalPublicIpConfigurations')[copyIndex('additionalPublicIpConfigurationsVar')], 'publicIPAddressResourceId'), createObject('id', parameters('additionalPublicIpConfigurations')[copyIndex('additionalPublicIpConfigurationsVar')].publicIPAddressResourceId), null())]"
-                                  }
-                                }
-                              },
-                              {
-                                "name": "diagnosticsLogsSpecified",
-                                "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
-                                "input": {
-                                  "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                  "enabled": true
-                                }
-                              },
-                              {
-                                "name": "diagnosticsMetrics",
-                                "count": "[length(parameters('diagnosticMetricsToEnable'))]",
-                                "input": {
-                                  "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
-                                  "timeGrain": null,
-                                  "enabled": true
-                                }
-                              }
-                            ],
-                            "subnetVar": {
-                              "subnet": {
-                                "id": "[format('{0}/subnets/AzureFirewallSubnet', parameters('vNetId'))]"
-                              }
-                            },
-                            "existingPip": {
-                              "publicIPAddress": {
-                                "id": "[parameters('publicIPResourceID')]"
-                              }
-                            },
-                            "azureSkuName": "[if(empty(parameters('vNetId')), 'AZFW_Hub', 'AZFW_VNet')]",
-                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]"
-                          },
-                          "resources": [
-                            {
-                              "type": "Microsoft.Network/azureFirewalls",
-                              "apiVersion": "2022-07-01",
-                              "name": "[parameters('name')]",
-                              "location": "[parameters('location')]",
-                              "zones": "[if(equals(length(parameters('zones')), 0), null(), parameters('zones'))]",
-                              "tags": "[parameters('tags')]",
-                              "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), reference(resourceId('Microsoft.Resources/deployments', parameters('publicIpName')), '2022-09-01').outputs.name.value), 'properties', union(variables('subnetVar'), if(not(empty(parameters('publicIPResourceID'))), variables('existingPip'), createObject()), if(parameters('isCreateDefaultPublicIP'), createObject('publicIPAddress', if(and(empty(parameters('publicIPResourceID')), parameters('isCreateDefaultPublicIP')), createObject('id', reference(resourceId('Microsoft.Resources/deployments', parameters('publicIpName')), '2022-09-01').outputs.resourceId.value), null())), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', parameters('applicationRuleCollections'), 'natRuleCollections', parameters('natRuleCollections'), 'networkRuleCollections', parameters('networkRuleCollections')), createObject('firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'hubIPAddresses', if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null()), 'virtualHub', if(not(empty(parameters('virtualHubId'))), createObject('id', parameters('virtualHubId')), null())))]",
-                              "dependsOn": [
-                                "[resourceId('Microsoft.Resources/deployments', parameters('publicIpName'))]"
-                              ]
-                            },
-                            {
-                              "condition": "[not(empty(parameters('lock')))]",
-                              "type": "Microsoft.Authorization/locks",
-                              "apiVersion": "2020-05-01",
-                              "scope": "[format('Microsoft.Network/azureFirewalls/{0}', parameters('name'))]",
-                              "name": "[format('{0}-{1}-lock', parameters('name'), parameters('lock'))]",
-                              "properties": {
-                                "level": "[parameters('lock')]",
-                                "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
-                              },
-                              "dependsOn": [
-                                "[resourceId('Microsoft.Network/azureFirewalls', parameters('name'))]"
-                              ]
-                            },
-                            {
-                              "condition": "[or(or(or(not(empty(parameters('diagnosticStorageAccountId'))), not(empty(parameters('diagnosticWorkspaceId')))), not(empty(parameters('diagnosticEventHubAuthorizationRuleId')))), not(empty(parameters('diagnosticEventHubName'))))]",
-                              "type": "Microsoft.Insights/diagnosticSettings",
-                              "apiVersion": "2021-05-01-preview",
-                              "scope": "[format('Microsoft.Network/azureFirewalls/{0}', parameters('name'))]",
-                              "name": "[if(not(empty(parameters('diagnosticSettingsName'))), parameters('diagnosticSettingsName'), format('{0}-diagnosticSettings', parameters('name')))]",
-                              "properties": {
-                                "storageAccountId": "[if(not(empty(parameters('diagnosticStorageAccountId'))), parameters('diagnosticStorageAccountId'), null())]",
-                                "workspaceId": "[if(not(empty(parameters('diagnosticWorkspaceId'))), parameters('diagnosticWorkspaceId'), null())]",
-                                "eventHubAuthorizationRuleId": "[if(not(empty(parameters('diagnosticEventHubAuthorizationRuleId'))), parameters('diagnosticEventHubAuthorizationRuleId'), null())]",
-                                "eventHubName": "[if(not(empty(parameters('diagnosticEventHubName'))), parameters('diagnosticEventHubName'), null())]",
-                                "metrics": "[variables('diagnosticsMetrics')]",
-                                "logs": "[variables('diagnosticsLogs')]"
-                              },
-                              "dependsOn": [
-                                "[resourceId('Microsoft.Network/azureFirewalls', parameters('name'))]"
-                              ]
-                            },
-                            {
-                              "condition": "[and(and(empty(parameters('publicIPResourceID')), parameters('isCreateDefaultPublicIP')), equals(variables('azureSkuName'), 'AZFW_VNet'))]",
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
-                              "name": "[parameters('publicIpName')]",
-                              "properties": {
-                                "expressionEvaluationOptions": {
-                                  "scope": "inner"
-                                },
-                                "mode": "Incremental",
-                                "parameters": {
-                                  "name": "[if(contains(parameters('publicIPAddressObject'), 'name'), if(not(empty(parameters('publicIPAddressObject').name)), createObject('value', parameters('publicIPAddressObject').name), createObject('value', format('{0}-pip', parameters('name')))), createObject('value', format('{0}-pip', parameters('name'))))]",
-                                  "publicIPPrefixResourceId": "[if(contains(parameters('publicIPAddressObject'), 'publicIPPrefixResourceId'), if(not(empty(parameters('publicIPAddressObject').publicIPPrefixResourceId)), createObject('value', parameters('publicIPAddressObject').publicIPPrefixResourceId), createObject('value', '')), createObject('value', ''))]",
-                                  "publicIPAllocationMethod": "[if(contains(parameters('publicIPAddressObject'), 'publicIPAllocationMethod'), if(not(empty(parameters('publicIPAddressObject').publicIPAllocationMethod)), createObject('value', parameters('publicIPAddressObject').publicIPAllocationMethod), createObject('value', 'Static')), createObject('value', 'Static'))]",
-                                  "skuName": "[if(contains(parameters('publicIPAddressObject'), 'skuName'), if(not(empty(parameters('publicIPAddressObject').skuName)), createObject('value', parameters('publicIPAddressObject').skuName), createObject('value', 'Standard')), createObject('value', 'Standard'))]",
-                                  "skuTier": "[if(contains(parameters('publicIPAddressObject'), 'skuTier'), if(not(empty(parameters('publicIPAddressObject').skuTier)), createObject('value', parameters('publicIPAddressObject').skuTier), createObject('value', 'Regional')), createObject('value', 'Regional'))]",
-                                  "roleAssignments": "[if(contains(parameters('publicIPAddressObject'), 'roleAssignments'), if(not(empty(parameters('publicIPAddressObject').roleAssignments)), createObject('value', parameters('publicIPAddressObject').roleAssignments), createObject('value', createArray())), createObject('value', createArray()))]",
-                                  "diagnosticMetricsToEnable": "[if(contains(parameters('publicIPAddressObject'), 'diagnosticMetricsToEnable'), if(not(empty(parameters('publicIPAddressObject').diagnosticMetricsToEnable)), createObject('value', parameters('publicIPAddressObject').diagnosticMetricsToEnable), createObject('value', createArray('AllMetrics'))), createObject('value', createArray('AllMetrics')))]",
-                                  "diagnosticLogCategoriesToEnable": "[if(contains(parameters('publicIPAddressObject'), 'diagnosticLogCategoriesToEnable'), createObject('value', parameters('publicIPAddressObject').diagnosticLogCategoriesToEnable), createObject('value', createArray('allLogs')))]",
-                                  "location": {
-                                    "value": "[parameters('location')]"
-                                  },
-                                  "diagnosticStorageAccountId": {
-                                    "value": "[parameters('diagnosticStorageAccountId')]"
-                                  },
-                                  "diagnosticWorkspaceId": {
-                                    "value": "[parameters('diagnosticWorkspaceId')]"
-                                  },
-                                  "diagnosticEventHubAuthorizationRuleId": {
-                                    "value": "[parameters('diagnosticEventHubAuthorizationRuleId')]"
-                                  },
-                                  "diagnosticEventHubName": {
-                                    "value": "[parameters('diagnosticEventHubName')]"
-                                  },
-                                  "lock": {
-                                    "value": "[parameters('lock')]"
-                                  },
-                                  "tags": {
-                                    "value": "[parameters('tags')]"
-                                  },
-                                  "zones": {
-                                    "value": "[parameters('zones')]"
-                                  }
-                                },
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "metadata": {
-                                    "_generator": {
-                                      "name": "bicep",
-                                      "version": "0.23.1.45101",
-                                      "templateHash": "8983288402858976358"
-                                    }
-                                  },
-                                  "parameters": {
-                                    "name": {
-                                      "type": "string",
-                                      "metadata": {
-                                        "description": "Required. The name of the Public IP Address."
-                                      }
-                                    },
-                                    "publicIPPrefixResourceId": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix."
-                                      }
-                                    },
-                                    "publicIPAllocationMethod": {
-                                      "type": "string",
-                                      "defaultValue": "Dynamic",
-                                      "allowedValues": [
-                                        "Dynamic",
-                                        "Static"
-                                      ],
-                                      "metadata": {
-                                        "description": "Optional. The public IP address allocation method."
-                                      }
-                                    },
-                                    "skuName": {
-                                      "type": "string",
-                                      "defaultValue": "Basic",
-                                      "allowedValues": [
-                                        "Basic",
-                                        "Standard"
-                                      ],
-                                      "metadata": {
-                                        "description": "Optional. Name of a public IP address SKU."
-                                      }
-                                    },
-                                    "skuTier": {
-                                      "type": "string",
-                                      "defaultValue": "Regional",
-                                      "allowedValues": [
-                                        "Global",
-                                        "Regional"
-                                      ],
-                                      "metadata": {
-                                        "description": "Optional. Tier of a public IP address SKU."
-                                      }
-                                    },
-                                    "zones": {
-                                      "type": "array",
-                                      "defaultValue": [],
-                                      "metadata": {
-                                        "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
-                                      }
-                                    },
-                                    "publicIPAddressVersion": {
-                                      "type": "string",
-                                      "defaultValue": "IPv4",
-                                      "allowedValues": [
-                                        "IPv4",
-                                        "IPv6"
-                                      ],
-                                      "metadata": {
-                                        "description": "Optional. IP address version."
-                                      }
-                                    },
-                                    "diagnosticStorageAccountId": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. Resource ID of the diagnostic storage account."
-                                      }
-                                    },
-                                    "diagnosticWorkspaceId": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. Resource ID of the diagnostic log analytics workspace."
-                                      }
-                                    },
-                                    "diagnosticEventHubAuthorizationRuleId": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-                                      }
-                                    },
-                                    "diagnosticEventHubName": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
-                                      }
-                                    },
-                                    "domainNameLabel": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system."
-                                      }
-                                    },
-                                    "fqdn": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone."
-                                      }
-                                    },
-                                    "reverseFqdn": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN."
-                                      }
-                                    },
-                                    "lock": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "allowedValues": [
-                                        "",
-                                        "CanNotDelete",
-                                        "ReadOnly"
-                                      ],
-                                      "metadata": {
-                                        "description": "Optional. Specify the type of lock."
-                                      }
-                                    },
-                                    "location": {
-                                      "type": "string",
-                                      "defaultValue": "[resourceGroup().location]",
-                                      "metadata": {
-                                        "description": "Optional. Location for all resources."
-                                      }
-                                    },
-                                    "roleAssignments": {
-                                      "type": "array",
-                                      "defaultValue": [],
-                                      "metadata": {
-                                        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                                      }
-                                    },
-                                    "tags": {
-                                      "type": "object",
-                                      "defaultValue": {},
-                                      "metadata": {
-                                        "description": "Optional. Tags of the resource."
-                                      }
-                                    },
-                                    "diagnosticLogCategoriesToEnable": {
-                                      "type": "array",
-                                      "defaultValue": [
-                                        "allLogs"
-                                      ],
-                                      "allowedValues": [
-                                        "allLogs",
-                                        "DDoSProtectionNotifications",
-                                        "DDoSMitigationFlowLogs",
-                                        "DDoSMitigationReports"
-                                      ],
-                                      "metadata": {
-                                        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource."
-                                      }
-                                    },
-                                    "diagnosticMetricsToEnable": {
-                                      "type": "array",
-                                      "defaultValue": [
-                                        "AllMetrics"
-                                      ],
-                                      "allowedValues": [
-                                        "AllMetrics"
-                                      ],
-                                      "metadata": {
-                                        "description": "Optional. The name of metrics that will be streamed."
-                                      }
-                                    },
-                                    "diagnosticSettingsName": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to \"<resourceName>-diagnosticSettings\"."
-                                      }
-                                    }
-                                  },
-                                  "variables": {
-                                    "copy": [
-                                      {
-                                        "name": "diagnosticsLogsSpecified",
-                                        "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
-                                        "input": {
-                                          "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                          "enabled": true
-                                        }
-                                      },
-                                      {
-                                        "name": "diagnosticsMetrics",
-                                        "count": "[length(parameters('diagnosticMetricsToEnable'))]",
-                                        "input": {
-                                          "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
-                                          "timeGrain": null,
-                                          "enabled": true
-                                        }
-                                      }
-                                    ],
-                                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]"
-                                  },
-                                  "resources": [
-                                    {
-                                      "type": "Microsoft.Network/publicIPAddresses",
-                                      "apiVersion": "2022-07-01",
-                                      "name": "[parameters('name')]",
-                                      "location": "[parameters('location')]",
-                                      "tags": "[parameters('tags')]",
-                                      "sku": {
-                                        "name": "[parameters('skuName')]",
-                                        "tier": "[parameters('skuTier')]"
-                                      },
-                                      "zones": "[parameters('zones')]",
-                                      "properties": {
-                                        "dnsSettings": "[if(not(empty(parameters('domainNameLabel'))), createObject('domainNameLabel', parameters('domainNameLabel'), 'fqdn', parameters('fqdn'), 'reverseFqdn', parameters('reverseFqdn')), null())]",
-                                        "publicIPAddressVersion": "[parameters('publicIPAddressVersion')]",
-                                        "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
-                                        "publicIPPrefix": "[if(not(empty(parameters('publicIPPrefixResourceId'))), createObject('id', parameters('publicIPPrefixResourceId')), null())]",
-                                        "idleTimeoutInMinutes": 4,
-                                        "ipTags": []
-                                      }
-                                    },
-                                    {
-                                      "condition": "[not(empty(parameters('lock')))]",
-                                      "type": "Microsoft.Authorization/locks",
-                                      "apiVersion": "2020-05-01",
-                                      "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', parameters('name'))]",
-                                      "name": "[format('{0}-{1}-lock', parameters('name'), parameters('lock'))]",
-                                      "properties": {
-                                        "level": "[parameters('lock')]",
-                                        "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
-                                      },
-                                      "dependsOn": [
-                                        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('name'))]"
-                                      ]
-                                    },
-                                    {
-                                      "condition": "[or(or(or(not(empty(parameters('diagnosticStorageAccountId'))), not(empty(parameters('diagnosticWorkspaceId')))), not(empty(parameters('diagnosticEventHubAuthorizationRuleId')))), not(empty(parameters('diagnosticEventHubName'))))]",
-                                      "type": "Microsoft.Insights/diagnosticSettings",
-                                      "apiVersion": "2021-05-01-preview",
-                                      "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', parameters('name'))]",
-                                      "name": "[if(not(empty(parameters('diagnosticSettingsName'))), parameters('diagnosticSettingsName'), format('{0}-diagnosticSettings', parameters('name')))]",
-                                      "properties": {
-                                        "storageAccountId": "[if(not(empty(parameters('diagnosticStorageAccountId'))), parameters('diagnosticStorageAccountId'), null())]",
-                                        "workspaceId": "[if(not(empty(parameters('diagnosticWorkspaceId'))), parameters('diagnosticWorkspaceId'), null())]",
-                                        "eventHubAuthorizationRuleId": "[if(not(empty(parameters('diagnosticEventHubAuthorizationRuleId'))), parameters('diagnosticEventHubAuthorizationRuleId'), null())]",
-                                        "eventHubName": "[if(not(empty(parameters('diagnosticEventHubName'))), parameters('diagnosticEventHubName'), null())]",
-                                        "metrics": "[variables('diagnosticsMetrics')]",
-                                        "logs": "[variables('diagnosticsLogs')]"
-                                      },
-                                      "dependsOn": [
-                                        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('name'))]"
-                                      ]
-                                    },
-                                    {
-                                      "copy": {
-                                        "name": "publicIpAddress_roleAssignments",
-                                        "count": "[length(parameters('roleAssignments'))]"
-                                      },
-                                      "type": "Microsoft.Resources/deployments",
-                                      "apiVersion": "2022-09-01",
-                                      "name": "[format('{0}-PIPAddress-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-                                      "properties": {
-                                        "expressionEvaluationOptions": {
-                                          "scope": "inner"
-                                        },
-                                        "mode": "Incremental",
-                                        "parameters": {
-                                          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
-                                          "principalIds": {
-                                            "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
-                                          },
-                                          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
-                                          "roleDefinitionIdOrName": {
-                                            "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
-                                          },
-                                          "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
-                                          "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
-                                          "resourceId": {
-                                            "value": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('name'))]"
-                                          }
-                                        },
-                                        "template": {
-                                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                          "contentVersion": "1.0.0.0",
-                                          "metadata": {
-                                            "_generator": {
-                                              "name": "bicep",
-                                              "version": "0.23.1.45101",
-                                              "templateHash": "15781585805590730053"
-                                            }
-                                          },
-                                          "parameters": {
-                                            "principalIds": {
-                                              "type": "array",
-                                              "metadata": {
-                                                "description": "Required. The IDs of the principals to assign the role to."
-                                              }
-                                            },
-                                            "roleDefinitionIdOrName": {
-                                              "type": "string",
-                                              "metadata": {
-                                                "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
-                                              }
-                                            },
-                                            "resourceId": {
-                                              "type": "string",
-                                              "metadata": {
-                                                "description": "Required. The resource ID of the resource to apply the role assignment to."
-                                              }
-                                            },
-                                            "principalType": {
-                                              "type": "string",
-                                              "defaultValue": "",
-                                              "allowedValues": [
-                                                "ServicePrincipal",
-                                                "Group",
-                                                "User",
-                                                "ForeignGroup",
-                                                "Device",
-                                                ""
-                                              ],
-                                              "metadata": {
-                                                "description": "Optional. The principal type of the assigned principal ID."
-                                              }
-                                            },
-                                            "description": {
-                                              "type": "string",
-                                              "defaultValue": "",
-                                              "metadata": {
-                                                "description": "Optional. The description of the role assignment."
-                                              }
-                                            },
-                                            "condition": {
-                                              "type": "string",
-                                              "defaultValue": "",
-                                              "metadata": {
-                                                "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                                              }
-                                            },
-                                            "conditionVersion": {
-                                              "type": "string",
-                                              "defaultValue": "2.0",
-                                              "allowedValues": [
-                                                "2.0"
-                                              ],
-                                              "metadata": {
-                                                "description": "Optional. Version of the condition."
-                                              }
-                                            },
-                                            "delegatedManagedIdentityResourceId": {
-                                              "type": "string",
-                                              "defaultValue": "",
-                                              "metadata": {
-                                                "description": "Optional. Id of the delegated managed identity resource."
-                                              }
-                                            }
-                                          },
-                                          "variables": {
-                                            "builtInRoleNames": {
-                                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
-                                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
-                                              "Azure Center for SAP solutions administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7b0c7e81-271f-4c71-90bf-e30bdfdbc2f7')]",
-                                              "Azure Center for SAP solutions reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '05352d14-a920-4328-a0de-4cbe7430e26b')]",
-                                              "Azure Center for SAP solutions service role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aabbc5dd-1af0-458b-a942-81af88f9c138')]",
-                                              "Azure Kubernetes Service Policy Add-on Deployment": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18ed5180-3e48-46fd-8541-4ea054d57064')]",
-                                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
-                                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
-                                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                                              "Cosmos DB Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '230815da-be43-4aae-9cb4-875f7bd000aa')]",
-                                              "Desktop Virtualization Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a959dbd1-f747-45e3-8ba6-dd80f235f97c')]",
-                                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
-                                              "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
-                                              "DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
-                                              "DocumentDB Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5bd9cd88-fe45-4216-938b-f97437e15450')]",
-                                              "Domain Services Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'eeaeda52-9324-47f6-8069-5d5bade478b2')]",
-                                              "Domain Services Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '361898ef-9ed1-48c2-849c-a832951106bb')]",
-                                              "LocalNGFirewallAdministrator role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a8835c7d-b5cb-47fa-b6f0-65ea10ce07a2')]",
-                                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-                                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-                                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-                                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-                                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-                                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-                                              "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
-                                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                                              "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
-                                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
-                                              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-                                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
-                                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
-                                              "SQL Managed Instance Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4939a1f6-9ae0-4e48-a1e0-f2cbe897382d')]",
-                                              "SQL Security Manager": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '056cd41c-7e88-42e1-933e-88ba6a50c9c3')]",
-                                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
-                                              "Traffic Manager Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a4b10055-b0c7-44c2-b00f-c7b5b3550cf7')]",
-                                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-                                              "Virtual Machine Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
-                                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
-                                              "Virtual Machine User Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')]",
-                                              "Windows Admin Center Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a6333a3e-0164-44c3-b281-7a577aff287f')]"
-                                            }
-                                          },
-                                          "resources": [
-                                            {
-                                              "copy": {
-                                                "name": "roleAssignment",
-                                                "count": "[length(parameters('principalIds'))]"
-                                              },
-                                              "type": "Microsoft.Authorization/roleAssignments",
-                                              "apiVersion": "2022-04-01",
-                                              "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', last(split(parameters('resourceId'), '/')))]",
-                                              "name": "[guid(resourceId('Microsoft.Network/publicIPAddresses', last(split(parameters('resourceId'), '/'))), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
-                                              "properties": {
-                                                "description": "[parameters('description')]",
-                                                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
-                                                "principalId": "[parameters('principalIds')[copyIndex()]]",
-                                                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
-                                                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
-                                                "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
-                                                "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]"
-                                              }
-                                            }
-                                          ]
-                                        }
-                                      },
-                                      "dependsOn": [
-                                        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('name'))]"
-                                      ]
-                                    }
-                                  ],
-                                  "outputs": {
-                                    "resourceGroupName": {
-                                      "type": "string",
-                                      "metadata": {
-                                        "description": "The resource group the public IP address was deployed into."
-                                      },
-                                      "value": "[resourceGroup().name]"
-                                    },
-                                    "name": {
-                                      "type": "string",
-                                      "metadata": {
-                                        "description": "The name of the public IP address."
-                                      },
-                                      "value": "[parameters('name')]"
-                                    },
-                                    "resourceId": {
-                                      "type": "string",
-                                      "metadata": {
-                                        "description": "The resource ID of the public IP address."
-                                      },
-                                      "value": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('name'))]"
-                                    },
-                                    "ipAddress": {
-                                      "type": "string",
-                                      "metadata": {
-                                        "description": "The public IP address of the public IP address resource."
-                                      },
-                                      "value": "[if(contains(reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), '2022-07-01'), 'ipAddress'), reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), '2022-07-01').ipAddress, '')]"
-                                    },
-                                    "location": {
-                                      "type": "string",
-                                      "metadata": {
-                                        "description": "The location the resource was deployed into."
-                                      },
-                                      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), '2022-07-01', 'full').location]"
-                                    }
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              "copy": {
-                                "name": "azureFirewall_roleAssignments",
-                                "count": "[length(parameters('roleAssignments'))]"
-                              },
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
-                              "name": "[format('{0}-AzFW-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-                              "properties": {
-                                "expressionEvaluationOptions": {
-                                  "scope": "inner"
-                                },
-                                "mode": "Incremental",
-                                "parameters": {
-                                  "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
-                                  "principalIds": {
-                                    "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
-                                  },
-                                  "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
-                                  "roleDefinitionIdOrName": {
-                                    "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
-                                  },
-                                  "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
-                                  "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
-                                  "resourceId": {
-                                    "value": "[resourceId('Microsoft.Network/azureFirewalls', parameters('name'))]"
-                                  }
-                                },
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "metadata": {
-                                    "_generator": {
-                                      "name": "bicep",
-                                      "version": "0.23.1.45101",
-                                      "templateHash": "16022215935591204400"
-                                    }
-                                  },
-                                  "parameters": {
-                                    "principalIds": {
-                                      "type": "array",
-                                      "metadata": {
-                                        "description": "Required. The IDs of the principals to assign the role to."
-                                      }
-                                    },
-                                    "roleDefinitionIdOrName": {
-                                      "type": "string",
-                                      "metadata": {
-                                        "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
-                                      }
-                                    },
-                                    "resourceId": {
-                                      "type": "string",
-                                      "metadata": {
-                                        "description": "Required. The resource ID of the resource to apply the role assignment to."
-                                      }
-                                    },
-                                    "principalType": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "allowedValues": [
-                                        "ServicePrincipal",
-                                        "Group",
-                                        "User",
-                                        "ForeignGroup",
-                                        "Device",
-                                        ""
-                                      ],
-                                      "metadata": {
-                                        "description": "Optional. The principal type of the assigned principal ID."
-                                      }
-                                    },
-                                    "description": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. The description of the role assignment."
-                                      }
-                                    },
-                                    "condition": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                                      }
-                                    },
-                                    "conditionVersion": {
-                                      "type": "string",
-                                      "defaultValue": "2.0",
-                                      "allowedValues": [
-                                        "2.0"
-                                      ],
-                                      "metadata": {
-                                        "description": "Optional. Version of the condition."
-                                      }
-                                    },
-                                    "delegatedManagedIdentityResourceId": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. Id of the delegated managed identity resource."
-                                      }
-                                    }
-                                  },
-                                  "variables": {
-                                    "builtInRoleNames": {
-                                      "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
-                                      "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
-                                      "Azure Center for SAP solutions administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7b0c7e81-271f-4c71-90bf-e30bdfdbc2f7')]",
-                                      "Azure Center for SAP solutions reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '05352d14-a920-4328-a0de-4cbe7430e26b')]",
-                                      "Azure Center for SAP solutions service role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aabbc5dd-1af0-458b-a942-81af88f9c138')]",
-                                      "Azure Kubernetes Service Policy Add-on Deployment": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18ed5180-3e48-46fd-8541-4ea054d57064')]",
-                                      "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
-                                      "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
-                                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                                      "Cosmos DB Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '230815da-be43-4aae-9cb4-875f7bd000aa')]",
-                                      "Desktop Virtualization Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a959dbd1-f747-45e3-8ba6-dd80f235f97c')]",
-                                      "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
-                                      "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
-                                      "DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
-                                      "DocumentDB Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5bd9cd88-fe45-4216-938b-f97437e15450')]",
-                                      "Domain Services Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'eeaeda52-9324-47f6-8069-5d5bade478b2')]",
-                                      "Domain Services Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '361898ef-9ed1-48c2-849c-a832951106bb')]",
-                                      "LocalNGFirewallAdministrator role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a8835c7d-b5cb-47fa-b6f0-65ea10ce07a2')]",
-                                      "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-                                      "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-                                      "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-                                      "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-                                      "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-                                      "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                                      "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-                                      "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
-                                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                                      "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
-                                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                                      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
-                                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-                                      "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
-                                      "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
-                                      "SQL Managed Instance Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4939a1f6-9ae0-4e48-a1e0-f2cbe897382d')]",
-                                      "SQL Security Manager": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '056cd41c-7e88-42e1-933e-88ba6a50c9c3')]",
-                                      "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
-                                      "Traffic Manager Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a4b10055-b0c7-44c2-b00f-c7b5b3550cf7')]",
-                                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-                                      "Virtual Machine Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
-                                      "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
-                                      "Virtual Machine User Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')]",
-                                      "Windows Admin Center Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a6333a3e-0164-44c3-b281-7a577aff287f')]"
-                                    }
-                                  },
-                                  "resources": [
-                                    {
-                                      "copy": {
-                                        "name": "roleAssignment",
-                                        "count": "[length(parameters('principalIds'))]"
-                                      },
-                                      "type": "Microsoft.Authorization/roleAssignments",
-                                      "apiVersion": "2022-04-01",
-                                      "scope": "[format('Microsoft.Network/azureFirewalls/{0}', last(split(parameters('resourceId'), '/')))]",
-                                      "name": "[guid(resourceId('Microsoft.Network/azureFirewalls', last(split(parameters('resourceId'), '/'))), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
-                                      "properties": {
-                                        "description": "[parameters('description')]",
-                                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
-                                        "principalId": "[parameters('principalIds')[copyIndex()]]",
-                                        "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
-                                        "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
-                                        "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
-                                        "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]"
-                                      }
-                                    }
-                                  ]
-                                }
-                              },
-                              "dependsOn": [
-                                "[resourceId('Microsoft.Network/azureFirewalls', parameters('name'))]"
-                              ]
-                            }
-                          ],
-                          "outputs": {
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource ID of the Azure Firewall."
-                              },
-                              "value": "[resourceId('Microsoft.Network/azureFirewalls', parameters('name'))]"
-                            },
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the Azure Firewall."
-                              },
-                              "value": "[parameters('name')]"
-                            },
-                            "resourceGroupName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource group the Azure firewall was deployed into."
-                              },
-                              "value": "[resourceGroup().name]"
-                            },
-                            "privateIp": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The private IP of the Azure firewall."
-                              },
-                              "value": "[if(contains(reference(resourceId('Microsoft.Network/azureFirewalls', parameters('name')), '2022-07-01'), 'ipConfigurations'), reference(resourceId('Microsoft.Network/azureFirewalls', parameters('name')), '2022-07-01').ipConfigurations[0].properties.privateIPAddress, '')]"
-                            },
-                            "ipConfAzureFirewallSubnet": {
-                              "type": "object",
-                              "metadata": {
-                                "description": "The Public IP configuration object for the Azure Firewall Subnet."
-                              },
-                              "value": "[if(contains(reference(resourceId('Microsoft.Network/azureFirewalls', parameters('name')), '2022-07-01'), 'ipConfigurations'), reference(resourceId('Microsoft.Network/azureFirewalls', parameters('name')), '2022-07-01').ipConfigurations[0], createObject())]"
-                            },
-                            "applicationRuleCollections": {
-                              "type": "array",
-                              "metadata": {
-                                "description": "List of Application Rule Collections."
-                              },
-                              "value": "[parameters('applicationRuleCollections')]"
-                            },
-                            "networkRuleCollections": {
-                              "type": "array",
-                              "metadata": {
-                                "description": "List of Network Rule Collections."
-                              },
-                              "value": "[parameters('networkRuleCollections')]"
-                            },
-                            "natRuleCollections": {
-                              "type": "array",
-                              "metadata": {
-                                "description": "Collection of NAT rule collections used by Azure Firewall."
-                              },
-                              "value": "[parameters('natRuleCollections')]"
-                            },
-                            "location": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The location the resource was deployed into."
-                              },
-                              "value": "[reference(resourceId('Microsoft.Network/azureFirewalls', parameters('name')), '2022-07-01', 'full').location]"
-                            }
-                          }
-                        }
                       },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('afwVNetName'), 'AzureFirewallManagementSubnet')]"
+                      ],
                       "metadata": {
                         "description": "The azure firewall deployment."
                       }
@@ -4103,8 +2964,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "15693143826990020218"
+                      "version": "0.24.24.22086",
+                      "templateHash": "14393073571541598464"
                     }
                   },
                   "parameters": {
@@ -4450,8 +3311,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "6758890924908235605"
+              "version": "0.24.24.22086",
+              "templateHash": "6800856517727767534"
             }
           },
           "parameters": {
@@ -4716,8 +3577,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "1396335178164847616"
+                      "version": "0.24.24.22086",
+                      "templateHash": "2291204764315289154"
                     }
                   },
                   "parameters": {
@@ -4850,8 +3711,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "11475170866976628368"
+                      "version": "0.24.24.22086",
+                      "templateHash": "814413740097423608"
                     }
                   },
                   "parameters": {
@@ -4987,8 +3848,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "1844430525693158654"
+                      "version": "0.24.24.22086",
+                      "templateHash": "17847326324384615666"
                     }
                   },
                   "parameters": {
@@ -5153,8 +4014,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "7002753543158218780"
+                      "version": "0.24.24.22086",
+                      "templateHash": "5398082119936880999"
                     }
                   },
                   "parameters": {
@@ -5345,8 +4206,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "7002753543158218780"
+                      "version": "0.24.24.22086",
+                      "templateHash": "5398082119936880999"
                     }
                   },
                   "parameters": {
@@ -5536,8 +4397,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "7002753543158218780"
+                      "version": "0.24.24.22086",
+                      "templateHash": "5398082119936880999"
                     }
                   },
                   "parameters": {
@@ -5725,8 +4586,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "8844508248456226981"
+                      "version": "0.24.24.22086",
+                      "templateHash": "7987784012274817199"
                     }
                   },
                   "parameters": {
@@ -5813,8 +4674,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "8844508248456226981"
+                      "version": "0.24.24.22086",
+                      "templateHash": "7987784012274817199"
                     }
                   },
                   "parameters": {
@@ -5908,8 +4769,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "1589616729692312977"
+                      "version": "0.24.24.22086",
+                      "templateHash": "7540037590953318002"
                     }
                   },
                   "parameters": {
@@ -6027,8 +4888,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "1512519384923161590"
+                              "version": "0.24.24.22086",
+                              "templateHash": "18358369372560772682"
                             }
                           },
                           "parameters": {
@@ -6266,8 +5127,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "8903545752840930838"
+                      "version": "0.24.24.22086",
+                      "templateHash": "2869628300835156309"
                     }
                   },
                   "parameters": {
@@ -6491,8 +5352,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "5811836382027324568"
+                      "version": "0.24.24.22086",
+                      "templateHash": "9443647075366481353"
                     }
                   },
                   "parameters": {
@@ -6668,8 +5529,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "1135276494921329178"
+                      "version": "0.24.24.22086",
+                      "templateHash": "12489113928884745605"
                     }
                   },
                   "parameters": {
@@ -6926,8 +5787,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "8010806321264809413"
+                              "version": "0.24.24.22086",
+                              "templateHash": "4326035150635012963"
                             }
                           },
                           "parameters": {
@@ -6999,8 +5860,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "4724583560763750750"
+                              "version": "0.24.24.22086",
+                              "templateHash": "406732206068594528"
                             }
                           },
                           "parameters": {
@@ -7066,8 +5927,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "8010806321264809413"
+                              "version": "0.24.24.22086",
+                              "templateHash": "4326035150635012963"
                             }
                           },
                           "parameters": {
@@ -7248,8 +6109,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "11310236489092583250"
+              "version": "0.24.24.22086",
+              "templateHash": "10690019665256242899"
             }
           },
           "parameters": {
@@ -7364,8 +6225,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "1396335178164847616"
+                      "version": "0.24.24.22086",
+                      "templateHash": "2291204764315289154"
                     }
                   },
                   "parameters": {
@@ -7511,8 +6372,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "7534193650398906273"
+                      "version": "0.24.24.22086",
+                      "templateHash": "2151075819488205175"
                     }
                   },
                   "parameters": {
@@ -7656,8 +6517,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "11665409638800967653"
+                              "version": "0.24.24.22086",
+                              "templateHash": "2023532922245227158"
                             }
                           },
                           "parameters": {
@@ -8129,8 +6990,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "17579836593992722031"
+                              "version": "0.24.24.22086",
+                              "templateHash": "2681178685131241480"
                             }
                           },
                           "parameters": {
@@ -8214,8 +7075,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.23.1.45101",
-                                      "templateHash": "10616302473157292384"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "12224385653740910771"
                                     }
                                   },
                                   "parameters": {
@@ -8339,8 +7200,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.23.1.45101",
-                                      "templateHash": "18009438908332647942"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "3492446693313852889"
                                     }
                                   },
                                   "parameters": {
@@ -8475,8 +7336,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "6213582055481102513"
+                              "version": "0.24.24.22086",
+                              "templateHash": "7648136746212387614"
                             }
                           },
                           "parameters": {
@@ -8646,8 +7507,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "17434795239076296952"
+                      "version": "0.24.24.22086",
+                      "templateHash": "11988179539437841338"
                     }
                   },
                   "parameters": {
@@ -8885,8 +7746,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "17579836593992722031"
+                              "version": "0.24.24.22086",
+                              "templateHash": "2681178685131241480"
                             }
                           },
                           "parameters": {
@@ -8970,8 +7831,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.23.1.45101",
-                                      "templateHash": "10616302473157292384"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "12224385653740910771"
                                     }
                                   },
                                   "parameters": {
@@ -9095,8 +7956,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.23.1.45101",
-                                      "templateHash": "18009438908332647942"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "3492446693313852889"
                                     }
                                   },
                                   "parameters": {
@@ -9270,8 +8131,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "4497460725209362268"
+                      "version": "0.24.24.22086",
+                      "templateHash": "13339774768888612907"
                     }
                   },
                   "parameters": {
@@ -9398,8 +8259,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "9348738149900209054"
+                              "version": "0.24.24.22086",
+                              "templateHash": "13714020687221279041"
                             }
                           },
                           "parameters": {
@@ -9733,8 +8594,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "17579836593992722031"
+                              "version": "0.24.24.22086",
+                              "templateHash": "2681178685131241480"
                             }
                           },
                           "parameters": {
@@ -9818,8 +8679,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.23.1.45101",
-                                      "templateHash": "10616302473157292384"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "12224385653740910771"
                                     }
                                   },
                                   "parameters": {
@@ -9943,8 +8804,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.23.1.45101",
-                                      "templateHash": "18009438908332647942"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "3492446693313852889"
                                     }
                                   },
                                   "parameters": {
@@ -10115,8 +8976,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "17732164181026101003"
+                      "version": "0.24.24.22086",
+                      "templateHash": "16451335312511273666"
                     }
                   },
                   "parameters": {
@@ -10251,8 +9112,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "9622005326161799841"
+                              "version": "0.24.24.22086",
+                              "templateHash": "16089281382333651775"
                             },
                             "name": "Cognitive Services",
                             "description": "This module deploys a Cognitive Service.",
@@ -11084,8 +9945,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "8974954683276802380"
+                              "version": "0.24.24.22086",
+                              "templateHash": "4261574806647608684"
                             }
                           },
                           "parameters": {
@@ -11172,8 +10033,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "10616302473157292384"
+                              "version": "0.24.24.22086",
+                              "templateHash": "12224385653740910771"
                             }
                           },
                           "parameters": {
@@ -11300,8 +10161,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "18009438908332647942"
+                              "version": "0.24.24.22086",
+                              "templateHash": "3492446693313852889"
                             }
                           },
                           "parameters": {
@@ -11512,8 +10373,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "1008771055355769997"
+              "version": "0.24.24.22086",
+              "templateHash": "15917784855756581148"
             }
           },
           "parameters": {
@@ -11651,8 +10512,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "1396335178164847616"
+                      "version": "0.24.24.22086",
+                      "templateHash": "2291204764315289154"
                     }
                   },
                   "parameters": {
@@ -11781,8 +10642,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "11365491917366424386"
+                      "version": "0.24.24.22086",
+                      "templateHash": "3205939722669365016"
                     }
                   },
                   "parameters": {
@@ -11986,8 +10847,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "10482008398937843948"
+                      "version": "0.24.24.22086",
+                      "templateHash": "10423141373788103078"
                     }
                   },
                   "parameters": {
@@ -12269,8 +11130,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "10616302473157292384"
+                      "version": "0.24.24.22086",
+                      "templateHash": "12224385653740910771"
                     }
                   },
                   "parameters": {
@@ -12421,8 +11282,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "12946782960905961142"
+              "version": "0.24.24.22086",
+              "templateHash": "16516297773037696386"
             }
           },
           "parameters": {
@@ -12585,8 +11446,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "11583530359203888960"
+              "version": "0.24.24.22086",
+              "templateHash": "6411141756238623866"
             }
           },
           "parameters": {
@@ -12727,8 +11588,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "1396335178164847616"
+                      "version": "0.24.24.22086",
+                      "templateHash": "2291204764315289154"
                     }
                   },
                   "parameters": {
@@ -12853,8 +11714,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "15739076019826052470"
+                      "version": "0.24.24.22086",
+                      "templateHash": "8741727039361463729"
                     }
                   },
                   "parameters": {
@@ -12974,8 +11835,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "3552631750252376420"
+                      "version": "0.24.24.22086",
+                      "templateHash": "5923101193164353158"
                     }
                   },
                   "parameters": {
@@ -13077,8 +11938,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "5389300307854485706"
+                      "version": "0.24.24.22086",
+                      "templateHash": "8923208684631919907"
                     }
                   },
                   "parameters": {
@@ -13546,8 +12407,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "2849744112582442758"
+                      "version": "0.24.24.22086",
+                      "templateHash": "6130111689736481609"
                     }
                   },
                   "parameters": {

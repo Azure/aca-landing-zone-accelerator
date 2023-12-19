@@ -293,7 +293,7 @@
                             "type": "Microsoft.Common.TextBox",
                             "label": "Bastion Subnet Address Prefix",
                             "subLabel": "",
-                            "defaultValue": "10.0.0.196/26",
+                            "defaultValue": "10.0.0.192/26",
                             "toolTip": "CIDR to use for the Azure Bastion subnet.",
                             "constraints": {
                                 "required": true,

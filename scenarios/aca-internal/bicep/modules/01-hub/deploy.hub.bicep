@@ -152,6 +152,7 @@ module azfw './modules/azureFirewall.bicep' = {
     firewallName: naming.outputs.resourcesNames.azureFirewall
     publicIpName: naming.outputs.resourcesNames.azureFirewallPip
     spokeInfraSubnetAddressPrefix: spokeInfraSubnetAddressPrefix
+    azureFirewallSubnetManagementAddressPrefix: azureFirewallSubnetManagementAddressPrefix
   }
 }
 

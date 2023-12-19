@@ -35,7 +35,7 @@
       "value": "10.0.0.128/26"
     },
     "bastionSubnetAddressPrefix": {
-      "value": "10.0.0.196/26"
+      "value": "10.0.0.192/26"
     }
   }
 }

@@ -3,7 +3,7 @@ module "nsg" {
   nsgName           = var.bastionNsgName
   location          = var.location
   resourceGroupName = var.vnetResourceGroupName
-  securityRules     = var.securityRules.default
+  securityRules     = var.securityRules
   tags              = var.tags
 }
 

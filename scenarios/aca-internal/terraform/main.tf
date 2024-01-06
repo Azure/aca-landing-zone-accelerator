@@ -48,6 +48,8 @@ module "supportingServices" {
   keyVaultPullRoleAssignment          = var.keyVaultPullRoleAssignment
   clientIP                            = var.clientIP
   logAnalyticsWorkspaceId             = module.spoke.logAnalyticsWorkspaceId
+  supportingResourceGroupName         = var.supportingResourceGroupName
+
   vnetLinks = [
     {
       "name"                = module.spoke.spokeVNetName
@@ -102,7 +104,6 @@ module "helloWorldApp" {
   containerRegistryUserAssignedIdentityId = module.supportingServices.containerRegistryUserAssignedIdentityId
   tags                                    = var.tags
 }
-
 
 # If you would like to deploy an Application Gateway and have provided your IP address for KeyVault access, leave this module uncommented
 # If you would like to keep your KeyVault private, comment out this module

@@ -21,6 +21,10 @@ locals {
     containerRegistryUserAssignedIdentity  = "${var.resourceTypeAbbreviations.managedIdentity}-${lower(replace(replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.containerRegistry), "-", ""))}-AcrPull"
     cosmosDbNoSql                          = lower(substr(replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.cosmosDbNoSql), 0, 44))
     cosmosDbNoSqlPep                       = "${var.resourceTypeAbbreviations.privateEndpoint}-${lower(substr(replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.cosmosDbNoSql), 0, 44))}"
+    firewall                               = replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.firewall)
+    firewallPip                            = "${var.resourceTypeAbbreviations.publicIpAddress}-${replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.firewall)}"
+    firewallManagementPip                  = "${var.resourceTypeAbbreviations.publicIpAddress}-${replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.firewall)}-management"
+    firewallPolicy                        = replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.firewallPolicy)
     frontDoorProfile                       = replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.frontDoor)
     keyVault                               = substr(replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.keyVault), 0, 24)
     keyVaultPep                            = "${var.resourceTypeAbbreviations.privateEndpoint}-${replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.keyVault)}"

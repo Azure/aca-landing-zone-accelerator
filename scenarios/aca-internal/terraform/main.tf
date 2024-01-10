@@ -1,15 +1,16 @@
 module "hub" {
-  source                           = "./modules/01-hub"
-  workloadName                     = var.workloadName
-  environment                      = var.environment
-  hubResourceGroupName             = var.hubResourceGroupName
-  location                         = var.location
-  vnetAddressPrefixes              = var.hubVnetAddressPrefixes
-  enableBastion                    = var.enableBastion
-  bastionSubnetAddressPrefixes     = var.bastionSubnetAddressPrefixes
-  gatewaySubnetAddressPrefix       = var.gatewaySubnetAddressPrefix
-  azureFirewallSubnetAddressPrefix = var.azureFirewallSubnetAddressPrefix
-  tags                             = var.tags
+  source                                     = "./modules/01-hub"
+  workloadName                               = var.workloadName
+  environment                                = var.environment
+  hubResourceGroupName                       = var.hubResourceGroupName
+  location                                   = var.location
+  vnetAddressPrefixes                        = var.hubVnetAddressPrefixes
+  enableBastion                              = var.enableBastion
+  bastionSubnetAddressPrefixes               = var.bastionSubnetAddressPrefixes
+  gatewaySubnetAddressPrefix                 = var.gatewaySubnetAddressPrefix
+  azureFirewallSubnetAddressPrefix           = var.azureFirewallSubnetAddressPrefix
+  azureFirewallSubnetManagementAddressPrefix = var.azureFirewallSubnetManagementAddressPrefix
+  tags                                       = var.tags
 }
 
 module "spoke" {
@@ -67,16 +68,16 @@ module "supportingServices" {
 }
 
 module "containerAppsEnvironment" {
-  source                 = "./modules/04-container-apps-environment"
-  workloadName           = var.workloadName
-  environment            = var.environment
-  location               = var.location
-  spokeResourceGroupName = module.spoke.spokeResourceGroupName
-  hubResourceGroupName   = module.hub.hubResourceGroupName
-  appInsightsName        = var.appInsightsName
-  hubVnetId              = module.hub.hubVnetId
-  spokeVnetId            = module.spoke.spokeVNetId
-  spokeInfraSubnetId     = module.spoke.spokeInfraSubnetId
+  source                  = "./modules/04-container-apps-environment"
+  workloadName            = var.workloadName
+  environment             = var.environment
+  location                = var.location
+  spokeResourceGroupName  = module.spoke.spokeResourceGroupName
+  hubResourceGroupName    = module.hub.hubResourceGroupName
+  appInsightsName         = var.appInsightsName
+  hubVnetId               = module.hub.hubVnetId
+  spokeVnetId             = module.spoke.spokeVNetId
+  spokeInfraSubnetId      = module.spoke.spokeInfraSubnetId
   logAnalyticsWorkspaceId = module.spoke.logAnalyticsWorkspaceId
   vnetLinks = [
     {

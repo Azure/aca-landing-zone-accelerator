@@ -1,12 +1,12 @@
 # Diagnostic Settings
 data "azurerm_monitor_diagnostic_categories" "resources" {
   for_each = { for resource in var.resources : resource.type => resource }
-  
+
   resource_id = each.value.id
 }
 
 resource "azurerm_monitor_diagnostic_setting" "rule" {
-  for_each =  { for resource in var.resources : resource.type => resource }
+  for_each = { for resource in var.resources : resource.type => resource }
 
   name                           = "${each.key}-diagnostic-settings"
   target_resource_id             = each.value.id

@@ -8,8 +8,9 @@ terraform {
   }
   required_version = ">= 1.3.4"
 
-  backend "azurerm" {
-  }
+  # uncomment if you want to save state file into remote storae account
+  # backend "azurerm" {
+  # }
 }
 
 provider "azurerm" {

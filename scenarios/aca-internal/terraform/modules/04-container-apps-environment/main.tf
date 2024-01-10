@@ -41,4 +41,3 @@ module "containerAppsEnvironmentPrivateDnsZone" {
   }]
   tags = var.tags
 }
-

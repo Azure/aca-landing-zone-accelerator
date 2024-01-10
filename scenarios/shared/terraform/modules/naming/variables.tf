@@ -8,6 +8,8 @@ variable "resourceTypeAbbreviations" {
     containerAppsEnvironment = "cae"
     containerRegistry        = "cr"
     cosmosDbNoSql            = "cosno"
+    firewall                 = "fw"
+    firewallPolicy           = "fwp"
     frontDoor                = "afd"
     frontDoorEndpoint        = "fde"
     frontDoorWaf             = "fdfp"

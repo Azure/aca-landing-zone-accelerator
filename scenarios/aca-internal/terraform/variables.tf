@@ -246,6 +246,8 @@ variable "azureFirewallSubnetName" {
   type    = string
 }
 
+variable "azureFirewallSubnetManagementAddressPrefix" {}
+
 variable "azureFirewallSubnetAddressPrefix" {}
 
 variable "supportingResourceGroupName" {}

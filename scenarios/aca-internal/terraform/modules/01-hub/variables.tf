@@ -54,3 +54,10 @@ variable "azureFirewallSubnetName" {
 }
 
 variable "azureFirewallSubnetAddressPrefix" {}
+
+variable "azureFirewallSubnetManagementName" {
+  default = "AzureFirewallManagementSubnet" # must use this name for Firewall Basic SKU
+  type    = string
+}
+
+variable "azureFirewallSubnetManagementAddressPrefix" {}

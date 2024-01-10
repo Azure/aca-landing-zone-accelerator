@@ -5,6 +5,13 @@ resource "azurerm_container_app_environment" "environment" {
   log_analytics_workspace_id     = var.logAnalyticsWorkspaceId
   infrastructure_subnet_id       = var.subnetId
   internal_load_balancer_enabled = true
+
+  workload_profile {
+    name                  = "profile-D4"
+    workload_profile_type = "D4"
+    minimum_count         = 0
+    maximum_count         = 3
+  }
 }
 
 # resource "azurerm_container_app_environment_dapr_component" "daprComponent" {

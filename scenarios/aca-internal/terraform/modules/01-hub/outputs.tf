@@ -15,3 +15,8 @@ output "hubResourceGroupName" {
   description = "The name of the Hub resource group."
   value       = azurerm_resource_group.hubResourceGroup.name
 }
+
+output "firewallPrivateIp" {
+  description = "The private IP address of the firewall."
+  value       = module.firewall.firewallPrivateIp
+}

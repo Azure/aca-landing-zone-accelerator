@@ -31,6 +31,7 @@ module "spoke" {
   vmLinuxSshAuthorizedKeys              = var.vmLinuxSshAuthorizedKeys
   vmJumpboxOSType                       = var.vmJumpboxOSType
   jumpboxSubnetAddressPrefix            = var.vmJumpBoxSubnetAddressPrefix
+  firewallPrivateIp                     = module.hub.firewallPrivateIp
   tags                                  = var.tags
 }
 

@@ -36,6 +36,7 @@ resource "azurerm_bastion_host" "bastionHost" {
   name                = var.bastionHostName
   location            = var.location
   resource_group_name = var.vnetResourceGroupName
+  
   ip_configuration {
     name                 = "ipconf"
     subnet_id            = azurerm_subnet.bastionSubnet.id

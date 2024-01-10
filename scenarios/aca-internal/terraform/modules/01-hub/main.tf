@@ -66,3 +66,30 @@ module "bastion" {
   tags                  = var.tags
   bastionHostName       = module.naming.resourceNames["bastion"]
 }
+
+module "logAnalyticsWorkspace" {
+  source            = "../../../../shared/terraform/modules/monitoring/log-analytics"
+  resourceGroupName = azurerm_resource_group.hubResourceGroup.name
+  location          = var.location
+  workspaceName     = module.naming.resourceNames["logAnalyticsWorkspace"]
+  tags              = var.tags
+}
+
+module "diagnostics" {
+  source                  = "../../../../shared/terraform/modules/diagnostics"
+  logAnalyticsWorkspaceId = module.logAnalyticsWorkspace.workspaceId
+  resources = [
+    {
+      "type" = "firewall-hub"
+      "id"   = module.firewall.firewallId
+    },
+    {
+      "type" = "vnet-hub"
+      "id"   = module.vnet.vnetId
+    },
+    {
+      "type" = "bastion"
+      "id"   = module.bastion.bastionHostId
+    }
+  ]
+}

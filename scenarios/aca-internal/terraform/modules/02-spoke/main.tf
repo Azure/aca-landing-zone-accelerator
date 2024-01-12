@@ -19,13 +19,14 @@ resource "azurerm_resource_group" "spokeResourceGroup" {
 }
 
 module "vnet" {
-  source            = "../../../../shared/terraform/modules/networking/vnet"
-  networkName       = module.naming.resourceNames["vnetSpoke"]
-  location          = var.location
-  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  addressSpace      = var.vnetAddressPrefixes
-  tags              = var.tags
-  subnets           = local.spokeSubnets
+  source             = "../../../../shared/terraform/modules/networking/vnet"
+  networkName        = module.naming.resourceNames["vnetSpoke"]
+  location           = var.location
+  resourceGroupName  = azurerm_resource_group.spokeResourceGroup.name
+  addressSpace       = var.vnetAddressPrefixes
+  tags               = var.tags
+  subnets            = local.spokeSubnets
+  subnetDelegations = local.subnetDelegations
 }
 
 module "nsgContainerAppsEnvironmentNsg" {

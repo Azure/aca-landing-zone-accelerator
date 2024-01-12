@@ -7,6 +7,10 @@ output "hubResourceGroupName" {
   value = module.hub.hubResourceGroupName
 }
 
+output "spokeSubnets" {
+  value = module.spoke.spokeSubnets
+}
+
 # // Spoke
 # output "spokeVnetId" {
 #   value = module.spoke.spokeVNetId

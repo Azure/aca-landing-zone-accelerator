@@ -37,3 +37,8 @@ output "spokeApplicationGatewaySubnetName" {
 output "logAnalyticsWorkspaceId" {
   value = module.logAnalyticsWorkspace.workspaceId
 }
+
+# delete these outputs
+output "spokeSubnets" {
+  value = local.spokeSubnets
+}

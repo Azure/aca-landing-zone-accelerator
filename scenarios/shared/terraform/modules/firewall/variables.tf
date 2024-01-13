@@ -1,34 +1,91 @@
 variable "location" {
-    type    = string
+  type = string
 }
 
 variable "tags" {
-    type    = map(string)
-    default = {}
+  default = {}
 }
 
 variable "hubResourceGroupName" {}
 
 variable "firewallName" {
-    type = string
+  type = string
 }
 
 variable "publicIpFirewallName" {
-    type = string
+  type = string
 }
 
 variable "publicIpFirewallManagementName" {
-    type = string
+  type = string
 }
 
 variable "subnetFirewallId" {
-    type = string
+  type = string
 }
 
 variable "subnetFirewallManagementId" {
-    type = string
+  type = string
 }
 
 variable "firewallPolicyName" {
-    type = string
+  type = string
+}
+
+variable "firewallPolicyRuleCollectionGroups" {
+  description = "Firewall policy rule collection group configuration"
+  type = list(object({
+    name     = string
+    priority = number
+
+    application_rule_collections = list(object({
+      name     = string,
+      priority = number,
+      action   = string,
+      rules = list(object({
+        name              = string,
+        source_addresses  = list(string),
+        source_ip_groups  = list(string),
+        destination_fqdns = list(string),
+        destination_addresses = list(string),
+        protocols = list(object({
+          port = string,
+          type = string
+        }))
+      }))
+    }))
+
+    network_rule_collections = list(object({
+      name     = string,
+      priority = number,
+      action   = string,
+      rules = list(object({
+        name                  = string,
+        source_addresses      = list(string),
+        source_ip_groups      = list(string),
+        destination_ports     = list(string),
+        destination_addresses = list(string),
+        destination_ip_groups = list(string),
+        destination_fqdns     = list(string),
+        protocols             = list(string)
+      }))
+    }))
+
+    nat_rule_collections = list(object({
+      name     = string,
+      priority = number,
+      action   = string,
+      rules = list(object({
+        name                = string,
+        source_addresses    = list(string),
+        destination_address = string,
+        destination_ports   = list(string),
+        translated_port     = number,
+        translated_address  = string,
+        protocols           = list(string)
+      }))
+    }))
+    }
+    )
+  )
 }

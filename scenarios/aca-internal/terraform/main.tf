@@ -10,6 +10,7 @@ module "hub" {
   gatewaySubnetAddressPrefix                 = var.gatewaySubnetAddressPrefix
   azureFirewallSubnetAddressPrefix           = var.azureFirewallSubnetAddressPrefix
   azureFirewallSubnetManagementAddressPrefix = var.azureFirewallSubnetManagementAddressPrefix
+  infraSubnetAddressPrefix                   = var.infraSubnetAddressPrefix
   tags                                       = var.tags
 }
 

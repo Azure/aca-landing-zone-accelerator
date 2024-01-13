@@ -48,49 +48,93 @@ resource "azurerm_firewall_policy" "firewallPolicy" {
   sku                 = "Basic" # "Standard" # "Premium" #
 }
 
-resource "azurerm_firewall_policy_rule_collection_group" "policyGroupDeny" {
-  name               = "policyGroupDeny"
+resource "azurerm_firewall_policy_rule_collection_group" "policyGroup" {
+  # for_each = var.firewallPolicyRuleCollectionGroups
+  # for_each = [ for group in var.firewallPolicyRuleCollectionGroups : group.name => group ]
+  # for_each = try([ for group in var.firewallPolicyRuleCollectionGroups : group.name => group ], toset([]))
+  for_each = try({ for group in var.firewallPolicyRuleCollectionGroups : group.name => group }, toset([]))
+
+  name               = each.value.name
+  priority           = each.value.priority
   firewall_policy_id = azurerm_firewall_policy.firewallPolicy.id
-  priority           = 100
 
-  application_rule_collection {
-    name     = "app_rules_deny_yahoo_com_any_source"
-    priority = 100
-    action   = "Deny"
+  dynamic "application_rule_collection" {
+    for_each = each.value.application_rule_collections
 
-    rule {
-      name = "deny_yahoo_com"
-      protocols {
-        type = "Http"
-        port = 80
+    content {
+      name     = application_rule_collection.value.name
+      priority = application_rule_collection.value.priority
+      action   = application_rule_collection.value.action
+
+      dynamic "rule" {
+        for_each = application_rule_collection.value.rules
+
+        content {
+          name                  = rule.value.name
+          source_addresses      = rule.value.source_addresses
+          source_ip_groups      = rule.value.source_ip_groups
+          destination_addresses = rule.value.destination_addresses
+          destination_fqdns     = rule.value.destination_fqdns
+
+          dynamic "protocols" {
+            for_each = rule.value.protocols
+
+            content {
+              port = protocols.value.port
+              type = protocols.value.type
+            }
+          }
+        }
       }
-      protocols {
-        type = "Https"
-        port = 443
-      }
-      source_addresses  = ["*"] # local.cidr_subnet_aks_nodes_pods # azurerm_subnet.subnet_mgt.address_prefixes
-      destination_fqdns = ["*.yahoo.com"]
     }
   }
 
-  # allow raw.githubusercontent.com, to get the custom scripts to install to VMs
-  application_rule_collection {
-    name     = "app_rules_allow_githubusercontent_any_source"
-    priority = 101
-    action   = "Allow"
+  dynamic "network_rule_collection" {
+    for_each = each.value.network_rule_collections
 
-    rule {
-      name = "allow_githubusercontent_com"
-      protocols {
-        type = "Http"
-        port = 80
+    content {
+      name     = network_rule_collection.value.name
+      priority = network_rule_collection.value.priority
+      action   = network_rule_collection.value.action
+
+      dynamic "rule" {
+        for_each = network_rule_collection.value.rules
+
+        content {
+          name                  = rule.value.name
+          source_addresses      = rule.value.source_addresses
+          source_ip_groups      = rule.value.source_ip_groups
+          destination_ports     = rule.value.destination_ports
+          destination_addresses = rule.value.destination_addresses
+          destination_ip_groups = rule.value.destination_ip_groups
+          destination_fqdns     = rule.value.destination_fqdns
+          protocols             = rule.value.protocols
+        }
       }
-      protocols {
-        type = "Https"
-        port = 443
-      }
-      source_addresses  = ["*"] # local.cidr_subnet_aks_nodes_pods # azurerm_subnet.subnet_mgt.address_prefixes
-      destination_fqdns = ["raw.githubusercontent.com"]
     }
+  }
+
+  dynamic "nat_rule_collection" {
+    for_each = each.value.nat_rule_collections
+    content {
+      name     = nat_rule_collection.value.name
+      priority = nat_rule_collection.value.priority
+      action   = nat_rule_collection.value.action
+
+      dynamic "rule" {
+        for_each = nat_rule_collection.value.rules
+
+        content {
+          name               = rule.value.name
+          source_addresses   = rule.value.source_addresses
+          source_ip_groups   = rule.value.source_ip_groups
+          destination_ports  = rule.value.destination_ports
+          translated_address = rule.value.translated_address
+          translated_port    = rule.value.translated_port
+          protocols          = rule.value.protocols
+        }
+      }
+    }
+
   }
 }

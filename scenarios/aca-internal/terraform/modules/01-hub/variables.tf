@@ -45,12 +45,12 @@ variable "gatewaySubnetName" {
   default = "GatewaySubnet"
   type    = string
 }
-  
+
 variable "gatewaySubnetAddressPrefix" {}
 
 variable "azureFirewallSubnetName" {
   default = "AzureFirewallSubnet"
-  type = string
+  type    = string
 }
 
 variable "azureFirewallSubnetAddressPrefix" {}
@@ -61,3 +61,65 @@ variable "azureFirewallSubnetManagementName" {
 }
 
 variable "azureFirewallSubnetManagementAddressPrefix" {}
+
+# variable "firewallPolicyRuleCollectionGroups" {
+#   description = "Firewall policy rule collection group configuration"
+#   type = list(object({
+#     name     = string
+#     priority = number
+
+#     application_rule_collections = list(object({
+#       name     = string,
+#       priority = number,
+#       action   = string,
+#       rules = list(object({
+#         name             = string,
+#         source_addresses = list(string),
+#         source_ip_groups = list(string),
+#         target_fqdns     = list(string),
+#         protocols = list(object({
+#           port = string,
+#           type = string
+#         }))
+#       }))
+#     }))
+
+#     network_rule_collections = list(object({
+#       name     = string,
+#       priority = number,
+#       action   = string,
+#       rules = list(object({
+#         name                  = string,
+#         source_addresses      = list(string),
+#         source_ip_groups      = list(string),
+#         destination_ports     = list(string),
+#         destination_addresses = list(string),
+#         destination_ip_groups = list(string),
+#         destination_fqdns     = list(string),
+#         protocols             = list(string)
+#       }))
+#     }))
+
+#     nat_rule_collections = list(object({
+#       name     = string,
+#       priority = number,
+#       action   = string,
+#       rules = list(object({
+#         name                  = string,
+#         source_addresses      = list(string),
+#         source_ip_groups      = list(string),
+#         destination_ports     = list(string),
+#         destination_addresses = list(string),
+#         translated_port       = number,
+#         translated_address    = string,
+#         protocols             = list(string)
+#       }))
+#     }))
+#     }
+#     )
+#   )
+#   default = []
+# }
+
+variable "infraSubnetAddressPrefix" {
+}

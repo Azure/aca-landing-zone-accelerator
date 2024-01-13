@@ -28,31 +28,32 @@ module "vnet" {
   ddosProtectionPlanId = var.ddosProtectionPlanId
   subnets = [
     {
-      "name"            = var.gatewaySubnetName
-      "addressPrefixes" = [var.gatewaySubnetAddressPrefix]
+      name            = var.gatewaySubnetName
+      addressPrefixes = [var.gatewaySubnetAddressPrefix]
     },
     {
-      "name"            = var.azureFirewallSubnetName
-      "addressPrefixes" = [var.azureFirewallSubnetAddressPrefix]
+      name            = var.azureFirewallSubnetName
+      addressPrefixes = [var.azureFirewallSubnetAddressPrefix]
     },
     {
-      "name"            = var.azureFirewallSubnetManagementName
-      "addressPrefixes" = [var.azureFirewallSubnetManagementAddressPrefix]
+      name            = var.azureFirewallSubnetManagementName
+      addressPrefixes = [var.azureFirewallSubnetManagementAddressPrefix]
     }
   ]
 }
 
 module "firewall" {
-  source                         = "../../../../shared/terraform/modules/firewall"
-  firewallName                   = module.naming.resourceNames["firewall"]
-  location                       = var.location
-  hubResourceGroupName           = azurerm_resource_group.hubResourceGroup.name
-  subnetFirewallId               = module.vnet.subnetIds[var.azureFirewallSubnetName]
-  subnetFirewallManagementId     = module.vnet.subnetIds[var.azureFirewallSubnetManagementName]
-  publicIpFirewallName           = module.naming.resourceNames["firewallPip"]
-  publicIpFirewallManagementName = module.naming.resourceNames["firewallManagementPip"]
-  firewallPolicyName             = module.naming.resourceNames["firewallPolicy"]
-  tags                           = var.tags
+  source                             = "../../../../shared/terraform/modules/firewall"
+  firewallName                       = module.naming.resourceNames["firewall"]
+  location                           = var.location
+  hubResourceGroupName               = azurerm_resource_group.hubResourceGroup.name
+  subnetFirewallId                   = module.vnet.subnetIds[var.azureFirewallSubnetName]
+  subnetFirewallManagementId         = module.vnet.subnetIds[var.azureFirewallSubnetManagementName]
+  publicIpFirewallName               = module.naming.resourceNames["firewallPip"]
+  publicIpFirewallManagementName     = module.naming.resourceNames["firewallManagementPip"]
+  firewallPolicyName                 = module.naming.resourceNames["firewallPolicy"]
+  firewallPolicyRuleCollectionGroups = local.firewallPolicyRuleCollectionGroups
+  tags                               = var.tags
 }
 
 module "bastion" {
@@ -80,16 +81,16 @@ module "diagnostics" {
   logAnalyticsWorkspaceId = module.logAnalyticsWorkspace.workspaceId
   resources = [
     {
-      "type" = "firewall-hub"
-      "id"   = module.firewall.firewallId
+      type = "firewall-hub"
+      id   = module.firewall.firewallId
     },
     {
-      "type" = "vnet-hub"
-      "id"   = module.vnet.vnetId
+      type = "vnet-hub"
+      id   = module.vnet.vnetId
     },
     {
-      "type" = "bastion"
-      "id"   = module.bastion.bastionHostId
+      type = "bastion"
+      id   = module.bastion.bastionHostId
     }
   ]
 }

@@ -28,12 +28,12 @@ module "frontDoor" {
 }
 
 module "diagnostics" {
-  source = "../../../../shared/terraform/modules/diagnostics"
+  source                  = "../../../../shared/terraform/modules/diagnostics"
   logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
   resources = [
     {
-      "type" = "fd"
-      "id"   = module.frontDoor.frontDoorId
+      type = "fd"
+      id   = module.frontDoor.frontDoorId
     }
   ]
 }

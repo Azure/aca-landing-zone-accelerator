@@ -74,132 +74,132 @@ variable "ddosProtectionPlanId" {
 
 variable "containerAppsSecurityRules" {
   default = [
-  {
-    "name" : "Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP",
-    "description" : "internal AKS secure connection between underlying nodes and control plane..",
-    "protocol" : "Udp",
-    "sourceAddressPrefix" : "VirtualNetwork",
-    "sourcePortRange" : "*",
-    "destinationAddressPrefix" : "AzureCloud.eastus",
-    "destinationPortRanges" : ["1194"],
-    "access" : "Allow",
-    "priority" : 100,
-    "direction" : "Outbound"
-  },
-  {
-    "name" : "Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_TCP",
-    "description" : "internal AKS secure connection between underlying nodes and control plane..",
-    "protocol" : "Tcp",
-    "sourceAddressPrefix" : "VirtualNetwork",
-    "sourcePortRange" : "*",
-    "destinationAddressPrefix" : "AzureCloud.eastus",
-    "destinationPortRanges" : ["9000"],
-    "access" : "Allow",
-    "priority" : 110,
-    "direction" : "Outbound"
-  },
-  {
-    "name" : "Allow_Azure_Monitor",
-    "description" : "Allows outbound calls to Azure Monitor.",
-    "protocol" : "Tcp",
-    "sourceAddressPrefix" : "VirtualNetwork",
-    "sourcePortRange" : "*",
-    "destinationAddressPrefix" : "AzureCloud.eastus",
-    "destinationPortRanges" : ["443"],
-    "access" : "Allow",
-    "priority" : 120,
-    "direction" : "Outbound"
-  },
-  {
-    "name" : "Allow_Outbound_443",
-    "description" : "Allowing all outbound on port 443 provides a way to allow all FQDN based outbound dependencies that don't have a static IP",
-    "protocol" : "Tcp",
-    "sourceAddressPrefix" : "VirtualNetwork",
-    "sourcePortRange" : "*",
-    "destinationAddressPrefix" : "*",
-    "destinationPortRanges" : ["443"],
-    "access" : "Allow",
-    "priority" : 130,
-    "direction" : "Outbound"
-  },
-  {
-    "name" : "Allow_NTP_Server",
-    "description" : "NTP server",
-    "protocol" : "Udp",
-    "sourceAddressPrefix" : "VirtualNetwork",
-    "sourcePortRange" : "*",
-    "destinationAddressPrefix" : "*",
-    "destinationPortRanges" : ["123"],
-    "access" : "Allow",
-    "priority" : 140,
-    "direction" : "Outbound"
-  },
-  {
-    "name" : "Allow_Container_Apps_control_plane",
-    "description" : "Container Apps control plane",
-    "protocol" : "Tcp",
-    "sourceAddressPrefix" : "VirtualNetwork",
-    "sourcePortRange" : "*",
-    "destinationAddressPrefix" : "*",
-    "destinationPortRanges" : ["5671", "5672"],
-    "access" : "Allow",
-    "priority" : 150,
-    "direction" : "Outbound"
-  }
-]
+    {
+      "name" : "Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP",
+      "description" : "internal AKS secure connection between underlying nodes and control plane..",
+      "protocol" : "Udp",
+      "sourceAddressPrefix" : "VirtualNetwork",
+      "sourcePortRange" : "*",
+      "destinationAddressPrefix" : "AzureCloud.eastus",
+      "destinationPortRanges" : ["1194"],
+      "access" : "Allow",
+      "priority" : 100,
+      "direction" : "Outbound"
+    },
+    {
+      "name" : "Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_TCP",
+      "description" : "internal AKS secure connection between underlying nodes and control plane..",
+      "protocol" : "Tcp",
+      "sourceAddressPrefix" : "VirtualNetwork",
+      "sourcePortRange" : "*",
+      "destinationAddressPrefix" : "AzureCloud.eastus",
+      "destinationPortRanges" : ["9000"],
+      "access" : "Allow",
+      "priority" : 110,
+      "direction" : "Outbound"
+    },
+    {
+      "name" : "Allow_Azure_Monitor",
+      "description" : "Allows outbound calls to Azure Monitor.",
+      "protocol" : "Tcp",
+      "sourceAddressPrefix" : "VirtualNetwork",
+      "sourcePortRange" : "*",
+      "destinationAddressPrefix" : "AzureCloud.eastus",
+      "destinationPortRanges" : ["443"],
+      "access" : "Allow",
+      "priority" : 120,
+      "direction" : "Outbound"
+    },
+    {
+      "name" : "Allow_Outbound_443",
+      "description" : "Allowing all outbound on port 443 provides a way to allow all FQDN based outbound dependencies that don't have a static IP",
+      "protocol" : "Tcp",
+      "sourceAddressPrefix" : "VirtualNetwork",
+      "sourcePortRange" : "*",
+      "destinationAddressPrefix" : "*",
+      "destinationPortRanges" : ["443"],
+      "access" : "Allow",
+      "priority" : 130,
+      "direction" : "Outbound"
+    },
+    {
+      "name" : "Allow_NTP_Server",
+      "description" : "NTP server",
+      "protocol" : "Udp",
+      "sourceAddressPrefix" : "VirtualNetwork",
+      "sourcePortRange" : "*",
+      "destinationAddressPrefix" : "*",
+      "destinationPortRanges" : ["123"],
+      "access" : "Allow",
+      "priority" : 140,
+      "direction" : "Outbound"
+    },
+    {
+      "name" : "Allow_Container_Apps_control_plane",
+      "description" : "Container Apps control plane",
+      "protocol" : "Tcp",
+      "sourceAddressPrefix" : "VirtualNetwork",
+      "sourcePortRange" : "*",
+      "destinationAddressPrefix" : "*",
+      "destinationPortRanges" : ["5671", "5672"],
+      "access" : "Allow",
+      "priority" : 150,
+      "direction" : "Outbound"
+    }
+  ]
 }
 
 variable "appGatewaySecurityRules" {
   default = [
-  {
-    "name" : "HealthProbes",
-    "description" : "Sllow HealthProbes from gateway Manager.",
-    "protocol" : "*",
-    "sourceAddressPrefix" : "GatewayManager",
-    "sourcePortRange" : "*",
-    "destinationAddressPrefix" : "*",
-    "destinationPortRanges" : ["65200-65535"],
-    "access" : "Allow",
-    "priority" : 100,
-    "direction" : "Inbound"
-  },
-  {
-    "name" : "Allow_TLS",
-    "description" : "allow https incoming connections",
-    "protocol" : "*",
-    "sourceAddressPrefix" : "*",
-    "sourcePortRange" : "*",
-    "destinationAddressPrefix" : "*",
-    "destinationPortRanges" : ["443"],
-    "access" : "Allow",
-    "priority" : 110,
-    "direction" : "Inbound"
-  },
-  {
-    "name" : "Allow_HTTP",
-    "description" : "allow http incoming connections",
-    "protocol" : "*",
-    "sourceAddressPrefix" : "*",
-    "sourcePortRange" : "*",
-    "destinationAddressPrefix" : "*",
-    "destinationPortRanges" : ["80"],
-    "access" : "Allow",
-    "priority" : 120,
-    "direction" : "Inbound"
-  },
-  {
-    "name" : "Allow_AzureLoadBalancer",
-    "description" : "allow AzureLoadBalancer incoming connections",
-    "protocol" : "*",
-    "sourceAddressPrefix" : "AzureLoadBalancer",
-    "sourcePortRange" : "*",
-    "destinationAddressPrefix" : "*",
-    "destinationPortRanges" : ["80"],
-    "access" : "Allow",
-    "priority" : 130,
-    "direction" : "Inbound"
-  }
-]
+    {
+      "name" : "HealthProbes",
+      "description" : "Sllow HealthProbes from gateway Manager.",
+      "protocol" : "*",
+      "sourceAddressPrefix" : "GatewayManager",
+      "sourcePortRange" : "*",
+      "destinationAddressPrefix" : "*",
+      "destinationPortRanges" : ["65200-65535"],
+      "access" : "Allow",
+      "priority" : 100,
+      "direction" : "Inbound"
+    },
+    {
+      "name" : "Allow_TLS",
+      "description" : "allow https incoming connections",
+      "protocol" : "*",
+      "sourceAddressPrefix" : "*",
+      "sourcePortRange" : "*",
+      "destinationAddressPrefix" : "*",
+      "destinationPortRanges" : ["443"],
+      "access" : "Allow",
+      "priority" : 110,
+      "direction" : "Inbound"
+    },
+    {
+      "name" : "Allow_HTTP",
+      "description" : "allow http incoming connections",
+      "protocol" : "*",
+      "sourceAddressPrefix" : "*",
+      "sourcePortRange" : "*",
+      "destinationAddressPrefix" : "*",
+      "destinationPortRanges" : ["80"],
+      "access" : "Allow",
+      "priority" : 120,
+      "direction" : "Inbound"
+    },
+    {
+      "name" : "Allow_AzureLoadBalancer",
+      "description" : "allow AzureLoadBalancer incoming connections",
+      "protocol" : "*",
+      "sourceAddressPrefix" : "AzureLoadBalancer",
+      "sourcePortRange" : "*",
+      "destinationAddressPrefix" : "*",
+      "destinationPortRanges" : ["80"],
+      "access" : "Allow",
+      "priority" : 130,
+      "direction" : "Inbound"
+    }
+  ]
 
 }
 

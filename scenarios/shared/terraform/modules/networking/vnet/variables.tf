@@ -31,3 +31,7 @@ variable "ddosProtectionPlanId" {
 
 variable "subnets" {
 }
+
+variable "subnetDelegations" {
+  default = {}
+}

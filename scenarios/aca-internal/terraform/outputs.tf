@@ -1,14 +1,14 @@
-// Hub
-output "hubVnetId" {
-  value = module.hub.hubVnetId
+output "applicationGatewayPublicIp" {
+  value = module.applicationGateway.applicationGatewayPublicIp
 }
+
+// Hub
+# output "hubVnetId" {
+#   value = module.hub.hubVnetId
+# }
 
 output "hubResourceGroupName" {
   value = module.hub.hubResourceGroupName
-}
-
-output "spokeSubnets" {
-  value = module.spoke.spokeSubnets
 }
 
 # // Spoke
@@ -16,9 +16,9 @@ output "spokeSubnets" {
 #   value = module.spoke.spokeVNetId
 # }
 
-# output "spokeResourceGroupName" {
-#   value = module.spoke.spokeResourceGroupName
-# }
+output "spokeResourceGroupName" {
+  value = module.spoke.spokeResourceGroupName
+}
 
 # output "spokeVnetName" {
 #   value = module.spoke.spokeVNetName

@@ -6,9 +6,10 @@ data "azurerm_monitor_diagnostic_categories" "resources" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "rule" {
-  for_each = { for resource in var.resources : resource.type => resource }
+  for_each = {}
+  # for_each = { for resource in var.resources : resource.type => resource }
 
-  name                           = "${each.key}-diagnostic-settings"
+  name                           = "${each.key}-diagnostic-setting"
   target_resource_id             = each.value.id
   log_analytics_workspace_id     = var.logAnalyticsWorkspaceId
   log_analytics_destination_type = "AzureDiagnostics"
@@ -20,9 +21,10 @@ resource "azurerm_monitor_diagnostic_setting" "rule" {
     content {
       category = entry.value
 
-      retention_policy {
-        enabled = true
-      }
+      # retention_policy has been deprecated in favor of azurerm_storage_management_policy
+      # retention_policy {
+      #   enabled = true
+      # }
     }
   }
 
@@ -34,9 +36,10 @@ resource "azurerm_monitor_diagnostic_setting" "rule" {
       category = entry.value
       enabled  = true
 
-      retention_policy {
-        enabled = true
-      }
+      # retention_policy has been deprecated in favor of azurerm_storage_management_policy
+      # retention_policy {
+      #   enabled = true
+      # }
     }
   }
 }

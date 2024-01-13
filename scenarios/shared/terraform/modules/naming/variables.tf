@@ -22,6 +22,7 @@ variable "resourceTypeAbbreviations" {
     privateLinkService       = "pls"
     publicIpAddress          = "pip"
     resourceGroup            = "rg"
+    routeTable               = "rt"
     serviceBus               = "sb"
     serviceBusQueue          = "sbq"
     serviceBusTopic          = "sbt"

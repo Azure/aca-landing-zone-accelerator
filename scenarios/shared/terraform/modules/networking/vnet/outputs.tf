@@ -11,13 +11,5 @@ output "vnetName" {
 }
 
 output "subnetIds" {
-  # value = tomap({
-  #   for subnet in azurerm_subnet.subnets :
-  #   subnet.name => {
-  #     name = subnet.id
-  #     # id   = nsg.id
-  #   }
-  # })
-  # value = { for subnet in azurerm_subnet.subnets : subnet.Name => subnet.id }
   value = tomap({ for subnet in azurerm_subnet.subnets : subnet.name => subnet.id })
 }

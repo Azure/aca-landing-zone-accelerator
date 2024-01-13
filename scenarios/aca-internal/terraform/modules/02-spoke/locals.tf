@@ -6,28 +6,28 @@ locals {
 
   defaultSubnets = [
     {
-      "name"            = var.infraSubnetName
-      "addressPrefixes" = tolist([var.infraSubnetAddressPrefix])
+      name            = var.infraSubnetName
+      addressPrefixes = tolist([var.infraSubnetAddressPrefix])
     },
     {
-      "name"            = var.privateEndpointsSubnetName
-      "addressPrefixes" = tolist([var.privateEndpointsSubnetAddressPrefix])
+      name            = var.privateEndpointsSubnetName
+      addressPrefixes = tolist([var.privateEndpointsSubnetAddressPrefix])
     }
   ]
 
   appGatewayandDefaultSubnets = var.applicationGatewaySubnetAddressPrefix != "" ? concat(
     local.defaultSubnets,
     [{
-      "name"            = var.applicationGatewaySubnetName
-      "addressPrefixes" = tolist([var.applicationGatewaySubnetAddressPrefix])
+      name            = var.applicationGatewaySubnetName
+      addressPrefixes = tolist([var.applicationGatewaySubnetAddressPrefix])
     }]
   ) : local.defaultSubnets
 
   spokeSubnets = var.vmJumpboxOSType != "none" ? concat(
     local.appGatewayandDefaultSubnets,
     [{
-      "name"            = var.jumpboxSubnetName
-      "addressPrefixes" = tolist([var.jumpboxSubnetAddressPrefix])
+      name            = var.jumpboxSubnetName
+      addressPrefixes = tolist([var.jumpboxSubnetAddressPrefix])
     }]
   ) : local.appGatewayandDefaultSubnets
 

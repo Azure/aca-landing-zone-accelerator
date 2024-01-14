@@ -13,7 +13,7 @@ azureFirewallSubnetManagementAddressPrefix = "10.0.0.192/26"
 
 spokeVnetAddressPrefixes              = ["10.1.0.0/22"]
 vmJumpBoxSubnetAddressPrefix          = "10.1.2.32/27"
-infraSubnetAddressPrefix              = "10.1.0.0/23"
+infraSubnetAddressPrefix              = "10.1.0.0/27"
 privateEndpointsSubnetAddressPrefix   = "10.1.2.0/27"
 applicationGatewaySubnetAddressPrefix = "10.1.3.0/24"
 

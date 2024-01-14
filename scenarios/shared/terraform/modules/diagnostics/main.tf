@@ -6,8 +6,8 @@ data "azurerm_monitor_diagnostic_categories" "resources" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "rule" {
-  for_each = {}
-  # for_each = { for resource in var.resources : resource.type => resource }
+  # for_each = {}
+  for_each = { for resource in var.resources : resource.type => resource }
 
   name                           = "${each.key}-diagnostic-setting"
   target_resource_id             = each.value.id

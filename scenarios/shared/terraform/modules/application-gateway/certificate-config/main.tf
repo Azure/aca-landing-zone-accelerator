@@ -4,13 +4,13 @@ data "azurerm_key_vault" "keyVault" {
 }
 
 resource "azurerm_role_assignment" "keyvaultSecretUserRoleAssignment" {
-  scope                = data.azurerm_key_vault.keyVault.id 
+  scope                = data.azurerm_key_vault.keyVault.id
   principal_id         = var.appGatewayUserAssignedIdentityPrincipalId
   role_definition_name = "Key Vault Secrets User"
 }
 
 resource "azurerm_key_vault_secret" "sslCertSecret" {
-  depends_on = [ azurerm_role_assignment.keyvaultSecretUserRoleAssignment ]
+  depends_on   = [azurerm_role_assignment.keyvaultSecretUserRoleAssignment]
   name         = var.appGatewayCertificateKeyName
   key_vault_id = data.azurerm_key_vault.keyVault.id
   value        = var.appGatewayCertificateData

@@ -8,7 +8,7 @@ resource "azurerm_key_vault" "keyvault" {
   tenant_id                       = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days      = 7
   purge_protection_enabled        = false
-  public_network_access_enabled   = (var.clientIP == "" || var.clientIP == null)? false : true
+  public_network_access_enabled   = (var.clientIP == "" || var.clientIP == null) ? false : true
   enable_rbac_authorization       = true
   enabled_for_template_deployment = true
   tags                            = var.tags
@@ -16,18 +16,18 @@ resource "azurerm_key_vault" "keyvault" {
   network_acls {
     default_action             = "Deny"
     bypass                     = "AzureServices"
-    ip_rules                   = (var.clientIP == "" || var.clientIP == null)? null : [var.clientIP]
+    ip_rules                   = (var.clientIP == "" || var.clientIP == null) ? null : [var.clientIP]
     virtual_network_subnet_ids = null
   }
 }
 
 module "keyVaultPrivateZones" {
-  source                  = "../networking/private-zones"
-  resourceGroupName       = var.hubResourceGroupName
-  vnetLinks               = var.vnetLinks
-  zoneName                = local.privateDnsZoneNames
-  records                 = var.aRecords
-  tags                    = var.tags
+  source            = "../networking/private-zones"
+  resourceGroupName = var.hubResourceGroupName
+  vnetLinks         = var.vnetLinks
+  zoneName          = local.privateDnsZoneNames
+  records           = var.aRecords
+  tags              = var.tags
 }
 
 module "keyVaultPrivateEndpoints" {

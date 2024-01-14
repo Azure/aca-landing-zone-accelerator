@@ -8,8 +8,8 @@ resource "azurerm_application_gateway" "appGateway" {
   }
 
   sku {
-    name = var.skuName
-    tier = var.skuTier
+    name     = var.skuName
+    tier     = var.skuTier
     capacity = var.capacity
   }
 
@@ -28,7 +28,7 @@ resource "azurerm_application_gateway" "appGateway" {
       fqdns = backend_address_pool.value.fqdns
     }
   }
-  
+
   dynamic "ssl_certificate" {
     for_each = var.sslCertificates
     content {
@@ -57,13 +57,13 @@ resource "azurerm_application_gateway" "appGateway" {
   dynamic "backend_http_settings" {
     for_each = var.backendHttpSettings
     content {
-      name = backend_http_settings.value.name
-      port = backend_http_settings.value.port
-      protocol = backend_http_settings.value.protocol
-      cookie_based_affinity = backend_http_settings.value.cookie_based_affinity
+      name                                = backend_http_settings.value.name
+      port                                = backend_http_settings.value.port
+      protocol                            = backend_http_settings.value.protocol
+      cookie_based_affinity               = backend_http_settings.value.cookie_based_affinity
       pick_host_name_from_backend_address = backend_http_settings.value.pick_host_name_from_backend_address
-      request_timeout = backend_http_settings.value.request_timeout
-      probe_name = backend_http_settings.value.probe_name    
+      request_timeout                     = backend_http_settings.value.request_timeout
+      probe_name                          = backend_http_settings.value.probe_name
     }
   }
 
@@ -123,10 +123,10 @@ resource "azurerm_application_gateway" "appGateway" {
   dynamic "autoscale_configuration" {
     for_each = var.autoScaleSettings
     content {
-        min_capacity = var.autoscaleMinCapacity == -1? null: var.autoscaleMinCapacity
-        max_capacity = var.autoscaleMaxCapacity == -1? null: var.autoscaleMaxCapacity
+      min_capacity = var.autoscaleMinCapacity == -1 ? null : var.autoscaleMinCapacity
+      max_capacity = var.autoscaleMaxCapacity == -1 ? null : var.autoscaleMaxCapacity
     }
   }
 
-  zones = var.makeZoneRedundant == true? var.zones: []
+  zones = var.makeZoneRedundant == true ? var.zones : []
 }

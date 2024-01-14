@@ -43,10 +43,10 @@ variable "firewallPolicyRuleCollectionGroups" {
       priority = number,
       action   = string,
       rules = list(object({
-        name              = string,
-        source_addresses  = list(string),
-        source_ip_groups  = list(string),
-        destination_fqdns = list(string),
+        name                  = string,
+        source_addresses      = list(string),
+        source_ip_groups      = list(string),
+        destination_fqdns     = list(string),
         destination_addresses = list(string),
         protocols = list(object({
           port = string,

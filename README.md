@@ -12,10 +12,10 @@ This repository provides packaged guidance for customer scenarios, reference arc
 
 The architecture is considered across four key design areas. Please review them as part of your overall understanding of this landing zone accelerator.
 
-- [Identity and Access Management](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/container-apps/identity)
-- [Network Topology and Connectivity](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/container-apps/networking)
-- [Security, Governance, and Compliance](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/container-apps/security)
-- [Management and Monitoring](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/container-apps/management)
+- [Identity and Access Management](https://learn.microsoft.com/azure/cloud-adoption-framework/scenarios/app-platform/container-apps/identity)
+- [Network Topology and Connectivity](https://learn.microsoft.com/azure/cloud-adoption-framework/scenarios/app-platform/container-apps/networking)
+- [Security, Governance, and Compliance](https://learn.microsoft.com/azure/cloud-adoption-framework/scenarios/app-platform/container-apps/security)
+- [Management and Monitoring](https://learn.microsoft.com/azure/cloud-adoption-framework/scenarios/app-platform/container-apps/management)
 
 ## :rocket: Reference implementation
 

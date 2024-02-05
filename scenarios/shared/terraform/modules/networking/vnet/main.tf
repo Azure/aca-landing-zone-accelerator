@@ -1,16 +1,9 @@
-## Virtual Network
-
 resource "azurerm_virtual_network" "vnet" {
   name                = var.networkName
   location            = var.location
   resource_group_name = var.resourceGroupName
   address_space       = var.addressSpace
   tags                = var.tags
-
-  # var.ddosProtectionPlanId != "" ? ddos_protection_plan  {
-  #     enable = var.ddosProtectionPlanId != ""? true: false
-  #     id = var.ddosProtectionPlanId != ""? var.ddosProtectionPlanId: null
-  # }
 }
 
 resource "azurerm_subnet" "subnets" {
@@ -29,9 +22,7 @@ resource "azurerm_subnet" "subnets" {
 
       service_delegation {
         name = delegation.value.service_name
-        # name    = lookup(delegation.value, "service_name")
         actions = delegation.value.service_actions
-        # actions = lookup(delegation.value, "service_actions", [])
       }
     }
   }

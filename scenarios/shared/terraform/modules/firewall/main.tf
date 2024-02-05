@@ -4,7 +4,7 @@ resource "azurerm_public_ip" "publicIpFirewall" {
   location            = var.location
   allocation_method   = "Static"
   sku                 = "Standard"
-  zones               = ["1"]
+  zones               = var.firewallAvailabilityZones
   tags                = var.tags
 }
 
@@ -14,7 +14,7 @@ resource "azurerm_public_ip" "publicIpFirewallManagement" {
   location            = var.location
   allocation_method   = "Static"
   sku                 = "Standard"
-  zones               = ["1"]
+  zones               = var.firewallAvailabilityZones
   tags                = var.tags
 }
 
@@ -22,10 +22,10 @@ resource "azurerm_firewall" "firewall" {
   name                = var.firewallName
   resource_group_name = var.hubResourceGroupName
   location            = var.location
-  sku_name            = "AZFW_VNet" # AZFW_Hub
-  sku_tier            = "Basic"     # "Standard"  # Premium  # "Basic" # 
+  sku_name            = var.firewallSkuName
+  sku_tier            = var.firewallSkuTier
   firewall_policy_id  = azurerm_firewall_policy.firewallPolicy.id
-  zones               = ["1"] # ["1", "2", "3"]
+  zones               = var.firewallAvailabilityZones
   tags                = var.tags
 
   ip_configuration {
@@ -45,13 +45,10 @@ resource "azurerm_firewall_policy" "firewallPolicy" {
   name                = var.firewallPolicyName
   resource_group_name = var.hubResourceGroupName
   location            = var.location
-  sku                 = "Basic" # "Standard" # "Premium" #
+  sku                 = var.firewallSkuTier
 }
 
 resource "azurerm_firewall_policy_rule_collection_group" "policyGroup" {
-  # for_each = var.firewallPolicyRuleCollectionGroups
-  # for_each = [ for group in var.firewallPolicyRuleCollectionGroups : group.name => group ]
-  # for_each = try([ for group in var.firewallPolicyRuleCollectionGroups : group.name => group ], toset([]))
   for_each = try({ for group in var.firewallPolicyRuleCollectionGroups : group.name => group }, toset([]))
 
   name               = each.value.name

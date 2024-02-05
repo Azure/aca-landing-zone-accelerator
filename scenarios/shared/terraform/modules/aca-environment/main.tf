@@ -6,11 +6,15 @@ resource "azurerm_container_app_environment" "environment" {
   infrastructure_subnet_id       = var.subnetId
   internal_load_balancer_enabled = true
 
-  workload_profile {
-    name                  = "profile-D4"
-    workload_profile_type = "D4"
-    minimum_count         = 0
-    maximum_count         = 3
+  dynamic "workload_profile" {
+    for_each = var.workloadProfiles
+
+    content {
+      name                  = workload_profile.value.name
+      workload_profile_type = workload_profile.value.workload_profile_type
+      minimum_count         = workload_profile.value.minimum_count
+      maximum_count         = workload_profile.value.maximum_count
+    }
   }
 }
 

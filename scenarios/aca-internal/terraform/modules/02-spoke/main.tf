@@ -185,6 +185,13 @@ module "routeTable" {
   location          = var.location
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
   subnetId          = data.azurerm_subnet.infraSubnet.id
-  firewallPrivateIp = var.firewallPrivateIp
   tags              = var.tags
+
+  routes = [{
+    name             = "defaultEgressLockdown"
+    addressPrefix    = "0.0.0.0/0"
+    nextHopType      = "VirtualAppliance"
+    nextHopIpAddress = var.firewallPrivateIp
+    }
+  ]
 }

@@ -32,6 +32,21 @@ variable "firewallPolicyName" {
   type = string
 }
 
+variable "firewallSkuName" {
+  type = string
+  default = "AZFW_VNet" # "AZFW_Hub"
+}
+
+variable "firewallSkuTier" {
+  type = string
+  default = "Basic" # "Standard" "Premium" "Basic"
+}
+
+variable "firewallAvailabilityZones" {
+  type    = list(number)
+  default = [1] # [1, 2, 3]
+}
+
 variable "firewallPolicyRuleCollectionGroups" {
   description = "Firewall policy rule collection group configuration"
   type = list(object({

@@ -81,20 +81,22 @@ module "containerAppsEnvironment" {
   spokeVnetId             = module.spoke.spokeVNetId
   spokeInfraSubnetId      = module.spoke.spokeInfraSubnetId
   logAnalyticsWorkspaceId = module.spoke.logAnalyticsWorkspaceId
+  workloadProfiles        = var.workloadProfiles
+  tags                    = var.tags
+
   vnetLinks = [
     {
-      "name"                = module.spoke.spokeVNetName
-      "vnetId"              = module.spoke.spokeVNetId
-      "resourceGroupName"   = module.spoke.spokeResourceGroupName
-      "registrationEnabled" = false
+      name                = module.spoke.spokeVNetName
+      vnetId              = module.spoke.spokeVNetId
+      resourceGroupName   = module.spoke.spokeResourceGroupName
+      registrationEnabled = false
     },
     {
-      "name"                = module.hub.hubVnetName
-      "vnetId"              = module.hub.hubVnetId
-      "resourceGroupName"   = module.hub.hubResourceGroupName
-      "registrationEnabled" = false
+      name                = module.hub.hubVnetName
+      vnetId              = module.hub.hubVnetId
+      resourceGroupName   = module.hub.hubResourceGroupName
+      registrationEnabled = false
   }]
-  tags = var.tags
 }
 
 module "helloWorldApp" {
@@ -105,6 +107,7 @@ module "helloWorldApp" {
   helloWorldContainerAppName              = var.helloWorldContainerAppName
   containerAppsEnvironmentId              = module.containerAppsEnvironment.containerAppsEnvironmentId
   containerRegistryUserAssignedIdentityId = module.supportingServices.containerRegistryUserAssignedIdentityId
+  workloadProfileName                     = var.workloadProfiles != [] ? var.workloadProfiles.0.name : "Consumption"
   tags                                    = var.tags
 }
 

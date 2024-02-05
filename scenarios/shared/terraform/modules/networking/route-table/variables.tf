@@ -1,5 +1,5 @@
 variable "routeTableName" {
-  default = ""
+  default = "routeTableSpoke"
   type    = string
   validation {
     condition     = length(var.routeTableName) >= 2 && length(var.routeTableName) <= 32
@@ -9,23 +9,26 @@ variable "routeTableName" {
 }
 
 variable "location" {
-  default = "northeurope"
   type    = string
 }
 
 variable "resourceGroupName" {
-  default = ""
   type    = string
 }
 
 variable "subnetId" {
-  default = ""
   type    = string
 }
 
-variable "tags" {
-}
+variable "tags" {}
 
-variable "firewallPrivateIp" {
-  type = string
+variable "routes" {
+  type = list(object({
+    name               = string
+    address_prefix     = string
+    next_hop_type      = string
+    next_hop_in_ip     = string
+    next_hop_in_vnet   = string
+    next_hop_in_subnet = string
+  }))
 }

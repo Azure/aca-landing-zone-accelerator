@@ -35,3 +35,10 @@ appInsightsName                     = "appInsightsAca"
 helloWorldContainerAppName          = "ca-hello-world"
 appGatewayCertificateKeyName        = "agwcert"
 appGatewayFQDN                      = "acahello.demoapp.com"
+
+workloadProfiles = [{
+  name                  = "general-purpose"
+  workload_profile_type = "D4"
+  minimum_count         = 1
+  maximum_count         = 3
+}]

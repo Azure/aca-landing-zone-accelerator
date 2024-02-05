@@ -28,6 +28,7 @@ module "containerAppsEnvironment" {
   location                = var.location
   logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
   subnetId                = var.spokeInfraSubnetId
+  workloadProfiles        = var.workloadProfiles
 }
 
 module "containerAppsEnvironmentPrivateDnsZone" {
@@ -36,8 +37,10 @@ module "containerAppsEnvironmentPrivateDnsZone" {
   zoneName          = module.containerAppsEnvironment.containerAppsEnvironmentDefaultDomain
   vnetLinks         = var.vnetLinks != [] ? var.vnetLinks : local.vnetLinks
   records = [
-    { "name"        = "*"
+    {
+      "name"        = "*"
       "ipv4Address" = [module.containerAppsEnvironment.containerAppsEnvironmentLoadBalancerIP]
-  }]
+    }
+  ]
   tags = var.tags
 }

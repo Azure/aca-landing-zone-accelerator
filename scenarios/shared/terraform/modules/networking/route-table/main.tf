@@ -7,12 +7,13 @@ resource "azurerm_route_table" "rt" {
 }
 
 resource "azurerm_route" "routeToFirewall" {
-  name                   = "defaultEgressLockdown"
+  for_each = var.routes
+  name                   = each.value.name
   resource_group_name    = azurerm_route_table.rt.resource_group_name
   route_table_name       = azurerm_route_table.rt.name
-  address_prefix         = "0.0.0.0/0"
-  next_hop_type          = "VirtualAppliance" # "VirtualNetworkGateway"
-  next_hop_in_ip_address = var.firewallPrivateIp
+  address_prefix         = each.value.addressPrefix
+  next_hop_type          = each.value.nextHopType
+  next_hop_in_ip_address = each.value.nextHopInIp
 }
 
 resource "azurerm_subnet_route_table_association" "associationRtSubnetInfra" {

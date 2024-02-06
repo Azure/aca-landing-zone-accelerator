@@ -9,26 +9,24 @@ variable "routeTableName" {
 }
 
 variable "location" {
-  type    = string
+  type = string
 }
 
 variable "resourceGroupName" {
-  type    = string
+  type = string
 }
 
 variable "subnetId" {
-  type    = string
+  type = string
 }
 
 variable "tags" {}
 
 variable "routes" {
   type = list(object({
-    name               = string
-    address_prefix     = string
-    next_hop_type      = string
-    next_hop_in_ip     = string
-    next_hop_in_vnet   = string
-    next_hop_in_subnet = string
+    name             = string
+    addressPrefix    = string
+    nextHopType      = string
+    nextHopIpAddress = string
   }))
 }

@@ -7,13 +7,13 @@ resource "azurerm_route_table" "rt" {
 }
 
 resource "azurerm_route" "routeToFirewall" {
-  for_each = var.routes
+  for_each               = { for route in var.routes : route.name => route }
   name                   = each.value.name
   resource_group_name    = azurerm_route_table.rt.resource_group_name
   route_table_name       = azurerm_route_table.rt.name
   address_prefix         = each.value.addressPrefix
   next_hop_type          = each.value.nextHopType
-  next_hop_in_ip_address = each.value.nextHopInIp
+  next_hop_in_ip_address = each.value.nextHopIpAddress
 }
 
 resource "azurerm_subnet_route_table_association" "associationRtSubnetInfra" {

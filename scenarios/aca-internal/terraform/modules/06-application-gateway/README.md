@@ -1,6 +1,6 @@
 # Expose the workload through Application Gateway
 
-The [workload that was deployed](../05-hello-world-sample-app/README.md) in the prior step needs to be exposed through a controlled gateway to reachable. Here, you'll deploy and configure Azure Application Gateway to serve that role.
+The [workload that was deployed](../05-hello-world-sample-app/README.md) in the prior step needs to be exposed through a controlled gateway to be reachable. Here, you'll deploy and configure Azure Application Gateway to serve that role.
 
 ## Expected results
 

@@ -26,7 +26,7 @@ vmJumpboxOSType          = "Linux"
 infraSubnetName          = "snet-infra"
 
 deployHelloWorldSample              = true
-clientIP                            = "176.177.25.47" # "<Add your client IP here for use in KeyVault access permissions>"
+clientIP                            = "<Add your client IP here for use in KeyVault access permissions>"
 supportingResourceGroupName         = "supporting-services"
 aRecords                            = []
 containerRegistryPullRoleAssignment = "acrRoleAssignment"

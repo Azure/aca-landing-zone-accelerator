@@ -1,15 +1,17 @@
 module "hub" {
-  source                           = "./modules/01-hub"
-  workloadName                     = var.workloadName
-  environment                      = var.environment
-  hubResourceGroupName             = var.hubResourceGroupName
-  location                         = var.location
-  vnetAddressPrefixes              = var.hubVnetAddressPrefixes
-  enableBastion                    = var.enableBastion
-  bastionSubnetAddressPrefixes     = var.bastionSubnetAddressPrefixes
-  gatewaySubnetAddressPrefix       = var.gatewaySubnetAddressPrefix
-  azureFirewallSubnetAddressPrefix = var.azureFirewallSubnetAddressPrefix
-  tags                             = var.tags
+  source                                     = "./modules/01-hub"
+  workloadName                               = var.workloadName
+  environment                                = var.environment
+  hubResourceGroupName                       = var.hubResourceGroupName
+  location                                   = var.location
+  vnetAddressPrefixes                        = var.hubVnetAddressPrefixes
+  enableBastion                              = var.enableBastion
+  bastionSubnetAddressPrefixes               = var.bastionSubnetAddressPrefixes
+  gatewaySubnetAddressPrefix                 = var.gatewaySubnetAddressPrefix
+  azureFirewallSubnetAddressPrefix           = var.azureFirewallSubnetAddressPrefix
+  azureFirewallSubnetManagementAddressPrefix = var.azureFirewallSubnetManagementAddressPrefix
+  infraSubnetAddressPrefix                   = var.infraSubnetAddressPrefix
+  tags                                       = var.tags
 }
 
 module "spoke" {
@@ -30,6 +32,7 @@ module "spoke" {
   vmLinuxSshAuthorizedKeys              = var.vmLinuxSshAuthorizedKeys
   vmJumpboxOSType                       = var.vmJumpboxOSType
   jumpboxSubnetAddressPrefix            = var.vmJumpBoxSubnetAddressPrefix
+  firewallPrivateIp                     = module.hub.firewallPrivateIp
   tags                                  = var.tags
 }
 
@@ -48,6 +51,8 @@ module "supportingServices" {
   keyVaultPullRoleAssignment          = var.keyVaultPullRoleAssignment
   clientIP                            = var.clientIP
   logAnalyticsWorkspaceId             = module.spoke.logAnalyticsWorkspaceId
+  supportingResourceGroupName         = var.supportingResourceGroupName
+
   vnetLinks = [
     {
       "name"                = module.spoke.spokeVNetName
@@ -65,31 +70,33 @@ module "supportingServices" {
 }
 
 module "containerAppsEnvironment" {
-  source                 = "./modules/04-container-apps-environment"
-  workloadName           = var.workloadName
-  environment            = var.environment
-  location               = var.location
-  spokeResourceGroupName = module.spoke.spokeResourceGroupName
-  hubResourceGroupName   = module.hub.hubResourceGroupName
-  appInsightsName        = var.appInsightsName
-  hubVnetId              = module.hub.hubVnetId
-  spokeVnetId            = module.spoke.spokeVNetId
-  spokeInfraSubnetId     = module.spoke.spokeInfraSubnetId
+  source                  = "./modules/04-container-apps-environment"
+  workloadName            = var.workloadName
+  environment             = var.environment
+  location                = var.location
+  spokeResourceGroupName  = module.spoke.spokeResourceGroupName
+  hubResourceGroupName    = module.hub.hubResourceGroupName
+  appInsightsName         = var.appInsightsName
+  hubVnetId               = module.hub.hubVnetId
+  spokeVnetId             = module.spoke.spokeVNetId
+  spokeInfraSubnetId      = module.spoke.spokeInfraSubnetId
   logAnalyticsWorkspaceId = module.spoke.logAnalyticsWorkspaceId
+  workloadProfiles        = var.workloadProfiles
+  tags                    = var.tags
+
   vnetLinks = [
     {
-      "name"                = module.spoke.spokeVNetName
-      "vnetId"              = module.spoke.spokeVNetId
-      "resourceGroupName"   = module.spoke.spokeResourceGroupName
-      "registrationEnabled" = false
+      name                = module.spoke.spokeVNetName
+      vnetId              = module.spoke.spokeVNetId
+      resourceGroupName   = module.spoke.spokeResourceGroupName
+      registrationEnabled = false
     },
     {
-      "name"                = module.hub.hubVnetName
-      "vnetId"              = module.hub.hubVnetId
-      "resourceGroupName"   = module.hub.hubResourceGroupName
-      "registrationEnabled" = false
+      name                = module.hub.hubVnetName
+      vnetId              = module.hub.hubVnetId
+      resourceGroupName   = module.hub.hubResourceGroupName
+      registrationEnabled = false
   }]
-  tags = var.tags
 }
 
 module "helloWorldApp" {
@@ -100,9 +107,9 @@ module "helloWorldApp" {
   helloWorldContainerAppName              = var.helloWorldContainerAppName
   containerAppsEnvironmentId              = module.containerAppsEnvironment.containerAppsEnvironmentId
   containerRegistryUserAssignedIdentityId = module.supportingServices.containerRegistryUserAssignedIdentityId
+  workloadProfileName                     = var.workloadProfiles != [] ? var.workloadProfiles.0.name : "Consumption"
   tags                                    = var.tags
 }
-
 
 # If you would like to deploy an Application Gateway and have provided your IP address for KeyVault access, leave this module uncommented
 # If you would like to keep your KeyVault private, comment out this module

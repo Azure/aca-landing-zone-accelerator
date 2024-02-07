@@ -24,7 +24,7 @@ param tags object = {}
 @description('CIDR of the spoke infrastructure subnet.')
 param spokeInfraSubnetAddressPrefix string
 
-param azureFirewallSubnetManagementAddressPrefix string 
+param azureFirewallSubnetManagementAddressPrefix string
 
 var applicationRuleCollections = [
   {
@@ -68,9 +68,9 @@ var applicationRuleCollections = [
             spokeInfraSubnetAddressPrefix
           ]
           targetFqdns: [
-            '*.blob.${environment().suffixes.storage}' 
+            '*.blob.${environment().suffixes.storage}'
             'login.microsoft.com'
-            '*.azurecr.io'   //NOTE: for less permisive environment replace wildcard with actual(s) Container Registries
+            '*.azurecr.io' //NOTE: for less permisive environment replace wildcard with actual(s) Container Registries
             'hub.docker.com'
             'registry-1.docker.io'
             'production.cloudflare.docker.com'
@@ -89,9 +89,7 @@ var applicationRuleCollections = [
           ]
           targetFqdns: [
             '*.identity.azure.net'
-            #disable-next-line no-hardcoded-env-urls
             'login.microsoftonline.com'
-            #disable-next-line no-hardcoded-env-urls
             '*.login.microsoftonline.com'
             '*.login.microsoft.com'
           ]
@@ -108,8 +106,8 @@ var applicationRuleCollections = [
             spokeInfraSubnetAddressPrefix
           ]
           targetFqdns: [
-            '*${environment().suffixes.keyvaultDns}'  //NOTE: for less permisive environment replace wildcard with actual(s) KeyVault
-            #disable-next-line no-hardcoded-env-urls          
+            '*${environment().suffixes.keyvaultDns}' //NOTE: for less permisive environment replace wildcard with actual(s) KeyVault
+            #disable-next-line no-hardcoded-env-urls
             'login.microsoft.com'
           ]
         }
@@ -123,9 +121,9 @@ var applicationRuleCollections = [
         type: 'allow'
       }
       priority: 120
-      rules: [ 
+      rules: [
         {
-          fqdnTags: [ ]
+          fqdnTags: []
           targetFqdns: [
             'dc.applicationinsights.azure.com'
             'dc.applicationinsights.microsoft.com'
@@ -141,7 +139,7 @@ var applicationRuleCollections = [
             '*.monitor.azure.com'
           ]
           name: 'allow-azure-monitor'
-          protocols: [               
+          protocols: [
             {
               port: '443'
               protocolType: 'HTTPS'
@@ -161,19 +159,19 @@ var applicationRuleCollections = [
         type: 'allow'
       }
       priority: 130
-      rules: [ 
-        {          
+      rules: [
+        {
           name: 'allow-developer-services'
-          fqdnTags: [ ]
+          fqdnTags: []
           targetFqdns: [
             'github.com'
             '*.github.com'
             'ghcr.io'
             '*.ghcr.io'
             '*.nuget.org'
-            '*.blob.${environment().suffixes.storage}'  // might replace wildcard with specific FQDN
+            '*.blob.${environment().suffixes.storage}' // might replace wildcard with specific FQDN
             '*.table.${environment().suffixes.storage}' // might replace wildcard with specific FQDN
-            '*.servicebus.windows.net'                  // might replace wildcard with specific FQDN
+            '*.servicebus.windows.net' // might replace wildcard with specific FQDN
             'githubusercontent.com'
             '*.githubusercontent.com'
             'dev.azure.com'
@@ -183,7 +181,7 @@ var applicationRuleCollections = [
             'appservice.azureedge.net'
             '*.azurewebsites.net'
           ]
-          protocols: [               
+          protocols: [
             {
               port: '443'
               protocolType: 'HTTPS'
@@ -193,11 +191,11 @@ var applicationRuleCollections = [
             spokeInfraSubnetAddressPrefix
           ]
         }
-         {          
+        {
           name: 'allow-certificate-dependencies'
-          fqdnTags: [ ]
+          fqdnTags: []
           targetFqdns: [
-              '*.delivery.mp.microsoft.com'
+            '*.delivery.mp.microsoft.com'
             'ctldl.windowsupdate.com'
             'ocsp.msocsp.com'
             'oneocsp.microsoft.com'
@@ -208,11 +206,11 @@ var applicationRuleCollections = [
             '*.symcb.com'
             '*.d-trust.net'
           ]
-          protocols: [  
+          protocols: [
             {
               port: '80'
               protocolType: 'HTTP'
-            }             
+            }
             {
               port: '443'
               protocolType: 'HTTPS'
@@ -227,89 +225,88 @@ var applicationRuleCollections = [
   }
 ]
 
-var networkRules =  [
-      {
-        name: 'ace-allow-rules'
-        properties: {
-          action: {
-            type: 'allow'
-          }
-          priority: 100
-          // For more  Azure resources (than KeyVault, ACR etc which we use here) you are using with Azure Firewall, 
-          // please refer to the service tags documentation: https://learn.microsoft.com/azure/virtual-network/service-tags-overview#available-service-tags
-          rules: [      
-            {              
-              name: 'ace-general-allow-rule'
-              protocols: [
-                'Any'
-              ]
-              sourceAddresses: [
-                spokeInfraSubnetAddressPrefix
-              ]
-              destinationAddresses: [
-                'MicrosoftContainerRegistry'  //For even less permisive environment, you can point to a specific MCR region, i.e. 'MicrosoftContainerRegistry.Westeurope'
-                'AzureFrontDoor.FirstParty'
-              ]
-              destinationPorts: [                
-                '443'
-              ]  
-            }
-            {              
-              name: 'ace-acr-allow-rule'
-              protocols: [
-                'Any'
-              ]
-              sourceAddresses: [
-                spokeInfraSubnetAddressPrefix
-              ]
-              destinationAddresses: [
-                'AzureContainerRegistry'  //For even less permisive environment, you can point to a specific ACR region, i.e. 'MicrosoftContainerRegistry.Westeurope'
-                'AzureActiveDirectory'
-              ]
-              destinationPorts: [                
-                '443'
-              ]  
-            }
-            {              
-              name: 'ace-keyvault-allow-rule'
-              protocols: [
-                'Any'
-              ]
-              sourceAddresses: [
-                spokeInfraSubnetAddressPrefix
-              ]
-              destinationAddresses: [
-                'AzureKeyVault'  //For even less permisive environment, you can point to a specific keyvault region, i.e. 'MicrosoftContainerRegistry.Westeurope'
-                'AzureActiveDirectory'
-              ]
-              destinationPorts: [                
-                '443'
-              ]  
-            }
-            {              
-              name: 'ace-managedIdentity-allow-rule'
-              protocols: [
-                'Any'
-              ]
-              sourceAddresses: [
-                spokeInfraSubnetAddressPrefix
-              ]
-              destinationAddresses: [
-                'AzureActiveDirectory'
-              ]
-              destinationPorts: [                
-                '443'
-              ]  
-            }
+var networkRules = [
+  {
+    name: 'ace-allow-rules'
+    properties: {
+      action: {
+        type: 'allow'
+      }
+      priority: 100
+      // For more  Azure resources (than KeyVault, ACR etc which we use here) you are using with Azure Firewall, 
+      // please refer to the service tags documentation: https://learn.microsoft.com/azure/virtual-network/service-tags-overview#available-service-tags
+      rules: [
+        {
+          name: 'ace-general-allow-rule'
+          protocols: [
+            'Any'
+          ]
+          sourceAddresses: [
+            spokeInfraSubnetAddressPrefix
+          ]
+          destinationAddresses: [
+            'MicrosoftContainerRegistry' //For even less permisive environment, you can point to a specific MCR region, i.e. 'MicrosoftContainerRegistry.Westeurope'
+            'AzureFrontDoor.FirstParty'
+          ]
+          destinationPorts: [
+            '443'
           ]
         }
-      }
-    ]
+        {
+          name: 'ace-acr-allow-rule'
+          protocols: [
+            'Any'
+          ]
+          sourceAddresses: [
+            spokeInfraSubnetAddressPrefix
+          ]
+          destinationAddresses: [
+            'AzureContainerRegistry' //For even less permisive environment, you can point to a specific ACR region, i.e. 'MicrosoftContainerRegistry.Westeurope'
+            'AzureActiveDirectory'
+          ]
+          destinationPorts: [
+            '443'
+          ]
+        }
+        {
+          name: 'ace-keyvault-allow-rule'
+          protocols: [
+            'Any'
+          ]
+          sourceAddresses: [
+            spokeInfraSubnetAddressPrefix
+          ]
+          destinationAddresses: [
+            'AzureKeyVault' //For even less permisive environment, you can point to a specific keyvault region, i.e. 'MicrosoftContainerRegistry.Westeurope'
+            'AzureActiveDirectory'
+          ]
+          destinationPorts: [
+            '443'
+          ]
+        }
+        {
+          name: 'ace-managedIdentity-allow-rule'
+          protocols: [
+            'Any'
+          ]
+          sourceAddresses: [
+            spokeInfraSubnetAddressPrefix
+          ]
+          destinationAddresses: [
+            'AzureActiveDirectory'
+          ]
+          destinationPorts: [
+            '443'
+          ]
+        }
+      ]
+    }
+  }
+]
 
 resource hubVnet 'Microsoft.Network/virtualNetworks@2022-11-01' existing = {
   name: afwVNetName
 }
-
 
 resource fwManagementSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = {
   parent: hubVnet
@@ -339,7 +336,6 @@ module afw '../../../../../shared/bicep/azureFirewalls/main.bicep' = {
     azFwManagementSubnetId: fwManagementSubnet.id
   }
 }
-
 
 output afwPrivateIp string = afw.outputs.privateIp
 output afwId string = afw.outputs.resourceId

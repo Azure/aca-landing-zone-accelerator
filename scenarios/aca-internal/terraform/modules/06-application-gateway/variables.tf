@@ -24,7 +24,7 @@ variable "appGatewayCertificatePath" {}
 
 variable "logAnalyticsWorkspaceId" {}
 variable "ddosProtectionEnabled" {
-  default = "Enabled" 
+  default = "Enabled"
 }
 
 variable "enableAppGatewayCertificate" {

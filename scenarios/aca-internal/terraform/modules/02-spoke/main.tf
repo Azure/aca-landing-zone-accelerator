@@ -26,6 +26,7 @@ module "vnet" {
   addressSpace      = var.vnetAddressPrefixes
   tags              = var.tags
   subnets           = local.spokeSubnets
+  subnetDelegations = local.subnetDelegations
 }
 
 module "nsgContainerAppsEnvironmentNsg" {
@@ -33,7 +34,7 @@ module "nsgContainerAppsEnvironmentNsg" {
   nsgName           = module.naming.resourceNames["containerAppsEnvironmentNsg"]
   location          = var.location
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  securityRules     = var.containerAppsSecurityRules.default
+  securityRules     = var.containerAppsSecurityRules
   tags              = var.tags
 }
 
@@ -60,12 +61,12 @@ module "nsgAppGateway" {
   nsgName           = module.naming.resourceNames["applicationGatewayNsg"]
   location          = var.location
   resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  securityRules     = var.appGatewaySecurityRules.default
+  securityRules     = var.appGatewaySecurityRules
   tags              = var.tags
 }
 
 resource "azurerm_subnet_network_security_group_association" "agwSecurityGroupAssociation" {
-  count = var.applicationGatewaySubnetAddressPrefix != "" ? 1 : 0
+  count                     = var.applicationGatewaySubnetAddressPrefix != "" ? 1 : 0
   subnet_id                 = data.azurerm_subnet.appGatewaySubnet[0].id
   network_security_group_id = module.nsgAppGateway.nsgId
 }
@@ -79,7 +80,7 @@ module "nsgJumpbox" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "jumpBoxSecurityGroupAssociation" {
-  count = var.jumpboxSubnetAddressPrefix != "" ? 1 : 0
+  count                     = var.jumpboxSubnetAddressPrefix != "" ? 1 : 0
   subnet_id                 = data.azurerm_subnet.jumpboxSubnet[0].id
   network_security_group_id = module.nsgJumpbox.nsgId
 }
@@ -102,18 +103,18 @@ module "peeringHubToSpoke" {
 }
 
 module "vm" {
-  source            = "../../../../shared/terraform/modules/vms"
-  osType            = "Linux"
-  location          = var.location
-  tags              = var.tags
-  nicName           = module.naming.resourceNames["vmJumpBoxNic"]
-  vmName            = module.naming.resourceNames["vmJumpBox"]
-  adminUsername     = var.vmAdminUsername
-  adminPassword     = var.vmAdminPassword
-  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  size              = var.vmSize
+  source                = "../../../../shared/terraform/modules/vms"
+  osType                = "Linux"
+  location              = var.location
+  tags                  = var.tags
+  nicName               = module.naming.resourceNames["vmJumpBoxNic"]
+  vmName                = module.naming.resourceNames["vmJumpBox"]
+  adminUsername         = var.vmAdminUsername
+  adminPassword         = var.vmAdminPassword
+  resourceGroupName     = azurerm_resource_group.spokeResourceGroup.name
+  size                  = var.vmSize
   vnetResourceGroupName = azurerm_resource_group.spokeResourceGroup.name
-  subnetId          = data.azurerm_subnet.jumpboxSubnet[0].id
+  subnetId              = data.azurerm_subnet.jumpboxSubnet[0].id
 }
 
 module "logAnalyticsWorkspace" {
@@ -125,16 +126,16 @@ module "logAnalyticsWorkspace" {
 }
 
 module "diagnostics" {
-  source = "../../../../shared/terraform/modules/diagnostics"
+  source                  = "../../../../shared/terraform/modules/diagnostics"
   logAnalyticsWorkspaceId = module.logAnalyticsWorkspace.workspaceId
-  resources = [ 
+  resources = [
     {
-      "type" = "vnet-spoke"
-      "id" = module.vnet.vnetId
+      type = "vnet-spoke"
+      id   = module.vnet.vnetId
     },
     {
-      "type" = "vm-jumpbox"
-      "id" = module.vm.vmId
+      type = "vm-jumpbox"
+      id   = module.vm.vmId
     }
   ]
 }
@@ -176,4 +177,21 @@ data "azurerm_subnet" "jumpboxSubnet" {
   name                 = var.jumpboxSubnetName
   resource_group_name  = azurerm_resource_group.spokeResourceGroup.name
   virtual_network_name = module.vnet.vnetName
+}
+
+module "routeTable" {
+  source            = "../../../../shared/terraform/modules/networking/route-table"
+  routeTableName    = module.naming.resourceNames["routeTable"]
+  location          = var.location
+  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
+  subnetId          = data.azurerm_subnet.infraSubnet.id
+  tags              = var.tags
+
+  routes = [{
+    name             = "defaultEgressLockdown"
+    addressPrefix    = "0.0.0.0/0"
+    nextHopType      = "VirtualAppliance"
+    nextHopIpAddress = var.firewallPrivateIp
+    }
+  ]
 }

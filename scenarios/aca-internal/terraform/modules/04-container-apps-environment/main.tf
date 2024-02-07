@@ -24,10 +24,11 @@ module "applicationInsights" {
 module "containerAppsEnvironment" {
   source                  = "../../../../shared/terraform/modules/aca-environment"
   environmentName         = module.naming.resourceNames["containerAppsEnvironment"]
-  resourceGroupName    = var.spokeResourceGroupName
+  resourceGroupName       = var.spokeResourceGroupName
   location                = var.location
   logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
   subnetId                = var.spokeInfraSubnetId
+  workloadProfiles        = var.workloadProfiles
 }
 
 module "containerAppsEnvironmentPrivateDnsZone" {
@@ -36,9 +37,10 @@ module "containerAppsEnvironmentPrivateDnsZone" {
   zoneName          = module.containerAppsEnvironment.containerAppsEnvironmentDefaultDomain
   vnetLinks         = var.vnetLinks != [] ? var.vnetLinks : local.vnetLinks
   records = [
-    { "name"        = "*"
+    {
+      "name"        = "*"
       "ipv4Address" = [module.containerAppsEnvironment.containerAppsEnvironmentLoadBalancerIP]
-  }]
+    }
+  ]
   tags = var.tags
 }
-

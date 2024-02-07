@@ -21,6 +21,10 @@ locals {
     containerRegistryUserAssignedIdentity  = "${var.resourceTypeAbbreviations.managedIdentity}-${lower(replace(replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.containerRegistry), "-", ""))}-AcrPull"
     cosmosDbNoSql                          = lower(substr(replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.cosmosDbNoSql), 0, 44))
     cosmosDbNoSqlPep                       = "${var.resourceTypeAbbreviations.privateEndpoint}-${lower(substr(replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.cosmosDbNoSql), 0, 44))}"
+    firewall                               = replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.firewall)
+    firewallPip                            = "${var.resourceTypeAbbreviations.publicIpAddress}-${replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.firewall)}"
+    firewallManagementPip                  = "${var.resourceTypeAbbreviations.publicIpAddress}-${replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.firewall)}-management"
+    firewallPolicy                         = replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.firewallPolicy)
     frontDoorProfile                       = replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.frontDoor)
     keyVault                               = substr(replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.keyVault), 0, 24)
     keyVaultPep                            = "${var.resourceTypeAbbreviations.privateEndpoint}-${replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.keyVault)}"
@@ -30,6 +34,7 @@ locals {
     privateLinkServiceName                 = "${var.resourceTypeAbbreviations.privateLinkService}-${replace(local.namingBase, var.resourceTypeToken, var.resourceTypeAbbreviations.frontDoor)}"
     rgHubName                              = "${var.resourceTypeAbbreviations.resourceGroup}-${var.workloadName}-hub-${var.environment}-${var.regionAbbreviations[lower(var.location)]}"
     rgSpokeName                            = "${var.resourceTypeAbbreviations.resourceGroup}-${var.workloadName}-spoke-${var.environment}-${var.regionAbbreviations[lower(var.location)]}"
+    routeTable                             = "${var.resourceTypeAbbreviations.routeTable}-${var.workloadName}-${var.environment}-${var.regionAbbreviations[lower(var.location)]}"
     serviceBus                             = replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.serviceBus)
     serviceBusPep                          = "${var.resourceTypeAbbreviations.privateEndpoint}-${replace(local.namingBaseUnique, var.resourceTypeToken, var.resourceTypeAbbreviations.serviceBus)}"
     vmJumpBox                              = replace(local.namingBaseNoWorkloadName, var.resourceTypeToken, var.resourceTypeAbbreviations.virtualMachine)

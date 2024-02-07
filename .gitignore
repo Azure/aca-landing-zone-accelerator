@@ -393,3 +393,5 @@ override.tf.json
 
 # CodeRush personal settings
 .DS_Store
+
+tfplan

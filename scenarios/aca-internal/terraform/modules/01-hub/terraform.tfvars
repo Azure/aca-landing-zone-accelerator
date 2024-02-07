@@ -8,4 +8,3 @@ hubResourceGroupName         = ""
 vnetAddressPrefixes          = ["10.0.0.0/24"]
 enableBastion                = true
 bastionSubnetAddressPrefixes = ["10.0.0.128/26"]
-

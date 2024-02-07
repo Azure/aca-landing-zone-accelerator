@@ -45,12 +45,21 @@ variable "gatewaySubnetName" {
   default = "GatewaySubnet"
   type    = string
 }
-  
+
 variable "gatewaySubnetAddressPrefix" {}
 
 variable "azureFirewallSubnetName" {
   default = "AzureFirewallSubnet"
-  type = string
+  type    = string
 }
 
 variable "azureFirewallSubnetAddressPrefix" {}
+
+variable "azureFirewallSubnetManagementName" {
+  default = "AzureFirewallManagementSubnet" # must use this name for Firewall Basic SKU
+  type    = string
+}
+
+variable "azureFirewallSubnetManagementAddressPrefix" {}
+
+variable "infraSubnetAddressPrefix" {}

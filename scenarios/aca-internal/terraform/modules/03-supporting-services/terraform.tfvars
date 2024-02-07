@@ -9,5 +9,5 @@ spokeVnetId                         = "<Spoke VNET ID>"
 spokePrivateEndpointSubnetId        = "<Spoke Private Endpoint Subnet ID>"
 containerRegistryPullRoleAssignment = "acrRoleAssignment"
 keyVaultPullRoleAssignment          = "keyVaultRoleAssignment"
-clientIP                            =  "<Your Client IP>"
+clientIP                            = "<Your Client IP>"
 tags                                = {}

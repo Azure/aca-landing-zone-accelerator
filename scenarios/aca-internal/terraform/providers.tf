@@ -3,11 +3,12 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.71.0"
+      version = ">= 3.90.0"
     }
   }
   required_version = ">= 1.3.4"
 
+  # uncomment if you want to save state file into remote storae account
   backend "azurerm" {
   }
 }

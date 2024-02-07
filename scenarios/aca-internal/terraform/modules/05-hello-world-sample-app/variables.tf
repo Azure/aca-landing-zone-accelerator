@@ -18,3 +18,7 @@ variable "containerAppsEnvironmentId" {}
 variable "resourceGroupName" {}
 
 variable "deployApp" {}
+
+variable "workloadProfileName" {
+  type    = string
+}

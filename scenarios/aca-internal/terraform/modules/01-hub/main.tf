@@ -26,16 +26,34 @@ module "vnet" {
   addressSpace         = var.vnetAddressPrefixes
   tags                 = var.tags
   ddosProtectionPlanId = var.ddosProtectionPlanId
-  subnets              = [
+  subnets = [
     {
-      "name" = var.gatewaySubnetName
-      "addressPrefixes" = [var.gatewaySubnetAddressPrefix]
+      name            = var.gatewaySubnetName
+      addressPrefixes = [var.gatewaySubnetAddressPrefix]
     },
     {
-      "name" = var.azureFirewallSubnetName
-      "addressPrefixes" = [var.azureFirewallSubnetAddressPrefix]
+      name            = var.azureFirewallSubnetName
+      addressPrefixes = [var.azureFirewallSubnetAddressPrefix]
+    },
+    {
+      name            = var.azureFirewallSubnetManagementName
+      addressPrefixes = [var.azureFirewallSubnetManagementAddressPrefix]
     }
   ]
+}
+
+module "firewall" {
+  source                             = "../../../../shared/terraform/modules/firewall"
+  firewallName                       = module.naming.resourceNames["firewall"]
+  location                           = var.location
+  hubResourceGroupName               = azurerm_resource_group.hubResourceGroup.name
+  subnetFirewallId                   = module.vnet.subnetIds[var.azureFirewallSubnetName]
+  subnetFirewallManagementId         = module.vnet.subnetIds[var.azureFirewallSubnetManagementName]
+  publicIpFirewallName               = module.naming.resourceNames["firewallPip"]
+  publicIpFirewallManagementName     = module.naming.resourceNames["firewallManagementPip"]
+  firewallPolicyName                 = module.naming.resourceNames["firewallPolicy"]
+  firewallPolicyRuleCollectionGroups = local.firewallPolicyRuleCollectionGroups
+  tags                               = var.tags
 }
 
 module "bastion" {
@@ -48,4 +66,31 @@ module "bastion" {
   bastionPipName        = module.naming.resourceNames["bastionPip"]
   tags                  = var.tags
   bastionHostName       = module.naming.resourceNames["bastion"]
+}
+
+module "logAnalyticsWorkspace" {
+  source            = "../../../../shared/terraform/modules/monitoring/log-analytics"
+  resourceGroupName = azurerm_resource_group.hubResourceGroup.name
+  location          = var.location
+  workspaceName     = module.naming.resourceNames["logAnalyticsWorkspace"]
+  tags              = var.tags
+}
+
+module "diagnostics" {
+  source                  = "../../../../shared/terraform/modules/diagnostics"
+  logAnalyticsWorkspaceId = module.logAnalyticsWorkspace.workspaceId
+  resources = [
+    {
+      type = "firewall-hub"
+      id   = module.firewall.firewallId
+    },
+    {
+      type = "vnet-hub"
+      id   = module.vnet.vnetId
+    },
+    {
+      type = "bastion"
+      id   = module.bastion.bastionHostId
+    }
+  ]
 }

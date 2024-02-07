@@ -45,16 +45,16 @@ module "keyVault" {
 }
 
 module "diagnostics" {
-  source   = "../../../../shared/terraform/modules/diagnostics"
+  source                  = "../../../../shared/terraform/modules/diagnostics"
   logAnalyticsWorkspaceId = var.logAnalyticsWorkspaceId
   resources = [
     {
-      "type" = "keyvault"
-      "id" = module.keyVault.keyVaultId
+      type = "keyvault"
+      id   = module.keyVault.keyVaultId
     },
     {
-      "type" = "acr"
-      "id" = module.containerRegistry.acrId
+      type = "acr"
+      id   = module.containerRegistry.acrId
     }
   ]
 }

@@ -145,3 +145,6 @@ output keyVaultName string = keyVault.outputs.keyVaultName
 
 @description('The secret name to retrieve the connection string from KeyVault')
 output redisCacheSecretKey string = (deployRedisCache)? redisCache.outputs.redisCacheSecretKey : ''
+
+@description('The name of the Azure Open AI account name.')
+output openAIAccountName string = (deployOpenAi)? openAi.outputs.name : ''

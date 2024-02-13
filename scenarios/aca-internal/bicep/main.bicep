@@ -253,6 +253,9 @@ module applicationGateway 'modules/06-application-gateway/deploy.app-gateway.bic
 @description('The resource ID of hub virtual network.')
 output hubVNetId string = hub.outputs.hubVNetId
 
+@description('The name of hub virtual network.')
+output hubVNetName string = hub.outputs.hubVNetId
+
 @description('The name of the Hub resource group.')
 output hubResourceGroupName string = hub.outputs.resourceGroupName
 
@@ -281,6 +284,9 @@ output spokeApplicationGatewaySubnetId string = spoke.outputs.spokeApplicationGa
 @description('The name of the Spoke Application Gateway Subnet.  If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty.')
 output spokeApplicationGatewaySubnetName string = spoke.outputs.spokeApplicationGatewaySubnetName
 
+@description('The resource ID of the Log Analytics workspace created in the spoke vnet.')
+output logAnalyticsWorkspaceId string = spoke.outputs.logAnalyticsWorkspaceId
+
 // Supporting Services
 @description('The resource ID of the container registry.')
 output containerRegistryId string = supportingServices.outputs.containerRegistryId
@@ -296,6 +302,9 @@ output keyVaultId string = supportingServices.outputs.keyVaultId
 
 @description('The name of the key vault.')
 output keyVaultName string = supportingServices.outputs.keyVaultName
+
+@description('The name of the Azure Open AI account name.')
+output openAIAccountName string = (deployOpenAi)? supportingServices.outputs.openAIAccountName : ''
 
 // Container Apps Environment
 @description('The resource ID of the container apps environment.')

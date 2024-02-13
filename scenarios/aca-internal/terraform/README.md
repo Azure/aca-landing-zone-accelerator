@@ -127,12 +127,7 @@ The table below summurizes the avaialble parameters and the possible values that
    | `enableApplicationInsights` | Controls if Application Insights is deployed and configured. | **true** | **false** |
    | `deployHelloWorldSample` | Deploy a simple, sample application to the infrastructure. If you prefer to deploy the more comprehensive, Dapr-enabled sample app, this needs to be disabled | **true** | **false**, because you plan on deploying the Dapr-enabled application instead. |
    | `clientIP` | If you'd like to deploy the architecture with Application Gateway without having to deploy Application Gateway separately, this should be set to the Public IP address of the machine executing the deployment | "" | 192.168.1.1 |
-   | `workloadProfiles` | If you'd like to use workload profiles, you need to set field which is an array of objects with name, workload_profile_type, minimum_count and maximum_count fields. | "" | [{
-  name                  = "general-purpose"
-  workload_profile_type = "D4"
-  minimum_count         = 1
-  maximum_count         = 3
-}] |
+   | `workloadProfiles` | If you'd like to use workload profiles, you need to set field which is an array of objects with name, workload_profile_type, minimum_count and maximum_count fields. | "" | `[{ name = "general-purpose", workload_profile_type = "D4", minimum_count = 1, maximum_count = 3 }]` |
 
 
 #### Deploy

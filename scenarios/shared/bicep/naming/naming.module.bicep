@@ -80,6 +80,7 @@ var resourceNames = {
   documentIntelligence: replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.documentIntelligence )
   documentIntelligencePep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.documentIntelligence )}'
   eventGridSystemTopic: replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.eventGridSystemTopic )
+  eventGridSystemTopicPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.eventGridSystemTopic)}'
   eventGridSubscription: replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.eventGridSubscription )
 }
 

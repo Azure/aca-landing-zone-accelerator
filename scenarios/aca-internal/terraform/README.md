@@ -106,31 +106,31 @@ The table below summurizes the avaialble parameters and the possible values that
    | `location` | The name of the deployment region. | **northeurope** | **eastus**, **westus2**, **eastus2** |
    | `tags` | Resource tags that you wish to add to all resources. | *none* | `"value": {`<br>`"Environment": "qa",`<br>`"CostCenter": CS004"`<br>`}` |
    | `enableTelemetry` | Enables or disabled telemetry collection | **true** | **false** |
-   | `ddosProtectionPlanId` | ID of DDOS Protection Plan | **none** | **abc123** |
+   | `ddosProtectionPlanId` | ID of DDOS Protection Plan for hub vnet | **none** | **abc123** |
    | `containerAppsSecurityRules` | NSG rules for ACA subnet | **See TF Vars file** | **See TF Vars file** |
    | `appGatewaySecurityRules` | NSG rules for Application Gateway | **See TF Vars file** | **See TF Vars file** |
    | `hubResourceGroupName` | The name of the hub resource group to create the hub resources in. | *none*. This results in a new resource group being created. | **rg-byo-hub-academo**. This results in `rg-byo-hub-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
    | `spokeResourceGroupName` | The name of the spoke resource group to create the spoke resources in. | *none*. This results in a new resource group being created. | **rg-byo-spoke-academo**. This results in `rg-byo-spoke-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
-   | `supportingResourceGroupName` | The name of the supporting resource group to create the supporting resources in. | *none*. This results in a new resource group being created. | **rg-byo-spoke-academo**. This results in `rg-byo-spoke-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
-   | `hubVnetAddressPrefixes` | An array of string. The address prefixes to use for the hub virtual network. | `["10.0.0.0/24"]` | `["10.100.0.0/24"]` |
-   | `gatewaySubnetAddressPrefix` | A string. The address prefix to use for the gateway subnet in the virtual network. | `["10.0.0.0/24"]` | `["10.100.0.0/24"]` |
-   | `azureFirewallSubnetAddressPrefix` | A string. The address prefix to use for the Azure Firewall subnet in the virtual network. | `["10.0.0.0/24"]` | `["10.100.0.0/24"]` |
-   | `bastionSubnetAddressPrefixes` | An array of string. The address prefixes to use for the Azure Bastion subnet in the virtual network. | `["10.0.0.0/24"]` | `["10.100.0.0/24"]` |
-   | `azureFirewallSubnetManagementAddressPrefix` | A string. The address prefix to use for the Azure Firewall Management subnet in the virtual network. | `["10.0.0.0/24"]` | `["10.100.0.0/24"]` |
+   | `supportingResourceGroupName` | The name of the supporting resource group to create the supporting resources in. | *none*. This results in a new resource group being created. | **rg-byo-support-academo**. This results in `rg-byo-support-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
+   | `hubVnetAddressPrefixes` | An array of strings. The address prefixes to use for the hub virtual network. | `["10.0.0.0/24"]` | `["10.100.0.0/24"]` |
+   | `gatewaySubnetAddressPrefix` | A string. The address prefix to use for the gateway subnet in the virtual network. | `"10.0.0.0/24"` | `"10.100.0.0/24"` |
+   | `azureFirewallSubnetAddressPrefix` | A string. The address prefix to use for the Azure Firewall subnet in the virtual network. | `""10.0.0.64/26""` | `""10.0.0.64/26""` |
+   | `bastionSubnetAddressPrefixes` | An array of strings. The address prefixes to use for the Azure Bastion subnet in the virtual network. | `["10.0.0.128/26"]` | `["10.0.0.128/26"]` |
+   | `azureFirewallSubnetManagementAddressPrefix` | A string. The address prefix to use for the Azure Firewall Management subnet in the virtual network. | `"10.0.0.192/26"` | `"10.0.0.192/26"` |
    | `spokeVNetAddressPrefixes` | An array of string. The address prefixes to use for the spoke virtual network. | `["10.1.0.0/22"]` | `["10.101.0./22"]` |
-   | `vmJumpBoxSubnetAddressPrefix` | CIDR of the spoke infrastructure subnet. Must be a subset of the spoke CIDR ranges. | **10.1.0.0/23** | **10.101.0.0/23** |
-   | `infraSubnetAddressPrefix` | CIDR of the spoke infrastructure subnet. Must be a subset of the spoke CIDR ranges. | **10.1.0.0/23** | **10.101.0.0/23** |
+   | `vmJumpBoxSubnetAddressPrefix` | CIDR of the spoke infrastructure subnet. Must be a subset of the spoke CIDR ranges. | **10.1.2.32/27** | **10.1.2.32/27** |
+   | `infraSubnetAddressPrefix` | CIDR of the spoke infrastructure subnet. Must be a subset of the spoke CIDR ranges. | **10.1.0.0/27** | **10.101.0.0/27** |
    | `infraSubnetName` | Name of spoke infrastructure subnet | **snet-infra** | **snet-infra** |
-   | `privateEndpointsSubnetAddressPrefix` | CIDR of the spoke private endpoint subnet. Must be a subset of the spoke CIDR ranges. | **10.1.2.0/4** | **10.101.2.0/24** |
+   | `privateEndpointsSubnetAddressPrefix` | CIDR of the spoke private endpoint subnet. Must be a subset of the spoke CIDR ranges. | **10.1.2.0/27** | **10.101.2.0/27** |
    | `privateEndpointsSubnetName` | Name of spoke private endpoint subnet | **snet-pep** | **snet-pep** |
    | `applicationGatewaySubnetAddressPrefix` | CIDR of the spoke Application Gateway subnet. Must be a subset of the spoke CIDR ranges. | **10.1.3.0/24** | **10.101.3.0/24** |
    | `applicationGatewaySubnetName` | Name of spoke Application Gateway subnet | **snet-agw** | **snet-agw** |
    | `gatewaySubnetAddressPrefix` | CIDR of the Gateway subnet. Must be a subset of the spoke CIDR ranges. | **10.1.3.0/24** | **10.101.3.0/24** |
    | `gatewaySubnetName` | Name of Gateway subnet | **GatewaySubnet** | **GatewaySubnet** |
-   | `azureFirewallSubnetName` | Name of Gateway subnet | **AzureFirewallSubnet** | **AzureFirewallSubnet** |
+   | `azureFirewallSubnetName` | Name of Azure Firewall subnet | **AzureFirewallSubnet** | **AzureFirewallSubnet** |
    | `enableBastion` | Controls if Azure Bastion is deployed. | `true` | false` |
    | `vmSize` | The size of the virtual machine to create for the jump box. | `Standard_B2ms` | Any one of: [VM sizes](https://learn.microsoft.om/azure/virtual-machines/sizes) |
-   | `vmAdminUsername` | The username to use for the jump box. | **azureuser** | `jumpboxadmin` |
+   | `vmAdminUsername` | The username to use for the jump box. | **vmadmin** | `jumpboxadmin` |
    | `vmAdminPassword` | The password to use for the jump box admin user. | **Password123** :stop_sign: You *should* change this. | Any cryptographically strong password of your choosing. |
    | `vmLinuxSshAuthorizedKeys` | The SSH public key to use for the jump box (if VM is Linux) | *unusable/garbage value* | Any SSH keys you wish in the form of **ssh-rsa AAAAB6NzC...P38/oqQv description**|
    | `vmJumpboxOSType` | The type of OS for the deployed jump box. | **linux** | **windows** |

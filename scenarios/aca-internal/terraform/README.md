@@ -103,10 +103,15 @@ The table below summurizes the avaialble parameters and the possible values that
    | :---- | :---------- | :------ | :--------- |
    | `workloadName` |A suffix that will be used to name resources in a pattern similar to `<resourceAbbreviation>-<applicationName>`. Must be less than 11 characters long, alphanumeric with dashes. | **lzaaca** | **app-svc-01** |
    | `environment` | The short name of the environment. Up to eight characters long. | **dev** | **qa**, **uat**, **prod** |
+   | `location` | The name of the deployment region. | **northeurope** | **eastus**, **westus2**, **eastus2** |
    | `tags` | Resource tags that you wish to add to all resources. | *none* | `"value": {`<br>`"Environment": "qa",`<br>`"CostCenter": CS004"`<br>`}` |
    | `enableTelemetry` | Enables or disabled telemetry collection | **true** | **false** |
+   | `ddosProtectionPlanId` | ID of DDOS Protection Plan | **none** | **abc123** |
+   | `containerAppsSecurityRules` | NSG rules for ACA subnet | **See TF Vars file** | **See TF Vars file** |
+   | `appGatewaySecurityRules` | NSG rules for Application Gateway | **See TF Vars file** | **See TF Vars file** |
    | `hubResourceGroupName` | The name of the hub resource group to create the hub resources in. | *none*. This results in a new resource group being created. | **rg-byo-hub-academo**. This results in `rg-byo-hub-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
    | `spokeResourceGroupName` | The name of the spoke resource group to create the spoke resources in. | *none*. This results in a new resource group being created. | **rg-byo-spoke-academo**. This results in `rg-byo-spoke-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
+   | `supportingResourceGroupName` | The name of the supporting resource group to create the supporting resources in. | *none*. This results in a new resource group being created. | **rg-byo-spoke-academo**. This results in `rg-byo-spoke-academo` being used. *This must be an empty resource group, do not use an existing resource group used for other purposes.* |
    | `hubVnetAddressPrefixes` | An array of string. The address prefixes to use for the hub virtual network. | `["10.0.0.0/24"]` | `["10.100.0.0/24"]` |
    | `gatewaySubnetAddressPrefix` | A string. The address prefix to use for the gateway subnet in the virtual network. | `["10.0.0.0/24"]` | `["10.100.0.0/24"]` |
    | `azureFirewallSubnetAddressPrefix` | A string. The address prefix to use for the Azure Firewall subnet in the virtual network. | `["10.0.0.0/24"]` | `["10.100.0.0/24"]` |
@@ -115,8 +120,14 @@ The table below summurizes the avaialble parameters and the possible values that
    | `spokeVNetAddressPrefixes` | An array of string. The address prefixes to use for the spoke virtual network. | `["10.1.0.0/22"]` | `["10.101.0./22"]` |
    | `vmJumpBoxSubnetAddressPrefix` | CIDR of the spoke infrastructure subnet. Must be a subset of the spoke CIDR ranges. | **10.1.0.0/23** | **10.101.0.0/23** |
    | `infraSubnetAddressPrefix` | CIDR of the spoke infrastructure subnet. Must be a subset of the spoke CIDR ranges. | **10.1.0.0/23** | **10.101.0.0/23** |
+   | `infraSubnetName` | Name of spoke infrastructure subnet | **snet-infra** | **snet-infra** |
    | `privateEndpointsSubnetAddressPrefix` | CIDR of the spoke private endpoint subnet. Must be a subset of the spoke CIDR ranges. | **10.1.2.0/4** | **10.101.2.0/24** |
+   | `privateEndpointsSubnetName` | Name of spoke private endpoint subnet | **snet-pep** | **snet-pep** |
    | `applicationGatewaySubnetAddressPrefix` | CIDR of the spoke Application Gateway subnet. Must be a subset of the spoke CIDR ranges. | **10.1.3.0/24** | **10.101.3.0/24** |
+   | `applicationGatewaySubnetName` | Name of spoke Application Gateway subnet | **snet-agw** | **snet-agw** |
+   | `gatewaySubnetAddressPrefix` | CIDR of the Gateway subnet. Must be a subset of the spoke CIDR ranges. | **10.1.3.0/24** | **10.101.3.0/24** |
+   | `gatewaySubnetName` | Name of Gateway subnet | **GatewaySubnet** | **GatewaySubnet** |
+   | `azureFirewallSubnetName` | Name of Gateway subnet | **AzureFirewallSubnet** | **AzureFirewallSubnet** |
    | `enableBastion` | Controls if Azure Bastion is deployed. | `true` | false` |
    | `vmSize` | The size of the virtual machine to create for the jump box. | `Standard_B2ms` | Any one of: [VM sizes](https://learn.microsoft.om/azure/virtual-machines/sizes) |
    | `vmAdminUsername` | The username to use for the jump box. | **azureuser** | `jumpboxadmin` |
@@ -125,9 +136,14 @@ The table below summurizes the avaialble parameters and the possible values that
    | `vmJumpboxOSType` | The type of OS for the deployed jump box. | **linux** | **windows** |
    | `vmJumpBoxSubnetAddressPrefix` | CIDR to use for the jump box subnet. must be a subset of the hub CIDR ranges. | **10.1.2.32/27** | **10.100.3.128/25** |
    | `enableApplicationInsights` | Controls if Application Insights is deployed and configured. | **true** | **false** |
+   | `aRecords` | A Records for App Gateway DNS | **[]** | **[]** |
+   | `appGatewayCertificatePath` | App Gateway Certificate Path | **configuration/acahello.demoapp.com.pfx** | **configuration/acahello.demoapp.com.pfx** |
+   | `appGatewayCertificateKeyName` | App Gateway Certificate Key Name | **agwcert** | **agwcert** |
+   | `appGatewayFQDN` | App Gateway FQDN | **acahello.demoapp.com** | **acahello.demoapp.com** |
    | `deployHelloWorldSample` | Deploy a simple, sample application to the infrastructure. If you prefer to deploy the more comprehensive, Dapr-enabled sample app, this needs to be disabled | **true** | **false**, because you plan on deploying the Dapr-enabled application instead. |
-   | `clientIP` | If you'd like to deploy the architecture with Application Gateway without having to deploy Application Gateway separately, this should be set to the Public IP address of the machine executing the deployment | "" | 192.168.1.1 |
-   | `workloadProfiles` | If you'd like to use workload profiles, you need to set field which is an array of objects with name, workload_profile_type, minimum_count and maximum_count fields. | "" | `[{ name = "general-purpose", workload_profile_type = "D4", minimum_count = 1, maximum_count = 3 }]` |
+   | `helloWorldContainerAppName` | Name for ACA | **none** | **ca-hello-world** |
+   | `clientIP` | If you'd like to deploy the architecture with Application Gateway without having to deploy Application Gateway separately, this should be set to the Public IP address of the machine executing the deployment | **""** | 192.168.1.1 |
+   | `workloadProfiles` | If you'd like to use workload profiles, you need to set field which is an array of objects with name, workload_profile_type, minimum_count and maximum_count fields. | *none* | `[{`<br>`name = "general-purpose", `<br>` workload_profile_type = "D4", `<br>` minimum_count = 1,  `<br>` maximum_count = 3 `<br>` }]` |
 
 
 #### Deploy

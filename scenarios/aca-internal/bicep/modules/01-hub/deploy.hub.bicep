@@ -179,6 +179,9 @@ module bastion './modules/bastion.bicep' = if (enableBastion) {
 @description('The resource ID of hub virtual network.')
 output hubVNetId string = vnetHub.outputs.vnetId
 
+@description('The name of hub virtual network')
+output hubVnetName string = vnetHub.outputs.vnetName
+
 @description('The name of the hub resource group.')
 output resourceGroupName string = hubResourceGroup.name
 

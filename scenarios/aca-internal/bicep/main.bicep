@@ -254,7 +254,7 @@ module applicationGateway 'modules/06-application-gateway/deploy.app-gateway.bic
 output hubVNetId string = hub.outputs.hubVNetId
 
 @description('The name of hub virtual network.')
-output hubVNetName string = hub.outputs.hubVNetId
+output hubVNetName string = hub.outputs.hubVnetName
 
 @description('The name of the Hub resource group.')
 output hubResourceGroupName string = hub.outputs.resourceGroupName

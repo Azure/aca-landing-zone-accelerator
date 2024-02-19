@@ -287,6 +287,9 @@ output spokeApplicationGatewaySubnetName string = spoke.outputs.spokeApplication
 @description('The resource ID of the Log Analytics workspace created in the spoke vnet.')
 output logAnalyticsWorkspaceId string = spoke.outputs.logAnalyticsWorkspaceId
 
+@description('The name of the jump box virtual machine')
+output vmJumpBoxName string = spoke.outputs.vmJumpBoxName
+
 // Supporting Services
 @description('The resource ID of the container registry.')
 output containerRegistryId string = supportingServices.outputs.containerRegistryId

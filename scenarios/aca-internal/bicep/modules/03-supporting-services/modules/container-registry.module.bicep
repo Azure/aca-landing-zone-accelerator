@@ -141,5 +141,10 @@ output containerRegistryId string = containerRegistry.outputs.resourceId
 @description('The name of the container registry.')
 output containerRegistryName string = containerRegistry.outputs.name
 
+@description('The name of the container registry login server.')
+output containerRegistryLoginServer string = containerRegistry.outputs.loginServer
+
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = containerRegistryUserAssignedIdentity.id
+
+

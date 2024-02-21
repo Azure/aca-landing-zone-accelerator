@@ -29,6 +29,13 @@ param vnetAddressPrefixes array
 @description('Enable or disable the creation of the Azure Bastion.')
 param enableBastion bool
 
+@description('Bastion sku, default is basic')
+@allowed([
+  'Basic'
+  'Standard'
+])
+param bastionSku string = 'Basic'
+
 @description('CIDR to use for the Azure Bastion subnet.')
 param bastionSubnetAddressPrefix string
 
@@ -140,6 +147,7 @@ module hub 'modules/01-hub/deploy.hub.bicep' = {
     workloadName: workloadName
     vnetAddressPrefixes: vnetAddressPrefixes
     enableBastion: enableBastion
+    bastionSku:bastionSku
     bastionSubnetAddressPrefix: bastionSubnetAddressPrefix    
     azureFirewallSubnetAddressPrefix: azureFirewallSubnetAddressPrefix
     azureFirewallSubnetManagementAddressPrefix: azureFirewallSubnetManagementAddressPrefix

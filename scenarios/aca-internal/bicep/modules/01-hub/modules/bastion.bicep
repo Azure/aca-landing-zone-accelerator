@@ -10,6 +10,13 @@ param location string = resourceGroup().location
 @description('The name of the bastion host to create.')
 param bastionName string
 
+@description('Bastion sku, default is basic')
+@allowed([
+  'Basic'
+  'Standard'
+])
+param sku string = 'Basic'
+
 @description('The name of the virtual network in which bastion subnet is created.')
 param bastionVNetName string
 
@@ -56,11 +63,16 @@ resource bastionPip 'Microsoft.Network/publicIPAddresses@2021-02-01' = {
   }
 }
 
-resource bastion 'Microsoft.Network/bastionHosts@2021-02-01' = {
+resource bastion 'Microsoft.Network/bastionHosts@2022-07-01' = {
   name: bastionName
   location: location
   tags: tags
+  sku: {
+    name: sku
+  }
   properties: {
+    enableTunneling: sku == 'Standard' ? true : false
+    enableFileCopy: sku == 'Standard' ? true : false
     ipConfigurations: [
       {
         name: 'ipconf'

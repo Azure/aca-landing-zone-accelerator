@@ -28,6 +28,13 @@ param vnetAddressPrefixes array
 @description('Enable or disable the creation of the Azure Bastion.')
 param enableBastion bool
 
+@description('Bastion sku, default is basic')
+@allowed([
+  'Basic'
+  'Standard'
+])
+param bastionSku string = 'Basic'
+
 @description('CIDR to use for the Azure Bastion subnet.')
 param bastionSubnetAddressPrefix string
 
@@ -163,6 +170,7 @@ module bastion './modules/bastion.bicep' = if (enableBastion) {
   params: {
     location: location
     tags: tags
+    sku:bastionSku
     bastionName: naming.outputs.resourcesNames.bastion
     bastionNetworkSecurityGroupName: naming.outputs.resourcesNames.bastionNsg
     bastionPublicIpName: naming.outputs.resourcesNames.bastionPip

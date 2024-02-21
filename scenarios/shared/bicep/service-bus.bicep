@@ -53,6 +53,9 @@ param retentionInDays int = 0
 ])
 param publicNetworkAccess string = 'Enabled'
 
+@description('Allows Azure trusted services to access the namespace even if public network access is disabled.')
+param allowTrustedServicesAccess bool = false
+
 @description('Specifies the location.')
 param location string = resourceGroup().location
 
@@ -103,6 +106,15 @@ resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' = {
     zoneRedundant: skuName == 'Premium' ? zoneRedundant : false
     disableLocalAuth: publicNetworkAccess == 'Disabled' ? false : true
     publicNetworkAccess: publicNetworkAccess
+  }
+
+  resource networkRuleSet 'networkRuleSets' = if(allowTrustedServicesAccess){
+    name: 'default'
+    properties: {
+      publicNetworkAccess: 'Disabled'
+      defaultAction: 'Allow'
+      trustedServiceAccessEnabled:true
+    }
   }
 }
 

@@ -1,0 +1,65 @@
+# Build and Deploy Intelligent Apps to Azure Container Apps - Java Azure AI Reference Template Guidance 
+
+## App Overview
+This sample is a complete end-to-end solution demonstrating the [Retrieval-Augmented Generation (RAG)](https://learn.microsoft.com/en-us/azure/search/retrieval-augmented-generation-overview) pattern running in Azure, using Azure AI Search for retrieval and Azure OpenAI large language models to power ChatGPT-style and Q&A experiences.
+
+It's based on the [Java Azure AI reference template](https://github.com/Azure-Samples/azure-search-openai-demo-java) which provides you with well-maintained, easy to deploy reference implementation.This ensure a high-quality starting point for your intelligent applications developed with Java. The building blocks are smaller-scale samples that focus on specific scenarios and tasks.
+
+The business scenario showcased in the sample is a B2E intelligent chat app to help employees answer questions about company benefits plan, internal policies, as well as job descriptions and roles. The repo includes sample pdf documents in the data folder so it's ready to try end to end.
+Futhermore it provides:
+* Chat and Q&A interfaces
+* Various options to help users evaluate the trustworthiness of responses with citations, tracking of source content, etc.
+* Possible approaches for data preparation, prompt construction, and orchestration of interaction between model (ChatGPT) and retriever (Azure AI Search)
+* Possible AI orchestration implementation using the plain Java Open AI sdk or the Java Semantic Kernel sdk
+* Settings directly in the UX to tweak the behavior and experiment with options
+
+![Chat screen](assets/chatscreen.png)
+## App Architecture
+
+The java Azure AI reference template supports different architectural styles. It can be deployed as standalone app on top of Azure App Service or as a microservice event driven architecture hosted by Azure Container Apps. Below you can see the architecture of the microservice event driven architecture:
+
+![Architecture](assets/aca-hla.png)
+
+
+* The API app is implemented as springboot 2.7.x app using the Microsoft JDK. It provides the ask and chat apis which are used by the chat web app. It's responsible for implementing the RAG pattern orchestrating the interaction between the LLM model (Open AI - ChatGPT) and the retriever (Azure AI Search).
+* The Chat Web App is built in React and deployed as a static web app on nginx. Furthermore Nginx act as reverse proxy for api calls to the API app. This also solves the CORS issue.
+* The indexer APP is implemented as springboot 2.7.x app using the Microsoft JDK. It is responsible for indexing the data into Azure Cognitive Search and it's triggered by new BlobUploaded messages from serviceBus. The indexer is also responsible for chunking the documents into smaller pieces, embed them and store them in the index. Azure Document Intelligence is used to extract text from PDF documents (including tables and images)
+* Azure Cognitive Search is used as RAG retrieval system. And different search options are available: you have traditional full text (with semantic search) search, or vector based search and finally you can opt for hybrid search which brings together the best of the previous ones.
+* EventGrid System topic is used to implement a real time mechanism to trigger the indexer app when a new document is uploaded to the blob storage. It's responsible to read BlobUploaded notification from azure storage container and push a message to the service bus queue containing the blob url.
+
+
+## Deployment
+
+### Deploy the infrastructure
+1. Clone this ACA LZA Java App accelerator repo. `git clone https://github.com/dantelmomsft/chat-with-your-data-java-lza-app-accelerator.git`
+2. Run `cd chat-with-your-data-java-lza-app-accelerator/infra/aca` 
+3. Review the bicep parameters in `bicep/chat-with-your-data-java-aca-main.bicep`.Pay attention to vmLinuxSshAuthorizedKeys param: you should provide here the a public key that you have generated along with your private key. For more information on how to generate a public key see [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/create-ssh-keys-detailed).
+4. Run `azd auth login` to authenticate with your Azure subscription.
+5. Run `azd provision` to provision the infrastructure and when asked by the prompt provide an env name and the deployment region.This will take several minutes (about 30/40 min) and will:
+    - Download the ACA lza code in the folder `infra/aca/bicep/lza-libs`.
+    - Automatically run the ACA lza bicep source code.
+    - Automatically run the java app bicep source code in the folder `chat-with-your-data-java-lza-app-accelerator\infra\aca\bicep\modules`. This will create the Azure supporting services (Azure AI Search, Azure Document Intelligence, Azure Storage, Azure Event Grid, Azure Service Bus) required by the app to work following the best practices provided by the ACA LZA infrastructure.
+    -  Automatically create `.azure` folder with azd env configuration. you should see a folder like this: `chat-with-your-data-java-lza-app-accelerator\infra\aca\.azure`
+### Deploy the Java app
+1. Connect to the jumpbox using bastion, and run `git clone https://github.com/dantelmomsft/chat-with-your-data-java-lza-app-accelerator.git`
+   - You can use the bastion from the Azure portal to connect to the jumpbox. Info [here](https://learn.microsoft.com/en-us/azure/bastion/bastion-connect-vm-ssh-linux)
+   - You can use a ssh native client command from your local terminal. Info [here](https://learn.microsoft.com/en-us/azure/bastion/connect-vm-native-client-windows#connect-linux)
+2. Run `cd chat-with-your-data-java-lza-app-accelerator` 
+3. To download the the chat-with-your-data-java [source code ](https://github.com/Azure-Samples/azure-search-openai-demo-java) run:
+    - *Windows Power Shell* - `.\scripts\download-app-source.ps1 -branch main` 
+    - *Linux/Windows WSL* - `./scripts/download-app-source.sh --branch main`.
+4. Run `cd chat-with-your-data-java-lza-app-accelerator/infra/aca` and copy here the `chat-with-your-data-java-lza-app-accelerator\infra\aca\.azure` local folder that has been created on your laptop at the end of [Deploy Infrastructure](#deploy-the-infrastructure) phase.
+    - You can use a scp command from your local terminal. Info [here](https://learn.microsoft.com/en-us/azure/bastion/vm-upload-download-native#tunnel-command)
+5. Run `azd auth login`
+6. run `azd deploy`. This will build and deploy the java app.
+7. From your local browser connect to the azure application gateway IP using https. 
+
+### Ingest the predefined documents
+Once you deployed the app you can ingest the predefined documents in the data folder. You can use the following steps:
+1. Connect to the jumpbox using bastion as described in the previous section.
+2. Run `cd chat-with-your-data-java-lza-app-accelerator/infra/aca`
+3. Run `./scripts/prepdocs.sh`
+
+### Known Issues and gaps
+- Putting the content of your id-rsa.pub file containing the public key in the bicep params files it's not working. As a workaround you can setup it using the following command: `az vm user update --resource-group {spoke resource group name} --name {vm name} --username azureuser --ssh-key-value ~/.ssh/id_rsa.pub`
+- Using the VM run command through bicep to setup the jumpbox tools dependencies is not working. As a workaround when you are on connected to the jumpbox you can run manually the script in the `chat-with-your-data-java-lza-app-accelerator\infra\aca\bicep\modules\vm\jumpbox-tools-setup.sh` file.

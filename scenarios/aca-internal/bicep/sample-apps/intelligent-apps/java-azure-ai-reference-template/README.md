@@ -31,7 +31,7 @@ The java Azure AI reference template supports different architectural styles. It
 ## Deployment
 
 ### Deploy the infrastructure
-1. Clone this ACA LZA Java App accelerator repo. `git clone https://github.com/dantelmomsft/chat-with-your-data-java-lza-app-accelerator.git`
+1. Clone the ACA LZA Java App accelerator repo. `git clone https://github.com/dantelmomsft/chat-with-your-data-java-lza-app-accelerator.git`
 2. Run `cd chat-with-your-data-java-lza-app-accelerator/infra/aca` 
 3. Review the bicep parameters in `bicep/chat-with-your-data-java-aca-main.bicep`.Pay attention to vmLinuxSshAuthorizedKeys param: you should provide here the a public key that you have generated along with your private key. For more information on how to generate a public key see [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/create-ssh-keys-detailed).
 4. Run `azd auth login` to authenticate with your Azure subscription.
@@ -62,4 +62,4 @@ Once you deployed the app you can ingest the predefined documents in the data fo
 
 ### Known Issues and gaps
 - Putting the content of your id-rsa.pub file containing the public key in the bicep params files it's not working. As a workaround you can setup it using the following command: `az vm user update --resource-group {spoke resource group name} --name {vm name} --username azureuser --ssh-key-value ~/.ssh/id_rsa.pub`
-- Using the VM run command through bicep to setup the jumpbox tools dependencies is not working. As a workaround when you are on connected to the jumpbox you can run manually the script in the `chat-with-your-data-java-lza-app-accelerator\infra\aca\bicep\modules\vm\jumpbox-tools-setup.sh` file.
+- Using the "Microsoft.Compute/virtualMachines/runCommands" bicep resource to setup the jumpbox VM with tools dependencies is not working. As a workaround while you are on connected to the jumpbox, you can run manually the script in the `chat-with-your-data-java-lza-app-accelerator\infra\aca\bicep\modules\vm\jumpbox-tools-setup.sh` file.

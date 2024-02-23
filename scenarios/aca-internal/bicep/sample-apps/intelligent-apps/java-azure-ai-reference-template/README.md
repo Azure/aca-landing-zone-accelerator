@@ -28,8 +28,11 @@ The java Azure AI reference template supports different architectural styles. It
 * EventGrid System topic is used to implement a real time mechanism to trigger the indexer app when a new document is uploaded to the blob storage. It's responsible to read BlobUploaded notification from azure storage container and push a message to the service bus queue containing the blob url.
 
 
-## Deployment
+## Deployment Architecture
 
+![Deployment Architecture](assets/aca-internal-java-ai.png)
+
+## Getting Started
 ### Deploy the infrastructure
 1. Clone the ACA LZA Java App accelerator repo. `git clone https://github.com/dantelmomsft/chat-with-your-data-java-lza-app-accelerator.git`
 2. Run `cd chat-with-your-data-java-lza-app-accelerator/infra/aca` 
@@ -52,7 +55,8 @@ The java Azure AI reference template supports different architectural styles. It
     - You can use a scp command from your local terminal. Info [here](https://learn.microsoft.com/en-us/azure/bastion/vm-upload-download-native#tunnel-command)
 5. Run `azd auth login`
 6. run `azd deploy`. This will build and deploy the java app.
-7. From your local browser connect to the azure application gateway IP using https. 
+7. From your local browser connect to the public azure application gateway using https. To retrieve the App Gateway public IP address, go to the Azure portal and search for the application gateway resource in the spoke resource group. In the overview page copy the "Frontend public IP address" and paste it in your browser.
+![App Gateway Public IP address](assets/app-gateway.png)
 
 ### Ingest the predefined documents
 Once you deployed the app you can ingest the predefined documents in the data folder. You can use the following steps:

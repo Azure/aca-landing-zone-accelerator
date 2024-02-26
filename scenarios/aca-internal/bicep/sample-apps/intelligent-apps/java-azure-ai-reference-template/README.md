@@ -34,7 +34,7 @@ The java Azure AI reference template supports different architectural styles. It
 
 ## Getting Started
 ### Deploy the infrastructure
-1. Clone the ACA LZA Java App accelerator repo. `git clone https://github.com/dantelmomsft/chat-with-your-data-java-lza-app-accelerator.git`
+1. Clone the ACA LZA Java App accelerator repo. `git clone --single-branch --branch aca-lza https://github.com/dantelmomsft/chat-with-your-data-java-lza-app-accelerator.git`
 2. Run `cd chat-with-your-data-java-lza-app-accelerator/infra/aca` 
 3. Review the bicep parameters in `bicep/chat-with-your-data-java-aca-main.bicep`.Pay attention to vmLinuxSshAuthorizedKeys param: you should provide here the a public key that you have generated along with your private key. For more information on how to generate a public key see [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/create-ssh-keys-detailed).
 4. Run `azd auth login` to authenticate with your Azure subscription.

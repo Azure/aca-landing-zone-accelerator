@@ -36,7 +36,7 @@ The java Azure AI reference template supports different architectural styles. It
 ### Deploy the infrastructure
 1. Clone the ACA LZA Java App accelerator repo. `git clone --single-branch --branch aca-lza https://github.com/dantelmomsft/chat-with-your-data-java-lza-app-accelerator.git`
 2. Run `cd chat-with-your-data-java-lza-app-accelerator/infra/aca` 
-3. Review the bicep parameters in `bicep/chat-with-your-data-java-aca-main.bicep`.Pay attention to vmLinuxSshAuthorizedKeys param: you should provide here the a public key that you have generated along with your private key. For more information on how to generate a public key see [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/create-ssh-keys-detailed).
+3. Review the bicep parameters in `bicep/chat-with-your-data-java-aca-main.parameters.json`.Pay attention to vmLinuxSshAuthorizedKeys param: you should provide here the a public key that you have generated along with your private key. For more information on how to generate a public key see [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/create-ssh-keys-detailed).
 4. Run `azd auth login` to authenticate with your Azure subscription.
 5. Run `azd provision` to provision the infrastructure and when asked by the prompt provide an env name and the deployment region.This will take several minutes (about 30/40 min) and will:
     - Download the ACA lza code in the folder `infra/aca/bicep/lza-libs`.
@@ -49,8 +49,8 @@ The java Azure AI reference template supports different architectural styles. It
    - You can use a ssh native client command from your local terminal. Info [here](https://learn.microsoft.com/en-us/azure/bastion/connect-vm-native-client-windows#connect-linux)
 2. Run `cd chat-with-your-data-java-lza-app-accelerator` 
 3. To download the the chat-with-your-data-java [source code ](https://github.com/Azure-Samples/azure-search-openai-demo-java) run:
-    - *Windows Power Shell* - `.\scripts\download-app-source.ps1 -branch main` 
-    - *Linux/Windows WSL* - `./scripts/download-app-source.sh --branch main`.
+    - *Windows Power Shell* - `.\scripts\download-app-source.ps1 -branch aca` 
+    - *Linux/Windows WSL* - `./scripts/download-app-source.sh --branch aca`.
 4. Run `cd chat-with-your-data-java-lza-app-accelerator/infra/aca` and copy here the `chat-with-your-data-java-lza-app-accelerator\infra\aca\.azure` local folder that has been created on your laptop at the end of [Deploy Infrastructure](#deploy-the-infrastructure) phase.
     - You can use a scp command from your local terminal. Info [here](https://learn.microsoft.com/en-us/azure/bastion/vm-upload-download-native#tunnel-command)    
 5. Run `azd auth login`

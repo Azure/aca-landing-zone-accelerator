@@ -44,18 +44,22 @@ The java Azure AI reference template supports different architectural styles. It
     - Automatically run the java app bicep source code in the folder `chat-with-your-data-java-lza-app-accelerator\infra\aca\bicep\modules`. This will create the Azure supporting services (Azure AI Search, Azure Document Intelligence, Azure Storage, Azure Event Grid, Azure Service Bus) required by the app to work following the best practices provided by the ACA LZA infrastructure.
     -  Automatically create `.azure` folder with azd env configuration. you should see a folder like this: `chat-with-your-data-java-lza-app-accelerator\infra\aca\.azure`
 ### Deploy the Java app
-1. Connect to the jumpbox using bastion, and run `git clone https://github.com/dantelmomsft/chat-with-your-data-java-lza-app-accelerator.git`
-   - You can use the bastion from the Azure portal to connect to the jumpbox. Info [here](https://learn.microsoft.com/en-us/azure/bastion/bastion-connect-vm-ssh-linux)
+1. Connect to the jumpbox using bastion:
+   - You can use Azure Bastion from the Azure portal to connect to the jumpbox. Info [here](https://learn.microsoft.com/en-us/azure/bastion/bastion-connect-vm-ssh-linux)
    - You can use a ssh native client command from your local terminal. Info [here](https://learn.microsoft.com/en-us/azure/bastion/connect-vm-native-client-windows#connect-linux)
-2. Run `cd chat-with-your-data-java-lza-app-accelerator` 
-3. To download the the chat-with-your-data-java [source code ](https://github.com/Azure-Samples/azure-search-openai-demo-java) run:
-    - *Windows Power Shell* - `.\scripts\download-app-source.ps1 -branch aca` 
-    - *Linux/Windows WSL* - `./scripts/download-app-source.sh --branch aca`.
-4. Run `cd chat-with-your-data-java-lza-app-accelerator/infra/aca` and copy here the `chat-with-your-data-java-lza-app-accelerator\infra\aca\.azure` local folder that has been created on your laptop at the end of [Deploy Infrastructure](#deploy-the-infrastructure) phase.
-    - You can use a scp command from your local terminal. Info [here](https://learn.microsoft.com/en-us/azure/bastion/vm-upload-download-native#tunnel-command)    
-5. Run `azd auth login`
-6. run `azd deploy`. This will build and deploy the java app.
-7. From your local browser connect to the public azure application gateway using https. To retrieve the App Gateway public IP address, go to the Azure portal and search for the application gateway resource in the spoke resource group. In the overview page copy the "Frontend public IP address" and paste it in your browser.
+2. **(Jumpbox)** Run `git clone --single-branch --branch aca-lza https://github.com/dantelmomsft/chat-with-your-data-java-lza-app-accelerator.git`
+3. **(Local)**  Copy the content of `chat-with-your-data-java-lza-app-accelerator\infra\aca\.azure` local folder that has been created on your laptop at the end of [Deploy Infrastructure](#deploy-the-infrastructure) phase to the jumpbox azureuser@chat-with-your-data-java-lza-app-accelerator/infra/aca remote folder:
+    - **(Local)** Create the bastion network tunnel with a command like this: `az network bastion tunnel --name your-bastion-service-name --resource-group your-lza-spoke-rg-name --target-resource-id your-jumpbox-resourceid --resource-port 22 --port 50022`. This will block your terminal.
+    - **(Local)** Open a new terminal and set the current directory to `chat-with-your-data-java-lza-app-accelerator/infra/aca`
+    - **(Local)** Run `scp -P 50022  .azure  azureuser@127.0.0.1:chat-with-your-data-java-lza-app-accelerator/infra/aca`
+    - **(Jumpbox)** Run `ls chat-with-your-data-java-lza-app-accelerator/infra/aca/.azure` to check if `.azure` has been transferred and it's not empty. 
+    More info on how to use scp command from your local terminal are [here](https://learn.microsoft.com/en-us/azure/bastion/vm-upload-download-native#tunnel-command)  
+4. **(Jumpbox)** Run `cd chat-with-your-data-java-lza-app-accelerator`
+5. **(Jumpbox)** Run `./scripts/download-app-source.sh --branch aca` to download the chat-with-your-data-java [source code ](https://github.com/Azure-Samples/azure-search-openai-demo-java)
+6. **(Jumpbox)** Run `cd infra/aca`
+7. **(Jumpbox)** Run `azd auth login`
+8. **(Jumpbox)** Run `azd deploy`. This will build and deploy the java app.
+9. From your local browser connect to the public azure application gateway using https. To retrieve the App Gateway public IP address, go to the Azure portal and search for the application gateway resource in the spoke resource group. In the overview page copy the "Frontend public IP address" and paste it in your browser.
 ![App Gateway Public IP address](assets/app-gateway.png)
 
 ### Ingest the predefined documents

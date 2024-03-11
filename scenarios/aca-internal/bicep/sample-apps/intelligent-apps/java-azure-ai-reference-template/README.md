@@ -32,7 +32,7 @@ The java Azure AI reference template supports different architectural styles. It
 
 ![Deployment Architecture](assets/aca-internal-java-ai.png)
 
-The java Azure AI reference template deployment on ACA is deployed using the ACA LZA 'internal scenario' infrastructure. Furthermore the Azure services required to implement the E2E chat with your data solution, are deployed following the LZA security, monitoring, networking and operational best practices.
+The java Azure AI reference template is deployed on top of the ACA LZA 'internal scenario' infrastructure. Furthermore the Azure services required to implement the E2E chat with your data solution, are deployed following the LZA security, monitoring, networking and operational best practices.
 
 ### Networking
 The deployment is based on the hub-and-spoke network topology. The hub network contains the shared services and the spoke network contains the application resources.The spoke network is also connected to the hub network through a virtual network peering. The virtual network peering is used to allow the application resources to access the shared services in the hub network. ACA is deployed as internal in a dedicated spoke vnet subnet and the web frontend app is exposed on the public internet through an Azure Application Gateway. All the other services are not exposed to the public internet and are accessible only from the internal network through private endpoints and private DNS Zones. For more information on the networking best practices implemented in the ACA internal scenario see [here](../../../../../../docs/design-areas/networking.md).

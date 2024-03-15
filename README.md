@@ -25,10 +25,6 @@ This repo contains the Azure landing zone accelerator's reference implementation
 
 *More reference implementation scenarios will be added as they become available.*
 
-
-> :information_source: **NOTE**: The official Terraform AzureRM provider does not currently support the new [Azure Container Apps workload profiles, more networking features, and jobs](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/generally-available-azure-container-apps-workload-profiles-more/ba-p/3913345). The Terraform implementation in the main branch is referring to the older [V1.1.0 implementation](https://github.com/Azure/aca-landing-zone-accelerator/tree/V1.1.0/scenarios/aca-internal/terraform), which is not using workload profiles therefore the egress network traffic is not secured through an Azure Firewall. 
-> For a Terraform implementation using the [AzAPI provider](https://learn.microsoft.com/azure/developer/terraform/overview-azapi-provider) of the Secure Baseline Scenario, please check out the [udr-implementation-azapi branch](https://github.com/Azure/aca-landing-zone-accelerator/tree/feature/udr-implementation-azapi/scenarios/aca-internal/terraform). Once the AzureRM provider provides support for workload profiles in Azure Container Apps, a full Terraform implementation using the AzureRM provider will be become available in the main branch. 
-
 ## Provide feedback
 
 Please use GitHub issues if you have any feedback or requests on how we can improve these reference implementations.

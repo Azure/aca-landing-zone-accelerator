@@ -13,12 +13,15 @@ resource "azurerm_key_vault" "keyvault" {
   enabled_for_template_deployment = true
   tags                            = var.tags
 
-  network_acls {
-    default_action             = "Deny"
-    bypass                     = "AzureServices"
-    ip_rules                   = (var.clientIP == "" || var.clientIP == null) ? null : [var.clientIP]
-    virtual_network_subnet_ids = null
-  }
+  dynamic "network_acls" {
+    for_each =  (var.clientIP != "" && var.clientIP != null) ? [1] : []
+    content {
+      default_action             = "Deny"
+      bypass                     = "AzureServices"
+      ip_rules                   = [var.clientIP]
+      virtual_network_subnet_ids = null
+    }
+    }
 }
 
 module "keyVaultPrivateZones" {

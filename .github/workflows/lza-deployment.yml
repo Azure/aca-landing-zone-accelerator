@@ -1,5 +1,5 @@
-# This workflow will deploy the LZA
-name: LZA Deployment
+# This workflow will deploy the LZA with Bicep
+name: LZA Deployment - Bicep
 
 on:
   # When you directly push in the main branch

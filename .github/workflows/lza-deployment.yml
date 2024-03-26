@@ -40,10 +40,13 @@ jobs:
     needs: [lint]
     steps:
       - uses: actions/checkout@v3
-      - uses: azure/login@v1
-        name: Sign in to Azure
+      - name: Azure Login
+        uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          
       - uses: azure/arm-deploy@v1.0.9
         name: Run preflight validation
         with:
@@ -59,10 +62,12 @@ jobs:
     needs: [lint, validate]
     steps:
       - uses: actions/checkout@v3
-      - uses: azure/login@v1
-        name: Sign in to Azure
+      - name: Azure Login
+        uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - uses: Azure/cli@v1
         name: Run what-if
         with:
@@ -79,10 +84,12 @@ jobs:
     needs: [preview]
     steps:
       - uses: actions/checkout@v3
-      - uses: azure/login@v1
-        name: Sign in to Azure
+      - name: Azure Login
+        uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - uses: azure/arm-deploy@v1.0.9
         id: deployment
         name: Deployment
@@ -118,11 +125,13 @@ jobs:
         additional-approved-words: ''
         additional-denied-words: ''
     
-    - uses: azure/login@v1
+    - uses: azure/login@v2
       if: vars.ENABLE_TEARDOWN == 'true'
-      name: Sign in to Azure
+      name: Azure Login
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         
     - uses: Azure/cli@v1
       name: Run tear-down

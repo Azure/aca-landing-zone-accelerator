@@ -75,6 +75,13 @@ param vmSubnetName string = 'snet-jumpbox'
 @description('CIDR to use for the jump box subnet.')
 param vmJumpBoxSubnetAddressPrefix string
 
+@description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
+@allowed([
+  'sshPublicKey'
+  'password'
+])
+param vmAuthenticationType string = 'password'
+
 @description('Optional, default value is true. If true, Azure Policies will be deployed')
 param deployAzurePolicies bool = true
 
@@ -306,6 +313,7 @@ module jumpboxLinuxVM './modules/vm/linux-vm.bicep' = if (vmJumpboxOSType == 'li
     vmSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
     vmNetworkInterfaceName: naming.outputs.resourcesNames.vmJumpBoxNic
     vmNetworkSecurityGroupName: naming.outputs.resourcesNames.vmJumpBoxNsg
+    vmAuthenticationType: vmAuthenticationType
   }
 }
 

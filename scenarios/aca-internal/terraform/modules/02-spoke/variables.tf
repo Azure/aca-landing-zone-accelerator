@@ -94,6 +94,18 @@ variable "vmJumpboxOSType" {
   }
 }
 
+variable "vmLinuxAuthenticationType" {
+  type = string
+  default = "password"
+  validation {
+    condition = anytrue([
+      var.vmLinuxAuthenticationType == "password",
+      var.vmLinuxAuthenticationType == "sshPublicKey"
+    ])
+    error_message = "Authentication type must be password or sshPublicKey."
+  }
+}
+
 variable "vmSubnetName" {
   default = "snet-jumpbox"
   type    = string

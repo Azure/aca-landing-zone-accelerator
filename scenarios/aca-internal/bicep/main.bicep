@@ -56,6 +56,13 @@ param vmAdminPassword string
 @secure()
 param vmLinuxSshAuthorizedKeys string
 
+@description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
+@allowed([
+  'sshPublicKey'
+  'password'
+])
+param vmAuthenticationType string = 'password'
+
 @allowed(['linux', 'windows', 'none'])
 param vmJumpboxOSType string = 'none'
 
@@ -174,6 +181,7 @@ module spoke 'modules/02-spoke/deploy.spoke.bicep' = {
     vmLinuxSshAuthorizedKeys: vmLinuxSshAuthorizedKeys
     vmJumpboxOSType: vmJumpboxOSType
     vmJumpBoxSubnetAddressPrefix: vmJumpBoxSubnetAddressPrefix
+    vmAuthenticationType: vmAuthenticationType
     deployAzurePolicies: deployAzurePolicies
   }
 }

@@ -30,6 +30,7 @@ module "spoke" {
   vmAdminUsername                       = var.vmAdminUsername
   vmAdminPassword                       = var.vmAdminPassword
   vmLinuxSshAuthorizedKeys              = var.vmLinuxSshAuthorizedKeys
+  vmLinuxAuthenticationType             = var.vmLinuxAuthenticationType
   vmJumpboxOSType                       = var.vmJumpboxOSType
   jumpboxSubnetAddressPrefix            = var.vmJumpBoxSubnetAddressPrefix
   firewallPrivateIp                     = module.hub.firewallPrivateIp

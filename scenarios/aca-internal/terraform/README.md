@@ -134,6 +134,7 @@ The table below summurizes the avaialble parameters and the possible values that
    | `vmAdminPassword` | The password to use for the jump box admin user. | **Password123** :stop_sign: You *should* change this. | Any cryptographically strong password of your choosing. |
    | `vmLinuxSshAuthorizedKeys` | The SSH public key to use for the jump box (if VM is Linux) | *unusable/garbage value* | Any SSH keys you wish in the form of **ssh-rsa AAAAB6NzC...P38/oqQv description**|
    | `vmJumpboxOSType` | The type of OS for the deployed jump box. | **linux** | **windows** |
+   | `vmAuthenticationType` | The type of authentication method for the deployed jump box if Linux. | **password** | **sshPublicKey** |
    | `vmJumpBoxSubnetAddressPrefix` | CIDR to use for the jump box subnet. must be a subset of the hub CIDR ranges. | **10.1.2.32/27** | **10.100.3.128/25** |
    | `enableApplicationInsights` | Controls if Application Insights is deployed and configured. | **true** | **false** |
    | `aRecords` | A Records for App Gateway DNS | **[]** | **[]** |

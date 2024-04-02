@@ -56,7 +56,7 @@ For more detailed guidance about Azure Open AI resiliency and performance best p
 
 ## Getting Started
 ### Deploy the infrastructure
-1. Clone the ACA LZA Java App accelerator repo. `git clone https://github.com/dantelmomsft/chat-with-your-data-java-lza-app-accelerator.git`
+1. Clone the ACA LZA Java App accelerator repo. `git clone https://github.com/Azure-Samples/chat-with-your-data-java-lza-app-accelerator.git`
 2. Run `cd chat-with-your-data-java-lza-app-accelerator/infra/aca` 
 3. Review the bicep parameters in `bicep/chat-with-your-data-java-aca-main.parameters.json`.Pay attention to vmLinuxSshAuthorizedKeys param: you should provide here the a public key that you have generated along with your private key. For more information on how to generate a public key see [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/create-ssh-keys-detailed).
 4. Run `azd auth login` to authenticate with your Azure subscription.
@@ -69,7 +69,7 @@ For more detailed guidance about Azure Open AI resiliency and performance best p
 1. Connect to the jumpbox using bastion:
    - You can use Azure Bastion from the Azure portal to connect to the jumpbox. Info [here](https://learn.microsoft.com/en-us/azure/bastion/bastion-connect-vm-ssh-linux)
    - You can use a ssh native client command from your local terminal. Info [here](https://learn.microsoft.com/en-us/azure/bastion/connect-vm-native-client-windows#connect-linux)
-2. **(Jumpbox)** Run `git clone https://github.com/dantelmomsft/chat-with-your-data-java-lza-app-accelerator.git`
+2. **(Jumpbox)** Run `git clone https://github.com/Azure-Samples/chat-with-your-data-java-lza-app-accelerator.git`
 3. **(Jumpbox)** Run `cd chat-with-your-data-java-lza-app-accelerator`
 4. **(Jumpbox)** Run `./infra/aca/bicep/modules/vm/jumpbox-tools-setup.sh` to complete tools installation required for documents ingestion.
 5. **(Jumpbox)** Run `./scripts/download-app-source.sh --branch main` to download the chat-with-your-data-java [source code ](https://github.com/Azure-Samples/azure-search-openai-demo-java)

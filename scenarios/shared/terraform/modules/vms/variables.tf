@@ -34,3 +34,21 @@ variable "size" {
 variable "subnetId" {
 
 }
+
+
+variable "authenticationType" {
+  type = string
+  default = "password"
+  validation {
+    condition = anytrue([
+      var.authenticationType == "password",
+      var.authenticationType == "sshPublicKey"
+    ])
+    error_message = "Authentication type must be password or sshPublicKey."
+  }
+}
+
+variable "sshAuthorizedKeys" {
+  default = null
+  type = string
+}

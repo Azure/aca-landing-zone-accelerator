@@ -12,10 +12,10 @@ This repository provides packaged guidance for customer scenarios, reference arc
 
 The architecture is considered across four key design areas. Please review them as part of your overall understanding of this landing zone accelerator.
 
-- [Identity and Access Management](/docs/design-areas/identity.md)
-- [Network Topology and Connectivity](/docs/design-areas/networking.md)
-- [Management and Monitoring](/docs/design-areas/management.md)
-- [Security, Governance, and Compliance](/docs/design-areas/security.md)
+- [Identity and Access Management](https://learn.microsoft.com/azure/cloud-adoption-framework/scenarios/app-platform/container-apps/identity)
+- [Network Topology and Connectivity](https://learn.microsoft.com/azure/cloud-adoption-framework/scenarios/app-platform/container-apps/networking)
+- [Security, Governance, and Compliance](https://learn.microsoft.com/azure/cloud-adoption-framework/scenarios/app-platform/container-apps/security)
+- [Management and Monitoring](https://learn.microsoft.com/azure/cloud-adoption-framework/scenarios/app-platform/container-apps/management)
 
 ## :rocket: Reference implementation
 
@@ -24,10 +24,6 @@ This repo contains the Azure landing zone accelerator's reference implementation
 :arrow_forward: [Scenario 1: Azure Container Apps - Internal environment secure baseline](scenarios/aca-internal/README.md)
 
 *More reference implementation scenarios will be added as they become available.*
-
-
-> :information_source: **NOTE**: The official Terraform AzureRM provider does not currently support the new [Azure Container Apps workload profiles, more networking features, and jobs](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/generally-available-azure-container-apps-workload-profiles-more/ba-p/3913345). The Terraform implementation in the main branch is referring to the older [V1.1.0 implementation](https://github.com/Azure/aca-landing-zone-accelerator/tree/V1.1.0/scenarios/aca-internal/terraform), which is not using workload profiles therefore the egress network traffic is not secured through an Azure Firewall. 
-> For a Terraform implementation using the [AzAPI provider](https://learn.microsoft.com/azure/developer/terraform/overview-azapi-provider) of the Secure Baseline Scenario, please check out the [udr-implementation-azapi branch](https://github.com/Azure/aca-landing-zone-accelerator/tree/feature/udr-implementation-azapi/scenarios/aca-internal/terraform). Once the AzureRM provider provides support for workload profiles in Azure Container Apps, a full Terraform implementation using the AzureRM provider will be become available in the main branch. 
 
 ## Provide feedback
 

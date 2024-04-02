@@ -97,39 +97,39 @@ jobs:
       spokeResourceGroupName: ${{ steps.deployment.outputs.spokeResourceGroupName }}
       hubResourceGroupName: ${{ steps.deployment.outputs.hubResourceGroupName }}
 
-  teardown:
-    runs-on: ubuntu-latest
-    needs: [deploy]
-    env:
-      ENABLE_TEARDOWN: true    
+  # teardown:
+  #   runs-on: ubuntu-latest
+  #   needs: [deploy]
+  #   env:
+  #     ENABLE_TEARDOWN: true    
     
-    steps:
-    - uses: trstringer/manual-approval@v1
-      name: Manual Approval of tear-down
-      if: vars.ENABLE_TEARDOWN == 'true'      
-      with:
-        secret: ${{ github.TOKEN }}
-        timeout-minutes: 120
-        approvers: thotheod,aarthiem,kpantos
-        minimum-approvals: 1
-        issue-title: "Deployed ACA-LZA GitHubAction-${{ github.run_number }}"
-        issue-body: "Please approve or deny the tear-down of deployment GitHubAction-${{ github.run_number }}"
-        exclude-workflow-initiator-as-approver: false
-        additional-approved-words: ''
-        additional-denied-words: ''
+  #   steps:
+  #   - uses: trstringer/manual-approval@v1
+  #     name: Manual Approval of tear-down
+  #     if: vars.ENABLE_TEARDOWN == 'true'      
+  #     with:
+  #       secret: ${{ github.TOKEN }}
+  #       timeout-minutes: 120
+  #       approvers: thotheod,aarthiem,kpantos
+  #       minimum-approvals: 1
+  #       issue-title: "Deployed ACA-LZA GitHubAction-${{ github.run_number }}"
+  #       issue-body: "Please approve or deny the tear-down of deployment GitHubAction-${{ github.run_number }}"
+  #       exclude-workflow-initiator-as-approver: false
+  #       additional-approved-words: ''
+  #       additional-denied-words: ''
     
-    - uses: azure/login@v1
-      if: vars.ENABLE_TEARDOWN == 'true'
-      name: Sign in to Azure
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+  #   - uses: azure/login@v1
+  #     if: vars.ENABLE_TEARDOWN == 'true'
+  #     name: Sign in to Azure
+  #     with:
+  #       creds: ${{ secrets.AZURE_CREDENTIALS }}
         
-    - uses: Azure/cli@v1
-      name: Run tear-down
-      if: vars.ENABLE_TEARDOWN == 'true'
-      with:
-        azcliversion: 2.45.0
-        inlineScript: |
-          az group delete --name ${{ needs.deploy.outputs.spokeResourceGroupName }} --yes
-          az group delete --name ${{ needs.deploy.outputs.hubResourceGroupName }} --yes
-          az deployment sub delete --name "GitHubAction-${{ github.run_number }}" --no-wait
+  #   - uses: Azure/cli@v1
+  #     name: Run tear-down
+  #     if: vars.ENABLE_TEARDOWN == 'true'
+  #     with:
+  #       azcliversion: 2.45.0
+  #       inlineScript: |
+  #         az group delete --name ${{ needs.deploy.outputs.spokeResourceGroupName }} --yes
+  #         az group delete --name ${{ needs.deploy.outputs.hubResourceGroupName }} --yes
+  #         az deployment sub delete --name "GitHubAction-${{ github.run_number }}" --no-wait

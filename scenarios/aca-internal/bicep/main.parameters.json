@@ -53,6 +53,9 @@
     "vmJumpboxOSType": {
         "value": "linux"
     },
+    "vmAuthenticationType": {
+      "value":  "sshPublicKey"
+    },
     "vmJumpBoxSubnetAddressPrefix": {
         "value":  "10.1.2.32/27"
     },

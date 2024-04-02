@@ -111,6 +111,8 @@ module "vm" {
   vmName                = module.naming.resourceNames["vmJumpBox"]
   adminUsername         = var.vmAdminUsername
   adminPassword         = var.vmAdminPassword
+  sshAuthorizedKeys     = var.vmLinuxSshAuthorizedKeys
+  authenticationType    = var.vmLinuxAuthenticationType
   resourceGroupName     = azurerm_resource_group.spokeResourceGroup.name
   size                  = var.vmSize
   vnetResourceGroupName = azurerm_resource_group.spokeResourceGroup.name

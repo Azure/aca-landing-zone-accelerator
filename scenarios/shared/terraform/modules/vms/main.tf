@@ -25,8 +25,17 @@ resource "azurerm_linux_virtual_machine" "linuxVm" {
   location            = var.location
 
   admin_username                  = var.adminUsername
-  admin_password                  = var.adminPassword == null ? random_password.password.0.result : var.adminPassword
-  disable_password_authentication = false
+  admin_password                  = var.authenticationType == "password" ? var.adminPassword : null
+  disable_password_authentication = var.authenticationType == "sshPublicKey" ? true : false
+
+  dynamic "admin_ssh_key" {
+    for_each = var.authenticationType == "sshPublicKey" ? [1] : []
+    content {
+      username   = var.adminUsername
+      public_key = var.authenticationType == "sshPublicKey" ? var.sshAuthorizedKeys : null
+    }
+  }
+
   size                            = var.size
 
   network_interface_ids = [

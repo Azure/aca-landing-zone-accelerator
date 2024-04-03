@@ -129,3 +129,6 @@ module peOpenAI '../../../../../shared/bicep/network/private-endpoint.bicep' = {
     subresource: 'account'
   }
 }
+
+@description('The name of the Azure Open AI account name.')
+output name string = openAI.outputs.name

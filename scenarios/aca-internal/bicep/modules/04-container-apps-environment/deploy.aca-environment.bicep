@@ -174,3 +174,5 @@ output containerAppsEnvironmentId string = containerAppsEnvironment.outputs.cont
 
 @description('The name of the Container Apps environment.')
 output containerAppsEnvironmentName string = containerAppsEnvironment.outputs.containerAppsEnvironmentName
+
+output applicationInsightsName string =  (enableApplicationInsights)? applicationInsights.outputs.appInsNname : ''

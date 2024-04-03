@@ -30,7 +30,11 @@
         "virtualNetwork": "vnet",
         "redisCache": "redis",
         "cognitiveAccount": "cog",
-        "openAiDeployment": "oaidep"
+        "openAiDeployment": "oaidep",
+        "azureAISearch": "srch",
+        "documentIntelligence": "di",
+        "eventGridSystemTopic": "egst",
+        "eventGridSubscription": "evgs"
     },
 
     //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json

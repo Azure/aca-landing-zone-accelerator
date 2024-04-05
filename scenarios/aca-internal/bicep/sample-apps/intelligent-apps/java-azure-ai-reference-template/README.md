@@ -74,7 +74,7 @@ For more detailed guidance about Azure Open AI resiliency and performance best p
 4. **(Jumpbox)** Run `./infra/aca/bicep/modules/vm/jumpbox-tools-setup.sh` to complete tools installation required for documents ingestion.
 5. **(Jumpbox)** Run `./scripts/download-app-source.sh --branch main` to download the chat-with-your-data-java [source code ](https://github.com/Azure-Samples/azure-search-openai-demo-java)
 6. **(Jumpbox)** Run `cd infra/aca`
-7. **(Jumpbox)** Run `./scripts/download-aca-internal-lza.sh --branch feat/openai-chat-java`
+7. **(Jumpbox)** Run `./scripts/download-aca-internal-lza.sh --branch main`
 8. **(Jumpbox)** Run `azd auth login --use-device-code` copy the code and open a web browser from your local machine pointing to the url `microsoft.com/devicelogin`. Paste the code and authenticate with your Azure subscription.
 9. **(Jumpbox)** Run `azd env refresh`. When asked be sure to provide the same env name and location you used when you've run azd provision on your local machine.
 10. **(Jumpbox)** Run `azd deploy`. This will build and deploy the java app.

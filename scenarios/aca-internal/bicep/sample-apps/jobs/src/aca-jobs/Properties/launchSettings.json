@@ -2,7 +2,6 @@
   "profiles": {
     "aca_jobs": {
       "commandName": "Project",
-      "commandLineArgs": "",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",
         "SETTINGS__SERVICEBUSNAMESPACE": "jobstest.servicebus.windows.net",

@@ -121,7 +121,7 @@ module "vm" {
 
 module "logAnalyticsWorkspace" {
   source            = "../../../../shared/terraform/modules/monitoring/log-analytics"
-  resourceGroupName = module.naming.resourceNames["rgSpokeName"]
+  resourceGroupName = azurerm_resource_group.spokeResourceGroup.name
   location          = var.location
   workspaceName     = module.naming.resourceNames["logAnalyticsWorkspace"]
   tags              = var.tags

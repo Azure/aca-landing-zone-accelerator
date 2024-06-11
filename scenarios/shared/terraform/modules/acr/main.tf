@@ -28,6 +28,7 @@ module "containerRegistryPrivateEndpoints" {
   privateLinkId     = azurerm_container_registry.acr.id
   privateDnsZoneIds = [module.containerRegistryPrivateZones.privateDnsZoneId]
   subResourceNames  = local.subResourceNames
+  location          = var.location
   tags              = var.tags
 }
 

@@ -41,6 +41,7 @@ module "keyVaultPrivateEndpoints" {
   privateLinkId     = azurerm_key_vault.keyvault.id
   privateDnsZoneIds = [module.keyVaultPrivateZones.privateDnsZoneId]
   subResourceNames  = local.subResourceNames
+  location          = var.location
   tags              = var.tags
 }
 

@@ -36,7 +36,7 @@ Since this walkthrough is expected to be deployed isolated from existing infrast
    :stop_sign: Update this to your desired region.
 
    ```bash
-   LOCATION=northeurope # or any location that suits your needs
+   LOCATION=eastus # or any location that suits your needs, ensure Azure OpenAI service is available there.
    ```
 
 1. Create the regional network hub.

@@ -31,7 +31,9 @@ By default, they are deployed to the spoke resource group.
    echo RESOURCENAME_RESOURCEGROUP_SPOKE: $RESOURCENAME_RESOURCEGROUP_SPOKE && \
    echo RESOURCEID_VNET_SPOKE: $RESOURCEID_VNET_SPOKE  && \
    echo LOG_ANALYTICS_WS_ID: $LOG_ANALYTICS_WS_ID
-
+   ```
+    
+   ```bash
    # [This takes about four minutes to run (if you add deployRedis=false).]
    az deployment group create \
       -n acalza01-dependencies \

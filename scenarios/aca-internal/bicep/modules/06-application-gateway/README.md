@@ -29,7 +29,9 @@ The "Hello World" container app is exposed through Application Gateway, includin
    echo FQDN_HELLOWORLD_ACA: $FQDN_HELLOWORLD_ACA && \
    echo RESOURCEID_KEYVAULT: $RESOURCEID_KEYVAULT  && \
    echo LOG_ANALYTICS_WS_ID: $LOG_ANALYTICS_WS_ID
-   
+   ```
+
+   ```bash   
    # [This takes about six minutes to run.] 
    az deployment group create \
       -n acalza01-appgw \

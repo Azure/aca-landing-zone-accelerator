@@ -15,7 +15,7 @@
     },
     // optional. If empty automatic name will be generated. To override, please give name of hub resource group name
     "hubResourceGroupName": {
-      "value": "hubaca"
+      "value": ""
     },
     "vnetAddressPrefixes": {
       "value": [
@@ -26,7 +26,7 @@
       "value": true
     },
     "spokeInfraSubnetAddressPrefix": {
-      "value":  "10.0.0.0/23"
+      "value":  "10.1.0.0/23"
     },
     "gatewaySubnetAddressPrefix": {
       "value": "10.0.0.0/27"

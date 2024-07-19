@@ -34,7 +34,7 @@
       "value":  "10.1.3.0/24"
     },
     "networkApplianceIpAddress": {
-      "value": "10.0.0.68"
+      "value": "[IP OF THE NETWORK APPLIANCE]"
     },
     "vmSize": {
       "value": "Standard_B2ms"

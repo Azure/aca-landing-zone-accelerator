@@ -29,7 +29,8 @@ Public container registries are subject to faults such as outages or request thr
    echo RESOURCENAME_RESOURCEGROUP_SPOKE: $RESOURCENAME_RESOURCEGROUP_SPOKE && \
    echo RESOURCEID_IDENTITY_ACR: $RESOURCEID_IDENTITY_ACR && \
    echo RESOURCEID_ACA: $RESOURCEID_ACA
-
+   ```
+   ```bash
    # [This takes about one minute to run.] 
    az deployment group create \
       -n acalza01-helloworld \

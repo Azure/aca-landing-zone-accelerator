@@ -25,6 +25,9 @@
     "enableBastion": {
       "value": true
     },
+    "spokeInfraSubnetAddressPrefix": {
+      "value":  "10.1.0.0/23"
+    },
     "gatewaySubnetAddressPrefix": {
       "value": "10.0.0.0/27"
     },

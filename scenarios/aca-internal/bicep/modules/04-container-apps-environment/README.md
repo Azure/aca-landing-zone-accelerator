@@ -30,7 +30,9 @@ The application platform, Azure Containers Apps, and its logging sinks within Az
    echo RESOURCENAME_RESOURCEGROUP_SPOKE: $RESOURCENAME_RESOURCEGROUP_SPOKE && \
    echo RESOURCENAME_VNET_SPOKE: $RESOURCENAME_VNET_SPOKE && \
    echo LOG_ANALYTICS_WS_ID: $LOG_ANALYTICS_WS_ID
-
+   ```
+   
+   ```bash
    # [This takes about 11 minutes to run.]
    az deployment group create \
       -n acalza01-appplat \

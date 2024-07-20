@@ -20,13 +20,22 @@ After executing these steps you'll have the spoke resource group (`rg-lzaaca-spo
 - Jump box virtual machine (optional)
 
 ## Steps
+Note: If you are running these commands on windows, you might need to run the command below to ensure windows captures the RESOURCEID_VNET_HUB correctly:
+```bash
+export MSYS_NO_PATHCONV=1
+```
+
+az deployment sub delete \
+   -n acalza01-spokenetwork -g $RESOURCENAME_RESOURCEGROUP_SPOKE
 
 1. Create the regional spoke network.
 
    ```bash
    RESOURCEID_VNET_HUB=$(az deployment sub show -n acalza01-hub --query properties.outputs.hubVNetId.value -o tsv)
    echo RESOURCEID_VNET_HUB: $RESOURCEID_VNET_HUB
+   ```
 
+   ```bash
    # [This takes about two minutes to run.]
    az deployment sub create \
       -n acalza01-spokenetwork \

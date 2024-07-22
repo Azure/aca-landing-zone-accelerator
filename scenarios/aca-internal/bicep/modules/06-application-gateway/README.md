@@ -21,8 +21,8 @@ The "Hello World" container app is exposed through Application Gateway, includin
    ```bash
    RESOURCENAME_RESOURCEGROUP_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeResourceGroupName.value -o tsv)
    RESOURCEID_SUBNET_APPGW=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeApplicationGatewaySubnetId.value -o tsv)
-   FQDN_HELLOWORLD_ACA=$(az deployment group show -g rg-lzaaca-spoke-dev-eus2 -n acalza01-helloworld --query properties.outputs.helloWorldAppFqdn.value -o tsv)
-   RESOURCEID_KEYVAULT=$(az deployment group show -g rg-lzaaca-spoke-dev-eus2 -n acalza01-dependencies --query properties.outputs.keyVaultId.value -o tsv)
+   FQDN_HELLOWORLD_ACA=$(az deployment group show -g rg-lzaaca-spoke-dev-eus -n acalza01-helloworld --query properties.outputs.helloWorldAppFqdn.value -o tsv)
+   RESOURCEID_KEYVAULT=$(az deployment group show -g rg-lzaaca-spoke-dev-eus -n acalza01-dependencies --query properties.outputs.keyVaultId.value -o tsv)
    LOG_ANALYTICS_WS_ID=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.logAnalyticsWorkspaceId.value -o tsv)
    echo RESOURCENAME_RESOURCEGROUP_SPOKE: $RESOURCENAME_RESOURCEGROUP_SPOKE && \
    echo RESOURCEID_SUBNET_APPGW: $RESOURCEID_SUBNET_APPGW && \

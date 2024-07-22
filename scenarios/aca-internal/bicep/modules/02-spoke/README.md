@@ -25,9 +25,6 @@ Note: If you are running these commands on windows, you might need to run the co
 export MSYS_NO_PATHCONV=1
 ```
 
-az deployment sub delete \
-   -n acalza01-spokenetwork -g $RESOURCENAME_RESOURCEGROUP_SPOKE
-
 1. Create the regional spoke network.
 
    ```bash

@@ -16,6 +16,7 @@ Public container registries are subject to faults such as outages or request thr
 
 ## Steps
 
+
 1. Decide if you want to deploy this sample workload.
 
    You can stop at this point if you're interested only in the infrastructure components. If you'd like to skip workload deployment please remember to [:broom: clean up](../../README.md#broom-clean-up-resources) your resources when you are done.

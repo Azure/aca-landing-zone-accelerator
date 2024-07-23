@@ -20,13 +20,12 @@ After executing these steps you'll have the spoke resource group (`rg-lzaaca-spo
 - Jump box virtual machine (optional)
 
 ## Steps
-Note: If you are running these commands on windows, you might need to run the command below to ensure windows captures the RESOURCEID_VNET_HUB correctly:
+:warning: If you are running these commands on windows, you might need to run the command below to ensure windows captures the RESOURCEID_VNET_HUB correctly:
 ```bash
 export MSYS_NO_PATHCONV=1
 ```
 
-az deployment sub delete \
-   -n acalza01-spokenetwork -g $RESOURCENAME_RESOURCEGROUP_SPOKE
+:warning: You will need to get the IP address of your Azure firewall or whatever network appliance you are using and replace the `[IP OF THE NETWORK APPLIANCE] placeholder in the deploy.spoke.paramters.jsonc file with it.
 
 1. Create the regional spoke network.
 

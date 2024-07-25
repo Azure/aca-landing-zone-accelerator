@@ -33,25 +33,10 @@ This is the starting point for the instructions on deploying this reference impl
 
    - [**variables.tf**](../../shared/terraform/modules/naming/variables.tf) contains the naming convention.
    - [**local.tf**](../../shared/terraform/modules/naming/local.tf) contains the [abbreviations](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations) for resources (`resourceTypeAbbreviations`) and Azure regions (`regionAbbreviations`) used in the naming convention.
-3. :world_map: Choose your deployment experience.
-
-   This reference implementation comes with *two* implementation deployment options. They all result in the same resources and architecture, they simply differ in their user experience; specifically how much is abstracted from your involvement.
-
-   - Follow the "[**Standalone deployment guide**](#standalone-deployment-guide)" if you'd like to simply configure a set of parameters and execute a single CLI command to deploy.
-
-     *This will be your simplest deployment approach, but also the most opaque. This is optimized for "cut to the end."*
-
-   - Follow the "[**Step-by-step deployment guide**](#step-by-step-deployment-guide)" if you'd like to walk through the deployment at a slower, more deliberate pace.
-
-     *This will approach will allow you to see the deployment evolve over time, which might give you an insight into the various roles and people in your organization that you need to engage when bringing your workload in this architecture to Azure. This is optimized for "learning."*
 
    All of these options allow you to deploy to a single subscription, to experience the full architecture in isolation. Adapting this deployment to your Azure landing zone implementation is not required to complete the deployments.
 
 ## Deployment experiences
-
-### Standalone deployment guide
-
-You can deploy the complete landing zone in a single subscription, by using the [main.tf](main.tf) template file and the accompanying [terraform.tfvars](terraform.tfvars) parameter file. You need first to check and customize the parameter file (parameters are described below) and then decide whether you intend to deploy the simple [Hello World App](modules/05-hello-world-sample-app/README.md) or the more comprehensive, Dapr-enabled [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md). If you intend to deploy the [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md), we reccomend that you set the variable `deployHelloWorldSample` to `false`. 
 
 ### Setting up your environment
 
@@ -147,12 +132,29 @@ The table below summurizes the avaialble parameters and the possible values that
    | `workloadProfiles` | If you'd like to use workload profiles, you need to set field which is an array of objects with name, workload_profile_type, minimum_count and maximum_count fields. | *none* | `[{`<br>`name = "general-purpose", `<br>` workload_profile_type = "D4", `<br>` minimum_count = 1,  `<br>` maximum_count = 3 `<br>` }]` |
 
 
-#### Deploy
+### Deploy
 
 Before deploying, you need to decide how you would like to deploy the solution with Application Gateway. You have two options:
 - If you provide your client IP address, the Public IP address of the machine executing the Terraform deployment, it will be added to the Network ACL for the KeyVault used to house the Application Gateway certificate and it will allow you to proceed through the entire deployment. 
 - If you would like to keep the KeyVault fully private, you will need to comment out the Application Gateway module in the [main.tf](main.tf) and leave the clientIP value blank in your tfvars file. Follow the [instructions for deploying Application Gateway separately on your jump box](../terraform/modules/06-application-gateway/main.tf). 
-  
+
+### :world_map: Choose your deployment experience.
+
+   This reference implementation comes with *two* implementation deployment options. They all result in the same resources and architecture, they simply differ in their user experience; specifically how much is abstracted from your involvement.
+
+   - Follow the "[**Standalone deployment guide**](#standalone-deployment-guide)" if you'd like to simply configure a set of parameters and execute a single CLI command to deploy.
+
+     *This will be your simplest deployment approach, but also the most opaque. This is optimized for "cut to the end."*
+
+   - Follow the "[**Step-by-step deployment guide**](#step-by-step-deployment-guide)" if you'd like to walk through the deployment at a slower, more deliberate pace.
+
+     *This will approach will allow you to see the deployment evolve over time, which might give you an insight into the various roles and people in your organization that you need to engage when bringing your workload in this architecture to Azure. This is optimized for "learning."*
+
+
+### 1. Standalone deployment guide
+
+You can deploy the complete landing zone in a single subscription, by using the [main.tf](main.tf) template file and the accompanying [terraform.tfvars](terraform.tfvars) parameter file. You need first to check and customize the parameter file (parameters are described below) and then decide whether you intend to deploy the simple [Hello World App](modules/05-hello-world-sample-app/README.md) or the more comprehensive, Dapr-enabled [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md). If you intend to deploy the [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md), we reccomend that you set the variable `deployHelloWorldSample` to `false`.
+
 #### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
 ``` bash
 terraform init `
@@ -163,7 +165,7 @@ terraform init `
 terraform plan --var-file terraform.tfvars -out tfplan
 terraform apply tfplan
 ```
-1. Deploy the Dapr-based workload. *Optional.*
+#### Deploy the Dapr-based workload. *Optional.*
 
    If you chose to set `deployHelloWorldSample` to **false**, then proceed to deploy the Dapr-based workload by following the instructions at:
 
@@ -178,7 +180,7 @@ When you are done exploring the resources created by the Standalone deployment g
 terraform destroy --var-file=terraform.tfvars
 ```
 
-### Step-by-step deployment guide
+### 2. Step-by-step deployment guide
 
 These instructions are spread over a series of dedicated pages for each step along the way. With this method of deployment, you can leverage the step-by-step process considering where possibly different teams (devops, network, operations etc) with different levels of access, are required to coordinate and deploy all of the required resources.
 

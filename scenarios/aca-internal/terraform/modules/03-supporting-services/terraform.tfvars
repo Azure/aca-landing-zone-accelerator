@@ -13,6 +13,6 @@ clientIP                            = "<Your computer's IP address>"
 tags                                = {}
 hubResourceGroupName                = "<Your hub resource group name>"
 spokeResourceGroupName              = "<Your spoke resource group name>"
-location                            = "northeurope"
+location                            = "<Your resource location>"
 logAnalyticsWorkspaceId             = "<Your Log Analytics Workspace resource ID>"
 vnetLinks                           = []

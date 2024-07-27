@@ -2,6 +2,7 @@
 workloadName = "lzaaca"
 //The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.
 environment            = "dev"
+location               = "<Your region to deploy resources>"
 spokeResourceGroupName = "<Your hub resource group name>"
 appInsightsName        = "appInsightsAca"
 hubVnetId              = "<Your Hub VNet resource ID>"

@@ -2,9 +2,12 @@
 workloadName = "lzaaca"
 //The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.
 environment            = "dev"
-spokeResourceGroupName = "rg-lzaaca-spoke-dev-eus"
+spokeResourceGroupName = "<Your hub resource group name>"
 appInsightsName        = "appInsightsAca"
-hubVnetId              = "<Hub VNET ID>"
-spokeVnetId            = "<Spoke VNET ID>"
-spokeInfraSubnetId     = "<Spoke Infrstructure Subnet ID>"
+hubVnetId              = "<Your Hub VNet resource ID>"
+spokeVnetId            = "<Your Spoke VNet resource ID>"
+spokeInfraSubnetId     = "<Your Infra Subnet resource ID>"
 tags                   = {}
+hubResourceGroupName   = "<Your Hub Resource Group Name>"
+logAnalyticsWorkspaceId = "<Your Log Analytics Workspace resource ID>"
+vnetLinks = []

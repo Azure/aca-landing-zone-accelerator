@@ -44,6 +44,8 @@ backend "azurerm" {
    cd ../03-supporting-services
    ```
 
+1. Open the terraform.tfvars file in that folder and provide the correct values for the placeholders in `<>`
+
 1. Create the regional resources that the Azure Container Apps platform and its applications will be dependent on.
 
 ```bash

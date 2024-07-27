@@ -41,6 +41,7 @@ backend "azurerm" {
    ```bash
    cd ../04-container-apps-environment
    ```
+1. Open the terraform.tfvars file in that folder and provide the correct values for the placeholders in `<>`
 
 1. Create the Azure Container Apps application platform resources.
 

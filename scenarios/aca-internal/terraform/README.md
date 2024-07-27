@@ -48,6 +48,7 @@ If you haven't already done so, configure Terraform using one of the following o
 * [Configure Terraform in Azure Cloud Shell with PowerShell](https://learn.microsoft.com/azure/developer/terraform/get-started-cloud-shell-powershell)
 * [Configure Terraform in Windows with Bash](https://learn.microsoft.com/azure/developer/terraform/get-started-windows-bash)
 * [Configure Terraform in Windows with PowerShell](https://learn.microsoft.com/azure/developer/terraform/get-started-windows-powershell)
+* [Run the commands using a local devcontainer](https://code.visualstudio.com/docs/devcontainers/containers) using the config provided in this repo's .devcontainer folder
 
 #### Configure remote state storage account
 

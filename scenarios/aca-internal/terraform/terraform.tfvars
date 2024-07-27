@@ -3,7 +3,6 @@ workloadName = "lzaaca"
 //The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.
 environment = "dev"
 tags        = {}
-location    = "northeurope"
 
 hubVnetAddressPrefixes                     = ["10.0.0.0/24"]
 gatewaySubnetAddressPrefix                 = "10.0.0.0/27"
@@ -21,12 +20,12 @@ enableBastion            = true
 vmSize                   = "Standard_B2ms" # "Standard_B2als_v2" not supported in north europe
 vmAdminUsername          = "vmadmin"
 vmAdminPassword          = "@Aa123456789" # change this to a strong password
-vmLinuxSshAuthorizedKeys = ""
+vmLinuxSshAuthorizedKeys = "<Your SSH public key>"
 vmJumpboxOSType          = "Linux"
 infraSubnetName          = "snet-infra"
 
 deployHelloWorldSample              = true
-clientIP                            = "<Add your client IP here for use in KeyVault access permissions>"
+clientIP                            = "<Your computer's IP address>"
 supportingResourceGroupName         = "supporting-services"
 aRecords                            = []
 containerRegistryPullRoleAssignment = "acrRoleAssignment"

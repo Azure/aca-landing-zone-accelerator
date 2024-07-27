@@ -75,8 +75,6 @@ az storage container-rm create --storage-account $STORAGE_ACCOUNT_NAME --name $C
 
 ### Deploy the reference implementation
 
-#### Provide parameters required for deployment
-
 As you configured the backend remote state with your live Azure infrastructure resource values, you must also provide them for your deployment.
 
 The table below summurizes the avaialble parameters and the possible values that can be set. 
@@ -152,7 +150,7 @@ Before deploying, you need to decide how you would like to deploy the solution w
 
 You can deploy the complete landing zone in a single subscription, by using the [main.tf](main.tf) template file and the accompanying [terraform.tfvars](terraform.tfvars) parameter file. You need first to check and customize the parameter file (parameters are described below) and then decide whether you intend to deploy the simple [Hello World App](modules/05-hello-world-sample-app/README.md) or the more comprehensive, Dapr-enabled [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md). If you intend to deploy the [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md), we reccomend that you set the variable `deployHelloWorldSample` to `false`.
 
-#### Provide required variables
+#### Provide parameters required for deployment
 1. Review the available variables with their descriptions and default values in the [variables.tf](./variables.tf) file.
 2. Provide any custom values to the defined variables by creating a `terraform.tfvars` file in this [directory](terraform.tfvars)
     * [TF Docs: Variable Definitions (.tfvars) Files](https://www.terraform.io/language/values/variables#variable-definitions-tfvars-files)

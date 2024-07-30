@@ -48,6 +48,7 @@ If you haven't already done so, configure Terraform using one of the following o
 * [Configure Terraform in Azure Cloud Shell with PowerShell](https://learn.microsoft.com/azure/developer/terraform/get-started-cloud-shell-powershell)
 * [Configure Terraform in Windows with Bash](https://learn.microsoft.com/azure/developer/terraform/get-started-windows-bash)
 * [Configure Terraform in Windows with PowerShell](https://learn.microsoft.com/azure/developer/terraform/get-started-windows-powershell)
+* [Run the commands using a local devcontainer](https://code.visualstudio.com/docs/devcontainers/containers) using the config provided in this repo's .devcontainer folder
 
 #### Configure remote state storage account
 
@@ -74,13 +75,7 @@ az storage container-rm create --storage-account $STORAGE_ACCOUNT_NAME --name $C
 
 ### Deploy the reference implementation
 
-#### Provide parameters required for deployment
-
 As you configured the backend remote state with your live Azure infrastructure resource values, you must also provide them for your deployment.
-
-1. Review the available variables with their descriptions and default values in the [variables.tf](./variables.tf) file.
-2. Provide any custom values to the defined variables by creating a `terraform.tfvars` file in this [directory](terraform.tfvars)
-    * [TF Docs: Variable Definitions (.tfvars) Files](https://www.terraform.io/language/values/variables#variable-definitions-tfvars-files)
 
 The table below summurizes the avaialble parameters and the possible values that can be set. 
 
@@ -154,6 +149,11 @@ Before deploying, you need to decide how you would like to deploy the solution w
 ### 1. Standalone deployment guide
 
 You can deploy the complete landing zone in a single subscription, by using the [main.tf](main.tf) template file and the accompanying [terraform.tfvars](terraform.tfvars) parameter file. You need first to check and customize the parameter file (parameters are described below) and then decide whether you intend to deploy the simple [Hello World App](modules/05-hello-world-sample-app/README.md) or the more comprehensive, Dapr-enabled [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md). If you intend to deploy the [Fine Collection Sample App](sample-apps/java-fine-collection-service/docs/02-container-apps.md), we reccomend that you set the variable `deployHelloWorldSample` to `false`.
+
+#### Provide parameters required for deployment
+1. Review the available variables with their descriptions and default values in the [variables.tf](./variables.tf) file.
+2. Provide any custom values to the defined variables by creating a `terraform.tfvars` file in this [directory](terraform.tfvars)
+    * [TF Docs: Variable Definitions (.tfvars) Files](https://www.terraform.io/language/values/variables#variable-definitions-tfvars-files)
 
 #### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
 ``` bash

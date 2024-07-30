@@ -45,6 +45,8 @@ backend "azurerm" {
    cd ../02-spoke
    ```
 
+1. Open the terraform.tfvars file in that folder and provide the correct values for the placeholders in `<>`
+
 1. Create the regional spoke network.
 
     ```bash
@@ -53,7 +55,7 @@ backend "azurerm" {
     terraform apply tfplan 
     ```
 
-2. Explore your networking resources. *Optional.*
+1. Explore your networking resources. *Optional.*
 
    You may wish to take this moment to familiarize yourself with the resources that have been deployed so far to Azure. They have all been networking resources, establishing the network and access boundaries from within which your application platform will be executing. Check out the resource groups in the [Azure portal](https://portal.azure.com) by looking at the resource group name outputs from the Hub and Spoke modules (spokeResourceGroupName & hubResourceGroupName) in the terminal. 
 

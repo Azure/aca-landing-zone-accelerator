@@ -28,6 +28,8 @@ If you want to use remote storage, uncomment the backend block in the `providers
    cd ../05-hello-world-sample-app
    ```
 
+1. Open the terraform.tfvars file in that folder and provide the correct values for the placeholders in `<>`
+
 1. Deploy the Hello World container app.
 
 ```bash

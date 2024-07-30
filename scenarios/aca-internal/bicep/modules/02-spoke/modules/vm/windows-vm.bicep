@@ -7,7 +7,7 @@ targetScope = 'resourceGroup'
 param vmName string
 param vmSize string
 
-param vmWindowsOSVersion string = '2016-Datacenter'
+param vmWindowsOSVersion string = '2022-Datacenter'
 
 param vmVnetName string
 param vmSubnetName string

@@ -53,7 +53,7 @@ backend "azurerm" {
    :stop_sign: Update this to your desired region.
 
    ```Terraform
-   location = "northeurope" # or any location that suits your needs
+   location="eastus" # or any location that suits your needs
    vmAdminPassword = "<Strong Password>"
    ```
 

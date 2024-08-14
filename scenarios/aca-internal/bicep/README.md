@@ -10,7 +10,7 @@ You can deploy the current LZA directly in your Azure subscription using Azure D
 
 - Visit [github.com/Azure/aca-landing-zone-accelerator](https://github.com/Azure/aca-landing-zone-accelerator)
 - Click on the `Green Code` button.
-- Navigate to the `CodeSpaces` tab and create a new code space.
+- Navigate to the `Codespaces` tab and create a new codespace.
 - Open the terminal by pressing <code>Ctrl + `</code>.
 - Navigate to the scenario folder using the command `cd /workspaces/aca-landing-zone-accelerator/scenarios/aca-internal`.
 - Login to Azure using the command `azd auth login`.

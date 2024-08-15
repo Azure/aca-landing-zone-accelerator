@@ -8,11 +8,11 @@ resource environment 'Microsoft.App/managedEnvironments@2024-03-01' existing = {
 }
 
 module app_gateway 'containerapp.bicep' = {
-  name: 'app_gateway'
+  name: 'spring-petclinic-gateway'
   params: {
     location: environment.location
     managedEnvironmentId: environment.id
-    appName: 'gateway'
+    appName: 'spring-petclinic-gateway'
     eurekaId: eureka_id
     configServerId: configserver_id
     registry: 'crlzaacauhge5deveus.azurecr.io'

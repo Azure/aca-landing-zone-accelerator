@@ -1,4 +1,5 @@
 ```
+RESOURCENAME_RESOURCEGROUP_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeResourceGroupName.value -o tsv)
 ENVIRONMENT_NAME=$(az deployment group show -n acalza01-appplat -g $RESOURCENAME_RESOURCEGROUP_SPOKE --query properties.outputs.containerAppsEnvironmentName.value -o tsv)
 
 az deployment group create -n acalza01-appplat-java -g $RESOURCENAME_RESOURCEGROUP_SPOKE    -f ../sample-apps/spring-petclinic-microservices/modules/containerapp-java-components.bicep -p managedEnvironments_name=${ENVIRONMENT_NAME}
@@ -8,4 +9,6 @@ CONFIGSERVER_ID=$(az deployment group show -n acalza01-appplat-java -g $RESOURCE
 RESOURCEID_IDENTITY_ACR=$(az deployment group show -n acalza01-dependencies -g $RESOURCENAME_RESOURCEGROUP_SPOKE --query properties.outputs.containerRegistryUserAssignedIdentityId.value -o tsv)
 
 az deployment group create -n acalza01-appplat-app -g $RESOURCENAME_RESOURCEGROUP_SPOKE    -f ../sample-apps/spring-petclinic-microservices/modules/petclinic.bicep  -p managedEnvironments_name=${ENVIRONMENT_NAME} eureka_id=${EUREKA_ID} configserver_id=${CONFIGSERVER_ID} acr_identity_id=${RESOURCEID_IDENTITY_ACR}
+
+FQDN=$(az deployment group show -g $RESOURCENAME_RESOURCEGROUP_SPOKE -n acalza01-appplat-app --query properties.outputs.fqdn.value -o tsv)
 ```

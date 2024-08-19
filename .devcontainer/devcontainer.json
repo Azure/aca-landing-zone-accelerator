@@ -1,14 +1,12 @@
 {
-  "name": "ARO LZA Dev Container",
+  "name": "ACA LZA Dev Container",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "features": {
     "ghcr.io/devcontainers/features/azure-cli:1": {},
     "ghcr.io/rchaganti/vsc-devcontainer-features/azurebicep:1": {},
     "ghcr.io/devcontainers/features/terraform:1": {},
     "ghcr.io/devcontainers-contrib/features/terrascan:1": {},
-    "ghcr.io/devcontainers/features/dotnet:2": {},
     "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
-    "ghcr.io/paul-gilber/devcontainer-features/openshift-cli-homebrew:1": {}
   },
   "customizations": {
     "vscode": {
@@ -28,30 +26,20 @@
         "ms-azure-devops.azure-pipelines",
         "ms-azurecache.vscode-azurecache",
         "ms-azuretools.azure-dev",
-        "ms-azuretools.vscode-apimanagement",
-        "ms-azuretools.vscode-azureappservice",
         "ms-azuretools.vscode-azurecontainerapps",
-        "ms-azuretools.vscode-azurefunctions",
-        "ms-azuretools.vscode-azurelogicapps",
         "ms-azuretools.vscode-azureresourcegroups",
-        "ms-azuretools.vscode-azurestaticwebapps",
         "ms-azuretools.vscode-azurestorage",
         "ms-azuretools.vscode-azureterraform",
         "ms-azuretools.vscode-azurevirtualmachines",
         "ms-azuretools.vscode-bicep",
-        "ms-azuretools.vscode-cosmosdb",
         "ms-azuretools.vscode-dapr",
         "ms-azuretools.vscode-docker",
-        "ms-azuretools.vscode-logicapps",
         "ms-bigdatatools.vscode-asa",
         "ms-kubernetes-tools.vscode-aks-tools",
-        "ms-kubernetes-tools.vscode-kubernetes-tools",
         "ms-vscode.azure-account",
         "ms-vscode.azure-repos",
         "ms-vscode.azurecli",
         "msazurermtools.azurerm-vscode-tools",
-        "redhat.vscode-xml",
-        "redhat.vscode-yaml",
         "stackbreak.comment-divider"
       ]
     }

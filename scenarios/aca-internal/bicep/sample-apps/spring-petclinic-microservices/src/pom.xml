@@ -25,7 +25,7 @@
 
         <docker.image.prefix>springcommunity</docker.image.prefix>
         <docker.image.exposed.port>9090</docker.image.exposed.port>
-        <docker.image.dockerfile.dir>${basedir}</docker.image.dockerfile.dir>
+        <docker.image.dockerfile.dir>${basedir}/docker</docker.image.dockerfile.dir>
         <docker.image.dockerize.version>v0.6.1</docker.image.dockerize.version>
         <docker.plugin.version>1.2.0</docker.plugin.version>
         <version.spring.cloud.azure>5.0.0</version.spring.cloud.azure>
@@ -94,12 +94,9 @@
             -->
             <id>release</id>
             <modules>
-                <module>spring-petclinic-admin-server</module>
                 <module>spring-petclinic-customers-service</module>
                 <module>spring-petclinic-vets-service</module>
                 <module>spring-petclinic-visits-service</module>
-                <module>spring-petclinic-config-server</module>
-                <module>spring-petclinic-discovery-server</module>
                 <module>spring-petclinic-api-gateway</module>
             </modules>
             <build>
@@ -126,7 +123,6 @@
             -->
             <id>spring-apps</id>
             <modules>
-                <module>spring-petclinic-admin-server</module>
                 <module>spring-petclinic-customers-service</module>
                 <module>spring-petclinic-vets-service</module>
                 <module>spring-petclinic-visits-service</module>
@@ -154,12 +150,9 @@
                 </file>
             </activation>
             <modules>
-                <module>spring-petclinic-admin-server</module>
                 <module>spring-petclinic-customers-service</module>
                 <module>spring-petclinic-vets-service</module>
                 <module>spring-petclinic-visits-service</module>
-                <module>spring-petclinic-config-server</module>
-                <module>spring-petclinic-discovery-server</module>
                 <module>spring-petclinic-api-gateway</module>
             </modules>
             <build>
@@ -172,6 +165,7 @@
                                 <!-- Spring Boot Actuator displays build-related information if a META-INF/build-info.properties file is present -->
                                 <goals>
                                     <goal>build-info</goal>
+                                    <goal>repackage</goal>
                                 </goals>
                                 <configuration>
                                     <additionalProperties>
@@ -184,7 +178,37 @@
                             </execution>
                         </executions>
                     </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/docker</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>*.jar</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${docker.image.dockerfile.dir}</directory>
+                                    <includes>
+                                        <include>Dockerfile</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
                     <!-- Spring Boot Actuator displays build-related information if a META-INF/build-info.properties file is present -->
                     <plugin>
                         <groupId>io.github.git-commit-id</groupId>
@@ -212,12 +236,9 @@
         <profile>
             <id>buildDocker</id>
             <modules>
-                <module>spring-petclinic-admin-server</module>
                 <module>spring-petclinic-customers-service</module>
                 <module>spring-petclinic-vets-service</module>
                 <module>spring-petclinic-visits-service</module>
-                <module>spring-petclinic-config-server</module>
-                <module>spring-petclinic-discovery-server</module>
                 <module>spring-petclinic-api-gateway</module>
             </modules>
             <build>
@@ -268,12 +289,9 @@
                 </property>
             </activation>
             <modules>
-                <module>spring-petclinic-admin-server</module>
                 <module>spring-petclinic-customers-service</module>
                 <module>spring-petclinic-vets-service</module>
                 <module>spring-petclinic-visits-service</module>
-                <module>spring-petclinic-config-server</module>
-                <module>spring-petclinic-discovery-server</module>
                 <module>spring-petclinic-api-gateway</module>
             </modules>
         </profile>

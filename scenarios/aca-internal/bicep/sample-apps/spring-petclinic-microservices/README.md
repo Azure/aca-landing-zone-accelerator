@@ -1,22 +1,30 @@
-```
-RESOURCENAME_RESOURCEGROUP_SPOKE=$(az deployment sub show -n acalza01-spokenetwork --query properties.outputs.spokeResourceGroupName.value -o tsv)
-ENVIRONMENT_NAME=$(az deployment group show -n acalza01-appplat -g $RESOURCENAME_RESOURCEGROUP_SPOKE --query properties.outputs.containerAppsEnvironmentName.value -o tsv)
+# # Sample App: Spring Petclinic Microservices
 
-az deployment group create -n acalza01-appplat-java -g $RESOURCENAME_RESOURCEGROUP_SPOKE    -f ../sample-apps/spring-petclinic-microservices/modules/containerapp-java-components.bicep -p managedEnvironments_name=${ENVIRONMENT_NAME}
+Spring Petclinic Microservices is a Java microservice application that simulates a pet clinic management system.
 
-EUREKA_ID=$(az deployment group show -n acalza01-appplat-java -g $RESOURCENAME_RESOURCEGROUP_SPOKE --query properties.outputs.eureka_id.value -o tsv)    
-CONFIGSERVER_ID=$(az deployment group show -n acalza01-appplat-java -g $RESOURCENAME_RESOURCEGROUP_SPOKE --query properties.outputs.configserver_id.value -o tsv)
-RESOURCEID_IDENTITY_ACR=$(az deployment group show -n acalza01-dependencies -g $RESOURCENAME_RESOURCEGROUP_SPOKE --query properties.outputs.containerRegistryUserAssignedIdentityId.value -o tsv)
+![Spring Petclinic Microservices](docs/media/spring-petclinic-overview.png)
 
-az deployment group create -n acalza01-appplat-app -g $RESOURCENAME_RESOURCEGROUP_SPOKE    -f ../modules/petclinic.bicep  -p managedEnvironments_name=${ENVIRONMENT_NAME} eureka_id=${EUREKA_ID} configserver_id=${CONFIGSERVER_ID} acr_identity_id=${RESOURCEID_IDENTITY_ACR} image_tag=${IMAGE_TAG}
+The application allows users to manage information about pets, their owners, and visits to the clinic. It is built using Spring Boot and follows a microservices architecture.
 
-FQDN=$(az deployment group show -g $RESOURCENAME_RESOURCEGROUP_SPOKE -n acalza01-appplat-app --query properties.outputs.fqdn.value -o tsv)
-```
+The sample app is available [here](https://github.com/azure-samples/spring-petclinic-microservices). The branch used for this scenario is [main](https://github.com/azure-samples/spring-petclinic-microservices/tree/main).
 
-```
-IMAGE_TAG=$(date -u +%Y%m%d%H%M%S)
-az acr build -t spring-petclinic-vets-service:3.0.1-${IMAGE_TAG} -r crlzaacauhge5deveus spring-petclinic-vets-service/target/docker --build-arg ARTIFACT_NAME=vets-service-3.0.1 --build-arg  EXPOSED_PORT=8080
-az acr build -t spring-petclinic-visits-service:3.0.1-${IMAGE_TAG} -r crlzaacauhge5deveus spring-petclinic-visits-service/target/docker --build-arg ARTIFACT_NAME=visits-service-3.0.1 --build-arg  EXPOSED_PORT=8080
-az acr build -t spring-petclinic-customers-service:3.0.1-${IMAGE_TAG} -r crlzaacauhge5deveus spring-petclinic-customers-service/target/docker --build-arg ARTIFACT_NAME=customers-service-3.0.1 --build-arg  EXPOSED_PORT=8080
-az acr build -t spring-petclinic-api-gateway:3.0.1-${IMAGE_TAG} -r crlzaacauhge5deveus spring-petclinic-api-gateway/target/docker --build-arg ARTIFACT_NAME=api-gateway-3.0.1 --build-arg  EXPOSED_PORT=8080
-```
+## Overview
+
+The Spring Petclinic Microservices sample app consists of several microservices:
+
+* `customers-service`
+* `vets-service`
+* `visits-service`
+* `api-gateway`
+
+Interaction/communication between these microservices is described below:
+
+![Services](docs/media/spring-petclinic-sequence-diagram.png)
+
+## Deployment
+
+The deployment of the sample app is done in 2 steps:
+
+1. :arrow_forward: [Deploy the landing zone](./docs/01-landing-zone.md)
+2. :arrow_forward: [Deploy the container apps](./docs/02-container-apps.md)
+2. :arrow_forward: [Deploy the PetClinic microservices](./docs/03-deploy-apps.md)

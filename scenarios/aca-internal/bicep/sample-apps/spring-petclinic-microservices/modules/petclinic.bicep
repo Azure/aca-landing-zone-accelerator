@@ -1,71 +1,95 @@
-param managedEnvironments_name string
-param eureka_id string
-param configserver_id string
-param acr_identity_id string
-param image_tag string
+param managedEnvironmentsName string
+param eurekaId string
+param configServerId string
+
+param mysqlDBId string
+param mysqlUserAssignedIdentityClientId string
+
+param imageTag string
+param acrRegistry string
+param acrIdentityId string
+
+param apiGatewayImage string = 'spring-petclinic-api-gateway'
+param customerServiceImage string = 'spring-petclinic-customers-service'
+param vetsServiceImage string = 'spring-petclinic-vets-service'
+param visitsServiceImage string = 'spring-petclinic-visits-service'
+
+param targetPort int = 8080
 
 resource environment 'Microsoft.App/managedEnvironments@2024-03-01' existing = {
-  name: managedEnvironments_name
+  name: managedEnvironmentsName
 }
 
-module app_gateway 'containerapp.bicep' = {
-  name: 'spring-petclinic-gateway'
+module apiGateway 'containerapp.bicep' = {
+  name: 'api-gateway'
   params: {
     location: environment.location
     managedEnvironmentId: environment.id
-    appName: 'spring-petclinic-gateway'
-    eurekaId: eureka_id
-    configServerId: configserver_id
-    registry: 'crlzaacauhge5deveus.azurecr.io'
-    image: 'spring-petclinic-api-gateway:3.0.1-${image_tag}'
-    containerRegistryUserAssignedIdentityId: acr_identity_id
+    appName: 'api-gateway'
+    eurekaId: eurekaId
+    configServerId: configServerId
+    registry: acrRegistry
+    image: '${apiGatewayImage}:${imageTag}'
+    containerRegistryUserAssignedIdentityId: acrIdentityId
     external: true
+    targetPort: targetPort
+    mysqlDBId: mysqlDBId
+    mysqlUserAssignedIdentityClientId: mysqlUserAssignedIdentityClientId
   }
 }
 
-module app_customer_service 'containerapp.bicep' = {
+module customerService 'containerapp.bicep' = {
   name: 'customer-service'
   params: {
     location: environment.location
     managedEnvironmentId: environment.id
     appName: 'customer-service'
-    eurekaId: eureka_id
-    configServerId: configserver_id
-    registry: 'crlzaacauhge5deveus.azurecr.io'
-    image: 'spring-petclinic-customers-service:3.0.1-${image_tag}'
-    containerRegistryUserAssignedIdentityId: acr_identity_id
+    eurekaId: eurekaId
+    configServerId: configServerId
+    registry: acrRegistry
+    image: '${customerServiceImage}:${imageTag}'
+    containerRegistryUserAssignedIdentityId: acrIdentityId
     external: false
+    targetPort: targetPort
+    mysqlDBId: mysqlDBId
+    mysqlUserAssignedIdentityClientId: mysqlUserAssignedIdentityClientId
   }
 }
 
-module app_vets_service 'containerapp.bicep' = {
+module vetsService 'containerapp.bicep' = {
   name: 'vets-service'
   params: {
     location: environment.location
     managedEnvironmentId: environment.id
     appName: 'vets-service'
-    eurekaId: eureka_id
-    configServerId: configserver_id
-    registry: 'crlzaacauhge5deveus.azurecr.io'
-    image: 'spring-petclinic-vets-service:3.0.1-${image_tag}'
-    containerRegistryUserAssignedIdentityId: acr_identity_id
+    eurekaId: eurekaId
+    configServerId: configServerId
+    registry: acrRegistry
+    image: '${vetsServiceImage}:${imageTag}'
+    containerRegistryUserAssignedIdentityId: acrIdentityId
     external: false
+    targetPort: targetPort
+    mysqlDBId: mysqlDBId
+    mysqlUserAssignedIdentityClientId: mysqlUserAssignedIdentityClientId
   }
 }
 
-module app_visits_service 'containerapp.bicep' = {
+module visitsService 'containerapp.bicep' = {
   name: 'visits-service'
   params: {
     location: environment.location
     managedEnvironmentId: environment.id
     appName: 'visits-service'
-    eurekaId: eureka_id
-    configServerId: configserver_id
-    registry: 'crlzaacauhge5deveus.azurecr.io'
-    image: 'spring-petclinic-visits-service:3.0.1-${image_tag}'
-    containerRegistryUserAssignedIdentityId: acr_identity_id
+    eurekaId: eurekaId
+    configServerId: configServerId
+    registry: acrRegistry
+    image: '${visitsServiceImage}:${imageTag}'
+    containerRegistryUserAssignedIdentityId: acrIdentityId
     external: false
+    targetPort: targetPort
+    mysqlDBId: mysqlDBId
+    mysqlUserAssignedIdentityClientId: mysqlUserAssignedIdentityClientId
   }
 }
 
-output fqdn string = app_gateway.outputs.appFqdn
+output fqdn string = apiGateway.outputs.appFqdn

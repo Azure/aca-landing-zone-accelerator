@@ -7,6 +7,9 @@ param eurekaId string
 param configServerId string
 param external bool = false
 param containerRegistryUserAssignedIdentityId string
+param mysqlDBId string
+param mysqlUserAssignedIdentityClientId string
+param targetPort int
 
 resource app 'Microsoft.App/containerApps@2024-02-02-preview' = {
   name: appName
@@ -22,7 +25,7 @@ resource app 'Microsoft.App/containerApps@2024-02-02-preview' = {
     configuration: {
       ingress:{
         external: external
-        targetPort: 8080
+        targetPort: targetPort
       }
       registries: containerRegistryUserAssignedIdentityId == null ? null : [
         {
@@ -37,6 +40,12 @@ resource app 'Microsoft.App/containerApps@2024-02-02-preview' = {
           image: '${registry}/${image}'
           imageType: 'ContainerImage'
           name: appName
+          env: [
+            {
+              name: 'SPRING_PROFILES_ACTIVE'
+              value: 'passwordless'
+            }
+          ]
           resources: {
             cpu: 1
             memory: '2Gi'
@@ -57,6 +66,29 @@ resource app 'Microsoft.App/containerApps@2024-02-02-preview' = {
           name: 'configserver'
         }
       ]
+    }
+  }
+}
+
+var mysqlToken = !empty(mysqlDBId) ? split(mysqlDBId, '/') : array('')
+var mysqlSubscriptionId = mysqlToken[2]
+var normalizedAppName = replace(appName, '-', '_')
+
+resource connectDB 'Microsoft.ServiceLinker/linkers@2023-04-01-preview' = {
+  name: '${normalizedAppName}_mysql'
+  scope: app
+  properties: { 
+    scope: appName
+    clientType: 'springBoot'
+    authInfo: {
+      authType: 'userAssignedIdentity'
+      clientId: mysqlUserAssignedIdentityClientId
+      subscriptionId: mysqlSubscriptionId
+      userName: 'aad_${normalizedAppName}_mysql'
+    }
+    targetService: {
+      type: 'AzureResource'
+      id: mysqlDBId
     }
   }
 }

@@ -1,0 +1,47 @@
+defaults: &defaults
+  buildpacks:
+    - java_buildpack_offline
+  memory: 1G
+  health-check-type: port
+  health-check-invocation-timeout: 30
+  env:
+    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ }}'
+    JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '{enabled: false}'
+    # Required to override SERVER_PORT env var set by buildpack and load
+    # default Spring application on port 8081
+    # SPRING_APPLICATION_JSON: '{"server.port":8080}'
+    SPRING_PROFILES_ACTIVE: mysql
+    SERVER_PORT: 8080
+    EUREKA_INSTANCE_SECURE_PORT_ENABLED: false
+    EUREKA_INSTANCE_NON_SECURE_PORT: 8080
+    EUREKA_INSTANCE_PREFER_IP_ADDRESS: true
+  services:
+  - petclinic-service-registry
+  - petclinic-config-server
+  - petclinic-mysql
+
+applications:
+- name: spring-petclinic-api-gateway
+  <<: *defaults
+  path: spring-petclinic-api-gateway/target/api-gateway-3.0.1.jar
+  routes:
+  - route: spring-petclinic-api-gateway.petclinic.xiading-tanzu-tas.azdmss-test.net
+    protocol: http1
+- name: spring-petclinic-customers-service
+  <<: *defaults
+  path: spring-petclinic-customers-service/target/customers-service-3.0.1.jar
+  routes:
+  - route: spring-petclinic-customers-service.petclinic.internal
+    protocol: http1
+- name: spring-petclinic-vets-service
+  <<: *defaults
+  path: spring-petclinic-vets-service/target/vets-service-3.0.1.jar
+  routes:
+  - route: spring-petclinic-vets-service.petclinic.internal
+    protocol: http1
+- name: spring-petclinic-visits-service
+  <<: *defaults
+  path: spring-petclinic-visits-service/target/visits-service-3.0.1.jar
+  routes:
+  - route: spring-petclinic-visits-service.petclinic.internal
+    protocol: http1

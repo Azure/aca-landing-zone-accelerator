@@ -1,5 +1,6 @@
 module "hub" {
   source                                     = "./modules/01-hub"
+  subscription_id                            = var.subscription_id
   workloadName                               = var.workloadName
   environment                                = var.environment
   hubResourceGroupName                       = var.hubResourceGroupName
@@ -16,6 +17,7 @@ module "hub" {
 
 module "spoke" {
   source                                = "./modules/02-spoke"
+  subscription_id                       = var.subscription_id
   workloadName                          = var.workloadName
   environment                           = var.environment
   spokeResourceGroupName                = var.spokeResourceGroupName
@@ -39,6 +41,7 @@ module "spoke" {
 
 module "supportingServices" {
   source                              = "./modules/03-supporting-services"
+  subscription_id                     = var.subscription_id
   workloadName                        = var.workloadName
   environment                         = var.environment
   location                            = var.location
@@ -72,6 +75,7 @@ module "supportingServices" {
 
 module "containerAppsEnvironment" {
   source                  = "./modules/04-container-apps-environment"
+  subscription_id         = var.subscription_id
   workloadName            = var.workloadName
   environment             = var.environment
   location                = var.location
@@ -102,6 +106,7 @@ module "containerAppsEnvironment" {
 
 module "helloWorldApp" {
   source                                  = "./modules/05-hello-world-sample-app"
+  subscription_id                         = var.subscription_id
   deployApp                               = var.deployHelloWorldSample
   resourceGroupName                       = module.spoke.spokeResourceGroupName
   helloWorldContainerAppName              = var.helloWorldContainerAppName
@@ -115,6 +120,7 @@ module "helloWorldApp" {
 # If you would like to keep your KeyVault private, comment out this module
 module "applicationGateway" {
   source                          = "./modules/06-application-gateway"
+  subscription_id                 = var.subscription_id
   workloadName                    = var.workloadName
   environment                     = var.environment
   location                        = var.location

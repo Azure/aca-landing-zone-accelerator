@@ -1,3 +1,8 @@
+variable "subscription_id" {
+  sensitive = true
+  type = string
+}
+
 variable "appGatewayCertificateKeyName" {}
 
 variable "location" {}

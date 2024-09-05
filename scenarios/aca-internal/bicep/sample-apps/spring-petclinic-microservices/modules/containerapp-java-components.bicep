@@ -32,13 +32,5 @@ resource eureka 'Microsoft.App/managedEnvironments/javaComponents@2024-02-02-pre
   }
 }
 
-resource springbootadmin 'Microsoft.App/managedEnvironments/javaComponents@2024-02-02-preview' = {
-  parent: managedEnvironmentsResource
-  name: 'springbootadmin'
-  properties: {
-    componentType: 'SpringBootAdmin'
-  }
-}
-
 output eurekaId string = eureka.id
 output configServerId string = configServer.id

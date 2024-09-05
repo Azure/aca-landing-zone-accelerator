@@ -1,6 +1,6 @@
 # Deploy the Container Apps
 
-Once the Azure Container Apps created, we can go to deploy the Spring Boot application to the created apps.
+Once the Azure Container Apps created and connect to the database, we can go to deploy the Spring Boot application to the created apps. Every time you modify the application code, you can rerun the steps in this tutorial to deploy the changes.
 
 ## Expected results
 This documentation guides how to deploy the PetClinic microservices.

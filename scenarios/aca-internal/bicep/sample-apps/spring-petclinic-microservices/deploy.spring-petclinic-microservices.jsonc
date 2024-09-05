@@ -15,7 +15,7 @@
             "value": "snet-mysql"
         },
         "serverName": {
-            "value": "lzaacamysql"
+            "value": "lzapetclinicmysql"
         },
         "databaseName": {
             "value": "petclinic"

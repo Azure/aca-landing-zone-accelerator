@@ -75,7 +75,7 @@ var mysqlSubscriptionId = mysqlToken[2]
 var normalizedAppName = replace(appName, '-', '_')
 
 resource connectDB 'Microsoft.ServiceLinker/linkers@2023-04-01-preview' = {
-  name: '${normalizedAppName}_mysql'
+  name: 'mysql_${normalizedAppName}'
   scope: app
   properties: { 
     scope: appName
@@ -84,7 +84,7 @@ resource connectDB 'Microsoft.ServiceLinker/linkers@2023-04-01-preview' = {
       authType: 'userAssignedIdentity'
       clientId: mysqlUserAssignedIdentityClientId
       subscriptionId: mysqlSubscriptionId
-      userName: 'aad_${normalizedAppName}_mysql'
+      userName: 'aad_mysql_${normalizedAppName}'
     }
     targetService: {
       type: 'AzureResource'

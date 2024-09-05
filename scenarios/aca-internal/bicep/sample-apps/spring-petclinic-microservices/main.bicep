@@ -64,7 +64,14 @@ module applications 'modules/petclinic.bicep' = {
 }
 
 output fqdn string = applications.outputs.fqdn
+
+output apiGatewayId string = applications.outputs.gatewayId
+output customerServiceId string = applications.outputs.customerServiceId
+output visitsServiceId string = applications.outputs.visitsServiceId
+output vetsServiceId string = applications.outputs.vetsServiceId
+
 output eurekaId string = javaComponents.outputs.eurekaId
 output configServerId string = javaComponents.outputs.configServerId
 output databaseId string = mysql.outputs.databaseId
 output userAssignedIdentityClientId string = mysql.outputs.userAssignedIdentityClientId
+output userAssignedIdentity string = mysql.outputs.userAssignedIdentity

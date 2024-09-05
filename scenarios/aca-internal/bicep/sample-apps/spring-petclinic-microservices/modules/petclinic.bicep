@@ -93,3 +93,7 @@ module visitsService 'containerapp.bicep' = {
 }
 
 output fqdn string = apiGateway.outputs.appFqdn
+output gatewayId string = apiGateway.outputs.appId
+output customerServiceId string = customerService.outputs.appId
+output vetsServiceId string = vetsService.outputs.appId
+output visitsServiceId string = visitsService.outputs.appId

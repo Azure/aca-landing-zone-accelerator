@@ -26,5 +26,6 @@ Interaction/communication between these microservices is described below:
 The deployment of the sample app is done in 2 steps:
 
 1. :arrow_forward: [Deploy the landing zone](./docs/01-landing-zone.md)
-2. :arrow_forward: [Deploy the container apps](./docs/02-container-apps.md)
-2. :arrow_forward: [Deploy the PetClinic microservices](./docs/03-deploy-apps.md)
+2. :arrow_forward: [Create the container apps](./docs/02-container-apps.md)
+2. :arrow_forward: [Connect the container apps with MySql DB](./docs/03-connect-to-db.md)
+2. :arrow_forward: [Deploy the PetClinic microservices](./docs/04-deploy-apps.md)

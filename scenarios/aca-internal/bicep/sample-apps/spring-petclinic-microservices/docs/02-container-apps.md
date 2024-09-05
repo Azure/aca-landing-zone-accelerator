@@ -1,4 +1,4 @@
-# Deploy the Container Apps
+# Create the Container Apps with supporting services
 
 Once the landing zone is deployed, the container apps environment and their dependencies are already set up in the private networking environment.
 
@@ -73,7 +73,9 @@ This documentation guides how to deploy the container apps and connect them with
    echo $IP_APPGW
    ```
 
-1. View the https://$IP_APPGW in browser.
+1. View the https://$IP_APPGW in browser, you can see the following site.
+
+   ![Welcome to Azure Container Apps!](./hello-world.png)
 
 ## Next step
 

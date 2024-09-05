@@ -1,10 +1,6 @@
 // ------------------
 //    PARAMETERS
 // ------------------
-variable "subscription_id" {
-  sensitive = true
-  type = string
-}
 
 variable "workloadName" {
   type = string

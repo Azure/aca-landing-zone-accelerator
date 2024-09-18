@@ -47,7 +47,8 @@ export MSYS_NO_PATHCONV=1
       -n acalza01-spokenetwork \
       -l $LOCATION \
       -f 02-spoke/deploy.spoke.bicep -p 02-spoke/deploy.spoke.parameters.jsonc \
-      -p hubVNetId=${RESOURCEID_VNET_HUB} networkApplianceIpAddress=${NETWORK_APPLIANCE_IP_ADDRESS}
+      -p hubVNetId=${RESOURCEID_VNET_HUB} \
+      -p networkApplianceIpAddress=${NETWORK_APPLIANCE_IP_ADDRESS}
    ```
 
 1. Explore your networking resources. *Optional.*

@@ -17,6 +17,12 @@ This documentation guides how to deploy the container apps and connect them with
 
 ## Steps
 
+1. Go to the sample application folder as work directory
+
+   ```bash
+   cd sample-apps/spring-petclinic-microservices
+   ```
+
 1. Retrieve the Networking and Azure Container Registry information from previous deployment.
 
   ```bash
@@ -79,4 +85,4 @@ This documentation guides how to deploy the container apps and connect them with
 
 ## Next step
 
-:arrow_forward: [Deploy PetClinic microservices](./03-deploy-apps.md)
+:arrow_forward: [Connect Container Apps with MySql Flexible Server](./03-connect-to-db.md)

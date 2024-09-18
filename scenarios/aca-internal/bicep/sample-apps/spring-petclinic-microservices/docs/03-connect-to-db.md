@@ -93,3 +93,7 @@ All the container apps can successfully connect to the MySql Flexible Server.
             mysql-identity-id=${RESOURCEID_MYSQL_USERASSIGNEDIDENTITY} \
         -c vets-service
     ```
+
+## Next step
+
+:arrow_forward: [Deploy the Container Apps](./04-deploy-apps.md)

@@ -59,7 +59,7 @@ This documentation guides how to deploy the PetClinic microservices.
 1. Deploy the microservices to Azure Container Apps
 
    ```bash
-    az deployment group create -n acalza01-appplat-microservices -g $RESOURCENAME_RESOURCEGROUP_SPOKE \
+   az deployment group create -n acalza01-appplat-microservices -g $RESOURCENAME_RESOURCEGROUP_SPOKE \
         -f modules/petclinic.bicep \
         -p managedEnvironmentsName=${ENVIRONMENT_NAME} \
         -p eurekaId=${RESOURCEID_EUREKA} \

@@ -82,6 +82,7 @@ var resourceNames = {
   eventGridSystemTopic: replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.eventGridSystemTopic )
   eventGridSystemTopicPep: '${naming.resourceTypeAbbreviations.privateEndpoint}-${replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.eventGridSystemTopic)}'
   eventGridSubscription: replace ( namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.eventGridSubscription )
+  mysqlServer: take ( toLower( replace ( replace(namingBaseUnique, resourceTypeToken, naming.resourceTypeAbbreviations.mysqlServer), '-', '' ) ), 24 )
 }
 
 output resourcesNames object = resourceNames

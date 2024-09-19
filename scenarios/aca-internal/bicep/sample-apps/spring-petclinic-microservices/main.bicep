@@ -1,7 +1,6 @@
 param administratorLogin string
 @secure()
 param administratorLoginPassword string
-param serverName string
 param databaseName string
 param version string
 param mysqlSubnetPrefix string
@@ -18,13 +17,36 @@ param acrRegistry string
 param simpleHelloImage string
 param simpleHelloTag string
 
+@description('The name of the workload that is being deployed. Up to 10 characters long.')
+@minLength(2)
+@maxLength(10)
+param workloadName string
+
+@description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
+@maxLength(8)
+param environment string
+
+@description('The location where the resources will be created. This needs to be the same region as the spoke.')
+param location string = resourceGroup().location
+
+
+@description('User-configured naming rules')
+module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
+  name: take('04-sharedNamingDeployment-${deployment().name}', 64)
+  params: {
+    uniqueId: uniqueString(resourceGroup().id)
+    environment: environment
+    workloadName: workloadName
+    location: location
+  }
+}
 
 module mysql 'modules/mysql.bicep' = {
   name: 'mysql'
   params: {
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
-    serverName: serverName
+    serverName: naming.outputs.resourcesNames.mysqlServer
     databaseName: databaseName
     version: version
     spokeVnetId: spokeVnetId

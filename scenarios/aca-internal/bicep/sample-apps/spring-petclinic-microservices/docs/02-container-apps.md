@@ -79,7 +79,9 @@ This documentation guides how to deploy the container apps and connect them with
    echo $IP_APPGW
    ```
 
-1. View the https://$IP_APPGW in browser, you can see the following site.
+1. Access the "Hello World" application running in Azure Container Apps.
+
+   Using your browser either navigate to **https://\<IP_APPGW from prior step>** from above, or if you added the host file entry, to **<https://acahello.demoapp.com>**. *Because the cert is self-signed for this walkthrough, you will need to accept the security warnings presented by your browser.*
 
    ![Welcome to Azure Container Apps!](./hello-world.png)
 

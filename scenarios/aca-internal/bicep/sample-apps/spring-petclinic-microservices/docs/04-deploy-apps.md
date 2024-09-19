@@ -10,8 +10,11 @@ This documentation guides how to deploy the PetClinic microservices.
 - PetClinic microservices images
 - Deploy images to containr apps
 
-## Steps
+## Prerequisites
+- [Java 17](https://learn.microsoft.com/en-us/java/openjdk/download#openjdk-17)
+- [Maven](https://maven.apache.org/download.cgi)
 
+## Steps
 
 1. Retrieve the Networking and Azure Container Registry information from previous deployment.
 
@@ -80,4 +83,6 @@ This documentation guides how to deploy the PetClinic microservices.
    echo $IP_APPGW
    ```
 
-1. View the https://$IP_APPGW in browser.
+1. Access the PetClinic application running in Azure Container Apps.
+
+   Using your browser either navigate to **https://\<IP_APPGW from prior step>** from above, or if you added the host file entry, to **<https://acahello.demoapp.com>**. *Because the cert is self-signed for this walkthrough, you will need to accept the security warnings presented by your browser.*

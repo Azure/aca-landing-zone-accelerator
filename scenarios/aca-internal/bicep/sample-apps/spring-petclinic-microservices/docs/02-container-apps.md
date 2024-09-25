@@ -20,7 +20,7 @@ This documentation guides how to deploy the container apps and connect them with
 1. Go to the sample application folder as work directory
 
    ```bash
-   cd sample-apps/spring-petclinic-microservices
+   cd ../sample-apps/spring-petclinic-microservices
    ```
 
 1. Retrieve the Networking and Azure Container Registry information from previous deployment.
@@ -68,14 +68,24 @@ This documentation guides how to deploy the container apps and connect them with
    FQDN=$(az deployment group show -g $RESOURCENAME_RESOURCEGROUP_SPOKE -n acalza01-appplat-java --query properties.outputs.fqdn.value -o tsv)
    ```
 
-1. Create the Application Gateway that connect to the microservices. Replace the environment variable `FQDN_HELLOWORLD_ACA=$FQDN` when creating the Application Gateway. Tutorial can be viewed at [06-application-gateway](../../../modules/06-application-gateway/README.md)
+1. Create the Application Gateway that connect to the microservices. Replace the environment variable `FQDN_HELLOWORLD_ACA=$FQDN` when creating the Application Gateway. Tutorial can be viewed at [06-application-gateway](../../../modules/06-application-gateway/README.md). Note to change the working directory when creating the Application Gateway.
+
+  ```bash
+  cd ../../modules
+  ```
 
 ## Verification
+
+1. Go to the sample application folder as work directory
+
+   ```bash
+   cd ../sample-apps/spring-petclinic-microservices
+   ```
 
 1. Get the public IP of Application Gateway.
 
    ```bash
-   IP_APPGW=$(az deployment group show -g rg-lzaaca-spoke-dev-eus2 -n acalza01-appgw --query properties.outputs.applicationGatewayPublicIp.value -o tsv)
+   IP_APPGW=$(az deployment group show -g $RESOURCENAME_RESOURCEGROUP_SPOKE -n acalza01-appgw --query properties.outputs.applicationGatewayPublicIp.value -o tsv)
    echo $IP_APPGW
    ```
 

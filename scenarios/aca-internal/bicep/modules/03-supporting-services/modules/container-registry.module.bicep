@@ -97,6 +97,7 @@ module containerRegistry '../../../../../shared/bicep/container-registry.bicep' 
     publicNetworkAccess: 'Disabled'
     networkRuleBypassOptions: 'AzureServices'
     diagnosticWorkspaceId: diagnosticWorkspaceId
+    agentPoolSubnetId: spokePrivateEndpointSubnet.id
   }
 }
 
@@ -146,5 +147,8 @@ output containerRegistryLoginServer string = containerRegistry.outputs.loginServ
 
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = containerRegistryUserAssignedIdentity.id
+
+@description('The name of Azure container registry agent pool name to build images')
+output containerRegistryAgentPoolName string = containerRegistry.outputs.agentPoolName
 
 

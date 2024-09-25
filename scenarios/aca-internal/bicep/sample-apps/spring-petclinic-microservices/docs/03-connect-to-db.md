@@ -20,13 +20,17 @@ All the container apps can successfully connect to the MySql Flexible Server.
         ```bash
         curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
         ```
-    - az extension add --name containerapp
-    - az extension add --name serviceconnector-passwordless --upgrade
+    - Add necessary extensions
+        ```bash
+        az extension add --name containerapp
+        az extension add --name serviceconnector-passwordless --upgrade
+        ```
 
-1. Login the Azure CLI and select current subscription.
+1. Login the Azure CLI and select current subscription. The subscription id can be retrieved from the Virtual Machine's overview blade.
 
     ```bash
     az login --use-device-code
+    az account set -s <your-subscription-id>
     ```
 
 1. Retrieve the environments

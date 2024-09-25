@@ -160,6 +160,24 @@ param cMKKeyVersion string = ''
 @description('Conditional. User assigned identity to use when fetching the customer managed key. Note, CMK requires the \'acrSku\' to be \'Premium\'. Required if \'cMKKeyName\' is not empty.')
 param cMKUserAssignedIdentityResourceId string = ''
 
+@description('Optional. The name of the agent pool. This agent pool will be used to build docker image to be deployed.')
+param agentPoolName string = 'default'
+
+@description('Optional. The number of agents in the agent pool.')
+param agentPoolCount int = 1
+
+@description('Optional. The tier of the agent pool.')
+@allowed([
+  'S1'
+  'S2'
+  'S3'
+  'I6'
+])
+param agentPoolTier string = 'S2'
+
+@description('The resource ID of the subnet to which the agent pool will be connected.')
+param agentPoolSubnetId string
+
 var diagnosticsLogsSpecified = [for category in filter(diagnosticLogCategoriesToEnable, item => item != 'allLogs'): {
   category: category
   enabled: true
@@ -261,6 +279,18 @@ resource registry_diagnosticSettingName 'Microsoft.Insights/diagnosticsettings@2
   scope: registry
 }
 
+resource registry_agentPool 'Microsoft.ContainerRegistry/registries/agentPools@2019-06-01-preview' = {
+  parent: registry
+  name: agentPoolName
+  location: location
+  properties: {
+    count: agentPoolCount
+    os: 'Linux'
+    tier: agentPoolTier
+    virtualNetworkSubnetResourceId: agentPoolSubnetId
+  }
+}
+
 @description('The Name of the Azure container registry.')
 output name string = registry.name
 
@@ -278,3 +308,6 @@ output systemAssignedPrincipalId string = systemAssignedIdentity && contains(reg
 
 @description('The location the resource was deployed into.')
 output location string = registry.location
+
+@description('The resource ID of Azure container registry agent pool, used for docker image build.')
+output agentPoolName string = registry_agentPool.name

@@ -140,6 +140,9 @@ output containerRegistryLoginServer string = containerRegistry.outputs.container
 @description('The resource ID of the user-assigned managed identity for the Azure Container Registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = containerRegistry.outputs.containerRegistryUserAssignedIdentityId
 
+@description('The name of the contianer registry agent pool name to build images')
+output containerRegistryAgentPoolName string = containerRegistry.outputs.containerRegistryAgentPoolName
+
 @description('The resource ID of the Azure Key Vault.')
 output keyVaultId string = keyVault.outputs.keyVaultId
 

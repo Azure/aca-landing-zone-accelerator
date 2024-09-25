@@ -37,10 +37,10 @@
             "value": "[ACA-ENVIRONMENT-NAME]"
         },
         "configServerGitRepo": {
-            "value": "https://github.com/yuwzho/spring-petclinic-microservices-config"
+            "value": "https://github.com/Azure-Samples/spring-petclinic-microservices-config"
         },
         "configServerGitBranch": {
-            "value": "containerapps"
+            "value": "master"
         },
         "acrIdentityId": {
             "value": "[ACR-IDENTITY-RESOURCE-ID]"

@@ -27,6 +27,13 @@ export MSYS_NO_PATHCONV=1
 
 :warning: You will need to get the IP address of your Azure firewall or whatever network appliance you are using and replace the `[IP OF THE NETWORK APPLIANCE] placeholder in the deploy.spoke.paramters.jsonc file with it.
 
+1. Get the private IP address of your Azure firewall
+
+   ```bash
+   NETWORK_APPLIANCE_IP_ADDRESS=$(az deployment sub show -n  acalza01-hub --query properties.outputs.networkApplianceIpAddress.value -o tsv)
+   echo NETWORK_APPLIANCE_IP_ADDRESS: $NETWORK_APPLIANCE_IP_ADDRESS
+   ```
+
 1. Create the regional spoke network.
 
    ```bash
@@ -40,7 +47,8 @@ export MSYS_NO_PATHCONV=1
       -n acalza01-spokenetwork \
       -l $LOCATION \
       -f 02-spoke/deploy.spoke.bicep -p 02-spoke/deploy.spoke.parameters.jsonc \
-      -p hubVNetId=${RESOURCEID_VNET_HUB}
+      -p hubVNetId=${RESOURCEID_VNET_HUB} \
+      -p networkApplianceIpAddress=${NETWORK_APPLIANCE_IP_ADDRESS}
    ```
 
 1. Explore your networking resources. *Optional.*

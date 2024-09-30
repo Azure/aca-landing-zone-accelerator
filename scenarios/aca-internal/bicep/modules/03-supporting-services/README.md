@@ -34,7 +34,7 @@ By default, they are deployed to the spoke resource group.
    ```
     
    ```bash
-   # [This takes about four minutes to run (if you add deployRedis=false).]
+   # [This takes about four minutes to run (if you add deployRedisCache=false).]
    az deployment group create \
       -n acalza01-dependencies \
       -g $RESOURCENAME_RESOURCEGROUP_SPOKE \

@@ -1,0 +1,58 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "mysqlSubnetPrefix": {
+            "value": "10.1.2.64/28"
+        },
+        "spokeVnetId": {
+            "value": "[SPOKE-VENT-RESOURCE-ID]"
+        },
+        "hubVnetId": {
+            "value": "[HUB-VNET-RESOURCE-ID]"
+        },
+        "subnetName": {
+            "value": "snet-mysql"
+        },
+        "workloadName": {
+            "value": "lzaaca"
+        },
+        //The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.
+        "environment": {
+            "value": "dev"
+        },
+        "databaseName": {
+            "value": "petclinic"
+        },
+        "administratorLogin": {
+            "value": "azureuser"
+        },
+        "administratorLoginPassword": {
+            "value": "Password123"
+        },
+        "version": {
+            "value": "8.0.21"
+        },
+        "managedEnvironmentsName": {
+            "value": "[ACA-ENVIRONMENT-NAME]"
+        },
+        "configServerGitRepo": {
+            "value": "https://github.com/Azure-Samples/spring-petclinic-microservices-config"
+        },
+        "configServerGitBranch": {
+            "value": "master"
+        },
+        "acrIdentityId": {
+            "value": "[ACR-IDENTITY-RESOURCE-ID]"
+        },
+        "acrRegistry": {
+            "value": "[ACR-REGISTRY-SERVER]"
+        },
+        "simpleHelloImage": {
+            "value": "azuredocs/containerapps-helloworld"
+        },
+        "simpleHelloTag": {
+            "value": "latest"
+        }
+    }
+}

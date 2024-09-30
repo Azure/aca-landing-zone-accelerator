@@ -1,0 +1,26 @@
+---
+applications:
+- name: spring-petclinic-visits-service
+  # no-route: true
+  memory: 1G
+  path: target/visits-service-3.0.1.jar
+  health-check-type: port
+  health-check-invocation-timeout: 30
+  buildpacks:
+  - java_buildpack_offline
+  routes:
+  - route: spring-petclinic-visits-service.apps.internal
+    protocol: http1
+  env:
+    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ }}'
+    JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '{enabled: false}'
+    # Required to override SERVER_PORT env var set by buildpack and load
+    # default Spring application on port 8081
+    SPRING_PROFILES_ACTIVE: default
+    SERVER_PORT: 8080
+    EUREKA_INSTANCE_SECURE_PORT_ENABLED: false
+    EUREKA_INSTANCE_NON_SECURE_PORT: 8080
+    EUREKA_INSTANCE_PREFER_IP_ADDRESS: true
+  services:
+  - service-registry
+  - config-server

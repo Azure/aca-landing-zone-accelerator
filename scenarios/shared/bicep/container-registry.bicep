@@ -279,6 +279,7 @@ resource registry_diagnosticSettingName 'Microsoft.Insights/diagnosticsettings@2
   scope: registry
 }
 
+@description('This agentPool associated with the Azure subnet, will be used to build docker image in ACR build task.')
 resource registry_agentPool 'Microsoft.ContainerRegistry/registries/agentPools@2019-06-01-preview' = {
   parent: registry
   name: agentPoolName

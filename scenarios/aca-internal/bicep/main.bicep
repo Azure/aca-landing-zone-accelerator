@@ -8,6 +8,9 @@ targetScope = 'subscription'
 @maxLength(10)
 param workloadName string = 'aca-lza'
 
+@description('Optional, Add a workload profile.')
+param workloadProfile bool = false
+
 @description('The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long.')
 @maxLength(8)
 param environment string = 'test'
@@ -237,6 +240,7 @@ module containerAppsEnvironment 'modules/04-container-apps-environment/deploy.ac
     enableDaprInstrumentation: enableDaprInstrumentation
     enableTelemetry: enableTelemetry
     logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
+    workloadProfile: workloadProfile
   }
 }
 

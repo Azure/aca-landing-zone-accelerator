@@ -36,6 +36,10 @@
     "enableBastion": {
         "value": true
     },
+    // Should a dedicated workload profile called default be provisioned?
+    "workloadProfile": {
+      "value": false
+    },
     "gatewaySubnetAddressPrefix": {
       "value": "10.0.0.0/27"
     },

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1332096001640947620"
+      "templateHash": "4056363143713580873"
     }
   },
   "parameters": {
@@ -16,6 +16,13 @@
       "maxLength": 10,
       "metadata": {
         "description": "The name of the workload that is being deployed. Up to 10 characters long."
+      }
+    },
+    "workloadProfile": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional, Add a workload profile."
       }
     },
     "environment": {
@@ -10898,6 +10905,9 @@
           },
           "logAnalyticsWorkspaceId": {
             "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.logAnalyticsWorkspaceId.value]"
+          },
+          "workloadProfile": {
+            "value": "[parameters('workloadProfile')]"
           }
         },
         "template": {

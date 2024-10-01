@@ -568,8 +568,24 @@
                 },
                 {
                     "name": "flags",
-                    "label": "Deployment feature flags",
-                    "elements": [                        
+                    "label": "Deployment dedicated workload profile",
+                    "elements": [   
+                        {
+                            "name": "workloadProfile",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Deploy Hub",
+                            "subLabel": "",
+                            "defaultValue": true,
+                            "toolTip": "Enable this if you would like to deploy a dedicated workload profile called default.",
+                            "constraints": {
+                              "required": false,
+                              "regex": "",
+                              "validationMessage": "",
+                              "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                          },                   
                         {
                             "name": "enableBastion",
                             "type": "Microsoft.Common.DropDown",

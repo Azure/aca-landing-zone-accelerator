@@ -240,22 +240,6 @@
                             "visible": true
                         },
                         {
-                            "name": "enableFirewall",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Deploy Firewall",
-                            "subLabel": "",
-                            "defaultValue": true,
-                            "toolTip": "Enable or disable the creation a firewall in your hub network. It will not deploy if you don't enable hub network.",
-                            "constraints": {
-                              "required": false,
-                              "regex": "",
-                              "validationMessage": "",
-                              "validations": []
-                            },
-                            "infoMessages": [],
-                            "visible": true
-                        },
-                        {
                             "name": "vnetAddressPrefixes",
                             "type": "Microsoft.Common.TextBox",
                             "label": "Hub Virtual Network Address Space",

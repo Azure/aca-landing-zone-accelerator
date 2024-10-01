@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4056363143713580873"
+      "templateHash": "1012743836202009324"
     }
   },
   "parameters": {
@@ -52,13 +52,6 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable or disable the creation of the Hub network and it's supporting services."
-      }
-    },
-    "enableFirewall": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable or disable the creation of the Azure Firewall. Can't deploy a Firewall without deploying hub network."
       }
     },
     "hubResourceGroupName": {
@@ -311,9 +304,6 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
-          "enableFirewall": {
-            "value": "[parameters('enableFirewall')]"
-          },
           "hubResourceGroupName": {
             "value": "[variables('rgHubName')]"
           },
@@ -355,7 +345,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "12305222078806844999"
+              "templateHash": "17895406598349441412"
             }
           },
           "parameters": {
@@ -403,13 +393,6 @@
             },
             "enableBastion": {
               "type": "bool",
-              "metadata": {
-                "description": "Enable or disable the creation of the Azure Bastion."
-              }
-            },
-            "enableFirewall": {
-              "type": "bool",
-              "defaultValue": true,
               "metadata": {
                 "description": "Enable or disable the creation of the Azure Bastion."
               }
@@ -467,11 +450,22 @@
                 "properties": {
                   "addressPrefix": "[parameters('gatewaySubnetAddressPrefix')]"
                 }
+              },
+              {
+                "name": "[variables('azureFirewallSubnetName')]",
+                "properties": {
+                  "addressPrefix": "[parameters('azureFirewallSubnetAddressPrefix')]"
+                }
+              },
+              {
+                "name": "[variables('AzureFirewallManagementSubnetName')]",
+                "properties": {
+                  "addressPrefix": "[parameters('azureFirewallSubnetManagementAddressPrefix')]"
+                }
               }
             ],
             "bastionSubnetName": "AzureBastionSubnet",
-            "bastionSubnets": "[if(parameters('enableBastion'), concat(variables('defaultSubnets'), createArray(createObject('name', variables('bastionSubnetName'), 'properties', createObject('addressPrefix', parameters('bastionSubnetAddressPrefix'))))), variables('defaultSubnets'))]",
-            "vnetSubnets": "[if(parameters('enableFirewall'), concat(variables('bastionSubnets'), createArray(createObject('name', variables('azureFirewallSubnetName'), 'properties', createObject('addressPrefix', parameters('azureFirewallSubnetAddressPrefix'))), createObject('name', variables('AzureFirewallManagementSubnetName'), 'properties', createObject('addressPrefix', parameters('azureFirewallSubnetManagementAddressPrefix'))))), variables('bastionSubnets'))]",
+            "vnetSubnets": "[if(parameters('enableBastion'), concat(variables('defaultSubnets'), createArray(createObject('name', variables('bastionSubnetName'), 'properties', createObject('addressPrefix', parameters('bastionSubnetAddressPrefix'))))), variables('defaultSubnets'))]",
             "namingRules": "[json(variables('$fxv#0'))]",
             "rgHubName": "[if(not(empty(parameters('hubResourceGroupName'))), parameters('hubResourceGroupName'), format('{0}-{1}-hub-{2}-{3}', variables('namingRules').resourceTypeAbbreviations.resourceGroup, parameters('workloadName'), parameters('environment'), variables('namingRules').regionAbbreviations[toLower(parameters('location'))]))]"
           },
@@ -927,7 +921,6 @@
               }
             },
             {
-              "condition": "[parameters('enableFirewall')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('afw-{0}', deployment().name), 64)]",
@@ -3325,7 +3318,7 @@
               "metadata": {
                 "description": "The private IP address of the Azure Firewall."
               },
-              "value": "[if(parameters('enableFirewall'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgHubName')), 'Microsoft.Resources/deployments', take(format('afw-{0}', deployment().name), 64)), '2022-09-01').outputs.afwPrivateIp.value, '')]"
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('rgHubName')), 'Microsoft.Resources/deployments', take(format('afw-{0}', deployment().name), 64)), '2022-09-01').outputs.afwPrivateIp.value]"
             }
           }
         }

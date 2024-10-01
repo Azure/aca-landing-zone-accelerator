@@ -28,9 +28,6 @@ param vnetAddressPrefixes array
 @description('Enable or disable the creation of the Azure Bastion.')
 param enableBastion bool
 
-@description('Enable or disable the creation of the Azure Bastion.')
-param enableFirewall bool = true
-
 @description('Bastion sku, default is basic')
 @allowed([
   'Basic'
@@ -73,22 +70,6 @@ var defaultSubnets = [
       addressPrefix: gatewaySubnetAddressPrefix      
     }
   }
-]
-
-// This cannot be another value
-var bastionSubnetName = 'AzureBastionSubnet'
-
-// Append optional bastion subnet, if required
-var bastionSubnets = enableBastion ? concat(defaultSubnets, [
-    {
-      name: bastionSubnetName
-      properties: {
-        addressPrefix: bastionSubnetAddressPrefix
-      }
-    }
-  ]) : defaultSubnets
-
-var vnetSubnets = enableFirewall ? concat(bastionSubnets, [
   {
     name: azureFirewallSubnetName
     properties: {
@@ -101,7 +82,20 @@ var vnetSubnets = enableFirewall ? concat(bastionSubnets, [
       addressPrefix: azureFirewallSubnetManagementAddressPrefix
     }
   }
-]) : bastionSubnets
+]
+
+// This cannot be another value
+var bastionSubnetName = 'AzureBastionSubnet'
+
+// Append optional bastion subnet, if required
+var vnetSubnets = enableBastion ? concat(defaultSubnets, [
+    {
+      name: bastionSubnetName
+      properties: {
+        addressPrefix: bastionSubnetAddressPrefix
+      }
+    }
+  ]) : defaultSubnets
 
 //used only to override the RG name - because it is created at the subscription level, the naming module cannot be loaded/used
 var namingRules = json(loadTextContent('../../../../shared/bicep/naming/naming-rules.jsonc'))
@@ -154,7 +148,7 @@ module vnetHub '../../../../shared/bicep/network/vnet.bicep' = {
 }
 
 @description('The Azure Firewall deployment. This would normally be already provisioned by your platform team.')
-module azfw './modules/azureFirewall.bicep' = if (enableFirewall) {
+module azfw './modules/azureFirewall.bicep' =  {
   scope: hubResourceGroup
   name: take('afw-${deployment().name}', 64)
   params: {
@@ -200,4 +194,4 @@ output hubVnetName string = vnetHub.outputs.vnetName
 output resourceGroupName string = hubResourceGroup.name
 
 @description('The private IP address of the Azure Firewall.')
-output networkApplianceIpAddress string = enableFirewall ? azfw.outputs.afwPrivateIp : ''
+output networkApplianceIpAddress string =  azfw.outputs.afwPrivateIp 

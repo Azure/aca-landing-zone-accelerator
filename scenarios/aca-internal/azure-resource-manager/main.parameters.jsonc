@@ -13,9 +13,6 @@
     "tags": {
         "value": {}
     },
-    "enableFirewall": {
-      "value": true
-    },
     "deployHub": {
       "value": true
     },

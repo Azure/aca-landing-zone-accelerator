@@ -45,32 +45,71 @@ param logAnalyticsWorkspaceId string
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
 
+@description('Optional, Add a workload profile.')
+param workloadProfile bool = false
+
 // ------------------
 // VARIABLES
 // ------------------
 
-var hubVNetResourceIdTokens = !empty(hubVNetId) ? split(hubVNetId, '/') : array('')
-
-@description('The ID of the subscription containing the hub virtual network.')
-var hubSubscriptionId = hubVNetResourceIdTokens[2]
-
-@description('The name of the resource group containing the hub virtual network.')
-var hubResourceGroupName = hubVNetResourceIdTokens[4]
+var hubVNetResourceIdTokens = contains(hubVNetId, '/')  ? split(hubVNetId, '/') : array('')
 
 @description('The name of the hub virtual network.')
-var hubVNetName = hubVNetResourceIdTokens[8]
+var hubVNetName = length(hubVNetResourceIdTokens) > 8 ? hubVNetResourceIdTokens[8] : ''
+
+@description('The ID of the subscription containing the hub virtual network.')
+var hubSubscriptionId = length(hubVNetResourceIdTokens) > 2 ? hubVNetResourceIdTokens[2] : ''
+
+@description('The name of the resource group containing the hub virtual network.')
+var hubResourceGroupName =  length(hubVNetResourceIdTokens) > 4 ? hubVNetResourceIdTokens[4] : ''
 
 var telemetryId = '9b4433d6-924a-4c07-b47c-7478619759c7-${location}-acasb'
+
+// Add a dedicated workload profile if enabled
+var workloadProfiles = workloadProfile ? [
+  {
+    name: 'default'
+    sku: 'Dedicated'
+    capacity: 1
+    tier: 'Standard' // use Standard for dev and test, Premium for prod
+    autoscale: {
+      minReplicas: 1 // minimum number of underlying VM instances
+      maxReplicas: 4 // maximum number. Increase this if your demand goes up
+      rules: [
+        {
+          name: 'cpu-scaling'
+          type: 'cpu'
+          metadata: {
+            type: 'Utilization'
+            value: '70' // 70% CPU utilization will trigger the scaling
+          }
+        }
+      ]
+    }
+  }
+] : []
+
+var spokeVNetLinks = concat(
+  [
+    {
+      vnetName: spokeVNetName
+      vnetId: spokeVNet.id
+      registrationEnabled: false
+    }
+  ],
+  !empty(hubVNetName) ? [
+    {
+      vnetName: hubVNetName
+      vnetId: hubVNetId
+      registrationEnabled: false
+    }
+  ] : []
+)
 
 // ------------------
 // EXISTING RESOURCES
 // ------------------
 
-@description('The existing hub virtual network.')
-resource vnetHub 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
-  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
-  name: hubVNetName
-}
 
 @description('The existing spoke virtual network.')
 resource spokeVNet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
@@ -120,6 +159,7 @@ module containerAppsEnvironment '../../../../shared/bicep/aca-environment.bicep'
     appInsightsInstrumentationKey: (enableApplicationInsights && enableDaprInstrumentation) ? applicationInsights.outputs.appInsInstrumentationKey : ''
     zoneRedundant: deployZoneRedundantResources
     infrastructureResourceGroupName: ''
+    workloadProfiles: workloadProfiles
   }
 }
 
@@ -129,18 +169,7 @@ module containerAppsEnvironmentPrivateDnsZone '../../../../shared/bicep/network/
   name: 'containerAppsEnvironmentPrivateDnsZone-${uniqueString(resourceGroup().id)}'
   params: {
     name: containerAppsEnvironment.outputs.containerAppsEnvironmentDefaultDomain
-    virtualNetworkLinks: [
-      {
-        vnetName: spokeVNet.name  /* Link to spoke */
-        vnetId: spokeVNet.id
-        registrationEnabled: false
-      }
-      {
-        vnetName: vnetHub.name  /* Link to hub */
-        vnetId: vnetHub.id
-        registrationEnabled: false
-      }
-    ]
+    virtualNetworkLinks: spokeVNetLinks
     tags: tags
     aRecords: [
       {

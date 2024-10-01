@@ -25,6 +25,9 @@
     "enableBastion": {
       "value": true
     },
+    "enableFirewall": {
+      "value": true
+    },
     "spokeInfraSubnetAddressPrefix": {
       "value":  "10.1.0.0/23"
     },

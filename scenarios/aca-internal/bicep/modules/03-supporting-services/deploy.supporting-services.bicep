@@ -60,6 +60,10 @@ module naming '../../../../shared/bicep/naming/naming.module.bicep' = {
   }
 }
 
+// Keep the logic below here as it is required for all supporting services
+var hubVNetIdTokens = split(hubVNetId, '/')
+var hubVNetName = length(hubVNetIdTokens) > 8 ? hubVNetIdTokens[8] : ''
+
 @description('Azure Container Registry, where all workload images should be pulled from.')
 module containerRegistry 'modules/container-registry.module.bicep' = {
   name: 'containerRegistry-${uniqueString(resourceGroup().id)}'
@@ -68,6 +72,7 @@ module containerRegistry 'modules/container-registry.module.bicep' = {
     location: location
     tags: tags
     spokeVNetId: spokeVNetId
+    hubVNetName: hubVNetName
     hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
     containerRegistryPrivateEndpointName: naming.outputs.resourcesNames.containerRegistryPep
@@ -85,6 +90,7 @@ module keyVault 'modules/key-vault.bicep' = {
     location: location
     tags: tags
     spokeVNetId: spokeVNetId
+    hubVNetName: hubVNetName
     hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
     keyVaultPrivateEndpointName: naming.outputs.resourcesNames.keyVaultPep
@@ -101,6 +107,7 @@ module redisCache 'modules/redis-cache.bicep' = if (deployRedisCache) {
     logAnalyticsWsId: logAnalyticsWorkspaceId
     keyVaultName: keyVault.outputs.keyVaultName
     spokeVNetId: spokeVNetId
+    hubVNetName: hubVNetName
     hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
     redisCachePrivateEndpointName: naming.outputs.resourcesNames.redisCachePep
@@ -119,6 +126,7 @@ module openAi 'modules/open-ai.module.bicep'= if(deployOpenAi) {
     logAnalyticsWsId: logAnalyticsWorkspaceId
     deployOpenAiGptModel: deployOpenAiGptModel
     spokeVNetId: spokeVNetId
+    hubVNetName: hubVNetName
     hubVNetId: hubVNetId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
   }

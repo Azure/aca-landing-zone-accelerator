@@ -109,14 +109,15 @@ var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${n
 
 var hubVNetResourceIdTokens = contains(hubVNetId, '/')  ? split(hubVNetId, '/') : array('')
 
+// check to ensure the hubVNetResourceIdTokens was valid by checking the length of the array created in previous step
 @description('The name of the hub virtual network.')
-var hubVNetName = length(hubVNetResourceIdTokens) > 8 ? hubVNetResourceIdTokens[8] : ''
+var hubVNetName = length(hubVNetResourceIdTokens) > 7 ? hubVNetResourceIdTokens[8] : ''
 
 @description('The ID of the subscription containing the hub virtual network.')
-var hubSubscriptionId = length(hubVNetResourceIdTokens) > 2 ? hubVNetResourceIdTokens[2] : ''
+var hubSubscriptionId = length(hubVNetResourceIdTokens) > 1 ? hubVNetResourceIdTokens[2] : ''
 
 @description('The name of the resource group containing the hub virtual network.')
-var hubResourceGroupName =  length(hubVNetResourceIdTokens) > 4 ? hubVNetResourceIdTokens[4] : ''
+var hubResourceGroupName =  length(hubVNetResourceIdTokens) > 3 ? hubVNetResourceIdTokens[4] : ''
 
 
 // This cannot be another value

@@ -52,13 +52,14 @@ param dedicatedWorkloadProfile bool = false
 // VARIABLES
 // ------------------
 
+// remove the option to deploy dedicated profile with ACA environment until bug is fixed on the product side
 var workloadProfile = dedicatedWorkloadProfile ? [
-  {
-    workloadProfileType: 'D4'
-    name: 'default'
-    minimumCount: 1
-    maximumCount: 3
-  }
+//  {
+//    workloadProfileType: 'D4'
+//    name: 'default'
+//    minimumCount: 1
+//    maximumCount: 3
+//  }
 ] : []
 
 var hubVNetResourceIdTokens = contains(hubVNetId, '/')  ? split(hubVNetId, '/') : array('')

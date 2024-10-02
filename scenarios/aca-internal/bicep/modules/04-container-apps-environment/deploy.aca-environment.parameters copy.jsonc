@@ -11,7 +11,7 @@
       "value": "dev"
     },
     // Should a dedicated workload profile called default be provisioned?
-    "workloadProfile": {
+    "dedicatedWorkloadProfile": {
       "value": false
     },
     "tags": {

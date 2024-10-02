@@ -45,12 +45,21 @@ param logAnalyticsWorkspaceId string
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
 
-@description('Optional, Add a workload profile.')
-param workloadProfile bool = false
+@description('Optional, Add a dedicated profile called default.')
+param dedicatedWorkloadProfile bool = false
 
 // ------------------
 // VARIABLES
 // ------------------
+
+var workloadProfile = dedicatedWorkloadProfile ? [
+  {
+    workloadProfileType: 'D4'
+    name: 'default'
+    minimumCount: 1
+    maximumCount: 3
+  }
+] : []
 
 var hubVNetResourceIdTokens = contains(hubVNetId, '/')  ? split(hubVNetId, '/') : array('')
 
@@ -65,30 +74,6 @@ var hubSubscriptionId = length(hubVNetResourceIdTokens) > 1 ? hubVNetResourceIdT
 var hubResourceGroupName =  length(hubVNetResourceIdTokens) > 3 ? hubVNetResourceIdTokens[4] : ''
 
 var telemetryId = '9b4433d6-924a-4c07-b47c-7478619759c7-${location}-acasb'
-
-// Add a dedicated workload profile if enabled
-var workloadProfiles = workloadProfile ? [
-  {
-    name: 'default'
-    sku: 'Dedicated'
-    capacity: 1
-    tier: 'Standard' // use Standard for dev and test, Premium for prod
-    autoscale: {
-      minReplicas: 1 // minimum number of underlying VM instances
-      maxReplicas: 4 // maximum number. Increase this if your demand goes up
-      rules: [
-        {
-          name: 'cpu-scaling'
-          type: 'cpu'
-          metadata: {
-            type: 'Utilization'
-            value: '70' // 70% CPU utilization will trigger the scaling
-          }
-        }
-      ]
-    }
-  }
-] : []
 
 var spokeVNetLinks = concat(
   [
@@ -160,7 +145,7 @@ module containerAppsEnvironment '../../../../shared/bicep/aca-environment.bicep'
     appInsightsInstrumentationKey: (enableApplicationInsights && enableDaprInstrumentation) ? applicationInsights.outputs.appInsInstrumentationKey : ''
     zoneRedundant: deployZoneRedundantResources
     infrastructureResourceGroupName: ''
-    workloadProfiles: workloadProfiles
+    workloadProfiles: workloadProfile
   }
 }
 

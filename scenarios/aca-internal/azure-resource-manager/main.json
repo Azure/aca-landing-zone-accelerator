@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1012743836202009324"
+      "templateHash": "16277921859141642795"
     }
   },
   "parameters": {
@@ -18,7 +18,7 @@
         "description": "The name of the workload that is being deployed. Up to 10 characters long."
       }
     },
-    "workloadProfile": {
+    "dedicatedWorkloadProfile": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
@@ -3405,7 +3405,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "3332394081202780881"
+              "templateHash": "12378978688176318356"
             }
           },
           "parameters": {
@@ -3654,9 +3654,9 @@
             "namingRules": "[json(variables('$fxv#2'))]",
             "rgSpokeName": "[if(not(empty(parameters('spokeResourceGroupName'))), parameters('spokeResourceGroupName'), format('{0}-{1}-spoke-{2}-{3}', variables('namingRules').resourceTypeAbbreviations.resourceGroup, parameters('workloadName'), parameters('environment'), variables('namingRules').regionAbbreviations[toLower(parameters('location'))]))]",
             "hubVNetResourceIdTokens": "[if(contains(parameters('hubVNetId'), '/'), split(parameters('hubVNetId'), '/'), array(''))]",
-            "hubVNetName": "[if(greater(length(variables('hubVNetResourceIdTokens')), 8), variables('hubVNetResourceIdTokens')[8], '')]",
-            "hubSubscriptionId": "[if(greater(length(variables('hubVNetResourceIdTokens')), 2), variables('hubVNetResourceIdTokens')[2], '')]",
-            "hubResourceGroupName": "[if(greater(length(variables('hubVNetResourceIdTokens')), 4), variables('hubVNetResourceIdTokens')[4], '')]",
+            "hubVNetName": "[if(greater(length(variables('hubVNetResourceIdTokens')), 7), variables('hubVNetResourceIdTokens')[8], '')]",
+            "hubSubscriptionId": "[if(greater(length(variables('hubVNetResourceIdTokens')), 1), variables('hubVNetResourceIdTokens')[2], '')]",
+            "hubResourceGroupName": "[if(greater(length(variables('hubVNetResourceIdTokens')), 3), variables('hubVNetResourceIdTokens')[4], '')]",
             "bastionSubnetName": "AzureBastionSubnet"
           },
           "resources": [
@@ -10899,8 +10899,8 @@
           "logAnalyticsWorkspaceId": {
             "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('spoke-{0}-deployment', deployment().name), 64)), '2022-09-01').outputs.logAnalyticsWorkspaceId.value]"
           },
-          "workloadProfile": {
-            "value": "[parameters('workloadProfile')]"
+          "dedicatedWorkloadProfile": {
+            "value": "[parameters('dedicatedWorkloadProfile')]"
           }
         },
         "template": {
@@ -10910,7 +10910,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "12778733258320048796"
+              "templateHash": "1302112122364935317"
             }
           },
           "parameters": {
@@ -10993,21 +10993,21 @@
                 "description": "Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false."
               }
             },
-            "workloadProfile": {
+            "dedicatedWorkloadProfile": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional, Add a workload profile."
+                "description": "Optional, Add a dedicated profile called default."
               }
             }
           },
           "variables": {
+            "workloadProfile": "[if(parameters('dedicatedWorkloadProfile'), createArray(createObject('workloadProfileType', 'D4', 'name', 'default', 'minimumCount', 1, 'maximumCount', 3)), createArray())]",
             "hubVNetResourceIdTokens": "[if(contains(parameters('hubVNetId'), '/'), split(parameters('hubVNetId'), '/'), array(''))]",
-            "hubVNetName": "[if(greater(length(variables('hubVNetResourceIdTokens')), 8), variables('hubVNetResourceIdTokens')[8], '')]",
-            "hubSubscriptionId": "[if(greater(length(variables('hubVNetResourceIdTokens')), 2), variables('hubVNetResourceIdTokens')[2], '')]",
-            "hubResourceGroupName": "[if(greater(length(variables('hubVNetResourceIdTokens')), 4), variables('hubVNetResourceIdTokens')[4], '')]",
+            "hubVNetName": "[if(greater(length(variables('hubVNetResourceIdTokens')), 7), variables('hubVNetResourceIdTokens')[8], '')]",
+            "hubSubscriptionId": "[if(greater(length(variables('hubVNetResourceIdTokens')), 1), variables('hubVNetResourceIdTokens')[2], '')]",
+            "hubResourceGroupName": "[if(greater(length(variables('hubVNetResourceIdTokens')), 3), variables('hubVNetResourceIdTokens')[4], '')]",
             "telemetryId": "[format('9b4433d6-924a-4c07-b47c-7478619759c7-{0}-acasb', parameters('location'))]",
-            "workloadProfiles": "[if(parameters('workloadProfile'), createArray(createObject('name', 'default', 'sku', 'Dedicated', 'capacity', 1, 'tier', 'Standard', 'autoscale', createObject('minReplicas', 1, 'maxReplicas', 4, 'rules', createArray(createObject('name', 'cpu-scaling', 'type', 'cpu', 'metadata', createObject('type', 'Utilization', 'value', '70')))))), createArray())]",
             "spokeVNetLinks": "[concat(createArray(createObject('vnetName', parameters('spokeVNetName'), 'vnetId', resourceId('Microsoft.Network/virtualNetworks', parameters('spokeVNetName')), 'registrationEnabled', false())), if(not(empty(variables('hubVNetName'))), createArray(createObject('vnetName', variables('hubVNetName'), 'vnetId', parameters('hubVNetId'), 'registrationEnabled', false())), createArray()))]"
           },
           "resources": [
@@ -11394,7 +11394,7 @@
                     "value": ""
                   },
                   "workloadProfiles": {
-                    "value": "[variables('workloadProfiles')]"
+                    "value": "[variables('workloadProfile')]"
                   }
                 },
                 "template": {

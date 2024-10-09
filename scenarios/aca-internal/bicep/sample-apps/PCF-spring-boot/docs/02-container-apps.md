@@ -20,7 +20,7 @@ This documentation guides how to deploy the container apps and connect them with
 1. Go to the sample application folder as work directory
 
    ```bash
-   cd ../sample-apps/cloud-foundry-spring-boot-application
+   cd ../sample-apps/PCF-spring-boot
    ```
 
 1. Retrieve the Networking and Azure Container Registry information from previous deployment.
@@ -79,7 +79,7 @@ This documentation guides how to deploy the container apps and connect them with
 1. Go to the sample application folder as work directory
 
    ```bash
-   cd ../sample-apps/cloud-foundry-spring-boot-application
+   cd ../sample-apps/PCF-spring-boot
    ```
 
 1. Get the public IP of Application Gateway.

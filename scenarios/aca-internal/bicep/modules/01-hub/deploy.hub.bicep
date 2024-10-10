@@ -148,7 +148,7 @@ module vnetHub '../../../../shared/bicep/network/vnet.bicep' = {
 }
 
 @description('The Azure Firewall deployment. This would normally be already provisioned by your platform team.')
-module azfw './modules/azureFirewall.bicep' = {
+module azfw './modules/azureFirewall.bicep' =  {
   scope: hubResourceGroup
   name: take('afw-${deployment().name}', 64)
   params: {
@@ -194,4 +194,4 @@ output hubVnetName string = vnetHub.outputs.vnetName
 output resourceGroupName string = hubResourceGroup.name
 
 @description('The private IP address of the Azure Firewall.')
-output networkApplianceIpAddress string = azfw.outputs.afwPrivateIp
+output networkApplianceIpAddress string =  azfw.outputs.afwPrivateIp 

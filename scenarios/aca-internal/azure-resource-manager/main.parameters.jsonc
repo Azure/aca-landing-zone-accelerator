@@ -13,6 +13,9 @@
     "tags": {
         "value": {}
     },
+    "deployHub": {
+      "value": true
+    },
     "enableTelemetry": {
       "value": true
     },
@@ -29,6 +32,10 @@
     },
     "enableBastion": {
         "value": true
+    },
+    // Should a dedicated workload profile called default be provisioned?
+    "dedicatedWorkloadProfile": {
+      "value": false
     },
     "gatewaySubnetAddressPrefix": {
       "value": "10.0.0.0/27"

@@ -28,14 +28,16 @@ param privateEndpointSubResourceName string
 @description('The region (location) in which the resource will be deployed. Default: resource group location.')
 param location string = resourceGroup().location
 
-var vnetHubSplitTokens = !empty(vnetHubResourceId) ? split(vnetHubResourceId, '/') : array('')
+// check to see if theres a '/' in the vnetHubResourceId. if there isnt, its an invalid input and default resource group will be used
+var vnetHubSplitTokens = contains(vnetHubResourceId, '/') ? split(vnetHubResourceId, '/') : array('')
 
 // ------------------
 // RESOURCES
 // ------------------
 
+// Deploy the private DNS zone in the spoke resource group if no valid resource id is provided
 module privateDnsZone 'private-dns-zone.bicep' = {
-  scope: resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4])
+  scope: contains(vnetHubResourceId, '/') ? resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4]) : resourceGroup()
   name: 'privateDnsZoneDeployment-${uniqueString(azServiceId, privateEndpointSubResourceName)}'
   params: {
     name: azServicePrivateDnsZoneName

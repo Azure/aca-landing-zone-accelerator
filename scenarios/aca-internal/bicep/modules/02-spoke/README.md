@@ -20,10 +20,20 @@ After executing these steps you'll have the spoke resource group (`rg-lzaaca-spo
 - Jump box virtual machine (optional)
 
 ## Steps
+
 :warning: If you are running these commands on windows, you might need to run the command below to ensure windows captures the RESOURCEID_VNET_HUB correctly:
+
 ```bash
 export MSYS_NO_PATHCONV=1
 ```
+
+1. Set the desired region for the whole reference implementation.
+
+   :stop_sign: Update this to your desired region.
+
+   ```bash
+   LOCATION=eastus # or any location that suits your needs, ensure Azure OpenAI service is available there.
+   ```
 
 :warning: You will need to get the IP address of your Azure firewall or whatever network appliance you are using and replace the `[IP OF THE NETWORK APPLIANCE] placeholder in the deploy.spoke.paramters.jsonc file with it.
 

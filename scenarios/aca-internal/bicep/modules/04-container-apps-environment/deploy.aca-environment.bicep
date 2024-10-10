@@ -45,32 +45,58 @@ param logAnalyticsWorkspaceId string
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
 
+@description('Optional, Add a dedicated profile called default.')
+param dedicatedWorkloadProfile bool = false
+
 // ------------------
 // VARIABLES
 // ------------------
 
-var hubVNetResourceIdTokens = !empty(hubVNetId) ? split(hubVNetId, '/') : array('')
+// remove the option to deploy dedicated profile with ACA environment until bug is fixed on the product side
+var workloadProfile = dedicatedWorkloadProfile ? [
+//  {
+//    workloadProfileType: 'D4'
+//    name: 'default'
+//    minimumCount: 1
+//    maximumCount: 3
+//  }
+] : []
+
+var hubVNetResourceIdTokens = contains(hubVNetId, '/')  ? split(hubVNetId, '/') : array('')
+
+// check to ensure the hubVNetResourceIdTokens was valid by checking the length of the array created in previous step
+@description('The name of the hub virtual network.')
+var hubVNetName = length(hubVNetResourceIdTokens) > 7 ? hubVNetResourceIdTokens[8] : ''
 
 @description('The ID of the subscription containing the hub virtual network.')
-var hubSubscriptionId = hubVNetResourceIdTokens[2]
+var hubSubscriptionId = length(hubVNetResourceIdTokens) > 1 ? hubVNetResourceIdTokens[2] : ''
 
 @description('The name of the resource group containing the hub virtual network.')
-var hubResourceGroupName = hubVNetResourceIdTokens[4]
-
-@description('The name of the hub virtual network.')
-var hubVNetName = hubVNetResourceIdTokens[8]
+var hubResourceGroupName =  length(hubVNetResourceIdTokens) > 3 ? hubVNetResourceIdTokens[4] : ''
 
 var telemetryId = '9b4433d6-924a-4c07-b47c-7478619759c7-${location}-acasb'
+
+var spokeVNetLinks = concat(
+  [
+    {
+      vnetName: spokeVNetName
+      vnetId: spokeVNet.id
+      registrationEnabled: false
+    }
+  ],
+  !empty(hubVNetName) ? [
+    {
+      vnetName: hubVNetName
+      vnetId: hubVNetId
+      registrationEnabled: false
+    }
+  ] : []
+)
 
 // ------------------
 // EXISTING RESOURCES
 // ------------------
 
-@description('The existing hub virtual network.')
-resource vnetHub 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
-  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
-  name: hubVNetName
-}
 
 @description('The existing spoke virtual network.')
 resource spokeVNet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
@@ -120,6 +146,7 @@ module containerAppsEnvironment '../../../../shared/bicep/aca-environment.bicep'
     appInsightsInstrumentationKey: (enableApplicationInsights && enableDaprInstrumentation) ? applicationInsights.outputs.appInsInstrumentationKey : ''
     zoneRedundant: deployZoneRedundantResources
     infrastructureResourceGroupName: ''
+    workloadProfiles: workloadProfile
   }
 }
 
@@ -129,18 +156,7 @@ module containerAppsEnvironmentPrivateDnsZone '../../../../shared/bicep/network/
   name: 'containerAppsEnvironmentPrivateDnsZone-${uniqueString(resourceGroup().id)}'
   params: {
     name: containerAppsEnvironment.outputs.containerAppsEnvironmentDefaultDomain
-    virtualNetworkLinks: [
-      {
-        vnetName: spokeVNet.name  /* Link to spoke */
-        vnetId: spokeVNet.id
-        registrationEnabled: false
-      }
-      {
-        vnetName: vnetHub.name  /* Link to hub */
-        vnetId: vnetHub.id
-        registrationEnabled: false
-      }
-    ]
+    virtualNetworkLinks: spokeVNetLinks
     tags: tags
     aRecords: [
       {

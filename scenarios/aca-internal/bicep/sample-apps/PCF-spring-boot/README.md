@@ -2,7 +2,7 @@
 
 Spring Petclinic Microservices is a Java microservice application that simulates a pet clinic management system.
 
-![Spring Petclinic Microservices](docs/media/spring-petclinic-overview.png)
+![Spring Petclinic Microservices](docs/spring-petclinic-overview.png)
 
 The application allows users to manage information about pets, their owners, and visits to the clinic. It is built using Spring Boot and follows a microservices architecture.
 

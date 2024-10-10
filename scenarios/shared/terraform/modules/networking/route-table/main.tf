@@ -2,7 +2,7 @@ resource "azurerm_route_table" "rt" {
   name                          = var.routeTableName
   resource_group_name           = var.resourceGroupName
   location                      = var.location
-  disable_bgp_route_propagation = true
+  bgp_route_propagation_enabled = false
   tags                          = var.tags
 }
 

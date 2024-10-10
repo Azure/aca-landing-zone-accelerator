@@ -1,3 +1,4 @@
+
 variable "workloadName" {
   type = string
   validation {
@@ -52,7 +53,7 @@ variable "vmAdminPassword" {
 variable "vmLinuxSshAuthorizedKeys" {}
 
 variable "vmLinuxAuthenticationType" {
-  type = string
+  type    = string
   default = "password"
   validation {
     condition = anytrue([

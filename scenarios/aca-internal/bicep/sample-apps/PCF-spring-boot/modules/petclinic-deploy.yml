@@ -1,0 +1,122 @@
+# This workflow will deploy the PetClinic application to Azure Container Apps
+name: PetClinic Deploy
+
+on:
+  # When you directly push in the main branch
+  push:   
+    branches: 
+      - '[Your-Release-Branch-Name]'
+    paths:
+      - 'scenarios/aca-internal/bicep/sample-apps/cloud-foundry-spring-boot-application/src/**'
+      - '!scenarios/aca-internal/bicep/sample-apps/cloud-foundry-spring-boot-application/src/**.md'
+      - '.github/workflows/petclinic-deploy.yml'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login via Azure CLI
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Prepare env variables
+        uses: azure/CLI@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            export ENVIRONMENT_NAME=$(az deployment group show -n acalza01-appplat -g ${{ vars.AZURE_RESOURCE_GROUP }} --query properties.outputs.containerAppsEnvironmentName.value -o tsv)
+            export RESOURCEID_IDENTITY_ACR=$(az deployment group show -n acalza01-dependencies -g ${{ vars.AZURE_RESOURCE_GROUP }} --query properties.outputs.containerRegistryUserAssignedIdentityId.value -o tsv)
+            export REGISTRYNAME_ACR=$(az deployment group show -n acalza01-dependencies -g ${{ vars.AZURE_RESOURCE_GROUP }} --query properties.outputs.containerRegistryName.value -o tsv)
+            export LOGINSERVER_ACR=$(az deployment group show -n acalza01-dependencies -g ${{ vars.AZURE_RESOURCE_GROUP }} --query properties.outputs.containerRegistryLoginServer.value -o tsv)
+            export RESOURCENAME_AGENTPOOL=$(az deployment group show -n acalza01-dependencies -g ${{ vars.AZURE_RESOURCE_GROUP }} --query properties.outputs.containerRegistryAgentPoolName.value -o tsv)
+            export RESOURCEID_EUREKA=$(az deployment group show -n acalza01-appplat-java -g ${{ vars.AZURE_RESOURCE_GROUP }} --query properties.outputs.eurekaId.value -o tsv)    
+            export RESOURCEID_CONFIGSERVER=$(az deployment group show -n acalza01-appplat-java -g ${{ vars.AZURE_RESOURCE_GROUP }} --query properties.outputs.configServerId.value -o tsv)
+            export RESOURCEID_MYSQL_DATABASE=$(az deployment group show -n acalza01-appplat-java -g ${{ vars.AZURE_RESOURCE_GROUP }} --query properties.outputs.databaseId.value -o tsv)
+            export RESOURCEID_MYSQL_USERASSIGNEDIDENTITY_CLIENTID=$(az deployment group show -n acalza01-appplat-java -g ${{ vars.AZURE_RESOURCE_GROUP }} --query properties.outputs.userAssignedIdentityClientId.value -o tsv)
+            echo ENVIRONMENT_NAME=$ENVIRONMENT_NAME >> $GITHUB_ENV
+            echo RESOURCEID_IDENTITY_ACR=$RESOURCEID_IDENTITY_ACR >> $GITHUB_ENV
+            echo REGISTRYNAME_ACR=$REGISTRYNAME_ACR >> $GITHUB_ENV
+            echo LOGINSERVER_ACR=$LOGINSERVER_ACR >> $GITHUB_ENV
+            echo RESOURCENAME_AGENTPOOL=$RESOURCENAME_AGENTPOOL >> $GITHUB_ENV
+            echo RESOURCEID_MYSQL_DATABASE=$RESOURCEID_MYSQL_DATABASE >> $GITHUB_ENV
+            echo RESOURCEID_MYSQL_USERASSIGNEDIDENTITY_CLIENTID=$RESOURCEID_MYSQL_USERASSIGNEDIDENTITY_CLIENTID >> $GITHUB_ENV
+            echo RESOURCEID_EUREKA=$RESOURCEID_EUREKA >> $GITHUB_ENV
+            echo RESOURCEID_CONFIGSERVER=$RESOURCEID_CONFIGSERVER >> $GITHUB_ENV
+
+      - name: Prepare image version variable
+        run: echo "IMAGE_TAG=ga-${{ github.run_number }}-$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      
+      - name: Build Jar with Maven
+        run: mvn clean package
+        working-directory: scenarios/aca-internal/bicep/sample-apps/cloud-foundry-spring-boot-application/src
+
+      - name: Queue Build for application vets-service
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            pwd && \
+            az acr build -t spring-petclinic-vets-service:${{ env.IMAGE_TAG }} \
+              -r ${{ env.REGISTRYNAME_ACR }} scenarios/aca-internal/bicep/sample-apps/cloud-foundry-spring-boot-application/src/spring-petclinic-vets-service/target/docker \
+              --build-arg ARTIFACT_NAME=vets-service-3.0.1 \
+              --build-arg  EXPOSED_PORT=8080 \
+              --agent-pool ${{ env.RESOURCENAME_AGENTPOOL }} --debug
+
+      - name: Queue Build for application visits-service
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az acr build -t spring-petclinic-visits-service:${{ env.IMAGE_TAG }} \
+              -r ${{ env.REGISTRYNAME_ACR }} scenarios/aca-internal/bicep/sample-apps/cloud-foundry-spring-boot-application/src/spring-petclinic-visits-service/target/docker \
+              --build-arg ARTIFACT_NAME=visits-service-3.0.1 \
+              --build-arg  EXPOSED_PORT=8080 \
+              --agent-pool ${{ env.RESOURCENAME_AGENTPOOL }}
+
+      - name: Queue Build for application customers-service
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az acr build -t spring-petclinic-customers-service:${{ env.IMAGE_TAG }} \
+              -r ${{ env.REGISTRYNAME_ACR }} scenarios/aca-internal/bicep/sample-apps/cloud-foundry-spring-boot-application/src/spring-petclinic-customers-service/target/docker \
+              --build-arg ARTIFACT_NAME=customers-service-3.0.1 \
+              --build-arg  EXPOSED_PORT=8080 \
+              --agent-pool ${{ env.RESOURCENAME_AGENTPOOL }}
+
+      - name: Queue Build for application api-gateway
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az acr build -t spring-petclinic-api-gateway:${{ env.IMAGE_TAG }} \
+              -r ${{ env.REGISTRYNAME_ACR }} scenarios/aca-internal/bicep/sample-apps/cloud-foundry-spring-boot-application/src/spring-petclinic-api-gateway/target/docker \
+              --build-arg ARTIFACT_NAME=api-gateway-3.0.1 \
+              --build-arg  EXPOSED_PORT=8080 \
+              --agent-pool ${{ env.RESOURCENAME_AGENTPOOL }}
+
+      - name: Deploy image to Azure Container Apps
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ vars.AZURE_RESOURCE_GROUP }}
+          template: scenarios/aca-internal/bicep/sample-apps/cloud-foundry-spring-boot-application/modules/petclinic.bicep
+          parameters: 'managedEnvironmentsName=${{ env.ENVIRONMENT_NAME }} eurekaId=${{ env.RESOURCEID_EUREKA }} configServerId=${{ env.RESOURCEID_CONFIGSERVER }} mysqlDBId=${{ env.RESOURCEID_MYSQL_DATABASE }} mysqlUserAssignedIdentityClientId=${{ env.RESOURCEID_MYSQL_USERASSIGNEDIDENTITY_CLIENTID }} acrRegistry=${{ env.LOGINSERVER_ACR }} imageTag=${{ env.IMAGE_TAG }} acrIdentityId=${{ env.RESOURCEID_IDENTITY_ACR }}'
+          failOnStdErr: false

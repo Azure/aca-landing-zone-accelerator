@@ -16,6 +16,9 @@ param tags object = {}
 @description('The resource ID of the Hub Virtual Network.')
 param hubVNetId string
 
+@description(' Name of the hub vnet')
+param hubVNetName string 
+
 @description('The resource ID of the VNet to which the private endpoint will be connected.')
 param spokeVNetId string
 
@@ -39,38 +42,34 @@ param logAnalyticsWsId string
 var privateDnsZoneNames = 'privatelink.redis.cache.windows.net'
 var redisResourceName = 'redisCache'
 
-var hubVNetIdTokens = split(hubVNetId, '/')
-var hubSubscriptionId = hubVNetIdTokens[2]
-var hubResourceGroupName = hubVNetIdTokens[4]
-var hubVNetName = hubVNetIdTokens[8]
 
 var spokeVNetIdTokens = split(spokeVNetId, '/')
 var spokeSubscriptionId = spokeVNetIdTokens[2]
 var spokeResourceGroupName = spokeVNetIdTokens[4]
 var spokeVNetName = spokeVNetIdTokens[8]
 
-var spokeVNetLinks = [
-  {
-    vnetName: spokeVNetName
-    vnetId: vnetSpoke.id
-    registrationEnabled: false
-  }
-  {
-    vnetName: vnetHub.name
-    vnetId: vnetHub.id
-    registrationEnabled: false
-  }
-]
+// Only include hubvnet to the mix if a valid hubvnet id is provided
+var spokeVNetLinks = concat(
+  [
+    {
+      vnetName: spokeVNetName
+      vnetId: vnetSpoke.id
+      registrationEnabled: false
+    }
+  ],
+  !empty(hubVNetName) ? [
+    {
+      vnetName: hubVNetName
+      vnetId: hubVNetId
+      registrationEnabled: false
+    }
+  ] : []
+)
 
 
 // ------------------
 // RESOURCES
 // ------------------
-
-resource vnetHub  'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
-  scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
-  name: hubVNetName
-}
 
 resource vnetSpoke 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
   scope: resourceGroup(spokeSubscriptionId, spokeResourceGroupName)  

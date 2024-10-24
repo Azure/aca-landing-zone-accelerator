@@ -85,6 +85,14 @@ param vmAuthenticationType string = 'password'
 @description('Optional, default value is true. If true, Azure Policies will be deployed')
 param deployAzurePolicies bool = true
 
+@description('Enable or disable the creation of the Azure Bastion  in spoke network.')
+param enableBastion bool = false
+
+@description('CIDR to use for the Azure Bastion subnet.')
+param bastionSubnetAddressPrefix string = '10.1.2.64/26'
+
+param bastionSku string = 'Basic'
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -98,16 +106,22 @@ var nsgAppGwRules = loadJsonContent('./nsgAppGwRules.jsonc', 'securityRules')
 var namingRules = json(loadTextContent('../../../../shared/bicep/naming/naming-rules.jsonc'))
 
 var rgSpokeName = !empty(spokeResourceGroupName) ? spokeResourceGroupName : '${namingRules.resourceTypeAbbreviations.resourceGroup}-${workloadName}-spoke-${environment}-${namingRules.regionAbbreviations[toLower(location)]}'
-var hubVNetResourceIdTokens = !empty(hubVNetId) ? split(hubVNetId, '/') : array('')
+
+var hubVNetResourceIdTokens = contains(hubVNetId, '/')  ? split(hubVNetId, '/') : array('')
+
+// check to ensure the hubVNetResourceIdTokens was valid by checking the length of the array created in previous step
+@description('The name of the hub virtual network.')
+var hubVNetName = length(hubVNetResourceIdTokens) > 7 ? hubVNetResourceIdTokens[8] : ''
 
 @description('The ID of the subscription containing the hub virtual network.')
-var hubSubscriptionId = hubVNetResourceIdTokens[2]
+var hubSubscriptionId = length(hubVNetResourceIdTokens) > 1 ? hubVNetResourceIdTokens[2] : ''
 
 @description('The name of the resource group containing the hub virtual network.')
-var hubResourceGroupName = hubVNetResourceIdTokens[4]
+var hubResourceGroupName =  length(hubVNetResourceIdTokens) > 3 ? hubVNetResourceIdTokens[4] : ''
 
-@description('The name of the hub virtual network.')
-var hubVNetName = hubVNetResourceIdTokens[8]
+
+// This cannot be another value
+var bastionSubnetName = 'AzureBastionSubnet'
 
 // Subnet definition taking in consideration feature flags
 var defaultSubnets = [
@@ -118,9 +132,9 @@ var defaultSubnets = [
       networkSecurityGroup: {
         id: nsgContainerAppsEnvironment.outputs.nsgId
       }
-      routeTable: {
+      routeTable: networkApplianceIpAddress != '' ? {
         id: egressLockdownUdr.outputs.resourceId
-      }
+      } : null
       delegations: [
         {
           name: 'envdelegation'
@@ -142,8 +156,19 @@ var defaultSubnets = [
   }
 ]
 
+
+// Append optional bastion subnet, if required
+var bastionAndDefaultSubnets = (empty(hubVNetName) &&  enableBastion ) ? concat(defaultSubnets, [
+  {
+    name: bastionSubnetName
+    properties: {
+      addressPrefix: bastionSubnetAddressPrefix
+    }
+  }
+]) : defaultSubnets
+
 // Append optional application gateway subnet, if required
-var appGwAndDefaultSubnets = !empty(spokeApplicationGatewaySubnetAddressPrefix) ? concat(defaultSubnets, [
+var appGwAndDefaultSubnets = !empty(spokeApplicationGatewaySubnetAddressPrefix) ? concat(bastionAndDefaultSubnets, [
     {
       name: spokeApplicationGatewaySubnetName
       properties: {
@@ -153,7 +178,7 @@ var appGwAndDefaultSubnets = !empty(spokeApplicationGatewaySubnetAddressPrefix) 
         }
       }
     }
-  ]) : defaultSubnets
+  ]) : bastionAndDefaultSubnets
 
   //Append optional jumpbox subnet, if required
 var spokeSubnets = vmJumpboxOSType != 'none' ? concat(appGwAndDefaultSubnets, [
@@ -252,7 +277,7 @@ module nsgPep '../../../../shared/bicep/network/nsg.bicep' = {
 }
 
 @description('Spoke peering to regional hub network. This peering would normally already be provisioned by your subscription vending process.')
-module peerSpokeToHub '../../../../shared/bicep/network/peering.bicep' = if (!empty(hubVNetId))  {
+module peerSpokeToHub '../../../../shared/bicep/network/peering.bicep' = if (!empty(hubVNetName))  {
   name: take('${deployment().name}-peerSpokeToHubDeployment', 64)
   scope: spokeResourceGroup
   params: {
@@ -264,7 +289,7 @@ module peerSpokeToHub '../../../../shared/bicep/network/peering.bicep' = if (!em
 }
 
 @description('Regional hub peering to this spoke network. This peering would normally already be provisioned by your subscription vending process.')
-module peerHubToSpoke '../../../../shared/bicep/network/peering.bicep' = if (!empty(hubVNetId)) {
+module peerHubToSpoke '../../../../shared/bicep/network/peering.bicep' = if (!empty(hubVNetName)) {
   name: take('${deployment().name}-peerHubToSpokeDeployment', 64)
   scope: resourceGroup(hubSubscriptionId, hubResourceGroupName)
   params: {
@@ -275,7 +300,7 @@ module peerHubToSpoke '../../../../shared/bicep/network/peering.bicep' = if (!em
   }
 }
 @description('The Route Table deployment')
-module egressLockdownUdr '../../../../shared/bicep/routeTables/main.bicep' = {
+module egressLockdownUdr '../../../../shared/bicep/routeTables/main.bicep' = if (networkApplianceIpAddress != '') {
   name: take('egressLockdownUdr-${uniqueString(spokeResourceGroup.id)}', 64)
   scope: spokeResourceGroup
   params: {
@@ -345,6 +370,24 @@ module policyAssignments './modules/policy/policy-definition.module.bicep' = if 
     containerRegistryName: naming.outputs.resourcesNames.containerRegistry 
   }
 }
+
+@description('An optional Azure Bastion deployment for jump box access in your spoke network. This would normally be already provisioned by your platform team. This resource will not be provisioned, if you have a valid hub network resource id')
+module bastion '../01-hub/modules/bastion.bicep' = if (empty(hubVNetName) &&  enableBastion ) {
+  name: take('bastion-${deployment().name}', 64)
+  scope: spokeResourceGroup
+  params: {
+    location: location
+    tags: tags
+    sku:bastionSku
+    bastionName: naming.outputs.resourcesNames.bastion
+    bastionNetworkSecurityGroupName: naming.outputs.resourcesNames.bastionNsg
+    bastionPublicIpName: naming.outputs.resourcesNames.bastionPip
+    bastionSubnetName: bastionSubnetName
+    bastionSubnetAddressPrefix: bastionSubnetAddressPrefix
+    bastionVNetName: vnetSpoke.outputs.vnetName
+  }
+}
+
 
 // ------------------
 // OUTPUTS

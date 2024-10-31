@@ -79,6 +79,10 @@
     "spokeApplicationGatewaySubnetAddressPrefix": {
       "value":  "10.1.3.0/24"
     },
+    // If you want to keep spoke-internal traffic for the container apps within the spoke, set this to true
+    "routeSpokeTrafficInternally": {
+      "value":  false
+    },
     // If you want to deploy Application Insights, set this to true
     "enableApplicationInsights": {
       "value": true

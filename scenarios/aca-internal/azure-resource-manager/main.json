@@ -3469,6 +3469,13 @@
                 "description": "CIDR of the spoke infrastructure subnet."
               }
             },
+            "routeSpokeTrafficInternally": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional, default value is false. If true, the spoke network will route spoke-internal traffic within the spoke network. If false, traffic will be sent to the hub network."
+              }
+            },
             "spokePrivateEndpointsSubnetName": {
               "type": "string",
               "defaultValue": "snet-pep",

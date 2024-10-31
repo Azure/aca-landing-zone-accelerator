@@ -51,6 +51,9 @@ param spokeApplicationGatewaySubnetAddressPrefix string
 @description('The IP address of the network appliance (e.g. firewall) that will be used to route traffic to the internet.')
 param networkApplianceIpAddress string
 
+@description('Optional, default value is false. If true, the spoke network will route spoke-internal traffic within the spoke network. If false, traffic will be sent to the hub network.')
+param routeSpokeTrafficInternally bool = false
+
 @description('The size of the jump box virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.')
 param vmSize string
 
@@ -299,6 +302,7 @@ module peerHubToSpoke '../../../../shared/bicep/network/peering.bicep' = if (!em
     remoteVnetName: vnetSpoke.outputs.vnetName
   }
 }
+
 @description('The Route Table deployment')
 module egressLockdownUdr '../../../../shared/bicep/routeTables/main.bicep' = if (networkApplianceIpAddress != '') {
   name: take('egressLockdownUdr-${uniqueString(spokeResourceGroup.id)}', 64)
@@ -307,7 +311,7 @@ module egressLockdownUdr '../../../../shared/bicep/routeTables/main.bicep' = if 
     name: naming.outputs.resourcesNames.routeTable
     location: location
     tags: tags
-    routes: [
+    routes: concat([
       {
         name: 'defaultEgressLockdown'
         properties: {
@@ -316,7 +320,15 @@ module egressLockdownUdr '../../../../shared/bicep/routeTables/main.bicep' = if 
           nextHopIpAddress: networkApplianceIpAddress
         }
       }
-    ]
+    ], routeSpokeTrafficInternally ? [
+      {
+        name: 'spokeInternalTraffic'
+        properties: {
+          addressPrefix: spokeVNetAddressPrefixes[0]
+          nextHopType: 'VnetLocal'
+        }
+      }
+    ] : [])
   }
 }
 

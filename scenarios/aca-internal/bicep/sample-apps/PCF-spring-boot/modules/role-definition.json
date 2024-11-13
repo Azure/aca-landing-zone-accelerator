@@ -1,0 +1,23 @@
+{
+    "description": "Used for Azure Container Apps deploy from code, including build image uses Azure Container Registry and deploy to Azure Container Apps",
+    "name": "ACR build and deploy to ACA",
+    "actions": [
+        "*/read",
+        "Microsoft.Resources/deployments/write",
+        "Microsoft.Resources/deployments/validate/action",
+        "Microsoft.ContainerRegistry/registries/listBuildSourceUploadUrl/action",
+        "Microsoft.ContainerRegistry/registries/runs/listLogSasUrl/action",
+        "Microsoft.ContainerRegistry/registries/builds/cancel/action",
+        "Microsoft.ContainerRegistry/registries/scheduleRun/action",
+        "Microsoft.App/containerApps/write",
+        "Microsoft.app/managedEnvironments/join/action",
+        "Microsoft.App/managedEnvironments/javaComponents/write",
+        "Microsoft.App/containerApps/listSecrets/action",
+        "Microsoft.ServiceLinker/linkers/write",
+        "Microsoft.ManagedIdentity/userAssignedIdentities/assign/action"
+    ],
+    "notActions": [],
+    "dataActions": [],
+    "notDataActions": [],
+    "AssignableScopes": ["Your-Spoke-Resource-Group-Id"]
+}

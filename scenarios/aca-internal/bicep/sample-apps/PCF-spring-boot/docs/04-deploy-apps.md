@@ -88,3 +88,8 @@ This documentation guides how to deploy the PetClinic microservices.
 1. Access the PetClinic application running in Azure Container Apps.
 
    Using your browser either navigate to **https://\<IP_APPGW from prior step>** from above, or if you added the host file entry, to **<https://acahello.demoapp.com>**. *Because the cert is self-signed for this walkthrough, you will need to accept the security warnings presented by your browser.*
+
+
+## Next step
+
+:arrow_forward: [Setup CI/CD pipeline](./05-github-action.md)

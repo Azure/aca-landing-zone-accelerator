@@ -1,6 +1,7 @@
 // ------------------
 //    PARAMETERS
 // ------------------
+
 variable "workloadName" {
   type = string
   validation {

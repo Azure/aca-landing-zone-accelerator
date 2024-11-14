@@ -1,3 +1,4 @@
+
 variable "appGatewayCertificateKeyName" {}
 
 variable "location" {}

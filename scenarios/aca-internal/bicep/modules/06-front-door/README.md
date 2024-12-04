@@ -8,12 +8,12 @@ The following will be created:
 
 Review `deploy.front-door.parameters.jsonc` and update the values as required. Once the files are updated, deploy using az cli or Az PowerShell.
 
-| **Parameters** | **Type** | **Description** | **Required** |
-| --- | --- | --- | --- | --- |
-| containerAppsEnvironmentId | **string** | Container Apps Environment Resource ID | **Yes** |
-| privateLinkSubnetId | **string** | Subnet ID of the private link NAT Subnet | **Yes** |
-| frontDoorEndpointName | **string** | Desired Front Door Endpoint Name | **Yes** |
-| frontDoorOriginHostName | **string** | Container Apps FQDN | **Yes** |
+| Parameters | Type | Description | Required |
+|------------|------|-------------|----------|
+| containerAppsEnvironmentId | string | Container Apps Environment Resource ID | Yes |
+| privateLinkSubnetId | string | Subnet ID of the private link NAT Subnet | Yes |
+| frontDoorEndpointName | string | Desired Front Door Endpoint Name | Yes |
+| frontDoorOriginHostName | string | Container Apps FQDN | Yes |
 
 > **_NOTE:_**  Following Front Door creation, you will need to approve the private link endpoints. This can be done by navigating to the private link endpoint in the portal and clicking on the `Approve` button.
 

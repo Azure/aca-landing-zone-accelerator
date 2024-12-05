@@ -320,15 +320,15 @@ module egressLockdownUdr '../../../../shared/bicep/routeTables/main.bicep' = if 
           nextHopIpAddress: networkApplianceIpAddress
         }
       }
-    ], routeSpokeTrafficInternally ? [
-      {
-        name: 'spokeInternalTraffic'
+    ], routeSpokeTrafficInternally ? map(spokeVNetAddressPrefixes, (prefix, i) => 
+      {     
+        name: 'spokeInternalTraffic-${i}'
         properties: {
-          addressPrefix: spokeVNetAddressPrefixes[0]
+          addressPrefix: prefix
           nextHopType: 'VnetLocal'
         }
       }
-    ] : [])
+    ) : [])
   }
 }
 

@@ -196,8 +196,8 @@ module "routeTable" {
       nextHopType      = "VirtualAppliance"
       nextHopIpAddress = var.firewallPrivateIp
     },
-    var.routeSpokeTrafficInternally ? [for prefix in var.vnetAddressPrefixes : {
-      name            = "intTraffic-${prefix}"
+    var.routeSpokeTrafficInternally ? [for i, prefix in var.vnetAddressPrefixes : {
+      name            = "spokeInternalTraffic-${i}"
       addressPrefix   = prefix
       nextHopType     = "VnetLocal"
     }] : []

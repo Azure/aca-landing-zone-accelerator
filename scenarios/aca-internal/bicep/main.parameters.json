@@ -90,7 +90,7 @@
       "value": false
     },
     "deployOpenAi": {
-      "value": true
+      "value": false
     },
     "ddosProtectionMode": {
       "value": "Enabled"

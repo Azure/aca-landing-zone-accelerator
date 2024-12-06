@@ -306,3 +306,9 @@ variable "workloadProfiles" {
     maximum_count         = number
   }))
 }
+
+variable "routeSpokeTrafficInternally" {
+  type = bool
+  default = false
+  description = "Optional, default value is false. If true, the spoke network will route spoke-internal traffic within the spoke network. If false, traffic will be sent to the hub network."
+}

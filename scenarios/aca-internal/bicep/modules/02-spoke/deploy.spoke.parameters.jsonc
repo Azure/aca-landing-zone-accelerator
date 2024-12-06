@@ -36,6 +36,9 @@
     "networkApplianceIpAddress": {
       "value": "[IP OF THE NETWORK APPLIANCE]"
     },
+    "routeSpokeTrafficInternally": {
+      "value":  false
+    },
     "vmSize": {
       "value": "Standard_B2ms"
     },

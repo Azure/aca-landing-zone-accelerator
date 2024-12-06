@@ -420,6 +420,22 @@
                             },
                             "infoMessages": [],
                             "visible": true
+                        },
+                        {
+                            "name": "routeSpokeTrafficInternally",
+                            "type": "Microsoft.Common.CheckbBox",
+                            "label": "Route Spoke Traffic Internally",
+                            "subLabel": "",
+                            "defaultValue": false,
+                            "toolTip": "Enable this if you would like to keep traffic that is internal to the spoke (e.g. container app to database) from being routed to the hub. This can significantly alleviate load on components such as hub firewalls and decrease excess traffic.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
                         }
                     ]
                 },

@@ -189,11 +189,17 @@ module "routeTable" {
   subnetId          = data.azurerm_subnet.infraSubnet.id
   tags              = var.tags
 
-  routes = [{
-    name             = "defaultEgressLockdown"
-    addressPrefix    = "0.0.0.0/0"
-    nextHopType      = "VirtualAppliance"
-    nextHopIpAddress = var.firewallPrivateIp
-    }
-  ]
+  routes = concat(
+    [{
+      name             = "defaultEgressLockdown"
+      addressPrefix    = "0.0.0.0/0"
+      nextHopType      = "VirtualAppliance"
+      nextHopIpAddress = var.firewallPrivateIp
+    },
+    var.routeSpokeTrafficInternally ? [for i, prefix in var.vnetAddressPrefixes : {
+      name            = "spokeInternalTraffic-${i}"
+      addressPrefix   = prefix
+      nextHopType     = "VnetLocal"
+    }] : []
+  ])
 }

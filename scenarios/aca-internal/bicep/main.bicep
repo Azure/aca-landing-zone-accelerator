@@ -98,6 +98,9 @@ param spokePrivateEndpointsSubnetAddressPrefix string
 @description('CIDR of the Spoke Application Gateway Subnet.')
 param spokeApplicationGatewaySubnetAddressPrefix string
 
+@description('Optional, default value is false. If true, the spoke network will route spoke-internal traffic within the spoke network. If false, traffic will be sent to the hub network.')
+param routeSpokeTrafficInternally bool = false
+
 @description('Enable or disable the createion of Application Insights.')
 param enableApplicationInsights bool
 
@@ -193,6 +196,7 @@ module spoke 'modules/02-spoke/deploy.spoke.bicep' = {
     spokePrivateEndpointsSubnetAddressPrefix: spokePrivateEndpointsSubnetAddressPrefix
     spokeVNetAddressPrefixes: spokeVNetAddressPrefixes
     networkApplianceIpAddress: deployHub ? hub.outputs.networkApplianceIpAddress : ''
+    routeSpokeTrafficInternally: routeSpokeTrafficInternally
     vmSize: vmSize
     vmAdminUsername: vmAdminUsername
     vmAdminPassword: vmAdminPassword

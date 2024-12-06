@@ -35,6 +35,7 @@ module "spoke" {
   jumpboxSubnetAddressPrefix            = var.vmJumpBoxSubnetAddressPrefix
   firewallPrivateIp                     = module.hub.firewallPrivateIp
   tags                                  = var.tags
+  routeSpokeTrafficInternally           = var.routeSpokeTrafficInternally
 }
 
 module "supportingServices" {

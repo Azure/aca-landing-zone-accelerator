@@ -423,7 +423,7 @@
                         },
                         {
                             "name": "routeSpokeTrafficInternally",
-                            "type": "Microsoft.Common.CheckbBox",
+                            "type": "Microsoft.Common.CheckBox",
                             "label": "Route Spoke Traffic Internally",
                             "subLabel": "",
                             "defaultValue": false,

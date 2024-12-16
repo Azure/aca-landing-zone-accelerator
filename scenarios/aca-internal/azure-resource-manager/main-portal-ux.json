@@ -880,6 +880,7 @@
                 "spokeInfraSubnetAddressPrefix": "[steps('networking').spokeInfraSubnetAddressPrefix]",
                 "spokePrivateEndpointsSubnetAddressPrefix": "[steps('networking').spokePrivateEndpointsSubnetAddressPrefix]",
                 "spokeApplicationGatewaySubnetAddressPrefix": "[steps('networking').spokeApplicationGatewaySubnetAddressPrefix]",
+                "routeSpokeTrafficInternally": "[steps('networking').routeSpokeTrafficInternally]",
                 "vmSize": "[if( not( equals(steps('vmsettings').vmJumpboxOSType, 'none') ), steps('vmsettings').vmSize, 'Standard_B2ms')]",
                 "vmAdminUsername": "[if( not( equals(steps('vmsettings').vmJumpboxOSType, 'none') ), steps('vmsettings').vmAdminUsername, 'azureuser')]",
                 "vmAdminPassword": "[if( not( equals(steps('vmsettings').vmJumpboxOSType, 'none') ), steps('vmsettings').vmAdminPassword.password, 'Pass@word123$' )]",

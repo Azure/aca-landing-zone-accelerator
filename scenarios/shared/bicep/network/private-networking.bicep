@@ -28,16 +28,27 @@ param privateEndpointSubResourceName string
 @description('The region (location) in which the resource will be deployed. Default: resource group location.')
 param location string = resourceGroup().location
 
-// check to see if theres a '/' in the vnetHubResourceId. if there isnt, its an invalid input and default resource group will be used
-var vnetHubSplitTokens = contains(vnetHubResourceId, '/') ? split(vnetHubResourceId, '/') : array('')
+var vnetHubSplitTokens = empty(vnetHubResourceId) ? array('') : split(vnetHubResourceId, '/')
+var vnetHubSubscriptionId = empty(vnetHubResourceId) ? '' : vnetHubSplitTokens[2]
+var vnetHubResourceGroupName = empty(vnetHubResourceId) ? '' : vnetHubSplitTokens[4]
 
 // ------------------
 // RESOURCES
 // ------------------
 
-// Deploy the private DNS zone in the spoke resource group if no valid resource id is provided
-module privateDnsZone 'private-dns-zone.bicep' = {
-  scope: contains(vnetHubResourceId, '/') ? resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4]) : resourceGroup()
+// Deploy the private DNS zone in the current resource group when no hub resource group is supplied.
+module privateDnsZoneCurrent 'private-dns-zone.bicep' = if (empty(vnetHubResourceId)) {
+  scope: resourceGroup()
+  name: 'privateDnsZoneDeployment-${uniqueString(azServiceId, privateEndpointSubResourceName)}'
+  params: {
+    name: azServicePrivateDnsZoneName
+    virtualNetworkLinks: virtualNetworkLinks
+  }
+}
+
+// Deploy the private DNS zone in the hub resource group when a hub resource group is supplied.
+module privateDnsZoneHub 'private-dns-zone.bicep' = if (!empty(vnetHubResourceId)) {
+  scope: resourceGroup(vnetHubSubscriptionId, vnetHubResourceGroupName)
   name: 'privateDnsZoneDeployment-${uniqueString(azServiceId, privateEndpointSubResourceName)}'
   params: {
     name: azServicePrivateDnsZoneName
@@ -50,7 +61,7 @@ module privateEndpoint 'private-endpoint.bicep' = {
   params: {
     name: privateEndpointName
     location: location
-    privateDnsZonesId: privateDnsZone.outputs.privateDnsZonesId
+    privateDnsZonesId: empty(vnetHubResourceId) ? privateDnsZoneCurrent.outputs.privateDnsZonesId : privateDnsZoneHub.outputs.privateDnsZonesId
     privateLinkServiceId: azServiceId
     snetId:  subnetId
     subresource: privateEndpointSubResourceName

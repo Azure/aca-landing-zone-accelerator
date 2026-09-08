@@ -119,6 +119,7 @@ The table below summarizes the available parameters and the possible values that
    | `enableApplicationInsights` | Controls if Application Insights is deployed and configured. | **true** | **false** |
    | `aRecords` | A Records for App Gateway DNS | **[]** | **[]** |
    | `appGatewayCertificatePath` | App Gateway Certificate Path | **configuration/acahello.demoapp.com.pfx** | **configuration/acahello.demoapp.com.pfx** |
+   | `enableAppGatewayCertificate` | Enable TLS and upload the Application Gateway certificate | **true** | **false**, for an HTTP-only Application Gateway without a PFX file. |
    | `appGatewayCertificateKeyName` | App Gateway Certificate Key Name | **agwcert** | **agwcert** |
    | `appGatewayFQDN` | App Gateway FQDN | **acahello.demoapp.com** | **acahello.demoapp.com** |
    | `deployHelloWorldSample` | Deploy a simple, sample application to the infrastructure. If you prefer to deploy the more comprehensive, Dapr-enabled sample app, this needs to be disabled | **true** | **false**, because you plan on deploying the Dapr-enabled application instead. |

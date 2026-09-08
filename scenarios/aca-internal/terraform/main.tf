@@ -112,9 +112,9 @@ module "helloWorldApp" {
   tags                                    = var.tags
 }
 
-# If you would like to deploy an Application Gateway and have provided your IP address for KeyVault access, leave this module uncommented
-# If you would like to keep your KeyVault private, comment out this module
+# The Application Gateway is deployed with the Hello World sample application.
 module "applicationGateway" {
+  count                           = var.deployHelloWorldSample ? 1 : 0
   source                          = "./modules/06-application-gateway"
   workloadName                    = var.workloadName
   environment                     = var.environment
@@ -127,6 +127,7 @@ module "applicationGateway" {
   appGatewaySubnetId              = module.spoke.spokeApplicationGatewaySubnetId
   appGatewayLogAnalyticsId        = module.spoke.logAnalyticsWorkspaceId
   appGatewayCertificatePath       = var.appGatewayCertificatePath
+  enableAppGatewayCertificate     = var.enableAppGatewayCertificate
   logAnalyticsWorkspaceId         = module.spoke.logAnalyticsWorkspaceId
   tags                            = var.tags
 }

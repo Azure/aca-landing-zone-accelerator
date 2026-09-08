@@ -36,6 +36,7 @@ resource "azurerm_public_ip" "appGatewayPip" {
 }
 
 module "appGatewayAddCertificates" {
+  count                                     = var.enableAppGatewayCertificate ? 1 : 0
   source                                    = "../../../../shared/terraform/modules/application-gateway/certificate-config"
   keyVaultName                              = var.keyVaultName
   resourceGroupName                         = var.resourceGroupName
@@ -63,12 +64,12 @@ module "appGatewayConfiguration" {
       fqdns = [var.appGatewayPrimaryBackendEndFQDN]
     }
   ]
-  sslCertificates = [
+  sslCertificates = var.enableAppGatewayCertificate ? [
     {
       name                = var.appGatewayFQDN
-      key_vault_secret_id = module.appGatewayAddCertificates.SecretUri
+      key_vault_secret_id = module.appGatewayAddCertificates[0].SecretUri
     }
-  ]
+  ] : []
   frontendIPConfigurations = [
     {
       name                          = "appGwPublicFrontendIp"
@@ -167,7 +168,7 @@ module "appGatewayConfiguration" {
   appGatewayPublicIpName           = module.naming.resourceNames["applicationGatewayPip"]
   appGatewaySubnetId               = var.appGatewaySubnetId
   appGatewayUserAssignedIdentityId = azurerm_user_assigned_identity.appGatewayUserIdentity.id
-  keyVaultSecretId                 = module.appGatewayAddCertificates.SecretUri
+  keyVaultSecretId                 = var.enableAppGatewayCertificate ? module.appGatewayAddCertificates[0].SecretUri : null
   appGatewayLogAnalyticsId         = var.appGatewayLogAnalyticsId
   tags                             = var.tags
 }

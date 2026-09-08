@@ -58,7 +58,9 @@ var spokeVNetLinks = concat(
   ] : []
 )
 
-var vnetHubSplitTokens = !empty(vnetHubResourceId) ? split(vnetHubResourceId, '/') : array('')
+var vnetHubSplitTokens = empty(vnetHubResourceId) ? array('') : split(vnetHubResourceId, '/')
+var vnetHubSubscriptionId = empty(vnetHubResourceId) ? '' : vnetHubSplitTokens[2]
+var vnetHubResourceGroupName = empty(vnetHubResourceId) ? '' : vnetHubSplitTokens[4]
 var openAiDnsZoneName = 'privatelink.openai.azure.com' 
 
 resource vnetSpoke 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
@@ -99,10 +101,18 @@ module gpt35TurboDeployment  '../../../../../shared/bicep/cognitive-services/ope
     ]
 }
 
-module openAiPrivateDnsZone '../../../../../shared/bicep/network/private-dns-zone.bicep' =  {
-  // conditional scope is not working: https://github.com/Azure/bicep/issues/7367
-  //scope: empty(vnetHubResourceId) ? resourceGroup() : resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4]) 
-  scope: empty(hubVNetName) ? resourceGroup() : resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4])
+module openAiPrivateDnsZoneCurrent '../../../../../shared/bicep/network/private-dns-zone.bicep' = if (empty(vnetHubResourceId)) {
+  scope: resourceGroup()
+  name: take('${replace(openAiDnsZoneName, '.', '-')}-PrivateDnsZoneDeployment', 64)
+  params: {
+    name: openAiDnsZoneName
+    virtualNetworkLinks: spokeVNetLinks
+    tags: tags
+  }
+}
+
+module openAiPrivateDnsZoneHub '../../../../../shared/bicep/network/private-dns-zone.bicep' = if (!empty(vnetHubResourceId)) {
+  scope: resourceGroup(vnetHubSubscriptionId, vnetHubResourceGroupName)
   name: take('${replace(openAiDnsZoneName, '.', '-')}-PrivateDnsZoneDeployment', 64)
   params: {
     name: openAiDnsZoneName
@@ -117,7 +127,7 @@ module peOpenAI '../../../../../shared/bicep/network/private-endpoint.bicep' = {
     name: take('pe-${name}', 64)
     location: location
     tags: tags
-    privateDnsZonesId: openAiPrivateDnsZone.outputs.privateDnsZonesId
+    privateDnsZonesId: empty(vnetHubResourceId) ? openAiPrivateDnsZoneCurrent.outputs.privateDnsZonesId : openAiPrivateDnsZoneHub.outputs.privateDnsZonesId
     privateLinkServiceId: openAI.outputs.resourceId
     snetId: spokePrivateEndpointSubnet.id
     subresource: 'account'
